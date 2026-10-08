@@ -32,7 +32,7 @@ func TestParseProbeServer(t *testing.T) {
 		port uint16
 	}{
 		{"stun:stun.l.google.com:19302", "stun.l.google.com", 19302},
-		{"stun:106.12.83.160:3478", "106.12.83.160", 3478},
+		{"stun:101.6.6.6:3478", "101.6.6.6", 3478},
 		{"stun.cloudflare.com:3478", "stun.cloudflare.com", 3478},
 		{"stun:example.com", "example.com", 3478},
 		{"stun:example.com:3478?transport=udp", "example.com", 3478},
@@ -51,7 +51,7 @@ func TestUsableProbeIP(t *testing.T) {
 		allowPrivate bool
 		want         bool
 	}{
-		{"106.12.83.160", false, true},
+		{"101.6.6.6", false, true},
 		{"162.159.207.0", false, true},
 		{"192.0.2.42", false, false}, // 实测 stun.syncthing.net 被 DNS 污染到这里
 		{"198.18.3.7", false, false}, // 代理软件 fake-ip 的默认网段

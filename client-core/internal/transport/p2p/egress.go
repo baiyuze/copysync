@@ -140,31 +140,49 @@ type probeTarget struct {
 //
 // 按 IP 去重是因为出口只按目标 IP 选择：同一 IP 的不同端口、同一 IP 的多个域名
 // （Google 的 stun1–4 就是同一个 IP）只会落在同一个出口上，多探无益。
+//
+// 各域名并发解析：逐个解析时一台 DNS 慢就拖住整轮探测，而刚开机、刚换网络时
+// 正是 DNS 最慢、最需要尽快探完的时候（探完才能把出口地址发给对端）。
 func resolveProbeTargets(ctx context.Context, servers []string, opts probeOptions) []probeTarget {
 	resolver := opts.Resolver
 	if resolver == nil {
 		resolver = net.DefaultResolver
 	}
-	seen := map[netip.Addr]bool{}
-	var out []probeTarget
-	for _, s := range servers {
+	type resolved struct {
+		host string
+		port uint16
+		ips  []netip.Addr
+	}
+	results := make([]resolved, len(servers))
+	var wg sync.WaitGroup
+	for i, s := range servers {
 		host, port, err := parseProbeServer(s)
 		if err != nil {
 			continue
 		}
-		var ips []netip.Addr
+		results[i] = resolved{host: host, port: port}
 		if ip, err := netip.ParseAddr(host); err == nil {
-			ips = []netip.Addr{ip}
-		} else {
-			lctx, cancel := context.WithTimeout(ctx, 2*time.Second)
-			resolved, err := resolver.LookupNetIP(lctx, "ip4", host)
-			cancel()
-			if err != nil {
-				continue
-			}
-			ips = resolved
+			results[i].ips = []netip.Addr{ip}
+			continue
 		}
-		for _, ip := range ips {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			lctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+			defer cancel()
+			if ips, err := resolver.LookupNetIP(lctx, "ip4", host); err == nil {
+				results[i].ips = ips
+			}
+		}()
+	}
+	wg.Wait()
+
+	// 按服务器原本的顺序去重，结果与解析快慢无关
+	seen := map[netip.Addr]bool{}
+	var out []probeTarget
+	for _, r := range results {
+		host, port := r.host, r.port
+		for _, ip := range r.ips {
 			ip = ip.Unmap()
 			if !ip.Is4() || seen[ip] || !usableProbeIP(ip, opts.AllowPrivate) {
 				continue

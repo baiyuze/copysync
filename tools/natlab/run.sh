@@ -135,11 +135,11 @@ setup() {
 PASS=0
 FAIL=0
 
-# check <场景名> <A 侧> <B 侧> <direct|relay> [legacy|history]
+# check <场景名> <A 侧> <B 侧> <direct|relay> [legacy|history|late]
 check() {
     # NATLAB_ONLY 只跑名字里含这段文字的场景，排查问题时用
     [[ -n ${NATLAB_ONLY:-} && $1 != *"$NATLAB_ONLY"* ]] && return
-    local name=$1 expect=$4 flag=${5:-} aflags=() state="$WORK/a-state.json"
+    local name=$1 expect=$4 flag=${5:-} aflags=() bflags=() state="$WORK/a-state.json"
     rm -f "$state" # 每个场景从空白开始：上一个场景的出口历史会让这一个「意外」直连
     setup "$2" "$3"
     case $flag in
@@ -149,9 +149,19 @@ check() {
         printf '{"networks":{"192.168.10.2":[{"ip":"10.255.0.12","port_preserved":true,"last_seen":"%s"}]}}' \
             "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >"$state"
         ;;
+    late)
+        # 开头 8 秒 rB 不放行发往 a 那边的 UDP，第一次握手只能落到中转；
+        # 之后放开，a 应当用 ICE 重启换成直连。对应现实里「对端刚启动，
+        # 出口地址晚到」「网络刚恢复」等一次没打通、之后其实打得通的情形
+        local block=(FORWARD -i lan -d 10.255.0.0/24 -p udp -j DROP)
+        ns rB iptables -I "${block[@]}"
+        (sleep 8 && ns rB iptables -D "${block[@]}") &
+        aflags=(-settle 40s)
+        bflags=(-settle 40s)
+        ;;
     esac
     local common=(-infra http://10.200.0.2:9000 -stun 10.200.1.1:3478 -timeout 30s)
-    ns b "$BIN" peer -id b -peer a "${common[@]}" -probe "$PROBE" >"$WORK/b.json" 2>"$WORK/b.log" &
+    ns b "$BIN" peer -id b -peer a "${common[@]}" -probe "$PROBE" "${bflags[@]}" >"$WORK/b.json" 2>"$WORK/b.log" &
     local bpid=$!
     ns a "$BIN" peer -id a -peer b "${common[@]}" -probe "$PROBE" -state "$state" "${aflags[@]}" \
         >"$WORK/a.json" 2>"$WORK/a.log" || true
@@ -160,7 +170,14 @@ check() {
     local a b
     a=$(sed -n 's/.*"state":"\([a-z]*\)".*/\1/p' "$WORK/a.json")
     b=$(sed -n 's/.*"state":"\([a-z]*\)".*/\1/p' "$WORK/b.json")
-    if [[ $a == "$expect" && $b == "$expect" ]]; then
+    local ok=0
+    [[ $a == "$expect" && $b == "$expect" ]] && ok=1
+    # 「晚到」场景必须真的先落到中转、再靠 ICE 重启换成直连，否则没测到要测的东西
+    if [[ $flag == late ]] && ! grep -q '尝试换成直连' "$WORK/a.log"; then
+        ok=0
+        echo "    a 没有经过「中转 → 尝试换成直连」"
+    fi
+    if [[ $ok == 1 ]]; then
         PASS=$((PASS + 1))
         printf '  ✓ %-34s %s\n' "$name" "$a"
     else
@@ -168,7 +185,7 @@ check() {
         printf '  ✗ %-34s 期望 %s，实际 a=%s b=%s\n' "$name" "$expect" "${a:-无结果}" "${b:-无结果}"
         echo "    a: $(cat "$WORK/a.json")"
         echo "    b: $(cat "$WORK/b.json")"
-        grep -h -E '出口探测完成|P2P|失败|error' "$WORK/a.log" "$WORK/b.log" | head -8 | sed 's/^/    /'
+        grep -h -E '出口探测完成|P2P|换成直连|ICE 重启|失败|error' "$WORK/a.log" "$WORK/b.log" | head -8 | sed 's/^/    /'
         # NATLAB_KEEP 指定目录时把完整日志留下来
         [[ -n ${NATLAB_KEEP:-} ]] && cp "$WORK"/*.log "$NATLAB_KEEP/" 2>/dev/null || true
     fi
@@ -183,6 +200,7 @@ check "两个出口，第二条没探测到，无历史" hidden cone relay
 check "两个出口，第二条没探测到，有历史" hidden cone direct history
 check "两个出口 ↔ 两个出口" dual dual direct
 check "两个出口 ↔ 端口随机分配的 NAT" dual symmetric relay
+check "一开始打不通，先中转后换直连" dual cone direct late
 
 echo
 echo "通过 $PASS，失败 $FAIL"

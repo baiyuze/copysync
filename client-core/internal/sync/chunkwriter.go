@@ -117,18 +117,22 @@ func (w *chunkWriter) waitForBuffer() error {
 // WaitDrained 等待发送缓冲彻底排空。
 //
 // 数据通道一关，尚未发出的数据就丢了；关闭前必须确认本地缓冲已清空。
-func (w *chunkWriter) WaitDrained(ctx context.Context, timeout time.Duration) {
+// 排不空说明对端没在接收（连接多半已经断了），返回错误，不能当作发送成功。
+func (w *chunkWriter) WaitDrained(ctx context.Context, timeout time.Duration) error {
 	deadline := time.Now().Add(timeout)
-	for time.Now().Before(deadline) {
+	for {
 		if w.dc.BufferedAmount() == 0 {
-			return
+			return nil
 		}
 		if w.dc.ReadyState() != webrtc.DataChannelStateOpen {
-			return
+			return nil // 对端收完后可能先关通道，此时缓冲计数未必已归零
+		}
+		if time.Now().After(deadline) {
+			return errors.New("对端迟迟没有收完，连接可能已经中断")
 		}
 		select {
 		case <-ctx.Done():
-			return
+			return ctx.Err()
 		case <-time.After(5 * time.Millisecond):
 		}
 	}

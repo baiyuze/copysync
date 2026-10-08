@@ -61,9 +61,21 @@ func (s ConnState) Proto() pb.ConnectionKind {
 const (
 	controlChannelLabel = "control"
 	connectTimeout      = 30 * time.Second
-	// relayAcceptanceWait 是中转路径最早可以被选中的时间，给直连留出打通的机会
-	relayAcceptanceWait = 3 * time.Second
+	// relayAcceptanceWait 是中转路径最早可以被选中的时间，给直连留出打通的机会。
+	// 要长于对端探测出口、把出口地址发过来所需的时间（见 Manager.advertisedCandidates）
+	relayAcceptanceWait = 5 * time.Second
+	// restartTimeout 是 ICE 重启后等待恢复的最长时间，超时就重置连接
+	restartTimeout = 30 * time.Second
 )
+
+var (
+	// upgradeDelays 是走中转时，每次尝试换成直连之前等待的时间；用完后按最后一项重复
+	upgradeDelays = []time.Duration{10 * time.Second, 30 * time.Second, 2 * time.Minute, 5 * time.Minute, 15 * time.Minute}
+	// upgradeIdle：这么久之内有过同步就先不换，ICE 重启会让传输停顿几秒
+	upgradeIdle = 10 * time.Second
+)
+
+var errNegotiating = errors.New("正在协商中")
 
 // Peer 管理与单个对端的 WebRTC 连接。
 type Peer struct {
@@ -78,6 +90,8 @@ type Peer struct {
 	onStream func(label string, stream *Stream)
 	// extraCands 返回出口探测得到的公网地址，见 sendExtraCandidates
 	extraCands func() []string
+	// refreshEgress 重新探测一轮出口，见 tryUpgrade
+	refreshEgress func()
 
 	api    *webrtc.API
 	config webrtc.Configuration
@@ -105,6 +119,18 @@ type Peer struct {
 	connectTimer *time.Timer
 	// dialing 表示 Connect 正在进行中，防止并发重入建出两个 PeerConnection
 	dialing bool
+
+	forceRelay bool
+	// 生成并发出 offer/answer 期间，新收集到的 candidate 先攒着，见 holdCandidates
+	holdCands bool
+	heldCands []*pb.IceCandidate
+	// 走中转时定期尝试换成直连，见 tryUpgrade
+	upgradeTimer   *time.Timer
+	upgradeAttempt int
+	restarts       int // ICE 重启的次数，watchRestart 用它识别过期的计时
+	// lastActivity 与 streams 用来判断连接是否空闲，见 busy
+	lastActivity time.Time
+	streams      []*webrtc.DataChannel
 }
 
 type PeerOptions struct {
@@ -119,10 +145,12 @@ type PeerOptions struct {
 	UDPMux ice.UDPMux
 	// ExtraCandidates 返回出口探测得到的公网地址（srflx candidate），握手时一并发给对端
 	ExtraCandidates func() []string
-	SendSignal      func(ctx context.Context, msg *pb.SignalMessage) error
-	OnState         func(ConnState)
-	OnMessage       func(*pb.PeerMessage)
-	OnStream        func(label string, stream *Stream)
+	// RefreshEgress 立即重新探测出口并等它结束，尝试换成直连之前调用
+	RefreshEgress func()
+	SendSignal    func(ctx context.Context, msg *pb.SignalMessage) error
+	OnState       func(ConnState)
+	OnMessage     func(*pb.PeerMessage)
+	OnStream      func(label string, stream *Stream)
 }
 
 func NewPeer(opts PeerOptions) (*Peer, error) {
@@ -150,15 +178,17 @@ func NewPeer(opts PeerOptions) (*Peer, error) {
 	}
 
 	return &Peer{
-		deviceID:   opts.DeviceID,
-		log:        log.With("peer", opts.DeviceID),
-		sendSignal: opts.SendSignal,
-		onState:    opts.OnState,
-		onMessage:  opts.OnMessage,
-		onStream:   opts.OnStream,
-		extraCands: opts.ExtraCandidates,
-		api:        webrtc.NewAPI(webrtc.WithSettingEngine(settings)),
-		config:     config,
+		deviceID:      opts.DeviceID,
+		log:           log.With("peer", opts.DeviceID),
+		sendSignal:    opts.SendSignal,
+		onState:       opts.OnState,
+		onMessage:     opts.OnMessage,
+		onStream:      opts.OnStream,
+		extraCands:    opts.ExtraCandidates,
+		refreshEgress: opts.RefreshEgress,
+		api:           webrtc.NewAPI(webrtc.WithSettingEngine(settings)),
+		config:        config,
+		forceRelay:    opts.ForceRelay,
 		// 用 device_id 字典序决定礼让方：双方规则一致且无需协商，
 		// 天然避免两端同时发 offer 时的死锁。
 		polite: opts.SelfID > opts.DeviceID,
@@ -231,6 +261,9 @@ func (p *Peer) Connect(ctx context.Context) error {
 		p.mu.Unlock()
 	}()
 
+	p.holdCandidates()
+	defer p.releaseCandidates()
+
 	offer, err := pc.CreateOffer(nil)
 	if err != nil {
 		return fmt.Errorf("创建 offer: %w", err)
@@ -242,16 +275,105 @@ func (p *Peer) Connect(ctx context.Context) error {
 	p.setState(StateConnecting)
 	p.armConnectTimeout()
 
-	if err := p.sendSignal(ctx, &pb.SignalMessage{
-		Payload: &pb.SignalMessage_Offer{Offer: &pb.SdpOffer{
-			Sdp:             offer.SDP,
-			DtlsFingerprint: fingerprintFromSDP(offer.SDP),
-		}},
-	}); err != nil {
+	if err := p.sendSignal(ctx, offerMessage(offer)); err != nil {
 		return err
 	}
 	go p.sendExtraCandidates()
 	return nil
+}
+
+// restartICE 在已连通的连接上做一次 ICE 重启：两端重新收集地址、重新做连通性检查，
+// DTLS 与数据通道保持不变。重启期间发出的数据会暂时丢失，由 SCTP 重传补上，
+// 所以只停顿、不断开。
+func (p *Peer) restartICE(ctx context.Context) error {
+	p.mu.Lock()
+	pc := p.pc
+	if pc == nil || p.makingOffer || pc.SignalingState() != webrtc.SignalingStateStable {
+		p.mu.Unlock()
+		return errNegotiating
+	}
+	p.makingOffer = true
+	p.mu.Unlock()
+	defer func() {
+		p.mu.Lock()
+		p.makingOffer = false
+		p.mu.Unlock()
+	}()
+
+	p.holdCandidates()
+	defer p.releaseCandidates()
+
+	// 先盯住：从 CreateOffer 起本端的 ICE 就已重启，之后任何一步失败都要能恢复
+	p.watchRestart(pc)
+	offer, err := pc.CreateOffer(&webrtc.OfferOptions{ICERestart: true})
+	if err != nil {
+		return fmt.Errorf("创建 offer: %w", err)
+	}
+	if err := pc.SetLocalDescription(offer); err != nil {
+		return fmt.Errorf("设置本地描述: %w", err)
+	}
+	if err := p.sendSignal(ctx, offerMessage(offer)); err != nil {
+		return err
+	}
+	go p.sendExtraCandidates()
+	return nil
+}
+
+// watchRestart 在 ICE 重启后迟迟恢复不了时重置连接，交给上层重连。
+// 重启用的 offer 或 answer 若在信令里丢了，ICE 会一直停在检查中，自己不会失败。
+func (p *Peer) watchRestart(pc *webrtc.PeerConnection) {
+	p.mu.Lock()
+	p.restarts++
+	gen := p.restarts
+	p.mu.Unlock()
+	time.AfterFunc(restartTimeout, func() {
+		p.mu.Lock()
+		stale := p.pc != pc || p.restarts != gen
+		p.mu.Unlock()
+		if !stale && pc.ConnectionState() != webrtc.PeerConnectionStateConnected {
+			p.log.Warn("ICE 重启后迟迟没有恢复，重置连接")
+			p.Close()
+		}
+	})
+}
+
+func offerMessage(offer webrtc.SessionDescription) *pb.SignalMessage {
+	return &pb.SignalMessage{Payload: &pb.SignalMessage_Offer{Offer: &pb.SdpOffer{
+		Sdp:             offer.SDP,
+		DtlsFingerprint: fingerprintFromSDP(offer.SDP),
+	}}}
+}
+
+// holdCandidates 让新收集到的 candidate 先攒着，releaseCandidates 时再发。
+//
+// 生成 offer/answer 时 pion 就开始收集地址，candidate 可能抢在描述之前发出。
+// 初次握手时无妨，对端会先缓存；ICE 重启时对端手里还是旧的远端描述，新一代
+// candidate 的 ufrag 对不上，会被直接丢弃。
+func (p *Peer) holdCandidates() {
+	p.mu.Lock()
+	p.holdCands = true
+	p.mu.Unlock()
+}
+
+func (p *Peer) releaseCandidates() {
+	p.mu.Lock()
+	held := p.heldCands
+	p.heldCands = nil
+	p.holdCands = false
+	p.mu.Unlock()
+	for _, c := range held {
+		p.sendCandidate(c)
+	}
+}
+
+func (p *Peer) sendCandidate(c *pb.IceCandidate) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := p.sendSignal(ctx, &pb.SignalMessage{
+		Payload: &pb.SignalMessage_Candidate{Candidate: c},
+	}); err != nil {
+		p.log.Debug("发送 candidate 失败", "err", err)
+	}
 }
 
 // sendExtraCandidates 把出口探测得到的各个公网地址作为 srflx candidate 发给对端。
@@ -312,7 +434,25 @@ func (p *Peer) handleOffer(ctx context.Context, offer *pb.SdpOffer) error {
 	pc := p.pc
 	polite := p.polite
 	making := p.makingOffer
+	// 已连通时收到同一证书的 offer，是对端在做 ICE 重启（见 tryUpgrade）：
+	// 连接还在，不能当成新握手把状态打回「连接中」
+	restart := pc != nil && p.pcConnected &&
+		strings.EqualFold(offer.GetDtlsFingerprint(), p.expectFingerprint)
+	// 证书变了，说明对端已经重建了 PeerConnection（重启、或它那边判定连接失效）。
+	// 本端的旧连接与它再也接不上，在旧连接上协商只会卡到超时，直接换新的
+	if pc != nil && p.expectFingerprint != "" &&
+		!strings.EqualFold(offer.GetDtlsFingerprint(), p.expectFingerprint) {
+		p.log.Info("对端已重建连接，丢弃本端的旧连接")
+		pending := p.pendingCandidates // 对端新连接的 candidate 可能先到，留着
+		p.closeLocked()
+		p.pendingCandidates = pending
+		pc = nil
+		making = false
+	}
 	p.mu.Unlock()
+
+	p.holdCandidates()
+	defer p.releaseCandidates()
 
 	// Perfect Negotiation：双方同时发 offer 时（glare），
 	// 不礼让方忽略对方的 offer，礼让方回滚自己的 local description。
@@ -344,6 +484,10 @@ func (p *Peer) handleOffer(ctx context.Context, offer *pb.SdpOffer) error {
 	p.expectFingerprint = offer.GetDtlsFingerprint()
 	p.mu.Unlock()
 
+	if restart {
+		// 设置远端描述时本端的 ICE 随之重启，从这里起就要盯住
+		p.watchRestart(pc)
+	}
 	if err := pc.SetRemoteDescription(webrtc.SessionDescription{
 		Type: webrtc.SDPTypeOffer,
 		SDP:  offer.GetSdp(),
@@ -360,8 +504,10 @@ func (p *Peer) handleOffer(ctx context.Context, offer *pb.SdpOffer) error {
 		return fmt.Errorf("设置本地描述: %w", err)
 	}
 
-	p.setState(StateConnecting)
-	p.armConnectTimeout()
+	if !restart {
+		p.setState(StateConnecting)
+		p.armConnectTimeout()
+	}
 
 	if err := p.sendSignal(ctx, &pb.SignalMessage{
 		Payload: &pb.SignalMessage_Answer{Answer: &pb.SdpAnswer{
@@ -409,8 +555,13 @@ func (p *Peer) handleCandidate(c *pb.IceCandidate) error {
 
 	p.mu.Lock()
 	pc := p.pc
-	// remote description 尚未设置时 AddICECandidate 会失败，先缓存
-	if pc == nil || pc.RemoteDescription() == nil {
+	// 先缓存、等设好远端描述再加的两种情况：
+	//   - 远端描述尚未设置，AddICECandidate 会失败；
+	//   - ICE 重启时对端新一代的 candidate 抢在它的 offer/answer 之前到达，
+	//     ufrag 与手里的远端描述对不上，pion 会直接丢弃。
+	// 缓存里若混进旧一代的 candidate，补加时由 pion 按 ufrag 丢弃。
+	if pc == nil || pc.RemoteDescription() == nil ||
+		!sdpHasUfrag(pc.RemoteDescription().SDP, candidateUfrag(init.Candidate)) {
 		p.pendingCandidates = append(p.pendingCandidates, init)
 		p.mu.Unlock()
 		return nil
@@ -418,6 +569,31 @@ func (p *Peer) handleCandidate(c *pb.IceCandidate) error {
 	p.mu.Unlock()
 
 	return pc.AddICECandidate(init)
+}
+
+// candidateUfrag 取出 candidate 里的 ufrag 扩展。pion 生成的 candidate 都带，
+// 出口探测得到的那几条不带（返回空）。
+func candidateUfrag(candidate string) string {
+	f := strings.Fields(candidate)
+	for i := 6; i+1 < len(f); i++ { // 前 6 项是 foundation、component、协议、优先级、地址、端口
+		if f[i] == "ufrag" {
+			return f[i+1]
+		}
+	}
+	return ""
+}
+
+// sdpHasUfrag 判断 SDP 里是否有这个 ufrag；ufrag 为空视为匹配。
+func sdpHasUfrag(sdp, ufrag string) bool {
+	if ufrag == "" {
+		return true
+	}
+	for _, line := range strings.Split(sdp, "\n") {
+		if strings.TrimSpace(line) == "a=ice-ufrag:"+ufrag {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *Peer) flushPendingCandidates() {
@@ -448,25 +624,21 @@ func (p *Peer) newPeerConnection() (*webrtc.PeerConnection, error) {
 			return // candidate 收集完毕
 		}
 		init := c.ToJSON()
-		var mid string
+		cand := &pb.IceCandidate{Candidate: init.Candidate}
 		if init.SDPMid != nil {
-			mid = *init.SDPMid
+			cand.SdpMid = *init.SDPMid
 		}
-		var idx uint32
 		if init.SDPMLineIndex != nil {
-			idx = uint32(*init.SDPMLineIndex)
+			cand.SdpMlineIndex = uint32(*init.SDPMLineIndex)
 		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		if err := p.sendSignal(ctx, &pb.SignalMessage{
-			Payload: &pb.SignalMessage_Candidate{Candidate: &pb.IceCandidate{
-				Candidate:     init.Candidate,
-				SdpMid:        mid,
-				SdpMlineIndex: idx,
-			}},
-		}); err != nil {
-			p.log.Debug("发送 candidate 失败", "err", err)
+		p.mu.Lock()
+		if p.holdCands {
+			p.heldCands = append(p.heldCands, cand)
+			p.mu.Unlock()
+			return
 		}
+		p.mu.Unlock()
+		p.sendCandidate(cand)
 	})
 
 	pc.OnDataChannel(func(dc *webrtc.DataChannel) {
@@ -474,6 +646,7 @@ func (p *Peer) newPeerConnection() (*webrtc.PeerConnection, error) {
 			p.bindControl(dc)
 			return
 		}
+		p.trackStream(dc)
 		// 数据流必须在回调里**立即**挂上接收器。
 		//
 		// pion 的 OnMessage 只是存一个 handler；在它被设置之前到达的消息
@@ -488,12 +661,24 @@ func (p *Peer) newPeerConnection() (*webrtc.PeerConnection, error) {
 
 	pc.OnConnectionStateChange(func(s webrtc.PeerConnectionState) {
 		p.log.Debug("PeerConnection 状态", "state", s)
+		p.mu.Lock()
+		current := p.pc == pc
+		p.mu.Unlock()
+		if !current {
+			// 已被替换或关闭的连接：它迟到的「已关闭」不能把新连接的状态改成离线
+			return
+		}
 		switch s {
 		case webrtc.PeerConnectionStateConnected:
 			p.onConnected(pc)
-		case webrtc.PeerConnectionStateFailed,
-			webrtc.PeerConnectionStateClosed,
-			webrtc.PeerConnectionStateDisconnected:
+		case webrtc.PeerConnectionStateFailed, webrtc.PeerConnectionStateClosed:
+			// 失败与关闭都是终态（本端主动关闭的在上面已被过滤），必须清理掉。
+			// 留着的话 Connect 以为连接还在、不会重建；控制通道看上去仍是打开的，
+			// 发出的消息石沉大海
+			p.log.Warn("连接已失效，关闭以便重连", "state", s)
+			p.Close()
+		case webrtc.PeerConnectionStateDisconnected:
+			// 断开可能是暂时的（网络抖动），pion 会继续检测，恢复不了时转为失败
 			p.setState(StateOffline)
 		}
 	})
@@ -540,10 +725,7 @@ func (p *Peer) maybeReady() {
 	ready := p.pcConnected && p.control != nil &&
 		p.control.ReadyState() == webrtc.DataChannelStateOpen
 	ownView := p.pendingKind
-	kind := ownView
-	if p.remoteRelayed {
-		kind = StateRelay
-	}
+	kind := p.combinedKindLocked()
 	p.mu.Unlock()
 
 	if ready {
@@ -553,7 +735,7 @@ func (p *Peer) maybeReady() {
 			p.connectTimer = nil
 		}
 		p.mu.Unlock()
-		p.setState(kind)
+		p.settle(kind)
 		// 只有本端能确定自己发出的数据走没走 TURN，告诉对端，让两边显示一致
 		_ = p.Send(&pb.PeerMessage{Payload: &pb.PeerMessage_Link{
 			Link: &pb.LinkInfo{Relayed: ownView == StateRelay},
@@ -561,15 +743,130 @@ func (p *Peer) maybeReady() {
 	}
 }
 
-// handleLinkInfo 记下对端的视角；对端经中转时，本端也改报中转。
+// handleLinkInfo 记下对端的视角，与本端的合起来重新决定显示直连还是中转。
+// ICE 重启换成直连后，也是靠对端发来的这条消息从「中转」改回「直连」。
 func (p *Peer) handleLinkInfo(l *pb.LinkInfo) {
 	p.mu.Lock()
 	p.remoteRelayed = l.GetRelayed()
-	upgrade := l.GetRelayed() && p.state == StateDirect
+	settled := p.state == StateDirect || p.state == StateRelay
+	kind := p.combinedKindLocked()
 	p.mu.Unlock()
-	if upgrade {
-		p.setState(StateRelay)
+	if settled {
+		p.settle(kind)
 	}
+}
+
+// combinedKindLocked：两端任一端经中转，数据就经过服务器，算中转。
+func (p *Peer) combinedKindLocked() ConnState {
+	if p.remoteRelayed {
+		return StateRelay
+	}
+	return p.pendingKind
+}
+
+// settle 报告连接就绪后的状态。走中转时安排稍后尝试换成直连，走直连时取消。
+func (p *Peer) settle(kind ConnState) {
+	p.setState(kind)
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if kind == StateDirect {
+		p.upgradeAttempt = 0
+		p.stopUpgradeLocked()
+		return
+	}
+	p.scheduleUpgradeLocked(upgradeDelays[min(p.upgradeAttempt, len(upgradeDelays)-1)])
+}
+
+// scheduleUpgradeLocked 安排一次换直连的尝试。只由不礼让的一方（也就是发起连接的
+// 一方）来做，两端不会同时发起 ICE 重启。
+func (p *Peer) scheduleUpgradeLocked(delay time.Duration) {
+	if p.polite || p.forceRelay || p.upgradeTimer != nil {
+		return
+	}
+	p.upgradeTimer = time.AfterFunc(delay, p.tryUpgrade)
+}
+
+func (p *Peer) stopUpgradeLocked() {
+	if p.upgradeTimer != nil {
+		p.upgradeTimer.Stop()
+		p.upgradeTimer = nil
+	}
+}
+
+// tryUpgrade 在走中转时用 ICE 重启再打一次洞。
+//
+// pion 一旦选定 candidate 对就不会再换。走中转常常只是输了一场赛跑：对端刚启动，
+// 出口还没探测完，中转的等待时限就到了；之后直连其实打得通，却再没有机会。
+// ICE 重启让两端重新收集地址、同时再打一次洞。仍打不通就照旧落回中转，
+// 下一次隔得更久再试（upgradeDelays）。
+func (p *Peer) tryUpgrade() {
+	p.mu.Lock()
+	p.upgradeTimer = nil
+	relay := p.pc != nil && p.state == StateRelay
+	p.mu.Unlock()
+	if !relay {
+		return
+	}
+	if p.busy() {
+		// 有数据在传，重启会让它停顿几秒，等空闲了再试
+		p.mu.Lock()
+		p.scheduleUpgradeLocked(upgradeIdle)
+		p.mu.Unlock()
+		return
+	}
+
+	p.mu.Lock()
+	p.upgradeAttempt++
+	attempt := p.upgradeAttempt
+	p.mu.Unlock()
+	p.log.Info("当前经中转，尝试换成直连", "attempt", attempt)
+
+	// 先重新探测出口，新发现的线路地址随重启一起发给对端
+	if p.refreshEgress != nil {
+		p.refreshEgress()
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := p.restartICE(ctx); err != nil {
+		p.log.Debug("ICE 重启没有发起", "err", err)
+		p.mu.Lock()
+		p.scheduleUpgradeLocked(upgradeDelays[min(p.upgradeAttempt, len(upgradeDelays)-1)])
+		p.mu.Unlock()
+	}
+	// 发起成功时，重启完成后 onConnected → maybeReady → settle 会报告新状态；
+	// 仍是中转的话，settle 会按下一档间隔再安排
+}
+
+// busy 判断连接上是否有数据在传：有文件流未关闭，或者刚有过控制消息。
+func (p *Peer) busy() bool {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if time.Since(p.lastActivity) < upgradeIdle {
+		return true
+	}
+	live := p.streams[:0]
+	for _, dc := range p.streams {
+		if dc.ReadyState() != webrtc.DataChannelStateClosed {
+			live = append(live, dc)
+		}
+	}
+	clear(p.streams[len(live):])
+	p.streams = live
+	return len(live) > 0
+}
+
+func (p *Peer) trackStream(dc *webrtc.DataChannel) {
+	p.mu.Lock()
+	p.streams = append(p.streams, dc)
+	p.lastActivity = time.Now()
+	p.mu.Unlock()
+}
+
+func (p *Peer) touch() {
+	p.mu.Lock()
+	p.lastActivity = time.Now()
+	p.mu.Unlock()
 }
 
 // detectConnectionKind 判断当前选中的 candidate 对是直连还是经 TURN 中转。
@@ -637,6 +934,7 @@ func (p *Peer) bindControl(dc *webrtc.DataChannel) {
 			p.handleLinkInfo(l) // 连接层自己的消息，不交给同步引擎
 			return
 		}
+		p.touch()
 		if p.onMessage != nil {
 			p.onMessage(&m)
 		}
@@ -649,14 +947,20 @@ var ErrNotConnected = errors.New("与对端的连接尚未建立")
 func (p *Peer) Send(m *pb.PeerMessage) error {
 	p.mu.Lock()
 	dc := p.control
+	// 连接断开（或已失效）时，控制通道可能还显示「打开」，往里写只会石沉大海。
+	// 报告未连接，让上层记下来等连接恢复后补发
+	up := p.state == StateDirect || p.state == StateRelay
 	p.mu.Unlock()
 
-	if dc == nil || dc.ReadyState() != webrtc.DataChannelStateOpen {
+	if !up || dc == nil || dc.ReadyState() != webrtc.DataChannelStateOpen {
 		return ErrNotConnected
 	}
 	data, err := proto.Marshal(m)
 	if err != nil {
 		return err
+	}
+	if m.GetLink() == nil {
+		p.touch()
 	}
 	return dc.Send(data)
 }
@@ -673,7 +977,11 @@ func (p *Peer) OpenStream(label string) (*webrtc.DataChannel, error) {
 		return nil, ErrNotConnected
 	}
 	ordered := true
-	return pc.CreateDataChannel(label, &webrtc.DataChannelInit{Ordered: &ordered})
+	dc, err := pc.CreateDataChannel(label, &webrtc.DataChannelInit{Ordered: &ordered})
+	if err == nil {
+		p.trackStream(dc)
+	}
+	return dc, err
 }
 
 func (p *Peer) Close() {
@@ -702,6 +1010,11 @@ func (p *Peer) closeLocked() {
 		p.connectTimer.Stop()
 		p.connectTimer = nil
 	}
+	p.holdCands = false
+	p.heldCands = nil
+	p.streams = nil
+	// upgradeAttempt 保留：连接反复重建时，换直连的尝试不必每次都从最密的间隔开始
+	p.stopUpgradeLocked()
 }
 
 // fingerprintFromSDP 从 SDP 中提取 DTLS 证书指纹（a=fingerprint 行）。

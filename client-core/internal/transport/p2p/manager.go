@@ -261,8 +261,27 @@ func (m *Manager) runProbe(done chan struct{}) {
 	}
 }
 
+// refreshEgress 立即重新探测一轮出口并等它结束（最多 5 秒）。
+// 尝试从中转换成直连之前调用：公司网络里每条线路分到哪些目标会随时间变化，
+// 上一轮没探测到的线路这一轮可能就有了。
+func (m *Manager) refreshEgress() {
+	m.triggerProbe()
+	m.egressMu.Lock()
+	wait := m.probing
+	m.egressMu.Unlock()
+	if wait != nil {
+		select {
+		case <-wait:
+		case <-time.After(5 * time.Second):
+		}
+	}
+}
+
 // advertisedCandidates 返回要额外发给对端的出口地址。
-// 正在探测时最多等 3 秒，免得刚连上信令就用一份空的结果去握手。
+//
+// 正在探测时最多等 4 秒，免得刚连上信令就用一份空的结果去握手。这是在发出 offer/answer
+// 之后的后台里等，不耽误握手；但要短于中转的等待时限（relayAcceptanceWait），
+// 出口地址到了对端还来得及打洞。
 func (m *Manager) advertisedCandidates() []string {
 	if m.mux == nil {
 		return nil
@@ -273,7 +292,7 @@ func (m *Manager) advertisedCandidates() []string {
 	if wait != nil {
 		select {
 		case <-wait:
-		case <-time.After(3 * time.Second):
+		case <-time.After(4 * time.Second):
 		}
 	}
 	return srflxCandidates(m.Egress())
@@ -404,6 +423,7 @@ func (m *Manager) peer(deviceID string) (*Peer, error) {
 		ForceRelay:      forceRelay,
 		UDPMux:          mux,
 		ExtraCandidates: m.advertisedCandidates,
+		RefreshEgress:   m.refreshEgress,
 		SendSignal: func(ctx context.Context, msg *pb.SignalMessage) error {
 			return m.sendSignal(ctx, deviceID, msg)
 		},

@@ -192,6 +192,9 @@ message ClipOffer {
   // HTML 的纯文本形式（此时 text_content 是 HTML 标记）。旧版本不发这个字段，
   // 收到空值时由接收方从 HTML 中提取。
   string plain_text = 8;
+  // 补发：复制时对端连不上，连接恢复后才发过去的旧内容。
+  // 只进复制记录，不写进对端的剪贴板，免得覆盖对方此刻正在用的内容。
+  bool backlog = 9;
 }
 
 // 与 daemon.proto 的 FetchRequest（UI→daemon）区分：这条是 daemon→peer

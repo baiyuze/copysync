@@ -1707,7 +1707,10 @@ type ClipOffer struct {
 	WillPush      bool                   `protobuf:"varint,7,opt,name=will_push,json=willPush,proto3" json:"will_push,omitempty"` // true=发送方会主动推，false=需 fetch
 	// HTML 的纯文本形式（此时 text_content 是 HTML 标记）。旧版本不发这个字段，
 	// 收到空值时由接收方从 HTML 中提取。
-	PlainText     string `protobuf:"bytes,8,opt,name=plain_text,json=plainText,proto3" json:"plain_text,omitempty"`
+	PlainText string `protobuf:"bytes,8,opt,name=plain_text,json=plainText,proto3" json:"plain_text,omitempty"`
+	// 补发：复制时对端连不上，连接恢复后才发过去的旧内容。
+	// 只进复制记录，不写进对端的剪贴板，免得覆盖对方此刻正在用的内容。
+	Backlog       bool `protobuf:"varint,9,opt,name=backlog,proto3" json:"backlog,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1796,6 +1799,13 @@ func (x *ClipOffer) GetPlainText() string {
 		return x.PlainText
 	}
 	return ""
+}
+
+func (x *ClipOffer) GetBacklog() bool {
+	if x != nil {
+		return x.Backlog
+	}
+	return false
 }
 
 // 与 daemon.proto 的 FetchRequest（UI→daemon）区分：这条是 daemon→peer
@@ -2162,7 +2172,7 @@ const file_copysync_v1_wire_proto_rawDesc = "" +
 	"\x04link\x18\x06 \x01(\v2\x15.copysync.v1.LinkInfoH\x00R\x04linkB\t\n" +
 	"\apayload\"$\n" +
 	"\bLinkInfo\x12\x18\n" +
-	"\arelayed\x18\x01 \x01(\bR\arelayed\"\xa2\x02\n" +
+	"\arelayed\x18\x01 \x01(\bR\arelayed\"\xbc\x02\n" +
 	"\tClipOffer\x12\x17\n" +
 	"\aclip_id\x18\x01 \x01(\tR\x06clipId\x12)\n" +
 	"\x04kind\x18\x02 \x01(\x0e2\x15.copysync.v1.ClipKindR\x04kind\x12+\n" +
@@ -2173,7 +2183,8 @@ const file_copysync_v1_wire_proto_rawDesc = "" +
 	"\x0fcreated_at_unix\x18\x06 \x01(\x03R\rcreatedAtUnix\x12\x1b\n" +
 	"\twill_push\x18\a \x01(\bR\bwillPush\x12\x1d\n" +
 	"\n" +
-	"plain_text\x18\b \x01(\tR\tplainText\"$\n" +
+	"plain_text\x18\b \x01(\tR\tplainText\x12\x18\n" +
+	"\abacklog\x18\t \x01(\bR\abacklog\"$\n" +
 	"\tPeerFetch\x12\x17\n" +
 	"\aclip_id\x18\x01 \x01(\tR\x06clipId\">\n" +
 	"\vFetchReject\x12\x17\n" +

@@ -980,3 +980,23 @@ tbody th {
   stroke-width: 1.5;
   stroke-dasharray: 6 6;
 }
+
+/* 多出口网络：实测出口与实验室结果 */
+.measure {
+  margin-top: 1rem;
+}
+
+.measure td:first-child {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.measure td:last-child,
+.lab td:last-child {
+  color: var(--dim);
+}
+
+.lab td:last-child {
+  white-space: nowrap;
+}

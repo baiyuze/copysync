@@ -177,9 +177,10 @@ func runPeer(args []string) error {
 	legacy := fs.Bool("legacy", false, "用旧版本的候选收集方式（对照实验）")
 	timeout := fs.Duration("timeout", 40*time.Second, "等待连接的最长时间")
 	linger := fs.Duration("linger", 4*time.Second, "报完结果后保持连接的时间")
+	settle := fs.Duration("settle", 0, "连上中转后再等多久，看能否换成直连")
 	_ = fs.Parse(args)
 
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout+10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), *timeout+*settle+10*time.Second)
 	defer cancel()
 	start := time.Now()
 
@@ -230,7 +231,7 @@ func runPeer(args []string) error {
 		return err
 	}
 
-	final := waitFinal(states, m, *peerID, *timeout)
+	final := waitFinal(states, m, *peerID, *timeout, *settle)
 	var egress []string
 	for _, e := range m.Egress().Egresses {
 		egress = append(egress, e.Addr.String())
@@ -245,15 +246,21 @@ func runPeer(args []string) error {
 }
 
 // waitFinal 等连接建立，再多等一会儿让两端交换 LinkInfo，取稳定后的状态。
-func waitFinal(states <-chan p2p.ConnState, m *p2p.Manager, peerID string, timeout time.Duration) p2p.ConnState {
+// settle 大于零时，若稳定后是中转，再最多等这么久，看能否换成直连。
+func waitFinal(states <-chan p2p.ConnState, m *p2p.Manager, peerID string, timeout, settle time.Duration) p2p.ConnState {
 	deadline := time.After(timeout)
 	for {
 		select {
 		case s := <-states:
-			if s == p2p.StateDirect || s == p2p.StateRelay {
-				time.Sleep(1500 * time.Millisecond)
-				return m.State(peerID)
+			if s != p2p.StateDirect && s != p2p.StateRelay {
+				continue
 			}
+			time.Sleep(1500 * time.Millisecond)
+			until := time.Now().Add(settle)
+			for m.State(peerID) == p2p.StateRelay && time.Now().Before(until) {
+				time.Sleep(100 * time.Millisecond)
+			}
+			return m.State(peerID)
 		case <-deadline:
 			return m.State(peerID)
 		}

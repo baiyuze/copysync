@@ -4,6 +4,7 @@
 #   ./tools/natlab/docker.sh
 #
 # 国内网络拉取 Alpine 软件包慢的话：APK_MIRROR=mirrors.aliyun.com ./tools/natlab/docker.sh
+# 只跑部分场景：NATLAB_ONLY=晚到 ./tools/natlab/docker.sh
 
 set -euo pipefail
 cd "$(dirname "$0")/../.."
@@ -18,5 +19,5 @@ echo "▶ 编译 natlab（linux/$ARCH）"
 echo "▶ 准备实验室镜像"
 docker build -q -t copysync-natlab --build-arg APK_MIRROR="${APK_MIRROR:-}" tools/natlab >/dev/null
 
-docker run --rm --privileged -v "$OUT:/lab:ro" -v "$PWD/tools/natlab:/scripts:ro" \
+docker run --rm --privileged -e NATLAB_ONLY -v "$OUT:/lab:ro" -v "$PWD/tools/natlab:/scripts:ro" \
     copysync-natlab bash /scripts/run.sh /lab/natlab

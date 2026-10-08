@@ -2020,6 +2020,7 @@ class ClipOffer extends $pb.GeneratedMessage {
     $fixnum.Int64? createdAtUnix,
     $core.bool? willPush,
     $core.String? plainText,
+    $core.bool? backlog,
   }) {
     final result = ClipOffer._();
     if (clipId != null) result.clipId = clipId;
@@ -2030,6 +2031,7 @@ class ClipOffer extends $pb.GeneratedMessage {
     if (createdAtUnix != null) result.createdAtUnix = createdAtUnix;
     if (willPush != null) result.willPush = willPush;
     if (plainText != null) result.plainText = plainText;
+    if (backlog != null) result.backlog = backlog;
     return result;
   }
 
@@ -2056,6 +2058,7 @@ class ClipOffer extends $pb.GeneratedMessage {
     ..aInt64(6, _omitFieldNames ? '' : 'createdAtUnix')
     ..aOB(7, _omitFieldNames ? '' : 'willPush')
     ..aOS(8, _omitFieldNames ? '' : 'plainText')
+    ..aOB(9, _omitFieldNames ? '' : 'backlog')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2145,6 +2148,17 @@ class ClipOffer extends $pb.GeneratedMessage {
   $core.bool hasPlainText() => $_has(7);
   @$pb.TagNumber(8)
   void clearPlainText() => $_clearField(8);
+
+  /// 补发：复制时对端连不上，连接恢复后才发过去的旧内容。
+  /// 只进复制记录，不写进对端的剪贴板，免得覆盖对方此刻正在用的内容。
+  @$pb.TagNumber(9)
+  $core.bool get backlog => $_getBF(8);
+  @$pb.TagNumber(9)
+  set backlog($core.bool value) => $_setBool(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasBacklog() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearBacklog() => $_clearField(9);
 }
 
 /// 与 daemon.proto 的 FetchRequest（UI→daemon）区分：这条是 daemon→peer

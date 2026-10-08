@@ -204,6 +204,11 @@ func run(dataDir string) error {
 				engine.HandlePeerStream(deviceID, label, stream)
 			}
 		},
+		OnPeerReady: func(deviceID string) {
+			if engine != nil {
+				go engine.PeerReady(ctx, deviceID)
+			}
+		},
 	})
 	if err != nil {
 		return err
@@ -218,17 +223,14 @@ func run(dataDir string) error {
 		DeviceName: func() string { return loadCfg().DeviceName },
 		LoadConfig: loadCfg,
 		Send:       peerMgr.P2P().Send,
-		Broadcast:  peerMgr.P2P().Broadcast,
 		OpenStream: peerMgr.P2P().OpenStream,
-		OnlinePeers: func() []string {
+		PairedPeers: func() []string {
 			_, list := peerMgr.Devices()
-			var online []string
+			ids := make([]string, 0, len(list))
 			for _, d := range list {
-				if d.GetOnline() {
-					online = append(online, d.GetId())
-				}
+				ids = append(ids, d.GetId())
 			}
-			return online
+			return ids
 		},
 		OnRecord: func(r *pb.ClipRecord) {
 			hub.Publish(rpc.EventClipAdded(r))

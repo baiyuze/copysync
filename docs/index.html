@@ -40,8 +40,8 @@
         "description": "在两台 Mac 之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台 Mac 可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）",
-        "softwareVersion": "1.1.0",
-        "datePublished": "2026-10-08",
+        "softwareVersion": "1.1.1",
+        "datePublished": "2026-10-09",
         "inLanguage": "zh-CN",
         "license": "https://opensource.org/licenses/MIT",
         "isAccessibleForFree": true,
@@ -139,7 +139,7 @@
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
             下载 macOS 版
           </a>
-          <span class="note">版本 1.1.0，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
+          <span class="note">版本 1.1.1，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
         </div>
 
         <div class="demo" role="img" aria-label="演示：在 MacBook Pro 上选中文件并按下 Command C，文件经直连传到 MacBook Air，在那里按下 Command V 粘贴出来">
@@ -274,7 +274,59 @@
       </div>
     </section>
 
-    <section class="section" aria-labelledby="security-title">
+    <section class="section" id="multi-uplink" aria-labelledby="multi-title">
+      <div class="wrap">
+        <h2 id="multi-title">公司网络也能直连</h2>
+        <p class="intro">公司双线、运营商地址池这类网络有多个出口，按目标地址选走哪一个。CopySync 1.0 只知道其中一个出口的地址，在这类网络里只能经服务器中转。1.1 会探测每个出口，把地址都告诉对端。</p>
+        <div class="two-col">
+          <div class="prose">
+            <h3>做了什么</h3>
+            <ul>
+              <li><strong>共用一个端口。</strong>所有连接从同一个本地 UDP 端口收发。之前每问一台 STUN 服务器就开一个新端口，问到的地址互相用不上。</li>
+              <li><strong>探测每个出口。</strong>在这个端口上同时询问 7 台 IP 分散的服务器，网络有几个出口就拿到几个地址。被 DNS 污染的地址先过滤掉。</li>
+              <li><strong>全部告诉对端。</strong>每个出口的地址都发给对端，由它逐个尝试，与实际出口吻合的那一个能打通。</li>
+              <li><strong>记住见过的出口。</strong>某次漏掉的出口如果不改端口，就用「出口 IP + 本地端口」推算补上。</li>
+              <li><strong>先中转，再换直连。</strong>对端刚启动时，出口地址可能晚到一步，第一次握手落到了中转。之后会在空闲时再打一次洞，打通就换成直连。</li>
+            </ul>
+          </div>
+          <div>
+            <h3>一个真实的公司网络</h3>
+            <table class="measure">
+              <thead><tr><th scope="col">出口</th><th scope="col">公网端口</th></tr></thead>
+              <tbody>
+                <tr><td>出口 A</td><td>不变</td></tr>
+                <tr><td>出口 B</td><td>不变</td></tr>
+                <tr><td>出口 C</td><td>改写，但对不同目标相同</td></tr>
+                <tr><td>出口 D</td><td>改写</td></tr>
+              </tbody>
+            </table>
+            <p class="aside-p">改造前，这台 Mac 与家里的 Mac 只能中转，速度被服务器带宽限制在 0.6 MB/s。改造后直连，连上服务器后约 3 秒建立。</p>
+          </div>
+        </div>
+
+        <h3 class="subhead">用真实的网络拓扑验证</h3>
+        <p class="aside-p">NAT 打洞实验室用 Linux 网络命名空间与 iptables 搭出下面 9 种拓扑，用 CopySync 真实的连接代码各跑一遍。每次提交代码都会自动运行。</p>
+        <div class="table-scroll">
+          <table class="lab">
+            <thead><tr><th scope="col">场景</th><th scope="col">结果</th></tr></thead>
+            <tbody>
+              <tr><td>单出口 ↔ 家用路由器</td><td>直连</td></tr>
+              <tr><td>两个出口，旧版本（对照）</td><td>中转</td></tr>
+              <tr><td>两个出口 ↔ 家用路由器</td><td>直连</td></tr>
+              <tr><td>四个出口 ↔ 家用路由器</td><td>直连</td></tr>
+              <tr><td>两个出口，第二条没探测到，没有历史</td><td>中转</td></tr>
+              <tr><td>两个出口，第二条没探测到，有历史</td><td>直连</td></tr>
+              <tr><td>两个出口 ↔ 两个出口</td><td>直连</td></tr>
+              <tr><td>两个出口 ↔ 端口随机分配的 NAT</td><td>中转</td></tr>
+              <tr><td>一开始打不通，之后网络恢复</td><td>先中转，随后直连</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="aside-p">测量过程、设计取舍与踩过的坑见<a href="https://github.com/baiyuze/copysync/blob/main/design/nat-traversal.md">技术方案</a>。</p>
+      </div>
+    </section>
+
+    <section class="section section-band" aria-labelledby="security-title">
       <div class="wrap two-col">
         <div class="prose">
           <h2 id="security-title">服务器看不到你复制了什么</h2>
@@ -294,7 +346,7 @@
       </div>
     </section>
 
-    <section class="section section-band" aria-labelledby="fallback-title">
+    <section class="section" aria-labelledby="fallback-title">
       <div class="wrap">
         <h2 id="fallback-title">出问题的时候会发生什么</h2>
         <p class="intro">每个人的网络环境都不一样。下面这些情况都考虑过，也都有对应的测试。</p>
@@ -305,6 +357,10 @@
           <dd>国内访问公共 STUN 时通时断。服务器自带 STUN，客户端优先用它。</dd>
           <dt>公司网络有多个出口</dt>
           <dd>双线、运营商地址池这类网络按目标地址选出口，只探测一次只会知道其中一个出口的地址。CopySync 在同一个端口上向多台服务器探测，把每个出口的地址都发给对端，由它逐个尝试。</dd>
+          <dt>先连上了中转</dt>
+          <dd>中转握手快，有时会抢在直连之前。连上之后，发起连接的一方会在空闲时再打一次洞，打通就换成直连；正在传文件时不打扰。</dd>
+          <dt>对方睡眠、断网或重启</dt>
+          <dd>连接悄悄断了也能发现，立即关闭重连。这期间复制的内容会记下来，连上后补发到对方的复制记录里，但不会覆盖对方此刻剪贴板里的内容。</dd>
           <dt>服务器断开</dt>
           <dd>自动重连，间隔从 1 秒开始翻倍、最长 30 秒，并带随机抖动，避免一群设备同时重连。界面实时显示连接状态。</dd>
           <dt>文件太大</dt>
@@ -321,7 +377,7 @@
       </div>
     </section>
 
-    <section class="section" id="install" aria-labelledby="install-title">
+    <section class="section section-band" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">安装</h2>
         <p class="intro">每台 Mac 装一个 App，再准备一台两边都能访问到的服务器。两台 Mac 在同一个局域网的话，服务器直接跑在其中一台上就行。</p>
@@ -363,13 +419,13 @@ sudo ./install.sh 你的公网IP</code></pre>
       </div>
     </section>
 
-    <section class="section section-band" aria-labelledby="specs-title">
+    <section class="section" aria-labelledby="specs-title">
       <div class="wrap">
         <h2 id="specs-title">技术规格</h2>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">版本</th><td>1.1.0，<time datetime="2026-10-08">2026 年 10 月 8 日</time>发布</td></tr>
+              <tr><th scope="row">版本</th><td>1.1.1，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布</td></tr>
               <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包 45 MB</td></tr>
               <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存</td></tr>
               <tr><th scope="row">同步的内容</th><td>纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭</td></tr>
@@ -387,7 +443,7 @@ sudo ./install.sh 你的公网IP</code></pre>
       </div>
     </section>
 
-    <section class="section" id="faq" aria-labelledby="faq-title">
+    <section class="section section-band" id="faq" aria-labelledby="faq-title">
       <div class="wrap">
         <h2 id="faq-title">常见问题</h2>
         <div class="faq">
@@ -444,7 +500,7 @@ sudo ./install.sh 你的公网IP</code></pre>
       </div>
     </section>
 
-    <section class="closing section-band" aria-labelledby="closing-title">
+    <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
         <h2 id="closing-title">两台 Mac，一个剪贴板。</h2>
         <div class="cta">

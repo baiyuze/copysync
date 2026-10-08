@@ -63,9 +63,8 @@ type Engine struct {
 
 	// 传输层
 	send        func(deviceID string, msg *pb.PeerMessage) error
-	broadcast   func(msg *pb.PeerMessage) int
 	openStream  func(deviceID, label string) (*webrtc.DataChannel, error)
-	onlinePeers func() []string
+	pairedPeers func() []string
 
 	// 事件回传给界面
 	onRecord   func(*pb.ClipRecord)
@@ -74,6 +73,11 @@ type Engine struct {
 	mu sync.Mutex
 	// 正在接收中的流：stream_id -> 接收器
 	incoming map[string]*receiver
+	// 对端补发来的内容，收完后不写进剪贴板：clip_id 集合，见 PeerReady
+	quiet map[string]bool
+
+	// 没送达对端、等连接恢复后补发的内容，见 backlog.go
+	backlog backlog
 
 	// 每次传输上一次上报进度的时间，用于节流，见 emitProgress
 	progressMu   sync.Mutex
@@ -81,17 +85,17 @@ type Engine struct {
 }
 
 type Options struct {
-	Logger      *slog.Logger
-	Store       *store.Store
-	Cache       *cache.Cache
-	Watcher     *clipboard.Watcher
-	DeviceID    string
-	DeviceName  func() string
-	LoadConfig  func() config.Config
-	Send        func(deviceID string, msg *pb.PeerMessage) error
-	Broadcast   func(msg *pb.PeerMessage) int
-	OpenStream  func(deviceID, label string) (*webrtc.DataChannel, error)
-	OnlinePeers func() []string
+	Logger     *slog.Logger
+	Store      *store.Store
+	Cache      *cache.Cache
+	Watcher    *clipboard.Watcher
+	DeviceID   string
+	DeviceName func() string
+	LoadConfig func() config.Config
+	Send       func(deviceID string, msg *pb.PeerMessage) error
+	OpenStream func(deviceID, label string) (*webrtc.DataChannel, error)
+	// PairedPeers 返回所有已配对设备，不论在线与否：连不上的记进待补发
+	PairedPeers func() []string
 	OnRecord    func(*pb.ClipRecord)
 	OnProgress  func(*pb.TransferProgress)
 }
@@ -110,12 +114,12 @@ func New(opts Options) *Engine {
 		deviceName:   opts.DeviceName,
 		loadConfig:   opts.LoadConfig,
 		send:         opts.Send,
-		broadcast:    opts.Broadcast,
 		openStream:   opts.OpenStream,
-		onlinePeers:  opts.OnlinePeers,
+		pairedPeers:  opts.PairedPeers,
 		onRecord:     opts.OnRecord,
 		onProgress:   opts.OnProgress,
 		incoming:     make(map[string]*receiver),
+		quiet:        make(map[string]bool),
 		lastProgress: make(map[string]time.Time),
 	}
 }
@@ -155,25 +159,7 @@ func (e *Engine) HandleClipboardChange(ctx context.Context, snap clipboard.Snaps
 	}
 
 	e.emitRecord(clip)
-
-	// 没有在线对端时只留本地记录，不必尝试发送
-	if len(e.onlinePeers()) == 0 {
-		return
-	}
-
-	offer := e.buildOffer(clip, cfg)
-	sent := e.broadcast(&pb.PeerMessage{
-		Payload: &pb.PeerMessage_Offer{Offer: offer},
-	})
-	e.log.Info("已广播剪贴板内容",
-		"clip", clip.ID, "kind", clip.Kind, "size", clip.TotalSize, "对端数", sent)
-
-	// 小内容随即推送，对端无需等待即可粘贴
-	if offer.GetWillPush() && clip.Kind == store.KindFile || offer.GetWillPush() && clip.Kind == store.KindImage {
-		for _, peer := range e.onlinePeers() {
-			go e.pushTo(context.WithoutCancel(ctx), peer, clip)
-		}
-	}
+	e.offerToPeers(ctx, clip, cfg)
 }
 
 // recordOutgoing 把本机复制的内容落库。
@@ -355,12 +341,18 @@ func (e *Engine) handleOffer(ctx context.Context, from string, offer *pb.ClipOff
 		e.log.Warn("保存对端记录失败", "err", err)
 		return
 	}
+	backlog := offer.GetBacklog()
+	if backlog && clip.Status == store.StatusFetching {
+		e.mu.Lock()
+		e.quiet[clip.ID] = true
+		e.mu.Unlock()
+	}
 	e.emitRecord(clip)
 	e.log.Info("收到对端剪贴板内容",
-		"clip", clip.ID, "kind", clip.Kind, "status", clip.Status, "from", from)
+		"clip", clip.ID, "kind", clip.Kind, "status", clip.Status, "from", from, "补发", backlog)
 
-	// 文本类内容可以马上写进剪贴板
-	if clip.Status == store.StatusReady && cfg.AutoApplyToClipboard {
+	// 文本类内容可以马上写进剪贴板；补发来的是旧内容，不覆盖本机剪贴板
+	if clip.Status == store.StatusReady && cfg.AutoApplyToClipboard && !backlog {
 		if err := e.applyToClipboard(ctx, clip); err != nil {
 			e.log.Warn("写入剪贴板失败", "err", err)
 		}
@@ -459,7 +451,9 @@ func (e *Engine) pushTo(ctx context.Context, peer string, clip store.Clip) error
 	}
 
 	// 等发送缓冲排空再关闭，否则尾部数据会被丢弃
-	w.WaitDrained(ctx, 60*time.Second)
+	if drainErr := w.WaitDrained(ctx, 60*time.Second); packErr == nil {
+		packErr = drainErr
+	}
 	dc.Close()
 	e.forgetProgress(clip.ID)
 
@@ -626,6 +620,8 @@ func (e *Engine) bindStream(r *receiver, stream *p2p.Stream) {
 func (e *Engine) finishReceive(r *receiver, cacheRel string, tops []string) {
 	e.mu.Lock()
 	delete(e.incoming, r.streamID)
+	quiet := e.quiet[r.clipID]
+	delete(e.quiet, r.clipID)
 	e.mu.Unlock()
 	e.forgetProgress(r.clipID)
 
@@ -648,7 +644,7 @@ func (e *Engine) finishReceive(r *receiver, cacheRel string, tops []string) {
 		"clip", r.clipID, "from", r.from, "收到字节", r.received,
 		"条目", len(tops), "耗时", time.Since(r.start).Round(time.Millisecond))
 
-	if e.loadConfig().AutoApplyToClipboard {
+	if e.loadConfig().AutoApplyToClipboard && !quiet {
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
 		if err := e.applyToClipboard(ctx, clip); err != nil {

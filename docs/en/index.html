@@ -40,8 +40,8 @@
         "description": "Open-source tool that syncs the clipboard and files between Macs. Copy text, images, files or folders on one Mac and paste them on another. Devices connect directly over WebRTC with DTLS encryption, falling back to a TURN relay on a server the user hosts.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 or later (Intel and Apple silicon)",
-        "softwareVersion": "1.1.0",
-        "datePublished": "2026-10-08",
+        "softwareVersion": "1.1.1",
+        "datePublished": "2026-10-09",
         "inLanguage": "en",
         "license": "https://opensource.org/licenses/MIT",
         "isAccessibleForFree": true,
@@ -139,7 +139,7 @@
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
             Download for macOS
           </a>
-          <span class="note">Version 1.1.0, free and open source. macOS 13 or later, Intel and Apple silicon.</span>
+          <span class="note">Version 1.1.1, free and open source. macOS 13 or later, Intel and Apple silicon.</span>
         </div>
 
         <div class="demo" role="img" aria-label="Demo: a file is selected on a MacBook Pro and copied with Command C, travels over a direct connection to a MacBook Air, and is pasted there with Command V">
@@ -274,7 +274,59 @@
       </div>
     </section>
 
-    <section class="section" aria-labelledby="security-title">
+    <section class="section" id="multi-uplink" aria-labelledby="multi-title">
+      <div class="wrap">
+        <h2 id="multi-title">Direct on office networks too</h2>
+        <p class="intro">Office networks with two ISPs, or carriers with a pool of NAT addresses, have several uplinks and pick one per destination. CopySync 1.0 knew only one of its addresses there and had to relay through the server. 1.1 probes every uplink and tells the peer about all of them.</p>
+        <div class="two-col">
+          <div class="prose">
+            <h3>What changed</h3>
+            <ul>
+              <li><strong>One shared port.</strong> All connections send and receive on one local UDP port. Previously each STUN server got its own port, so the answers didn't apply to each other.</li>
+              <li><strong>Every uplink probed.</strong> Seven IP-diverse servers are queried from that port at once, yielding one address per uplink. Addresses poisoned by DNS are dropped first.</li>
+              <li><strong>All of them sent to the peer.</strong> The peer tries each address; the one matching the real uplink gets through.</li>
+              <li><strong>Uplinks remembered.</strong> If a round misses an uplink that keeps ports unchanged, its address is filled in as uplink IP plus local port.</li>
+              <li><strong>Relay first, direct later.</strong> When the peer has just started, its addresses can arrive a moment late and the first handshake lands on the relay. CopySync punches again while the link is idle and switches to direct when that works.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>A real office network</h3>
+            <table class="measure">
+              <thead><tr><th scope="col">Uplink</th><th scope="col">Public port</th></tr></thead>
+              <tbody>
+                <tr><td>Uplink A</td><td>Unchanged</td></tr>
+                <tr><td>Uplink B</td><td>Unchanged</td></tr>
+                <tr><td>Uplink C</td><td>Rewritten, same for every destination</td></tr>
+                <tr><td>Uplink D</td><td>Rewritten</td></tr>
+              </tbody>
+            </table>
+            <p class="aside-p">Before, this Mac and one at home could only relay, capped at 0.6 MB/s by the server's bandwidth. Now they connect directly, about 3 seconds after reaching the server.</p>
+          </div>
+        </div>
+
+        <h3 class="subhead">Checked against real network topologies</h3>
+        <p class="aside-p">The NAT lab builds the nine topologies below with Linux network namespaces and iptables and runs CopySync's actual connection code through each. It runs on every commit.</p>
+        <div class="table-scroll">
+          <table class="lab">
+            <thead><tr><th scope="col">Scenario</th><th scope="col">Result</th></tr></thead>
+            <tbody>
+              <tr><td>Single uplink ↔ home router</td><td>Direct</td></tr>
+              <tr><td>Two uplinks, previous version (control)</td><td>Relay</td></tr>
+              <tr><td>Two uplinks ↔ home router</td><td>Direct</td></tr>
+              <tr><td>Four uplinks ↔ home router</td><td>Direct</td></tr>
+              <tr><td>Two uplinks, second not probed, no history</td><td>Relay</td></tr>
+              <tr><td>Two uplinks, second not probed, with history</td><td>Direct</td></tr>
+              <tr><td>Two uplinks ↔ two uplinks</td><td>Direct</td></tr>
+              <tr><td>Two uplinks ↔ NAT that randomizes ports</td><td>Relay</td></tr>
+              <tr><td>Blocked at first, network recovers later</td><td>Relay, then direct</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="aside-p">Measurements, design trade-offs and lessons learned are in the <a href="https://github.com/baiyuze/copysync/blob/main/design/nat-traversal.md">design document</a> (Chinese).</p>
+      </div>
+    </section>
+
+    <section class="section section-band" aria-labelledby="security-title">
       <div class="wrap two-col">
         <div class="prose">
           <h2 id="security-title">Your server can't see what you copy</h2>
@@ -294,7 +346,7 @@
       </div>
     </section>
 
-    <section class="section section-band" aria-labelledby="fallback-title">
+    <section class="section" aria-labelledby="fallback-title">
       <div class="wrap">
         <h2 id="fallback-title">When things go wrong</h2>
         <p class="intro">Every network is different. Each of these cases was considered, and each has a test.</p>
@@ -305,6 +357,10 @@
           <dd>Public STUN is unreliable in some regions, including mainland China. Your server runs its own STUN, and clients prefer it.</dd>
           <dt>An office network with several uplinks</dt>
           <dd>These networks pick an uplink per destination, so a single probe only reveals one of your addresses. CopySync probes several servers from one port and sends the peer its address on every uplink to try in turn.</dd>
+          <dt>Connected through the relay first</dt>
+          <dd>The relay handshake is fast and sometimes beats the direct path. Once connected, the side that started the connection punches again while idle and switches to direct when that works, never in the middle of a transfer.</dd>
+          <dt>The other Mac sleeps, drops off or restarts</dt>
+          <dd>A connection that dies silently is noticed, closed and reconnected. Anything you copy meanwhile is kept and added to the other Mac's history once it's back, without overwriting what's on its clipboard now.</dd>
           <dt>Server connection drops</dt>
           <dd>Reconnects automatically: the delay starts at 1 second and doubles up to 30, with jitter so devices don't all reconnect at once. The app shows the status live.</dd>
           <dt>File too large</dt>
@@ -321,7 +377,7 @@
       </div>
     </section>
 
-    <section class="section" id="install" aria-labelledby="install-title">
+    <section class="section section-band" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">Install</h2>
         <p class="intro">Install the app on each Mac, and set up a server both of them can reach. If both Macs share a LAN, the server can run on one of them.</p>
@@ -363,13 +419,13 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
       </div>
     </section>
 
-    <section class="section section-band" aria-labelledby="specs-title">
+    <section class="section" aria-labelledby="specs-title">
       <div class="wrap">
         <h2 id="specs-title">Specifications</h2>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">Version</th><td>1.1.0, released <time datetime="2026-10-08">October 8, 2026</time></td></tr>
+              <tr><th scope="row">Version</th><td>1.1.1, released <time datetime="2026-10-09">October 9, 2026</time></td></tr>
               <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; 45 MB download</td></tr>
               <tr><th scope="row">Server</th><td>Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM</td></tr>
               <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>
@@ -387,7 +443,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
       </div>
     </section>
 
-    <section class="section" id="faq" aria-labelledby="faq-title">
+    <section class="section section-band" id="faq" aria-labelledby="faq-title">
       <div class="wrap">
         <h2 id="faq-title">Questions</h2>
         <div class="faq">
@@ -444,7 +500,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
       </div>
     </section>
 
-    <section class="closing section-band" aria-labelledby="closing-title">
+    <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
         <h2 id="closing-title">Two Macs, one clipboard.</h2>
         <div class="cta">

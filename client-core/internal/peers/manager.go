@@ -48,6 +48,8 @@ type Manager struct {
 	onStatusChanged func()
 	// 收到对端信令（SDP/candidate），M2 的 WebRTC 层在此接管
 	onSignal func(from string, msg *pb.SignalMessage)
+	// onPeerReady 见 Options.OnPeerReady
+	onPeerReady func(deviceID string)
 
 	client *signaling.Client
 	p2p    *p2p.Manager
@@ -79,6 +81,8 @@ type Options struct {
 	// OnPeerMessage / OnPeerStream 是 P2P 数据面的入口，M4 的同步逻辑挂在这里
 	OnPeerMessage func(deviceID string, msg *pb.PeerMessage)
 	OnPeerStream  func(deviceID, label string, stream *p2p.Stream)
+	// OnPeerReady 在与某台设备的 P2P 连接建立或恢复时调用（同步引擎据此补发）
+	OnPeerReady func(deviceID string)
 	// StatePath 保存网络出口历史的文件，见 p2p/egress_history.go
 	StatePath string
 }
@@ -97,6 +101,7 @@ func NewManager(opts Options) (*Manager, error) {
 		onDeviceChanged: opts.OnDeviceChanged,
 		onStatusChanged: opts.OnStatusChanged,
 		onSignal:        opts.OnSignal,
+		onPeerReady:     opts.OnPeerReady,
 		known:           make(map[string]store.Device),
 		online:          make(map[string]bool),
 		conn:            make(map[string]p2p.ConnState),
@@ -368,6 +373,7 @@ func (m *Manager) replaySignals(from string) {
 // handleP2PState 在直连/中转状态变化时刷新界面。
 func (m *Manager) handleP2PState(deviceID string, state p2p.ConnState) {
 	m.mu.Lock()
+	prev := m.conn[deviceID]
 	m.conn[deviceID] = state
 	m.mu.Unlock()
 
@@ -375,6 +381,14 @@ func (m *Manager) handleP2PState(deviceID string, state p2p.ConnState) {
 	if d, ok := m.device(deviceID); ok {
 		m.notify(d)
 	}
+	// 直连与中转之间切换不算重新连上
+	if connected(state) && !connected(prev) && m.onPeerReady != nil {
+		m.onPeerReady(deviceID)
+	}
+}
+
+func connected(s p2p.ConnState) bool {
+	return s == p2p.StateDirect || s == p2p.StateRelay
 }
 
 func (m *Manager) sendSignal(ctx context.Context, to string, msg *pb.SignalMessage) error {

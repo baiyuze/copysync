@@ -623,6 +623,7 @@ const ClipOffer$json = {
     {'1': 'created_at_unix', '3': 6, '4': 1, '5': 3, '10': 'createdAtUnix'},
     {'1': 'will_push', '3': 7, '4': 1, '5': 8, '10': 'willPush'},
     {'1': 'plain_text', '3': 8, '4': 1, '5': 9, '10': 'plainText'},
+    {'1': 'backlog', '3': 9, '4': 1, '5': 8, '10': 'backlog'},
   ],
 };
 
@@ -633,7 +634,7 @@ final $typed_data.Uint8List clipOfferDescriptor = $convert.base64Decode(
     'aXBJdGVtUgVpdGVtcxIdCgp0b3RhbF9zaXplGAQgASgDUgl0b3RhbFNpemUSIQoMdGV4dF9jb2'
     '50ZW50GAUgASgJUgt0ZXh0Q29udGVudBImCg9jcmVhdGVkX2F0X3VuaXgYBiABKANSDWNyZWF0'
     'ZWRBdFVuaXgSGwoJd2lsbF9wdXNoGAcgASgIUgh3aWxsUHVzaBIdCgpwbGFpbl90ZXh0GAggAS'
-    'gJUglwbGFpblRleHQ=');
+    'gJUglwbGFpblRleHQSGAoHYmFja2xvZxgJIAEoCFIHYmFja2xvZw==');
 
 @$core.Deprecated('Use peerFetchDescriptor instead')
 const PeerFetch$json = {

@@ -6,15 +6,15 @@
 
 Key facts:
 
-- Current version: 1.1.0, released 2026-10-08.
+- Current version: 1.1.1, released 2026-10-09.
 - Client: macOS 13 Ventura or later, universal binary for Intel and Apple silicon. Distributed as a DMG; not notarized by Apple, so the first launch needs "Open Anyway" in System Settings → Privacy & Security.
 - Server: a single static Go binary for Linux (x86_64, ARM64) or macOS, installed via systemd script or Docker Compose. Ports: 8787/tcp (signaling), 3478/udp (STUN/TURN), 32768–60999/udp (relay).
 - Content synced: plain text, rich text (HTML plus a plain-text copy), images, files, folders.
-- Works on multi-uplink networks (e.g. offices with two ISPs) that pick an uplink per destination: the client probes several STUN servers from one shared port to learn its address on every uplink and sends all of them to the peer. Diagnose with `copysync-cli nat`.
+- Works on multi-uplink networks (e.g. offices with two ISPs) that pick an uplink per destination: the client probes several STUN servers from one shared port to learn its address on every uplink and sends all of them to the peer. Diagnose with `copysync-cli nat`. If a connection lands on the relay first, the client retries the direct path with an ICE restart while idle.
 - Items under 50 MB (adjustable 1 MB–1 GB) are pushed on copy; larger files sync as a record and are pulled on demand.
 - History keeps 3 days by default (adjustable 1 hour–30 days).
 - Pairing: 6-character code valid for 5 minutes, plus a human check that both Macs show the same two fingerprints (one per device's Ed25519 public key), which prevents man-in-the-middle attacks by the server.
-- Not supported: Windows (planned), iPhone/iPad (iOS forbids background clipboard monitoring). Both Macs must be online at the same time; there is no store-and-forward.
+- Not supported: Windows (planned), iPhone/iPad (iOS forbids background clipboard monitoring). The server stores nothing: while the other Mac is unreachable, the latest 20 items are kept in memory and sent when it reconnects (added to its history, not its clipboard).
 - Compared with Apple's Universal Clipboard: no same-Apple-ID or proximity requirement, keeps a history, handles large files and folders.
 
 ## Docs
@@ -22,6 +22,7 @@ Key facts:
 - [README (中文)](https://github.com/baiyuze/copysync/blob/main/README.md): features, installation, architecture, security model, fallbacks
 - [README (English)](https://github.com/baiyuze/copysync/blob/main/README.en.md): the same in English
 - [Server deployment](https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md): systemd, Docker and manual setup
+- [NAT traversal design (中文)](https://github.com/baiyuze/copysync/blob/main/design/nat-traversal.md): multi-uplink probing, relay-to-direct upgrade, measurements and the NAT lab
 - [Changelog](https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md)
 
 ## Download

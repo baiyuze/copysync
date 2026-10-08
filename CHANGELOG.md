@@ -1,5 +1,25 @@
 # 更新记录 / Changelog
 
+## 1.1.1 — 2026-10-09
+
+- **修复：对方断线后，复制的内容发不过去。**连接悄悄断了（对方睡眠、断网、重启），本端却以为还连着，
+  不重连，复制的内容全部发进一条死连接，日志还记成「已发送」。现在连接失效会立即关闭并重连；对方重建了
+  连接，本端也随之换新；没真正送达的不再算成功。
+  **Fixed: items copied after the other Mac dropped off never arrived.** A connection that died silently was
+  never closed or reconnected, and everything copied afterwards went into it. Dead connections are now closed
+  and rebuilt, and a transfer only counts once the data has actually left.
+- **补发**：复制时对方连不上，就记下最近 20 条，连接恢复后补发。补发的只进复制记录，不写进对方的剪贴板。
+  **Catch-up:** items copied while the other Mac is unreachable (latest 20) are sent when it reconnects. They go
+  into its history, not its clipboard.
+- **先中转，再换直连**：对端刚启动时出口地址可能晚到，第一次握手落到中转后就一直中转。现在中转时由发起方
+  在空闲时用 ICE 重启再打一次洞，打通就换成直连（10 秒后第一次，之后间隔逐步拉长到 15 分钟）。
+  **Relay first, direct later:** a connection that lands on the relay now retries the direct path with an ICE
+  restart while idle, and switches when it works.
+- 出口探测并发解析域名，整轮从约 1.6 秒降到 0.2 秒以内；中转等待从 3 秒放宽到 5 秒。
+  Uplink probing resolves hostnames in parallel (about 1.6 s down to under 0.2 s); the relay wait is now 5 s.
+- NAT 打洞实验室新增「一开始打不通，先中转后换直连」场景，共 9 种。 The NAT lab adds a relay-then-direct scenario (9 in total).
+- 协议：`ClipOffer` 新增 `backlog` 字段。服务器不需要升级。 Protocol: `ClipOffer.backlog`. No server upgrade needed.
+
 ## 1.1.0 — 2026-10-08
 
 - **多出口网络也能直连**：公司双线、运营商 NAT 地址池这类网络有多个出口，并按目标地址选出口。
