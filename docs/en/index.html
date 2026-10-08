@@ -40,7 +40,7 @@
         "description": "Open-source tool that syncs the clipboard and files between Macs. Copy text, images, files or folders on one Mac and paste them on another. Devices connect directly over WebRTC with DTLS encryption, falling back to a TURN relay on a server the user hosts.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 or later (Intel and Apple silicon)",
-        "softwareVersion": "1.1.1",
+        "softwareVersion": "1.1.2",
         "datePublished": "2026-10-09",
         "inLanguage": "en",
         "license": "https://opensource.org/licenses/MIT",
@@ -139,7 +139,7 @@
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
             Download for macOS
           </a>
-          <span class="note">Version 1.1.1, free and open source. macOS 13 or later, Intel and Apple silicon.</span>
+          <span class="note">Version 1.1.2, free and open source. macOS 13 or later, Intel and Apple silicon.</span>
         </div>
 
         <div class="demo" role="img" aria-label="Demo: a file is selected on a MacBook Pro and copied with Command C, travels over a direct connection to a MacBook Air, and is pasted there with Command V">
@@ -286,6 +286,7 @@
               <li><strong>Every uplink probed.</strong> Seven IP-diverse servers are queried from that port at once, yielding one address per uplink. Addresses poisoned by DNS are dropped first.</li>
               <li><strong>All of them sent to the peer.</strong> The peer tries each address; the one matching the real uplink gets through.</li>
               <li><strong>Uplinks remembered.</strong> If a round misses an uplink that keeps ports unchanged, its address is filled in as uplink IP plus local port.</li>
+              <li><strong>A rule for who sends first.</strong> Some routers lock a port when the other side's packet arrives first, and punching fails. One side now announces its uplink addresses first; the other sends packets to them before announcing its own. Retries alternate the order.</li>
               <li><strong>Relay first, direct later.</strong> When the peer has just started, its addresses can arrive a moment late and the first handshake lands on the relay. CopySync punches again while the link is idle and switches to direct when that works.</li>
             </ul>
           </div>
@@ -305,7 +306,7 @@
         </div>
 
         <h3 class="subhead">Checked against real network topologies</h3>
-        <p class="aside-p">The NAT lab builds the nine topologies below with Linux network namespaces and iptables and runs CopySync's actual connection code through each. It runs on every commit.</p>
+        <p class="aside-p">The NAT lab builds the eleven topologies below with Linux network namespaces and iptables and runs CopySync's actual connection code through each. It runs on every commit.</p>
         <div class="table-scroll">
           <table class="lab">
             <thead><tr><th scope="col">Scenario</th><th scope="col">Result</th></tr></thead>
@@ -319,6 +320,8 @@
               <tr><td>Two uplinks ↔ two uplinks</td><td>Direct</td></tr>
               <tr><td>Two uplinks ↔ NAT that randomizes ports</td><td>Relay</td></tr>
               <tr><td>Blocked at first, network recovers later</td><td>Relay, then direct</td></tr>
+              <tr><td>Office router locks a port for unsolicited packets</td><td>Direct</td></tr>
+              <tr><td>Home router locks a port for unsolicited packets</td><td>Relay, then direct after one retry</td></tr>
             </tbody>
           </table>
         </div>
@@ -425,7 +428,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">Version</th><td>1.1.1, released <time datetime="2026-10-09">October 9, 2026</time></td></tr>
+              <tr><th scope="row">Version</th><td>1.1.2, released <time datetime="2026-10-09">October 9, 2026</time></td></tr>
               <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; 45 MB download</td></tr>
               <tr><th scope="row">Server</th><td>Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM</td></tr>
               <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>

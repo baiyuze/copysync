@@ -1,5 +1,18 @@
 # 更新记录 / Changelog
 
+## 1.1.2 — 2026-10-09
+
+- **修复：家里那台一重启就只能中转，重试也换不回直连。**谁的包先到，谁的路由器就先收到陌生来源的包；
+  实测公司路由器会为它占住端口，本机随后往外发只好换端口，打洞失败。对方重启、或 ICE 重启时，总是对方
+  先拿到本机的地址、先发包。现在由规则决定谁先发包：一方先公布出口地址，另一方收到后先往那边发包再公布
+  自己的；初次握手由发起方等，换直连的重试里两种顺序轮流用。
+  **Fixed: restarting the home Mac always fell back to the relay, and retries never got back to direct.** Some
+  routers lock a port when the other side's packet arrives first. A rule now decides who sends first, and
+  retries alternate the order.
+- NAT 打洞实验室新增两种「路由器会为外来的包占住端口」的场景，并给信令加上延迟，共 11 种。
+  The NAT lab adds two port-locking router scenarios with signaling delay (11 in total).
+- 协议：`SdpOffer` 新增 `answerer_waits` 字段。服务器不需要升级。 Protocol: `SdpOffer.answerer_waits`. No server upgrade needed.
+
 ## 1.1.1 — 2026-10-09
 
 - **修复：对方断线后，复制的内容发不过去。**连接悄悄断了（对方睡眠、断网、重启），本端却以为还连着，

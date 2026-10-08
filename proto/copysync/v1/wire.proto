@@ -42,6 +42,10 @@ message SdpOffer {
   // DTLS 证书指纹。经签名传输，杜绝信令服务器中间人攻击——
   // 这是 P2P 通道真正的安全锚点。
   string dtls_fingerprint = 2;
+  // 应答方先别发自己的出口地址：等收到发起方的出口地址、先往那边发过包再发。
+  // 默认（false）是发起方这样等。谁先发包决定了谁的路由器先收到对方的包，
+  // 有的路由器会因此占住端口、打洞失败，所以换直连的重试里两种顺序轮流用。
+  bool answerer_waits = 3;
 }
 
 message SdpAnswer {

@@ -61,6 +61,7 @@ func runInfra(args []string) error {
 	httpAddr := fs.String("http", "", "信令转发的 HTTP 监听地址")
 	stunIPs := fs.String("stun", "", "STUN 服务器的 IP，逗号分隔，每个 IP 各起一台")
 	turnIP := fs.String("turn", "", "TURN 中转的 IP")
+	delay := fs.Duration("delay", 0, "信令转发的延迟：现实里信令要经服务器绕一道，比两台设备之间的包慢")
 	_ = fs.Parse(args)
 
 	for _, ip := range splitList(*stunIPs) {
@@ -76,7 +77,7 @@ func runInfra(args []string) error {
 		return fmt.Errorf("启动 TURN: %w", err)
 	}
 
-	relay := &signalRelay{queues: map[string]chan envelope{}}
+	relay := &signalRelay{queues: map[string]chan envelope{}, delay: *delay}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/send", relay.send)
 	mux.HandleFunc("/recv", relay.recv)
@@ -121,12 +122,14 @@ func serveSTUN(ip string) error {
 type envelope struct {
 	from string
 	body []byte
+	due  time.Time // 到这个时间才交给收件人，见 signalRelay.delay
 }
 
 // signalRelay 是最简的信令转发：按收件人排队，收件人长轮询取走。
 type signalRelay struct {
 	mu     sync.Mutex
 	queues map[string]chan envelope
+	delay  time.Duration
 }
 
 func (r *signalRelay) queue(id string) chan envelope {
@@ -143,12 +146,14 @@ func (r *signalRelay) queue(id string) chan envelope {
 func (r *signalRelay) send(w http.ResponseWriter, req *http.Request) {
 	body, _ := io.ReadAll(req.Body)
 	q := req.URL.Query()
-	r.queue(q.Get("to")) <- envelope{from: q.Get("from"), body: body}
+	r.queue(q.Get("to")) <- envelope{from: q.Get("from"), body: body, due: time.Now().Add(r.delay)}
 }
 
 func (r *signalRelay) recv(w http.ResponseWriter, req *http.Request) {
 	select {
 	case e := <-r.queue(req.URL.Query().Get("id")):
+		// 按入队顺序逐条等到期，消息的先后不变
+		time.Sleep(time.Until(e.due))
 		w.Header().Set("X-From", e.from)
 		_, _ = w.Write(e.body)
 	case <-time.After(20 * time.Second):

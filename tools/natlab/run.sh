@@ -25,6 +25,7 @@ PROBE="10.200.1.2:3478,10.200.1.3:3478,10.200.1.4:3478"
 ns() { ip netns exec "$@"; }
 
 INFRA_PID=""
+INFRA_ARGS=() # 各场景额外传给 infra 的参数，由 check 设置
 
 # 按进程号结束 infra：用 pkill -f 按路径匹配会连本脚本自己一起杀掉（命令行里也有这个路径）
 cleanup() {
@@ -123,7 +124,7 @@ setup() {
     esac
 
     ns inet "$BIN" infra -http 10.200.0.2:9000 -turn 10.200.0.3 \
-        -stun 10.200.1.1,10.200.1.2,10.200.1.3,10.200.1.4 >"$WORK/infra.log" 2>&1 &
+        -stun 10.200.1.1,10.200.1.2,10.200.1.3,10.200.1.4 "${INFRA_ARGS[@]}" >"$WORK/infra.log" 2>&1 &
     INFRA_PID=$!
     for _ in $(seq 50); do
         ns a bash -c 'exec 3<>/dev/tcp/10.200.0.2/9000' 2>/dev/null && return
@@ -135,12 +136,16 @@ setup() {
 PASS=0
 FAIL=0
 
-# check <场景名> <A 侧> <B 侧> <direct|relay> [legacy|history|late]
+# check <场景名> <A 侧> <B 侧> <direct|relay> [legacy|history|late|leaky-a|leaky-b]
 check() {
     # NATLAB_ONLY 只跑名字里含这段文字的场景，排查问题时用
     [[ -n ${NATLAB_ONLY:-} && $1 != *"$NATLAB_ONLY"* ]] && return
     local name=$1 expect=$4 flag=${5:-} aflags=() bflags=() state="$WORK/a-state.json"
     rm -f "$state" # 每个场景从空白开始：上一个场景的出口历史会让这一个「意外」直连
+    INFRA_ARGS=()
+    # 现实里信令经服务器绕一道，比设备之间的包慢几十毫秒：对端拿到本端地址就开始发包，
+    # 本端要多等一个来回才拿到对端的地址。leaky 场景靠这个时间差复现问题
+    [[ $flag == leaky-* ]] && INFRA_ARGS=(-delay 80ms)
     setup "$2" "$3"
     case $flag in
     legacy) aflags=(-legacy) ;;
@@ -156,6 +161,18 @@ check() {
         local block=(FORWARD -i lan -d 10.255.0.0/24 -p udp -j DROP)
         ns rB iptables -I "${block[@]}"
         (sleep 8 && ns rB iptables -D "${block[@]}") &
+        aflags=(-settle 40s)
+        bflags=(-settle 40s)
+        ;;
+    leaky-a | leaky-b)
+        # 路由器不丢弃外网主动发来的包：包落到路由器本机，留下一条连接记录。对端的包若先到，
+        # 本端随后往同一地址发包时源端口被占，SNAT 只好换一个端口，事先告诉对端的地址就失效了。
+        # 实测公司路由器就是这样：对端先发包的那几次都没打通。
+        # leaky-a：a（发起方）的路由器这样，初次握手由 a 先发包，应当直接打通；
+        # leaky-b：b（应答方）的路由器这样，初次握手打不通，第一次重试换 b 先发包后打通
+        local r=rA
+        [[ $flag == leaky-b ]] && r=rB
+        ns "$r" iptables -D INPUT -i wan -m conntrack --ctstate NEW -j DROP
         aflags=(-settle 40s)
         bflags=(-settle 40s)
         ;;
@@ -186,8 +203,11 @@ check() {
         echo "    a: $(cat "$WORK/a.json")"
         echo "    b: $(cat "$WORK/b.json")"
         grep -h -E '出口探测完成|P2P|换成直连|ICE 重启|失败|error' "$WORK/a.log" "$WORK/b.log" | head -8 | sed 's/^/    /'
-        # NATLAB_KEEP 指定目录时把完整日志留下来
-        [[ -n ${NATLAB_KEEP:-} ]] && cp "$WORK"/*.log "$NATLAB_KEEP/" 2>/dev/null || true
+    fi
+    # NATLAB_KEEP 指定目录时把每个场景的完整日志留下来
+    if [[ -n ${NATLAB_KEEP:-} ]]; then
+        local dir="$NATLAB_KEEP/${name// /_}"
+        mkdir -p "$dir" && cp "$WORK"/*.log "$dir/" 2>/dev/null || true
     fi
 }
 
@@ -201,6 +221,8 @@ check "两个出口，第二条没探测到，有历史" hidden cone direct hist
 check "两个出口 ↔ 两个出口" dual dual direct
 check "两个出口 ↔ 端口随机分配的 NAT" dual symmetric relay
 check "一开始打不通，先中转后换直连" dual cone direct late
+check "公司路由器会为外来的包占住端口" dual cone direct leaky-a
+check "家用路由器会为外来的包占住端口" dual cone direct leaky-b
 
 echo
 echo "通过 $PASS，失败 $FAIL"

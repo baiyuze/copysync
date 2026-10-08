@@ -162,7 +162,7 @@ flowchart LR
 
 1. Devices connect to the signaling server over WebSocket and receive STUN and TURN addresses.
 2. All connections share one local UDP port. The background service probes several servers from that port to learn its public address, one per uplink on networks with several (see the next section).
-3. During the handshake each side sends its LAN addresses, its public address on every uplink, and its TURN relay address; both sides try each other with WebRTC ICE at the same time.
+3. During the handshake each side sends its LAN addresses, its public address on every uplink, and its TURN relay address; both sides try each other with WebRTC ICE at the same time. One side holds back its uplink addresses until it has received the other's and sent packets to them, because some routers lock a port when the other side's packet arrives first (see the next section).
 4. A direct path wins if it works; relay paths must wait 5 seconds before they can be selected.
 5. Once connected, each side tells the other whether it is relayed, and both show "relay" if either is.
 6. If the connection still lands on the relay, the side that started it runs an ICE restart while idle to punch again, and moves to the direct path if that works (first after 10 seconds, then at intervals growing to 15 minutes).
@@ -191,7 +191,7 @@ What 1.1 does:
 
 A Mac behind that 4-uplink office network now connects directly to a home connection, about 3 seconds after reaching the server. The full design, measurements and validation are in [NAT traversal on multi-uplink networks](design/nat-traversal.md) (Chinese).
 
-The **NAT lab** (`tools/natlab`) builds real topologies with Linux network namespaces and iptables and runs CopySync's actual connection code through nine scenarios on every commit:
+The **NAT lab** (`tools/natlab`) builds real topologies with Linux network namespaces and iptables and runs CopySync's actual connection code through eleven scenarios on every commit:
 
 | Scenario | Result |
 |---|---|
@@ -203,6 +203,8 @@ The **NAT lab** (`tools/natlab`) builds real topologies with Linux network names
 | Two uplinks ↔ two uplinks | Direct |
 | Two uplinks ↔ NAT that randomizes ports | Relay |
 | Blocked at first, network recovers later | Relay first, then direct |
+| Office router locks a port for unsolicited packets | Direct |
+| Home router locks a port for unsolicited packets | Relay, then direct after the first retry |
 
 ### Security model
 
@@ -242,6 +244,7 @@ Each of these was found by testing and has a regression test. The full investiga
 - **pion opens a separate port per STUN server**, so the answers don't apply to each other. Adding STUN servers can't fix multi-uplink networks; all connections now share one port and CopySync probes it itself.
 - **One side can't tell on its own whether a connection is relayed.** When one side sends through TURN, the other may just see an ordinary address; once one Mac showed "direct" and the other "relay". Both sides now tell each other after connecting.
 - **pion never switches paths once it has picked one.** The relay handshake is fast, and if it wins that race the whole connection stays relayed. We saw exactly that after the peer restarted: its addresses arrived after the relay wait had expired. The relay wait is now 5 seconds, probe hostnames resolve in parallel (a probe round went from about 1.6 s to under 0.2 s), and relayed connections retry the direct path with an ICE restart.
+- **Who sends first matters.** Some routers (the office one we measured) keep a connection entry for a packet that arrives before you've sent anything to its source, locking the port; your own packets then leave from a different port and punching fails. That's why restarting the office Mac always connected directly while restarting the home Mac fell back to the relay: a freshly started Mac probes its uplinks first, so its addresses went out late and it ended up sending first. A rule now decides who sends first, and retries alternate the order.
 - **A dead connection has to be cleaned up by hand.** When pion reports "failed" it doesn't close the connection; the control channel still looks open and whatever is written to it is lost, and the layer above thinks it's connected and never reconnects. In 1.1.0 this sent six files into a dead connection after the other Mac dropped off, and none arrived.
 - **Public STUN domains can be poisoned by DNS**, resolving to `192.0.2.42` in our tests. Reserved ranges and proxy fake-IP ranges are filtered before probing.
 - **Simulated routers need a firewall.** When both sides punch at once, a packet let through to the router itself leaves a Linux conntrack entry, the outgoing flow then gets a new port, and punching fails. Real routers drop such packets, and the lab does too.
@@ -268,7 +271,7 @@ During development:
 
 ```bash
 cd client-core && go test ./...          # service tests
-./tools/natlab/docker.sh                 # NAT lab: direct vs relay across 9 network topologies
+./tools/natlab/docker.sh                 # NAT lab: direct vs relay across 11 network topologies
 cd ui && flutter test                    # app tests
 ./scripts/install-macos.sh               # install the service from dist/ as a login item
 ./dist/copysync-cli status               # service status

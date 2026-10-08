@@ -124,13 +124,14 @@ const SdpOffer$json = {
   '2': [
     {'1': 'sdp', '3': 1, '4': 1, '5': 9, '10': 'sdp'},
     {'1': 'dtls_fingerprint', '3': 2, '4': 1, '5': 9, '10': 'dtlsFingerprint'},
+    {'1': 'answerer_waits', '3': 3, '4': 1, '5': 8, '10': 'answererWaits'},
   ],
 };
 
 /// Descriptor for `SdpOffer`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List sdpOfferDescriptor = $convert.base64Decode(
     'CghTZHBPZmZlchIQCgNzZHAYASABKAlSA3NkcBIpChBkdGxzX2ZpbmdlcnByaW50GAIgASgJUg'
-    '9kdGxzRmluZ2VycHJpbnQ=');
+    '9kdGxzRmluZ2VycHJpbnQSJQoOYW5zd2VyZXJfd2FpdHMYAyABKAhSDWFuc3dlcmVyV2FpdHM=');
 
 @$core.Deprecated('Use sdpAnswerDescriptor instead')
 const SdpAnswer$json = {

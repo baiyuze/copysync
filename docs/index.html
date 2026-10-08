@@ -40,7 +40,7 @@
         "description": "在两台 Mac 之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台 Mac 可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）",
-        "softwareVersion": "1.1.1",
+        "softwareVersion": "1.1.2",
         "datePublished": "2026-10-09",
         "inLanguage": "zh-CN",
         "license": "https://opensource.org/licenses/MIT",
@@ -139,7 +139,7 @@
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
             下载 macOS 版
           </a>
-          <span class="note">版本 1.1.1，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
+          <span class="note">版本 1.1.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
         </div>
 
         <div class="demo" role="img" aria-label="演示：在 MacBook Pro 上选中文件并按下 Command C，文件经直连传到 MacBook Air，在那里按下 Command V 粘贴出来">
@@ -286,6 +286,7 @@
               <li><strong>探测每个出口。</strong>在这个端口上同时询问 7 台 IP 分散的服务器，网络有几个出口就拿到几个地址。被 DNS 污染的地址先过滤掉。</li>
               <li><strong>全部告诉对端。</strong>每个出口的地址都发给对端，由它逐个尝试，与实际出口吻合的那一个能打通。</li>
               <li><strong>记住见过的出口。</strong>某次漏掉的出口如果不改端口，就用「出口 IP + 本地端口」推算补上。</li>
+              <li><strong>定好谁先发包。</strong>有的路由器收到对方先到的包会占住端口，打洞就失败了。现在一方先公布出口地址，另一方收到后先往那边发包再公布自己的；重试时两种顺序轮流用。</li>
               <li><strong>先中转，再换直连。</strong>对端刚启动时，出口地址可能晚到一步，第一次握手落到了中转。之后会在空闲时再打一次洞，打通就换成直连。</li>
             </ul>
           </div>
@@ -305,7 +306,7 @@
         </div>
 
         <h3 class="subhead">用真实的网络拓扑验证</h3>
-        <p class="aside-p">NAT 打洞实验室用 Linux 网络命名空间与 iptables 搭出下面 9 种拓扑，用 CopySync 真实的连接代码各跑一遍。每次提交代码都会自动运行。</p>
+        <p class="aside-p">NAT 打洞实验室用 Linux 网络命名空间与 iptables 搭出下面 11 种拓扑，用 CopySync 真实的连接代码各跑一遍。每次提交代码都会自动运行。</p>
         <div class="table-scroll">
           <table class="lab">
             <thead><tr><th scope="col">场景</th><th scope="col">结果</th></tr></thead>
@@ -319,6 +320,8 @@
               <tr><td>两个出口 ↔ 两个出口</td><td>直连</td></tr>
               <tr><td>两个出口 ↔ 端口随机分配的 NAT</td><td>中转</td></tr>
               <tr><td>一开始打不通，之后网络恢复</td><td>先中转，随后直连</td></tr>
+              <tr><td>公司路由器会为外来的包占住端口</td><td>直连</td></tr>
+              <tr><td>家用路由器会为外来的包占住端口</td><td>先中转，重试一次后直连</td></tr>
             </tbody>
           </table>
         </div>
@@ -425,7 +428,7 @@ sudo ./install.sh 你的公网IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">版本</th><td>1.1.1，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布</td></tr>
+              <tr><th scope="row">版本</th><td>1.1.2，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布</td></tr>
               <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包 45 MB</td></tr>
               <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存</td></tr>
               <tr><th scope="row">同步的内容</th><td>纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭</td></tr>

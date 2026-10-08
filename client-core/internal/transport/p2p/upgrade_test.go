@@ -161,7 +161,7 @@ func TestICERestartKeepsConnection(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := ap.restartICE(ctx); err != nil {
+	if err := ap.restartICE(ctx, false); err != nil {
 		t.Fatalf("ICE 重启: %v", err)
 	}
 	// 重启进行中就发：数据暂时丢失，由 SCTP 重传补上
@@ -342,5 +342,112 @@ func TestSendRefusedWhileDown(t *testing.T) {
 	err := alice.m.Send("bob", &pb.PeerMessage{Payload: &pb.PeerMessage_Fetch{Fetch: &pb.PeerFetch{}}})
 	if err != ErrNotConnected {
 		t.Errorf("断开时发送返回 %v，应为 ErrNotConnected", err)
+	}
+}
+
+// orderLog 记下出口地址的收发顺序，见 TestEgressOrder。
+type orderLog struct {
+	mu     sync.Mutex
+	events []string
+	peers  map[string]*Peer
+}
+
+func (o *orderLog) add(e string) {
+	o.mu.Lock()
+	o.events = append(o.events, e)
+	o.mu.Unlock()
+}
+
+// index 返回 from 之后第一次出现 e 的位置，没有则为 -1。
+func (o *orderLog) index(e string, from int) int {
+	o.mu.Lock()
+	defer o.mu.Unlock()
+	for i := from; i < len(o.events); i++ {
+		if o.events[i] == e {
+			return i
+		}
+	}
+	return -1
+}
+
+func (o *orderLog) len() int {
+	o.mu.Lock()
+	defer o.mu.Unlock()
+	return len(o.events)
+}
+
+func (o *orderLog) newPeer(t *testing.T, self, other, egressIP string) *Peer {
+	t.Helper()
+	p, err := NewPeer(PeerOptions{
+		DeviceID: other,
+		SelfID:   self,
+		ExtraCandidates: func() []string {
+			return []string{"candidate:1 1 udp 1694498815 " + egressIP + " 50000 typ srflx raddr 0.0.0.0 rport 50000"}
+		},
+		SendSignal: func(_ context.Context, msg *pb.SignalMessage) error {
+			egress := isEgressCandidate(msg.GetCandidate().GetCandidate())
+			if egress {
+				o.add(self + " 发出出口地址")
+			}
+			go func() {
+				o.mu.Lock()
+				target := o.peers[other]
+				o.mu.Unlock()
+				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+				defer cancel()
+				_ = target.HandleSignal(ctx, msg)
+				if egress {
+					o.add(other + " 收到出口地址")
+				}
+			}()
+			return nil
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(p.Close)
+	return p
+}
+
+// TestEgressOrder 验证谁先发包：等待的一方要先收到对端的出口地址，再公布自己的。
+// 初次握手由发起方等；ICE 重启时可以改请应答方等。
+func TestEgressOrder(t *testing.T) {
+	o := &orderLog{peers: map[string]*Peer{}}
+	alice := o.newPeer(t, "alice", "bob", "203.0.113.10") // 字典序小，不礼让，负责发起
+	bob := o.newPeer(t, "bob", "alice", "203.0.113.20")
+	o.peers["alice"], o.peers["bob"] = alice, bob
+
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	if err := alice.Connect(ctx); err != nil {
+		t.Fatal(err)
+	}
+	deadline := time.Now().Add(15 * time.Second)
+	for time.Now().Before(deadline) && (o.index("alice 收到出口地址", 0) < 0 || o.index("bob 收到出口地址", 0) < 0) {
+		time.Sleep(10 * time.Millisecond)
+	}
+	got, sent := o.index("alice 收到出口地址", 0), o.index("alice 发出出口地址", 0)
+	if got < 0 || sent < 0 || sent < got {
+		t.Fatalf("初次握手：发起方应先收到对端的出口地址再发自己的，实际顺序 %v", o.events)
+	}
+
+	for time.Now().Before(deadline) && (alice.State() != StateDirect || bob.State() != StateDirect) {
+		time.Sleep(10 * time.Millisecond)
+	}
+	if alice.State() != StateDirect {
+		t.Fatalf("没有连通：%v", alice.State())
+	}
+
+	mark := o.len()
+	if err := alice.restartICE(ctx, false); err != nil {
+		t.Fatal(err)
+	}
+	for time.Now().Before(deadline) && (o.index("alice 收到出口地址", mark) < 0 || o.index("bob 收到出口地址", mark) < 0) {
+		time.Sleep(10 * time.Millisecond)
+	}
+	got, sent = o.index("bob 收到出口地址", mark), o.index("bob 发出出口地址", mark)
+	if got < 0 || sent < 0 || sent < got {
+		t.Fatalf("请应答方等的重启：应答方应先收到对端的出口地址再发自己的，实际顺序 %v", o.events[mark:])
 	}
 }

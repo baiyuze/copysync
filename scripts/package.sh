@@ -15,7 +15,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-export VERSION=${VERSION:-1.1.1}
+export VERSION=${VERSION:-1.1.2}
 OUT=release
 
 ./scripts/build.sh

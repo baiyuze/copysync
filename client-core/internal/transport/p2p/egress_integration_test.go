@@ -3,6 +3,7 @@ package p2p_test
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -85,14 +86,20 @@ func TestManagerAdvertisesProbedEgress(t *testing.T) {
 	waitConnected(t, alice, "bob")
 	waitConnected(t, bob, "alice")
 
-	// 出口地址必须作为 srflx candidate 发给了对端
+	// 出口地址必须作为 srflx candidate 发给了对端。alice 是发起方，要等收到 bob 的出口地址、
+	// 先往那边发过包才公布自己的（见 Peer.sendExtraCandidates），回环上连通可能比这更早
 	want := fmt.Sprintf("127.0.0.1 %d typ srflx", egress.LocalPort)
-	mu.Lock()
-	defer mu.Unlock()
-	for _, c := range sentByAlice {
-		if strings.Contains(c, want) {
+	deadline = time.Now().Add(5 * time.Second)
+	for time.Now().Before(deadline) {
+		mu.Lock()
+		sent := slices.ContainsFunc(sentByAlice, func(c string) bool { return strings.Contains(c, want) })
+		mu.Unlock()
+		if sent {
 			return
 		}
+		time.Sleep(20 * time.Millisecond)
 	}
+	mu.Lock()
+	defer mu.Unlock()
 	t.Errorf("alice 没有把出口地址发给对端；发出的 candidate：\n%s", strings.Join(sentByAlice, "\n"))
 }

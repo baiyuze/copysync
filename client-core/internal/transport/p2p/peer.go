@@ -66,6 +66,12 @@ const (
 	relayAcceptanceWait = 5 * time.Second
 	// restartTimeout 是 ICE 重启后等待恢复的最长时间，超时就重置连接
 	restartTimeout = 30 * time.Second
+	// remoteEgressWait 是「先等对端的出口地址、再发自己的」最多等多久，见 sendExtraCandidates。
+	// 要给对端探测出口留出时间（Manager.advertisedCandidates 最多等 4 秒，通常不到 1 秒），
+	// 又要短于中转的等待时限
+	remoteEgressWait = 3 * time.Second
+	// punchHeadStart：收到对端的出口地址后，等本端发往那里的包先出去，再公布自己的
+	punchHeadStart = 200 * time.Millisecond
 )
 
 var (
@@ -121,6 +127,9 @@ type Peer struct {
 	dialing bool
 
 	forceRelay bool
+	// remoteEgress 在收到本轮协商中对端的出口地址时关闭，见 sendExtraCandidates
+	remoteEgress     chan struct{}
+	remoteEgressSeen bool
 	// 生成并发出 offer/answer 期间，新收集到的 candidate 先攒着，见 holdCandidates
 	holdCands bool
 	heldCands []*pb.IceCandidate
@@ -263,6 +272,7 @@ func (p *Peer) Connect(ctx context.Context) error {
 
 	p.holdCandidates()
 	defer p.releaseCandidates()
+	remoteEgress := p.expectRemoteEgress()
 
 	offer, err := pc.CreateOffer(nil)
 	if err != nil {
@@ -275,17 +285,21 @@ func (p *Peer) Connect(ctx context.Context) error {
 	p.setState(StateConnecting)
 	p.armConnectTimeout()
 
-	if err := p.sendSignal(ctx, offerMessage(offer)); err != nil {
+	if err := p.sendSignal(ctx, offerMessage(offer, false)); err != nil {
 		return err
 	}
-	go p.sendExtraCandidates()
+	// 初次握手由发起方等：应答方先公布出口地址，发起方先往那边发包
+	go p.sendExtraCandidates(remoteEgress)
 	return nil
 }
 
 // restartICE 在已连通的连接上做一次 ICE 重启：两端重新收集地址、重新做连通性检查，
 // DTLS 与数据通道保持不变。重启期间发出的数据会暂时丢失，由 SCTP 重传补上，
 // 所以只停顿、不断开。
-func (p *Peer) restartICE(ctx context.Context) error {
+//
+// offererWaits 决定这一轮谁先发包：为真时本端等对端的出口地址、先往那边发包再公布
+// 自己的；为假时请应答方这样等（见 wire.proto 的 SdpOffer.answerer_waits）。
+func (p *Peer) restartICE(ctx context.Context, offererWaits bool) error {
 	p.mu.Lock()
 	pc := p.pc
 	if pc == nil || p.makingOffer || pc.SignalingState() != webrtc.SignalingStateStable {
@@ -302,6 +316,7 @@ func (p *Peer) restartICE(ctx context.Context) error {
 
 	p.holdCandidates()
 	defer p.releaseCandidates()
+	remoteEgress := p.expectRemoteEgress()
 
 	// 先盯住：从 CreateOffer 起本端的 ICE 就已重启，之后任何一步失败都要能恢复
 	p.watchRestart(pc)
@@ -312,10 +327,13 @@ func (p *Peer) restartICE(ctx context.Context) error {
 	if err := pc.SetLocalDescription(offer); err != nil {
 		return fmt.Errorf("设置本地描述: %w", err)
 	}
-	if err := p.sendSignal(ctx, offerMessage(offer)); err != nil {
+	if err := p.sendSignal(ctx, offerMessage(offer, !offererWaits)); err != nil {
 		return err
 	}
-	go p.sendExtraCandidates()
+	if !offererWaits {
+		remoteEgress = nil
+	}
+	go p.sendExtraCandidates(remoteEgress)
 	return nil
 }
 
@@ -337,11 +355,40 @@ func (p *Peer) watchRestart(pc *webrtc.PeerConnection) {
 	})
 }
 
-func offerMessage(offer webrtc.SessionDescription) *pb.SignalMessage {
+func offerMessage(offer webrtc.SessionDescription, answererWaits bool) *pb.SignalMessage {
 	return &pb.SignalMessage{Payload: &pb.SignalMessage_Offer{Offer: &pb.SdpOffer{
 		Sdp:             offer.SDP,
 		DtlsFingerprint: fingerprintFromSDP(offer.SDP),
+		AnswererWaits:   answererWaits,
 	}}}
+}
+
+// expectRemoteEgress 开始一轮协商时调用，返回的通道在收到对端这一轮的出口地址时关闭。
+func (p *Peer) expectRemoteEgress() <-chan struct{} {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	p.remoteEgress = make(chan struct{})
+	p.remoteEgressSeen = false
+	return p.remoteEgress
+}
+
+// noteRemoteCandidate 在加入一条对端 candidate 后调用：是出口地址就通知 sendExtraCandidates。
+func (p *Peer) noteRemoteCandidate(candidate string) {
+	if !isEgressCandidate(candidate) {
+		return
+	}
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.remoteEgress != nil && !p.remoteEgressSeen {
+		p.remoteEgressSeen = true
+		close(p.remoteEgress)
+	}
+}
+
+// isEgressCandidate 判断是不是出口探测得到的地址（见 srflxCandidates）：类型是 srflx，
+// 且不带 ufrag 扩展。pion 自己收集的 candidate 都带 ufrag。
+func isEgressCandidate(candidate string) bool {
+	return strings.Contains(candidate, " typ srflx") && candidateUfrag(candidate) == ""
 }
 
 // holdCandidates 让新收集到的 candidate 先攒着，releaseCandidates 时再发。
@@ -382,9 +429,22 @@ func (p *Peer) sendCandidate(c *pb.IceCandidate) {
 // 出去，那个地址对不上，打洞就失败了。把每个出口的地址都告诉对端，对端逐个检查连通性，
 // 总有一个与实际出口吻合。必须在 offer/answer 之后发：对端设好远端描述前收到的
 // candidate 会先缓存起来。
-func (p *Peer) sendExtraCandidates() {
+//
+// remoteEgress 不为空时，先等对端的出口地址到达、本端往那里发的包出去之后再发。
+// 打洞时谁的包先到，谁的路由器就先收到「陌生来源」的包。有的路由器（实测公司那台）
+// 会为它留下一条连接记录，占住这个端口；本端随后往外发时源端口只好换掉，事先告诉
+// 对端的地址就失效了。本端先发包，路由器里就已有本端发起的记录，对端的包回来正好对上。
+func (p *Peer) sendExtraCandidates(remoteEgress <-chan struct{}) {
 	if p.extraCands == nil {
 		return
+	}
+	if remoteEgress != nil {
+		select {
+		case <-remoteEgress:
+			time.Sleep(punchHeadStart)
+		case <-time.After(remoteEgressWait):
+			p.log.Debug("没等到对端的出口地址，照常发出本端的")
+		}
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -483,6 +543,10 @@ func (p *Peer) handleOffer(ctx context.Context, offer *pb.SdpOffer) error {
 	p.mu.Lock()
 	p.expectFingerprint = offer.GetDtlsFingerprint()
 	p.mu.Unlock()
+	remoteEgress := p.expectRemoteEgress()
+	if !offer.GetAnswererWaits() {
+		remoteEgress = nil
+	}
 
 	if restart {
 		// 设置远端描述时本端的 ICE 随之重启，从这里起就要盯住
@@ -517,7 +581,7 @@ func (p *Peer) handleOffer(ctx context.Context, offer *pb.SdpOffer) error {
 	}); err != nil {
 		return err
 	}
-	go p.sendExtraCandidates()
+	go p.sendExtraCandidates(remoteEgress)
 	return nil
 }
 
@@ -568,7 +632,11 @@ func (p *Peer) handleCandidate(c *pb.IceCandidate) error {
 	}
 	p.mu.Unlock()
 
-	return pc.AddICECandidate(init)
+	if err := pc.AddICECandidate(init); err != nil {
+		return err
+	}
+	p.noteRemoteCandidate(init.Candidate)
+	return nil
 }
 
 // candidateUfrag 取出 candidate 里的 ufrag 扩展。pion 生成的 candidate 都带，
@@ -609,7 +677,9 @@ func (p *Peer) flushPendingCandidates() {
 	for _, c := range pending {
 		if err := pc.AddICECandidate(c); err != nil {
 			p.log.Debug("补加 candidate 失败", "err", err)
+			continue
 		}
+		p.noteRemoteCandidate(c.Candidate)
 	}
 }
 
@@ -819,7 +889,10 @@ func (p *Peer) tryUpgrade() {
 	p.upgradeAttempt++
 	attempt := p.upgradeAttempt
 	p.mu.Unlock()
-	p.log.Info("当前经中转，尝试换成直连", "attempt", attempt)
+	// 谁先发包轮流来：初次握手是本端（发起方）先发，没打通的话第一次重试换对端先发，
+	// 再下一次换回来。哪一边的路由器会被对方先到的包占住端口，总有一种顺序能避开
+	offererWaits := attempt%2 == 0
+	p.log.Info("当前经中转，尝试换成直连", "attempt", attempt, "本端先发包", offererWaits)
 
 	// 先重新探测出口，新发现的线路地址随重启一起发给对端
 	if p.refreshEgress != nil {
@@ -828,7 +901,7 @@ func (p *Peer) tryUpgrade() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := p.restartICE(ctx); err != nil {
+	if err := p.restartICE(ctx, offererWaits); err != nil {
 		p.log.Debug("ICE 重启没有发起", "err", err)
 		p.mu.Lock()
 		p.scheduleUpgradeLocked(upgradeDelays[min(p.upgradeAttempt, len(upgradeDelays)-1)])

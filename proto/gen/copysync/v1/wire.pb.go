@@ -332,8 +332,12 @@ type SdpOffer struct {
 	// DTLS 证书指纹。经签名传输，杜绝信令服务器中间人攻击——
 	// 这是 P2P 通道真正的安全锚点。
 	DtlsFingerprint string `protobuf:"bytes,2,opt,name=dtls_fingerprint,json=dtlsFingerprint,proto3" json:"dtls_fingerprint,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// 应答方先别发自己的出口地址：等收到发起方的出口地址、先往那边发过包再发。
+	// 默认（false）是发起方这样等。谁先发包决定了谁的路由器先收到对方的包，
+	// 有的路由器会因此占住端口、打洞失败，所以换直连的重试里两种顺序轮流用。
+	AnswererWaits bool `protobuf:"varint,3,opt,name=answerer_waits,json=answererWaits,proto3" json:"answerer_waits,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *SdpOffer) Reset() {
@@ -378,6 +382,13 @@ func (x *SdpOffer) GetDtlsFingerprint() string {
 		return x.DtlsFingerprint
 	}
 	return ""
+}
+
+func (x *SdpOffer) GetAnswererWaits() bool {
+	if x != nil {
+		return x.AnswererWaits
+	}
+	return false
 }
 
 type SdpAnswer struct {
@@ -2077,10 +2088,11 @@ const file_copysync_v1_wire_proto_rawDesc = "" +
 	"\x06answer\x18\v \x01(\v2\x16.copysync.v1.SdpAnswerH\x00R\x06answer\x129\n" +
 	"\tcandidate\x18\f \x01(\v2\x19.copysync.v1.IceCandidateH\x00R\tcandidate\x12'\n" +
 	"\x04ping\x18\r \x01(\v2\x11.copysync.v1.PingH\x00R\x04pingB\t\n" +
-	"\apayload\"G\n" +
+	"\apayload\"n\n" +
 	"\bSdpOffer\x12\x10\n" +
 	"\x03sdp\x18\x01 \x01(\tR\x03sdp\x12)\n" +
-	"\x10dtls_fingerprint\x18\x02 \x01(\tR\x0fdtlsFingerprint\"H\n" +
+	"\x10dtls_fingerprint\x18\x02 \x01(\tR\x0fdtlsFingerprint\x12%\n" +
+	"\x0eanswerer_waits\x18\x03 \x01(\bR\ranswererWaits\"H\n" +
 	"\tSdpAnswer\x12\x10\n" +
 	"\x03sdp\x18\x01 \x01(\tR\x03sdp\x12)\n" +
 	"\x10dtls_fingerprint\x18\x02 \x01(\tR\x0fdtlsFingerprint\"m\n" +

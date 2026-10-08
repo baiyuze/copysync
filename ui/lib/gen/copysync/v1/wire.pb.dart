@@ -275,10 +275,12 @@ class SdpOffer extends $pb.GeneratedMessage {
   factory SdpOffer({
     $core.String? sdp,
     $core.String? dtlsFingerprint,
+    $core.bool? answererWaits,
   }) {
     final result = SdpOffer._();
     if (sdp != null) result.sdp = sdp;
     if (dtlsFingerprint != null) result.dtlsFingerprint = dtlsFingerprint;
+    if (answererWaits != null) result.answererWaits = answererWaits;
     return result;
   }
 
@@ -297,6 +299,7 @@ class SdpOffer extends $pb.GeneratedMessage {
       createEmptyInstance: SdpOffer.$_createMessage)
     ..aOS(1, _omitFieldNames ? '' : 'sdp')
     ..aOS(2, _omitFieldNames ? '' : 'dtlsFingerprint')
+    ..aOB(3, _omitFieldNames ? '' : 'answererWaits')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -338,6 +341,18 @@ class SdpOffer extends $pb.GeneratedMessage {
   $core.bool hasDtlsFingerprint() => $_has(1);
   @$pb.TagNumber(2)
   void clearDtlsFingerprint() => $_clearField(2);
+
+  /// 应答方先别发自己的出口地址：等收到发起方的出口地址、先往那边发过包再发。
+  /// 默认（false）是发起方这样等。谁先发包决定了谁的路由器先收到对方的包，
+  /// 有的路由器会因此占住端口、打洞失败，所以换直连的重试里两种顺序轮流用。
+  @$pb.TagNumber(3)
+  $core.bool get answererWaits => $_getBF(2);
+  @$pb.TagNumber(3)
+  set answererWaits($core.bool value) => $_setBool(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasAnswererWaits() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearAnswererWaits() => $_clearField(3);
 }
 
 class SdpAnswer extends $pb.GeneratedMessage {
