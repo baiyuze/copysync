@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:copysync_ui/app_state.dart';
 import 'package:copysync_ui/daemon_client.dart';
+import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
 import 'package:copysync_ui/main.dart';
+import 'package:copysync_ui/theme.dart';
 import 'package:copysync_ui/widgets/common.dart';
 import 'package:copysync_ui/widgets/pairing_dialog.dart';
 
@@ -54,6 +57,32 @@ void main() {
     // 这里会报 "Null check operator used on a null value"
     expect(find.text('生成配对码'), findsOneWidget);
     expect(find.textContaining('Null check'), findsNothing);
+  });
+
+  group('配对指纹', () {
+    final a = Device(name: 'MacBook Pro', publicKeyFingerprint: 'CPJK-OG2H-U7O6');
+    final b = Device(name: 'MacBook Air', publicKeyFingerprint: 'FJX6-SRL2-C2QG');
+
+    test('两台设备上显示的内容完全相同', () {
+      // A 看到的是「自己 + 对方 B」，B 看到的是「自己 + 对方 A」，两边必须一致才可能核对
+      expect(pairingFingerprintRows(a, b), pairingFingerprintRows(b, a));
+      expect(pairingFingerprintRows(a, b).map((r) => r.$2),
+          ['CPJK-OG2H-U7O6', 'FJX6-SRL2-C2QG']);
+    });
+
+    testWidgets('确认对话框同时显示本机与对方的指纹', (tester) async {
+      final state = AppState()
+        ..debugSeed(status: Status(), config: Config(), self: a);
+      await tester.pumpWidget(AppScope(
+        state: state,
+        child: MaterialApp(
+          theme: buildTheme(Brightness.light),
+          home: Scaffold(body: PairingConfirmDialog(peer: b)),
+        ),
+      ));
+      expect(find.text('CPJK-OG2H-U7O6'), findsOneWidget);
+      expect(find.text('FJX6-SRL2-C2QG'), findsOneWidget);
+    });
   });
 
   test('数据目录路径与 Go 侧 config.DefaultPaths 保持一致', () {

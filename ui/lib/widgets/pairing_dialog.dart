@@ -160,7 +160,7 @@ class _GenerateTabState extends State<_GenerateTab> {
               const SizedBox(width: Insets.sm),
               Expanded(
                 child: Text(
-                  '对方输入后，两台设备会各自显示一串安全指纹，逐字核对一致再确认。',
+                  '对方输入后，两台 Mac 会显示同样的两行安全指纹，核对一致再确认。',
                   style: context.text.bodySmall,
                 ),
               ),
@@ -318,6 +318,8 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
   Widget build(BuildContext context) {
     final p = context.palette;
     final peer = widget.peer;
+    final self = AppScope.of(context).self;
+    final rows = pairingFingerprintRows(self, peer);
     return Dialog(
       child: SizedBox(
         width: 420,
@@ -332,27 +334,48 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
               Text('正在与「${peer.name}」配对', style: context.text.bodySmall),
               const SizedBox(height: Insets.xl),
               Container(
-                padding: const EdgeInsets.symmetric(vertical: Insets.lg),
+                padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md),
                 decoration: BoxDecoration(
                   color: p.fill,
                   borderRadius: BorderRadius.circular(Radii.md),
                 ),
-                child: Text(
-                  peer.publicKeyFingerprint,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: monoFamily,
-                    letterSpacing: 2,
-                    color: p.text,
-                  ),
+                child: Column(
+                  children: [
+                    for (final (name, fingerprint) in rows)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Row(
+                          children: [
+                            Text(
+                              fingerprint,
+                              style: TextStyle(
+                                fontSize: 21,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: monoFamily,
+                                letterSpacing: 1.5,
+                                color: p.text,
+                              ),
+                            ),
+                            const SizedBox(width: Insets.md),
+                            Expanded(
+                              child: Text(
+                                name,
+                                textAlign: TextAlign.right,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.text.bodySmall,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
               ),
               const SizedBox(height: Insets.lg),
               Text(
-                '确认这串字符与对方屏幕上显示的完全一致。'
-                '不一致说明连接可能被第三方篡改，请拒绝。',
+                '两台 Mac 上显示的这两行应当完全相同。'
+                '有任何一个字符不同，说明连接可能被第三方篡改，请拒绝。',
                 style: context.text.bodySmall,
               ),
               const SizedBox(height: Insets.xl),
@@ -385,4 +408,21 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
       ),
     );
   }
+}
+
+/// 配对确认时显示的两行：两台设备各自的公钥指纹，按指纹字符串排序。
+///
+/// 两台 Mac 各自算出的结果完全相同，用户只需比对两块屏幕是否一致。
+/// 早先每台只显示「对方」的指纹，两块屏幕上的字符串天然不同，根本无从比对。
+///
+/// 刻意不把两把公钥合成一串短码：攻击者能同时替换两边看到的公钥，
+/// 对一串 60 位的合成码只需生日攻击（约 2^30 次）就能凑出相同结果；
+/// 而分别显示两个指纹，攻击者必须为每一把伪造公钥各做一次原像攻击（约 2^60 次）。
+List<(String, String)> pairingFingerprintRows(Device? self, Device peer) {
+  final rows = <(String, String)>[
+    if (self != null) (self.name, self.publicKeyFingerprint),
+    (peer.name, peer.publicKeyFingerprint),
+  ];
+  rows.sort((a, b) => a.$2.compareTo(b.$2));
+  return rows;
 }

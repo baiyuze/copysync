@@ -40,7 +40,7 @@
         "description": "在两台 Mac 之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台 Mac 可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）",
-        "softwareVersion": "1.0.0",
+        "softwareVersion": "1.0.1",
         "datePublished": "2026-10-08",
         "inLanguage": "zh-CN",
         "license": "https://opensource.org/licenses/MIT",
@@ -130,11 +130,11 @@
         <h1>在这台 Mac 复制，<br>到那台 Mac 粘贴。</h1>
         <p class="lede">文本、图片、文件、整个文件夹都可以。不要求同一个 Apple&nbsp;ID，也不要求在同一个网络。数据在你的设备之间直接传输，经过你自己的服务器时也是加密的。</p>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
             下载 macOS 版
           </a>
-          <span class="note">版本 1.0.0，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
+          <span class="note">版本 1.0.1，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
         </div>
 
         <div class="demo" role="img" aria-label="演示：在 MacBook Pro 上选中文件并按下 Command C，文件经直连传到 MacBook Air，在那里按下 Command V 粘贴出来">
@@ -275,7 +275,7 @@
           <h2 id="security-title">服务器看不到你复制了什么</h2>
           <ul>
             <li><strong>服务器不存账号，也不存内容。</strong>设备身份是一把 Ed25519 密钥，设备 ID 由公钥算出，服务器不需要用户表就能验证身份。</li>
-            <li><strong>配对时由你核对安全指纹。</strong>两台屏幕各自显示对方公钥的指纹。服务器有能力替换转发中的公钥，但没法让两边显示出相同的指纹，这一步就是防中间人的闸门。</li>
+            <li><strong>配对时由你核对安全指纹。</strong>两台屏幕会显示同样的两行：双方各自公钥的指纹。服务器有能力替换转发中的公钥，但替换之后两块屏幕上的内容就对不上了，这一步就是防中间人的闸门。</li>
             <li><strong>之后的每条消息都带签名</strong>，服务器无法冒充你的设备。直连通道的证书在握手后还会再核对一次，不一致立即断开。</li>
             <li><strong>中转也只是转发密文。</strong>TURN 转发的是加密后的数据包，中转凭证按设备单独签发，12 小时后过期。</li>
           </ul>
@@ -322,13 +322,13 @@
           <div>
             <h3>在每台 Mac 上</h3>
             <ol class="install-steps">
-              <li>下载 <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">CopySync-1.0.0.dmg</a>，打开后把 CopySync 拖进「应用程序」。</li>
+              <li>下载 <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">CopySync.dmg</a>，打开后把 CopySync 拖进「应用程序」。</li>
               <li>从「应用程序」里打开。
                 <span class="aside">第一次会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证。到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」，只需要这一次。</span></li>
               <li>点「启用后台同步」。</li>
               <li>在「设置」里填入服务器地址 <code>ws://服务器地址:8787/signal</code>，按回车。</li>
               <li>系统询问是否允许读取剪贴板时，选择允许。</li>
-              <li>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两边核对安全指纹一致后确认。</li>
+              <li>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。</li>
             </ol>
           </div>
           <div>
@@ -336,9 +336,9 @@
             <p class="aside-p">任意 Linux，需要 root。ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。</p>
             <div class="code">
               <button class="copy" type="button" data-done="已复制">复制</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-1.0.0-linux-amd64.tar.gz
-tar xzf copysync-server-1.0.0-linux-amd64.tar.gz
-cd copysync-server-1.0.0-linux-amd64
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
 sudo ./install.sh 你的公网IP</code></pre>
             </div>
             <p class="aside-p">脚本会注册开机自启的 systemd 服务，最后打印出 App 里要填的地址。防火墙或云安全组需要放行：</p>
@@ -362,7 +362,7 @@ sudo ./install.sh 你的公网IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">版本</th><td>1.0.0，<time datetime="2026-10-08">2026 年 10 月 8 日</time>发布</td></tr>
+              <tr><th scope="row">版本</th><td>1.0.1，<time datetime="2026-10-08">2026 年 10 月 8 日</time>发布</td></tr>
               <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包 45 MB</td></tr>
               <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存</td></tr>
               <tr><th scope="row">同步的内容</th><td>纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭</td></tr>
@@ -435,7 +435,7 @@ sudo ./install.sh 你的公网IP</code></pre>
       <div class="wrap">
         <h2 id="closing-title">两台 Mac，一个剪贴板。</h2>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">下载 macOS 版</a>
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">下载 macOS 版</a>
           <a href="https://github.com/baiyuze/copysync">在 GitHub 上查看源码</a>
         </div>
       </div>

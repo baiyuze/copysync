@@ -1,5 +1,17 @@
 # 更新记录 / Changelog
 
+## 1.0.1 — 2026-10-08
+
+- 修复：配对时两台 Mac 显示的安全指纹不一样，无从核对。之前每台只显示「对方」的指纹；
+  现在两台显示同样的两行（双方各一行，按固定顺序），两块屏幕逐行一致即可确认。命令行的
+  `pair` / `join` 同步修改。
+  Fixed: the two Macs showed different fingerprints during pairing, so they could never be compared.
+  Each Mac used to show only the other's fingerprint; both now show the same two lines, one per device,
+  in a fixed order. The CLI's `pair` / `join` follow the same rule.
+- 对话框与菜单加上投影。 Dialogs and menus now have a drop shadow.
+- 发布资源改用不带版本号的文件名（如 `CopySync.dmg`），下载直链不再随版本失效。
+  Release assets now use versionless names (e.g. `CopySync.dmg`) so direct download links keep working.
+
 ## 1.0.0 — 2026-10-08
 
 第一个正式版本。 First public release.

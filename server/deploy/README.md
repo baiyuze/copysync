@@ -20,8 +20,8 @@ The server only does two things: it lets your devices find each other (signaling
 ## 方式一：systemd（推荐） / Option 1: systemd (recommended)
 
 ```bash
-tar xzf copysync-server-*-linux-amd64.tar.gz
-cd copysync-server-*-linux-amd64
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
 sudo ./install.sh <公网IP / public IP>
 ```
 

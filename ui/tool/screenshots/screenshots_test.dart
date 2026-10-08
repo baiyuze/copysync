@@ -307,14 +307,18 @@ void main() {
         final brightness = dark ? Brightness.dark : Brightness.light;
         await tester.pumpWidget(RepaintBoundary(
           key: _boundary,
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: buildTheme(brightness, fontFamily: 'SF', fontFamilyFallback: const ['PingFang']),
-            home: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Center(
-                child: PairingConfirmDialog(
-                  peer: Device(name: 'MacBook Air', publicKeyFingerprint: 'R8NF-2WTC-QL5J'),
+          // 对话框要同时显示本机的指纹，从 AppScope 里取
+          child: AppScope(
+            state: _demo(),
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: buildTheme(brightness, fontFamily: 'SF', fontFamilyFallback: const ['PingFang']),
+              home: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Center(
+                  child: PairingConfirmDialog(
+                    peer: Device(name: 'MacBook Air', publicKeyFingerprint: 'R8NF-2WTC-QL5J'),
+                  ),
                 ),
               ),
             ),

@@ -90,9 +90,9 @@ There are two parts: **the app on each Mac**, and **a server both Macs can reach
 On a Linux server, as root:
 
 ```bash
-curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-1.0.0-linux-amd64.tar.gz
-tar xzf copysync-server-1.0.0-linux-amd64.tar.gz
-cd copysync-server-1.0.0-linux-amd64
+curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
 sudo ./install.sh <public IP of the server>
 ```
 
@@ -110,7 +110,7 @@ For Docker, or for LAN-only use, see the [server deployment guide](server/deploy
 
 ### 2. Install the app on each Mac
 
-1. Download [CopySync-1.0.0.dmg](https://github.com/baiyuze/copysync/releases/latest), open it and drag CopySync into Applications.
+1. Download [CopySync.dmg](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg), open it and drag CopySync into Applications.
 2. Open CopySync from Applications.
 
    The first time, macOS says it can't verify the developer: CopySync isn't notarized by Apple yet (that requires a paid developer account). Go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. You only need to do this once.
@@ -123,7 +123,7 @@ For Docker, or for LAN-only use, see the [server deployment guide](server/deploy
 
 1. On one Mac: **设备 → 添加设备 → 生成配对码** (Devices → Add device → Generate code).
 2. On the other: **添加设备 → 输入配对码** (Add device → Enter code), and type the 6 characters.
-3. Each screen shows a fingerprint. **Confirm only if they match character for character.**
+3. Both screens show the same two lines of fingerprints, one for each Mac. **Confirm only if the two screens match line for line.**
 
 From then on, copy on either Mac and paste on the other.
 
@@ -163,7 +163,7 @@ flowchart LR
 ### Security model
 
 - **The server keeps no accounts.** A device's identity is an Ed25519 key, and its ID is derived from the public key, so the server can verify that an ID belongs to a key without a user table.
-- **Fingerprints are compared by a person when pairing.** Each Mac shows a fingerprint of the other's public key (the first 60 bits of its SHA-256, like `R8NF-2WTC-QL5J`). The server could swap keys in transit, but it cannot make both screens show the same fingerprint — this step is what stops a man in the middle.
+- **Fingerprints are compared by a person when pairing.** Both Macs show the same two lines: the fingerprint of each side's public key (the first 60 bits of its SHA-256, like `R8NF-2WTC-QL5J`), in a fixed order. The server could swap keys in transit, but then the two screens would no longer match — this step is what stops a man in the middle. The fingerprints are shown separately rather than combined into one short code: an attacker controlling both forged keys could find a matching combined code with a birthday attack, while separate fingerprints need a preimage attack per key, roughly a billion times harder.
 - **Every signaling message after that is signed**, so the server cannot forge a device. The DTLS certificate fingerprint of the direct channel is also sent signed and checked against the actual certificate after the handshake; a mismatch drops the connection.
 - **The relay can't read anything either.** TURN only forwards encrypted UDP packets. Relay credentials are issued per device and expire after 12 hours.
 - **No App Sandbox**, because CopySync needs to read files at whatever path you copy them from.

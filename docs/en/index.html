@@ -40,7 +40,7 @@
         "description": "Open-source tool that syncs the clipboard and files between Macs. Copy text, images, files or folders on one Mac and paste them on another. Devices connect directly over WebRTC with DTLS encryption, falling back to a TURN relay on a server the user hosts.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 or later (Intel and Apple silicon)",
-        "softwareVersion": "1.0.0",
+        "softwareVersion": "1.0.1",
         "datePublished": "2026-10-08",
         "inLanguage": "en",
         "license": "https://opensource.org/licenses/MIT",
@@ -130,11 +130,11 @@
         <h1>Copy on this Mac.<br>Paste on that one.</h1>
         <p class="lede">Text, images, files, whole folders. No shared Apple&nbsp;ID required, no shared network required. Data moves directly between your devices, and stays encrypted even when it passes through your own server.</p>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
             Download for macOS
           </a>
-          <span class="note">Version 1.0.0, free and open source. macOS 13 or later, Intel and Apple silicon.</span>
+          <span class="note">Version 1.0.1, free and open source. macOS 13 or later, Intel and Apple silicon.</span>
         </div>
 
         <div class="demo" role="img" aria-label="Demo: a file is selected on a MacBook Pro and copied with Command C, travels over a direct connection to a MacBook Air, and is pasted there with Command V">
@@ -275,7 +275,7 @@
           <h2 id="security-title">Your server can't see what you copy</h2>
           <ul>
             <li><strong>No accounts, no stored content.</strong> A device's identity is an Ed25519 key, and its ID is derived from the public key, so the server verifies identity without a user table.</li>
-            <li><strong>You compare fingerprints when pairing.</strong> Each Mac shows a fingerprint of the other's key. The server could swap keys in transit, but it can't make both screens show the same fingerprint — that check is what stops a man in the middle.</li>
+            <li><strong>You compare fingerprints when pairing.</strong> Both screens show the same two lines: the fingerprint of each Mac's key. The server could swap keys in transit, but then the two screens would no longer match — that check is what stops a man in the middle.</li>
             <li><strong>Every message after that is signed</strong>, so the server can't impersonate your device. The direct channel's certificate is checked again after the handshake; a mismatch drops the connection.</li>
             <li><strong>The relay only forwards ciphertext.</strong> TURN carries encrypted packets, and relay credentials are issued per device and expire after 12 hours.</li>
           </ul>
@@ -322,13 +322,13 @@
           <div>
             <h3>On each Mac</h3>
             <ol class="install-steps">
-              <li>Download <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">CopySync-1.0.0.dmg</a>, open it and drag CopySync into Applications.</li>
+              <li>Download <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">CopySync.dmg</a>, open it and drag CopySync into Applications.</li>
               <li>Open it from Applications.
                 <span class="aside">The first time, macOS says it can't verify the developer: CopySync isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once.</span></li>
               <li>Click 启用后台同步 (Enable background sync).</li>
               <li>In 设置 (Settings), enter your server as <code>ws://server-address:8787/signal</code> and press Return.</li>
               <li>When macOS asks whether CopySync may read the clipboard, allow it.</li>
-              <li>On one Mac, choose 设备 → 添加设备 (Devices → Add device) to get a 6-character code; enter it on the other, and confirm once the fingerprints match.</li>
+              <li>On one Mac, choose 设备 → 添加设备 (Devices → Add device) to get a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints.</li>
             </ol>
           </div>
           <div>
@@ -336,9 +336,9 @@
             <p class="aside-p">Any Linux, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.</p>
             <div class="code">
               <button class="copy" type="button" data-done="Copied">Copy</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-1.0.0-linux-amd64.tar.gz
-tar xzf copysync-server-1.0.0-linux-amd64.tar.gz
-cd copysync-server-1.0.0-linux-amd64
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
 sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
             </div>
             <p class="aside-p">The script registers a systemd service that starts on boot and prints the address to enter in the app. Open these ports in your firewall or security group:</p>
@@ -362,7 +362,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">Version</th><td>1.0.0, released <time datetime="2026-10-08">October 8, 2026</time></td></tr>
+              <tr><th scope="row">Version</th><td>1.0.1, released <time datetime="2026-10-08">October 8, 2026</time></td></tr>
               <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; 45 MB download</td></tr>
               <tr><th scope="row">Server</th><td>Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM</td></tr>
               <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>
@@ -435,7 +435,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
       <div class="wrap">
         <h2 id="closing-title">Two Macs, one clipboard.</h2>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">Download for macOS</a>
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">Download for macOS</a>
           <a href="https://github.com/baiyuze/copysync">View the source on GitHub</a>
         </div>
       </div>

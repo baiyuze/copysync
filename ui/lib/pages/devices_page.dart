@@ -40,7 +40,7 @@ class DevicesPage extends StatelessWidget {
               if (state.self != null)
                 GroupSection(
                   title: '这台 Mac',
-                  footnote: '配对时，两台设备会互相显示对方的安全指纹，核对一致才能确认。',
+                  footnote: '配对时，两台 Mac 会显示同样的两行安全指纹：这台的和对方的。逐字核对一致才能确认。',
                   child: GroupBox(children: [_DeviceRow(device: state.self!, isSelf: true)]),
                 ),
               if (state.peers.isEmpty)

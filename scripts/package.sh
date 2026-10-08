@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # 构建并打出可分发的发布包到 release/。
 #
-#   CopySync-<版本>.dmg                          macOS 客户端，Intel 与 Apple 芯片通用
-#   copysync-server-<版本>-linux-amd64.tar.gz    信令服务器 + systemd / Docker 部署文件
-#   copysync-server-<版本>-linux-arm64.tar.gz
-#   copysync-server-<版本>-macos.tar.gz          把服务器放在其中一台 Mac 上时用
+#   CopySync.dmg                          macOS 客户端，Intel 与 Apple 芯片通用
+#   copysync-server-linux-amd64.tar.gz    信令服务器 + systemd / Docker 部署文件
+#   copysync-server-linux-arm64.tar.gz
+#   copysync-server-macos.tar.gz          把服务器放在其中一台 Mac 上时用
+#
+# 文件名不带版本号：网站与 README 用 releases/latest/download/<文件名> 直链下载，
+# 带版本号的话每发一版这些链接都会失效。版本号见 Release 标题与 copysync-server -version。
 #   SHA256SUMS
 #
 # 服务器是纯 Go，直接交叉编译；客户端依赖 cgo 与 Flutter，只能在 Mac 上构建。
@@ -12,7 +15,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-export VERSION=${VERSION:-1.0.0}
+export VERSION=${VERSION:-1.0.1}
 OUT=release
 
 ./scripts/build.sh
@@ -84,14 +87,14 @@ rm -rf "$MNT/.fseventsd"
 sync
 hdiutil detach "$MNT" -quiet
 hdiutil convert "$STAGE/rw.dmg" -format UDZO -imagekey zlib-level=9 \
-    -o "$OUT/CopySync-$VERSION.dmg" -quiet
-echo "  ✓ CopySync-$VERSION.dmg"
+    -o "$OUT/CopySync.dmg" -quiet
+echo "  ✓ CopySync.dmg（$VERSION）"
 
 # ─────────────────────────── 服务器 ───────────────────────────
 
 echo "▶ 打包服务器"
 for arch in amd64 arm64; do
-    name="copysync-server-$VERSION-linux-$arch"
+    name="copysync-server-linux-$arch"
     d="$STAGE/$name"
     mkdir -p "$d"
     (cd server && CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -trimpath \
@@ -102,7 +105,7 @@ for arch in amd64 arm64; do
     echo "  ✓ $name.tar.gz"
 done
 
-name="copysync-server-$VERSION-macos"
+name="copysync-server-macos"
 mkdir -p "$STAGE/$name"
 cp dist/copysync-server server/deploy/README.md "$STAGE/$name/"
 tar -C "$STAGE" -czf "$OUT/$name.tar.gz" "$name"

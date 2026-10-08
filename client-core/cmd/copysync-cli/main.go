@@ -17,6 +17,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"time"
 
 	"google.golang.org/grpc"
@@ -163,8 +164,9 @@ func createPairing(ctx context.Context, c pb.DaemonServiceClient) error {
 			continue // 非待确认的配对事件（普通的在线状态变化）
 		}
 		fmt.Printf("\n  对方已兑换：%s（%s）\n", d.GetName(), d.GetPlatform())
-		fmt.Printf("  指纹：%s\n\n", d.GetPublicKeyFingerprint())
-		fmt.Println("  ⚠️  请与对方屏幕上的指纹逐字核对，一致才继续。")
+		if err := printFingerprints(ctx, c, d); err != nil {
+			return err
+		}
 		fmt.Print("  确认配对？[y/N] ")
 
 		var answer string
@@ -189,6 +191,26 @@ func createPairing(ctx context.Context, c pb.DaemonServiceClient) error {
 	}
 }
 
+// printFingerprints 打印配对时要核对的两行：本机与对方的公钥指纹，按指纹排序。
+// 两台设备打印出的内容完全相同，用户比对两块屏幕即可；规则与界面一致
+// （见 ui/lib/widgets/pairing_dialog.dart 的 pairingFingerprintRows）。
+func printFingerprints(ctx context.Context, c pb.DaemonServiceClient, peer *pb.Device) error {
+	resp, err := c.ListDevices(ctx, &pb.Empty{})
+	if err != nil {
+		return err
+	}
+	rows := []*pb.Device{resp.GetSelf(), peer}
+	sort.Slice(rows, func(i, j int) bool {
+		return rows[i].GetPublicKeyFingerprint() < rows[j].GetPublicKeyFingerprint()
+	})
+	fmt.Println("  安全指纹：")
+	for _, d := range rows {
+		fmt.Printf("    %s  %s\n", d.GetPublicKeyFingerprint(), d.GetName())
+	}
+	fmt.Println("\n  两台设备上显示的这两行应当完全相同，一致才继续。")
+	return nil
+}
+
 func joinPairing(ctx context.Context, c pb.DaemonServiceClient, code string) error {
 	if code == "" {
 		return errors.New("用法: copysync-cli join <配对码>")
@@ -202,8 +224,9 @@ func joinPairing(ctx context.Context, c pb.DaemonServiceClient, code string) err
 	}
 	peer := resp.GetPeer()
 	fmt.Printf("\n  找到设备：%s（%s）\n", peer.GetName(), peer.GetPlatform())
-	fmt.Printf("  指纹：%s\n\n", peer.GetPublicKeyFingerprint())
-	fmt.Println("  ⚠️  请与对方屏幕上的指纹逐字核对，一致才继续。")
+	if err := printFingerprints(ctx, c, peer); err != nil {
+		return err
+	}
 	fmt.Print("  确认配对？[y/N] ")
 
 	var answer string

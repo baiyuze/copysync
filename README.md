@@ -88,9 +88,9 @@ CopySync 的做法是：两台 Mac 配对一次，之后在一台上 `⌘C`，�
 在 Linux 服务器上（需要 root）：
 
 ```bash
-curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-1.0.0-linux-amd64.tar.gz
-tar xzf copysync-server-1.0.0-linux-amd64.tar.gz
-cd copysync-server-1.0.0-linux-amd64
+curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
 sudo ./install.sh <服务器公网IP>
 ```
 
@@ -108,7 +108,7 @@ sudo ./install.sh <服务器公网IP>
 
 ### 2. 在每台 Mac 上安装 App
 
-1. 下载 [CopySync-1.0.0.dmg](https://github.com/baiyuze/copysync/releases/latest)，打开后把 CopySync 拖进「应用程序」。
+1. 下载 [CopySync.dmg](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg)，打开后把 CopySync 拖进「应用程序」。
 2. 从「应用程序」里打开 CopySync。
 
    第一次打开时 macOS 会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证（需要付费开发者账号）。到 **系统设置 → 隐私与安全性**，在页面下方点 **仍要打开**。只需要这一次。
@@ -121,7 +121,7 @@ sudo ./install.sh <服务器公网IP>
 
 1. 在一台 Mac 上点 **设备 → 添加设备 → 生成配对码**。
 2. 在另一台上点 **添加设备 → 输入配对码**，输入那 6 位字符。
-3. 两台屏幕上会各自显示一串安全指纹，**逐字核对一致后**再点确认。
+3. 两台屏幕上会显示同样的两行安全指纹（这台的和对方的），**逐行核对两边完全一致后**再点确认。
 
 之后在任意一台上复制，另一台就能直接粘贴。
 
@@ -161,7 +161,7 @@ flowchart LR
 ### 安全模型
 
 - **服务器不存账号**。设备身份是一把 Ed25519 密钥，设备 ID 由公钥派生，服务器据此就能验证"这个 ID 确实属于这把公钥"，无需用户表。
-- **配对时人工核对指纹**。两台设备各自显示对方公钥的指纹（SHA-256 的前 60 位，形如 `R8NF-2WTC-QL5J`）。服务器可以在配对时替换转发中的公钥，但没法让两边显示出相同的指纹，这一步就是防中间人的闸门。
+- **配对时人工核对指纹**。两台设备显示同样的两行：双方各自公钥的指纹（SHA-256 的前 60 位，形如 `R8NF-2WTC-QL5J`），按固定顺序排列。服务器可以在配对时替换转发中的公钥，但替换后两块屏幕上的内容就对不上了，这一步就是防中间人的闸门。两个指纹分开显示而不是合成一串短码，是因为攻击者同时控制两把伪造公钥时，凑出一串相同的短码只需生日攻击；分开显示则要为每把公钥各做一次原像攻击，难度高出约十亿倍。
 - **之后的每条信令都带签名**，服务器无法伪造设备。直连通道的 DTLS 证书指纹也经签名传递，握手后比对实际证书，不一致立即断开。
 - **中转也看不到内容**。TURN 只转发加密后的 UDP 包。中转凭证按设备单独签发，12 小时过期。
 - **不启用 App 沙盒**：需要访问你复制的任意路径下的文件。
