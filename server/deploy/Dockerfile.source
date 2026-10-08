@@ -1,0 +1,16 @@
+# 从源码构建服务器镜像。在仓库根目录执行：
+#
+#   docker build -f server/deploy/Dockerfile.source -t copysync-server .
+FROM golang:1.26 AS build
+WORKDIR /src
+COPY proto ./proto
+COPY server ./server
+ARG VERSION=dev
+RUN cd server && CGO_ENABLED=0 go build -trimpath \
+    -ldflags "-s -w -X main.version=${VERSION}" \
+    -o /out/copysync-server ./cmd/copysync-server
+
+FROM scratch
+COPY --from=build /out/copysync-server /copysync-server
+EXPOSE 8787/tcp 3478/udp
+ENTRYPOINT ["/copysync-server"]

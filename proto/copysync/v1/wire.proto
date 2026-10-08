@@ -1,0 +1,226 @@
+// 线上协议：客户端 ↔ 信令服务器，以及设备 ↔ 设备。
+//
+// 信令服务器只转发、不解密内容，也不存用户——设备靠配对时交换的
+// Ed25519 公钥互相认证。所有经服务器中转的信令都带签名，
+// 防止服务器伪造 peer 身份做中间人。
+
+syntax = "proto3";
+
+package copysync.v1;
+
+// ClipKind / ClipItem 在此复用，避免两套等价定义
+import "copysync/v1/daemon.proto";
+
+option go_package = "github.com/baiyuze/copysync/proto/gen/copysync/v1;copysyncv1";
+
+// ═══════════════════ 信令层（WebSocket 承载）═══════════════════
+
+// 经服务器转发的消息一律包一层签名。接收方用配对时存下的
+// 对端公钥验签，服务器无法伪造。
+message Signed {
+  bytes payload = 1;        // 序列化后的 SignalMessage
+  bytes signature = 2;      // Ed25519 签名，覆盖 payload
+  string from_device_id = 3;
+}
+
+message SignalMessage {
+  // 防重放：接收方拒绝时间戳过旧或 nonce 重复的消息
+  int64 timestamp_unix = 1;
+  bytes nonce = 2;
+  string to_device_id = 3;
+
+  oneof payload {
+    SdpOffer offer = 10;
+    SdpAnswer answer = 11;
+    IceCandidate candidate = 12;
+    Ping ping = 13;
+  }
+}
+
+message SdpOffer {
+  string sdp = 1;
+  // DTLS 证书指纹。经签名传输，杜绝信令服务器中间人攻击——
+  // 这是 P2P 通道真正的安全锚点。
+  string dtls_fingerprint = 2;
+}
+
+message SdpAnswer {
+  string sdp = 1;
+  string dtls_fingerprint = 2;
+}
+
+message IceCandidate {
+  string candidate = 1;
+  string sdp_mid = 2;
+  uint32 sdp_mline_index = 3;
+}
+
+message Ping {
+  int64 sent_at_unix = 1;
+}
+
+// ── 客户端 → 服务器（不经转发，直接处理）──
+
+message ClientHello {
+  string device_id = 1;
+  string device_name = 2;
+  string platform = 3;
+  bytes public_key = 4;             // Ed25519
+  bytes signature = 5;              // 对 challenge 的签名，证明持有私钥
+  repeated string paired_device_ids = 6;  // 关心哪些对端的在线状态
+}
+
+message ServerHello {
+  bytes challenge = 1;
+  repeated IceServer ice_servers = 2;
+  int64 server_time_unix = 3;
+}
+
+message IceServer {
+  repeated string urls = 1;
+  string username = 2;              // TURN 短期凭证
+  string credential = 3;
+  int64 expires_at_unix = 4;
+}
+
+message PeerPresence {
+  string device_id = 1;
+  bool online = 2;
+}
+
+// ── 配对 ──
+
+message PairingCreateRequest {
+  string device_name = 1;
+  bytes public_key = 2;
+}
+
+message PairingCreateResponse {
+  string code = 1;                  // 6 位，服务器侧 TTL 5 分钟
+  int64 expires_at_unix = 2;
+}
+
+message PairingRedeemRequest {
+  string code = 1;
+  string device_id = 2;
+  string device_name = 3;
+  bytes public_key = 4;
+}
+
+message PairingRedeemResponse {
+  string peer_device_id = 1;
+  string peer_device_name = 2;
+  string peer_platform = 3;
+  bytes peer_public_key = 4;
+}
+
+// 服务器 → 发起方：有人兑换了你的配对码
+message PairingRedeemed {
+  string peer_device_id = 1;
+  string peer_device_name = 2;
+  string peer_platform = 3;
+  bytes peer_public_key = 4;
+}
+
+// TURN 凭证是按设备签发且有有效期的，因此必须在认证完成后才能下发，
+// 之后也会在临近过期时重新推送。
+message IceConfig {
+  repeated IceServer ice_servers = 1;
+}
+
+// 客户端 ↔ 服务器的顶层信封
+message ServerEnvelope {
+  oneof payload {
+    ServerHello hello = 1;
+    Signed forwarded = 2;           // 转发自其他设备
+    PeerPresence presence = 3;
+    PairingCreateResponse pairing_created = 4;
+    PairingRedeemResponse pairing_redeemed_result = 5;
+    PairingRedeemed pairing_redeemed = 6;
+    ServerError error = 7;
+    IceConfig ice_config = 8;
+  }
+}
+
+message ClientEnvelope {
+  oneof payload {
+    ClientHello hello = 1;
+    Signed forward = 2;             // 请服务器转发给 to_device_id
+    PairingCreateRequest pairing_create = 3;
+    PairingRedeemRequest pairing_redeem = 4;
+  }
+}
+
+message ServerError {
+  string code = 1;
+  string message = 2;
+}
+
+// ═══════════════════ 设备间协议（DataChannel 承载）═══════════════════
+//
+// 控制消息与数据流走不同的 DataChannel，避免大文件传输阻塞控制通道。
+
+// 控制通道消息
+message PeerMessage {
+  oneof payload {
+    ClipOffer offer = 1;            // 广播：我这边复制了东西
+    PeerFetch fetch = 2;            // 请求：把某条内容发给我
+    FetchReject reject = 3;         // 拒绝：源文件没了 / 已过期
+    TransferHeader header = 4;      // 数据流即将开始
+    TransferDone done = 5;
+  }
+}
+
+// 复制发生时广播给所有在线对端。
+// 小于阈值的内容会紧接着主动推送；大于阈值的只发这条，等对方来取。
+message ClipOffer {
+  string clip_id = 1;
+  ClipKind kind = 2;
+  repeated ClipItem items = 3;
+  int64 total_size = 4;
+  string text_content = 5;          // 文本/HTML 直接内联，无需二次传输
+  int64 created_at_unix = 6;
+  bool will_push = 7;               // true=发送方会主动推，false=需 fetch
+  // HTML 的纯文本形式（此时 text_content 是 HTML 标记）。旧版本不发这个字段，
+  // 收到空值时由接收方从 HTML 中提取。
+  string plain_text = 8;
+}
+
+// 与 daemon.proto 的 FetchRequest（UI→daemon）区分：这条是 daemon→peer
+message PeerFetch {
+  string clip_id = 1;
+}
+
+message FetchReject {
+  string clip_id = 1;
+  string reason = 2;                // source_missing / expired / denied
+}
+
+// 数据流的第一条消息，之后是裸字节流直到 total_bytes
+message TransferHeader {
+  string clip_id = 1;
+  string stream_id = 2;
+  int64 total_bytes = 3;            // 压缩后的字节数；0 表示未知（流式打包）
+  Compression compression = 4;
+  Packaging packaging = 5;
+}
+
+enum Compression {
+  COMPRESSION_UNSPECIFIED = 0;
+  COMPRESSION_NONE = 1;
+  COMPRESSION_ZSTD = 2;
+}
+
+enum Packaging {
+  PACKAGING_UNSPECIFIED = 0;
+  PACKAGING_RAW = 1;                // 单个文件，裸内容
+  PACKAGING_TAR = 2;                // 多文件或目录
+}
+
+message TransferDone {
+  string clip_id = 1;
+  string stream_id = 2;
+  bool ok = 3;
+  string error = 4;
+  bytes sha256 = 5;
+}

@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CopySync: sync the clipboard and files between Macs, across Apple IDs — open source</title>
+  <meta name="description" content="CopySync lets you copy on one Mac and paste on another: text, images, files and folders. Works across Apple IDs and networks. Peer-to-peer, end-to-end encrypted, with a server you host yourself that can't read your data. Free and MIT licensed.">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/en/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
+  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161617" media="(prefers-color-scheme: dark)">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="CopySync: copy on one Mac, paste on the other">
+  <meta property="og:description" content="Text, images, files and folders. Across Apple IDs and networks, peer-to-peer and end-to-end encrypted, with a server you host. Free and open source.">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/en/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="zh_CN">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://baiyuze.github.io/copysync/#app",
+        "name": "CopySync",
+        "description": "Open-source tool that syncs the clipboard and files between Macs. Copy text, images, files or folders on one Mac and paste them on another. Devices connect directly over WebRTC with DTLS encryption, falling back to a TURN relay on a server the user hosts.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "macOS 13 or later (Intel and Apple silicon)",
+        "softwareVersion": "1.0.0",
+        "datePublished": "2026-10-08",
+        "inLanguage": "en",
+        "license": "https://opensource.org/licenses/MIT",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "downloadUrl": "https://github.com/baiyuze/copysync/releases/latest",
+        "codeRepository": "https://github.com/baiyuze/copysync",
+        "image": "https://baiyuze.github.io/copysync/assets/icon.png",
+        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/history.png",
+        "fileSize": "45MB",
+        "featureList": [
+          "Syncs plain text, rich text, images, files and folders",
+          "Works across Apple IDs and across networks",
+          "Direct WebRTC connection with automatic TURN relay fallback",
+          "End-to-end DTLS encryption and fingerprint verification when pairing",
+          "Items under 50 MB are pushed on copy; larger files are pulled on demand",
+          "History of the last 3 days"
+        ],
+        "author": { "@type": "Person", "name": "baiyuze", "url": "https://github.com/baiyuze" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How is CopySync different from Universal Clipboard?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi-Fi on, close to each other. CopySync only needs both Macs to reach your server, so different Apple IDs and different networks work. It also keeps a history and lets you pull large files on demand." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can the CopySync server see what I copy?",
+            "acceptedAnswer": { "@type": "Answer", "text": "No. With a direct connection the data never touches the server. When relaying, the server only forwards DTLS-encrypted UDP packets. It keeps no accounts and stores no clipboard content." }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need my own server to use CopySync?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. There is no public server. On a LAN, run the server on one of your Macs; across networks you need a machine with a public IP, and the smallest cloud VM is enough." }
+          },
+          {
+            "@type": "Question",
+            "name": "Does CopySync support Windows or iPhone?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Windows is planned. iPhone and iPad are not supported: iOS does not allow apps to watch the clipboard in the background, so copy-and-it's-there can't work the way it does on the Mac." }
+          },
+          {
+            "@type": "Question",
+            "name": "Why does macOS say it can't verify the developer of CopySync?",
+            "acceptedAnswer": { "@type": "Answer", "text": "CopySync isn't notarized by Apple yet, which requires a paid developer account. Open System Settings, go to Privacy & Security and click Open Anyway. You only need to do this once." }
+          },
+          {
+            "@type": "Question",
+            "name": "How does CopySync handle large files?",
+            "acceptedAnswer": { "@type": "Answer", "text": "By default, anything under 50 MB is pushed to the other Mac as soon as you copy it. Larger files sync as a record, and you pull them from the history when you need them. The limit is adjustable from 1 MB to 1 GB." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is CopySync free?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. CopySync is open source under the MIT license, with the source on GitHub." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./" aria-label="CopySync home">
+        <img src="../assets/icon.svg" alt="" width="26" height="26">
+        CopySync
+      </a>
+      <nav class="site-nav" aria-label="Page">
+        <a class="optional" href="#how">How it works</a>
+        <a class="optional" href="#install">Install</a>
+        <a class="optional" href="#faq">FAQ</a>
+        <a href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../" hreflang="zh-CN" lang="zh-CN">简体中文</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <h1>Copy on this Mac.<br>Paste on that one.</h1>
+        <p class="lede">Text, images, files, whole folders. No shared Apple&nbsp;ID required, no shared network required. Data moves directly between your devices, and stays encrypted even when it passes through your own server.</p>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
+            Download for macOS
+          </a>
+          <span class="note">Version 1.0.0, free and open source. macOS 13 or later, Intel and Apple silicon.</span>
+        </div>
+
+        <div class="demo" role="img" aria-label="Demo: a file is selected on a MacBook Pro and copied with Command C, travels over a direct connection to a MacBook Air, and is pasted there with Command V">
+          <figure class="mac mac-a">
+            <div class="mac-screen">
+              <div class="file">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h6.5L15.5 6.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z"/><path d="M11.5 2.5v4h4"/></svg>
+                <span>Q3 Review – final.key <small>38.2 MB</small></span>
+              </div>
+              <div class="keys"><kbd>⌘</kbd><kbd>C</kbd></div>
+            </div>
+            <div class="mac-base"></div>
+            <figcaption>MacBook Pro</figcaption>
+          </figure>
+          <div class="link" aria-hidden="true">
+            <span class="packet"></span>
+            <span class="link-label">Direct, end-to-end encrypted</span>
+          </div>
+          <figure class="mac mac-b">
+            <div class="mac-screen">
+              <div class="file">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h6.5L15.5 6.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z"/><path d="M11.5 2.5v4h4"/></svg>
+                <span>Q3 Review – final.key <small>38.2 MB</small></span>
+              </div>
+              <div class="keys"><kbd>⌘</kbd><kbd>V</kbd></div>
+            </div>
+            <div class="mac-base"></div>
+            <figcaption>MacBook Air</figcaption>
+          </figure>
+        </div>
+        <button class="replay" type="button">Play again</button>
+      </div>
+    </section>
+
+    <section class="section section-band" aria-labelledby="history-title">
+      <div class="wrap">
+        <h2 id="history-title">Everything you copied, on every Mac</h2>
+        <p class="intro">History keeps the last 3 days, ready to go back on the clipboard. Files under 50 MB have already arrived by the time you switch Macs; larger ones are a click away. The interface is in Simplified Chinese for now.</p>
+        <figure class="shot">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/history-dark.png">
+            <img src="../assets/screenshots/history.png" width="2112" height="1472" alt="CopySync history: files, images and text from a MacBook Air and a Mac mini; a large file shows a button to pull it to this Mac">
+          </picture>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="why-title">
+      <div class="wrap">
+        <h2 id="why-title">Why not what's already there</h2>
+        <div class="prose">
+          <p>If you work on two Macs, you move things between them all day: a snippet of text, a screenshot, a file. The existing options each fall a little short:</p>
+          <ul>
+            <li><strong>Universal Clipboard</strong> needs both Macs on the same Apple ID, close together, with Bluetooth and Wi‑Fi on. A work Mac and a personal one rarely share an Apple ID, and large files often fail halfway.</li>
+            <li><strong>AirDrop</strong> makes you pick a device and accept on the other side every time, and it moves files, not the clipboard.</li>
+            <li><strong>Messaging yourself</strong> means manual downloads, recompressed images, and files left on someone else's server.</li>
+          </ul>
+        </div>
+        <div class="table-scroll">
+          <table class="compare">
+            <caption class="skip">CopySync compared with other options</caption>
+            <thead>
+              <tr><th scope="col"></th><th scope="col" class="ours">CopySync</th><th scope="col">Universal Clipboard</th><th scope="col">AirDrop</th><th scope="col">Chat apps</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Different Apple IDs</th><td class="yes">Yes</td><td class="no">No</td><td class="partial">Needs accepting</td><td class="yes">Yes</td></tr>
+              <tr><th scope="row">Different networks (home and office)</th><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+              <tr><th scope="row">Paste right away, nothing to accept</th><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+              <tr><th scope="row">Files and whole folders</th><td class="yes">Yes</td><td class="partial">Unreliable</td><td class="yes">Yes</td><td class="partial">Zip first</td></tr>
+              <tr><th scope="row">Find something you copied earlier</th><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td><td class="partial">Scroll back</td></tr>
+              <tr><th scope="row">Content stays off third-party servers</th><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-band" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <h2 id="how-title">How it works</h2>
+        <p class="intro">Your two Macs open an encrypted connection to each other. Your server only helps them find one another, and relays traffic when a direct path can't be made.</p>
+
+        <figure class="diagram">
+          <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">How CopySync connects</title>
+            <desc id="diagram-desc">Mac A and Mac B connect directly over WebRTC. Both connect to your server for signaling. If the direct connection fails, data is relayed through the server's TURN service.</desc>
+            <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
+            <text class="d-title" x="480" y="64" text-anchor="middle">Your server</text>
+            <text class="d-sub" x="480" y="92" text-anchor="middle">Signaling, STUN, TURN relay</text>
+
+            <path class="d-sig" d="M140 210V58H360"/>
+            <path class="d-sig" d="M820 210V58H600"/>
+            <path class="d-relay" d="M196 210V100H360"/>
+            <path class="d-relay" d="M764 210V100H600"/>
+            <text class="d-note" x="206" y="50">Signaling: connection details</text>
+            <text class="d-note" x="206" y="128">Relay: only if direct fails</text>
+
+            <rect class="d-box" x="40" y="210" width="240" height="120" rx="14"/>
+            <text class="d-title" x="160" y="262" text-anchor="middle">Mac A</text>
+            <text class="d-sub" x="160" y="290" text-anchor="middle">You copy here</text>
+            <rect class="d-box" x="680" y="210" width="240" height="120" rx="14"/>
+            <text class="d-title" x="800" y="262" text-anchor="middle">Mac B</text>
+            <text class="d-sub" x="800" y="290" text-anchor="middle">You paste here</text>
+
+            <path class="d-direct" d="M280 270H680"/>
+            <text class="d-label" x="480" y="256" text-anchor="middle">Direct WebRTC, DTLS encrypted</text>
+            <text class="d-note" x="480" y="298" text-anchor="middle">Data moves only between your Macs</text>
+
+            <g class="d-legend" transform="translate(40 372)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">Data (direct)</text>
+              <path class="d-relay" d="M190 0H218"/><text x="228" y="5">Data (relay, fallback)</text>
+              <path class="d-sig" d="M420 0H448"/><text x="458" y="5">Signaling</text>
+            </g>
+          </svg>
+        </figure>
+
+        <h3 class="subhead">What happens when you copy</h3>
+        <ol class="steps">
+          <li>
+            <h3>Notice</h3>
+            <p>The background service checks the clipboard's change count at short intervals. Reading the count and types needs no permission and never shows a prompt.</p>
+          </li>
+          <li>
+            <h3>Send</h3>
+            <p>Text travels inside the message. Images and files under 50 MB are streamed right away. Larger files are announced as a record and sent when you ask for them.</p>
+          </li>
+          <li>
+            <h3>Paste</h3>
+            <p>The other Mac stores the content locally, then puts it on the clipboard. What you paste with ⌘V is a real local file.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="security-title">
+      <div class="wrap two-col">
+        <div class="prose">
+          <h2 id="security-title">Your server can't see what you copy</h2>
+          <ul>
+            <li><strong>No accounts, no stored content.</strong> A device's identity is an Ed25519 key, and its ID is derived from the public key, so the server verifies identity without a user table.</li>
+            <li><strong>You compare fingerprints when pairing.</strong> Each Mac shows a fingerprint of the other's key. The server could swap keys in transit, but it can't make both screens show the same fingerprint — that check is what stops a man in the middle.</li>
+            <li><strong>Every message after that is signed</strong>, so the server can't impersonate your device. The direct channel's certificate is checked again after the handshake; a mismatch drops the connection.</li>
+            <li><strong>The relay only forwards ciphertext.</strong> TURN carries encrypted packets, and relay credentials are issued per device and expire after 12 hours.</li>
+          </ul>
+        </div>
+        <figure class="card-shot">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="../assets/screenshots/card-verify-dark.png">
+            <img src="../assets/screenshots/card-verify.png" width="1120" height="800" loading="lazy" alt="The fingerprint check during pairing shows R8NF-2WTC-QL5J and asks you to confirm it matches the other Mac exactly">
+          </picture>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section section-band" aria-labelledby="fallback-title">
+      <div class="wrap">
+        <h2 id="fallback-title">When things go wrong</h2>
+        <p class="intro">Every network is different. Each of these cases was considered, and each has a test.</p>
+        <dl class="fallbacks">
+          <dt>No direct path between the Macs</dt>
+          <dd>Common behind symmetric NAT and corporate firewalls. Traffic switches to the TURN relay on your server, still encrypted, and the device list shows "relay".</dd>
+          <dt>Public STUN servers unreachable</dt>
+          <dd>Public STUN is unreliable in some regions, including mainland China. Your server runs its own STUN, and clients prefer it.</dd>
+          <dt>Server connection drops</dt>
+          <dd>Reconnects automatically: the delay starts at 1 second and doubles up to 30, with jitter so devices don't all reconnect at once. The app shows the status live.</dd>
+          <dt>File too large</dt>
+          <dd>Above the limit only a record is synced, pulled when you need it. If the source file is gone by then, you get a clear message instead of a vague failure.</dd>
+          <dt>Pasting into plain-text fields</dt>
+          <dd>Rich text copied from the web is written as both HTML and plain text, so no markup leaks into what you paste.</dd>
+          <dt>Clipboard access not granted yet</dt>
+          <dd>Content isn't read, which would block on a prompt a background process can't show. The app asks you to grant access and links straight to the setting.</dd>
+          <dt>Background service crashes</dt>
+          <dd>macOS's launchd restarts it, throttled to once every 10 seconds.</dd>
+          <dt>App updated or moved</dt>
+          <dd>On launch the app re-points its login item and restarts the service on the new version.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <h2 id="install-title">Install</h2>
+        <p class="intro">Install the app on each Mac, and set up a server both of them can reach. If both Macs share a LAN, the server can run on one of them.</p>
+        <div class="two-col">
+          <div>
+            <h3>On each Mac</h3>
+            <ol class="install-steps">
+              <li>Download <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">CopySync-1.0.0.dmg</a>, open it and drag CopySync into Applications.</li>
+              <li>Open it from Applications.
+                <span class="aside">The first time, macOS says it can't verify the developer: CopySync isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once.</span></li>
+              <li>Click 启用后台同步 (Enable background sync).</li>
+              <li>In 设置 (Settings), enter your server as <code>ws://server-address:8787/signal</code> and press Return.</li>
+              <li>When macOS asks whether CopySync may read the clipboard, allow it.</li>
+              <li>On one Mac, choose 设备 → 添加设备 (Devices → Add device) to get a 6-character code; enter it on the other, and confirm once the fingerprints match.</li>
+            </ol>
+          </div>
+          <div>
+            <h3>On the server</h3>
+            <p class="aside-p">Any Linux, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.</p>
+            <div class="code">
+              <button class="copy" type="button" data-done="Copied">Copy</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-1.0.0-linux-amd64.tar.gz
+tar xzf copysync-server-1.0.0-linux-amd64.tar.gz
+cd copysync-server-1.0.0-linux-amd64
+sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
+            </div>
+            <p class="aside-p">The script registers a systemd service that starts on boot and prints the address to enter in the app. Open these ports in your firewall or security group:</p>
+            <table class="ports">
+              <thead><tr><th scope="col">Port</th><th scope="col">Purpose</th></tr></thead>
+              <tbody>
+                <tr><td>8787/tcp</td><td>Signaling</td></tr>
+                <tr><td>3478/udp</td><td>STUN and TURN</td></tr>
+                <tr><td>32768–60999/udp</td><td>Relay ports, assigned by the OS</td></tr>
+              </tbody>
+            </table>
+            <p class="aside-p">Docker works too; see the <a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">server deployment guide</a>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-band" aria-labelledby="specs-title">
+      <div class="wrap">
+        <h2 id="specs-title">Specifications</h2>
+        <div class="table-scroll">
+          <table class="specs">
+            <tbody>
+              <tr><th scope="row">Version</th><td>1.0.0, released <time datetime="2026-10-08">October 8, 2026</time></td></tr>
+              <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; 45 MB download</td></tr>
+              <tr><th scope="row">Server</th><td>Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM</td></tr>
+              <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>
+              <tr><th scope="row">Transport</th><td>WebRTC data channels, direct first with TURN relay fallback; files streamed as tar + zstd</td></tr>
+              <tr><th scope="row">Encryption and identity</th><td>End-to-end DTLS; Ed25519 device keys; every signaling message signed</td></tr>
+              <tr><th scope="row">Pairing</th><td>6-character code valid for 5 minutes, using an alphabet without look-alikes such as 0/O and 1/I; fingerprints compared by you</td></tr>
+              <tr><th scope="row">Auto-sync limit</th><td>50 MB by default, adjustable from 1 MB to 1 GB</td></tr>
+              <tr><th scope="row">History</th><td>3 days by default, adjustable from 1 hour to 30 days; expired items removed automatically</td></tr>
+              <tr><th scope="row">Measured speed</th><td>A 20 MB file transfers in about 330 ms over a direct LAN connection, checksums matching</td></tr>
+              <tr><th scope="row">Built with</th><td>Go for the background service and server, Flutter for the app, Protocol Buffers for messages</td></tr>
+              <tr><th scope="row">License</th><td>MIT</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">Questions</h2>
+        <div class="faq">
+          <details>
+            <summary>How is this different from Universal Clipboard?</summary>
+            <div class="answer">
+              <p>Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other. CopySync only needs both Macs to reach your server, so different Apple IDs work, and so does one Mac at home and one at the office. It also keeps a history and lets you pull large files on demand.</p>
+              <p>If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Can the server see what I copy?</summary>
+            <div class="answer">
+              <p>No. With a direct connection the data never touches the server. When it relays, it forwards DTLS-encrypted packets. It keeps no accounts and stores no clipboard content. The code is open, so you can check.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Do I need my own server?</summary>
+            <div class="answer">
+              <p>Yes. There is no public server, so nobody's data passes through anyone else's machine. On a LAN, run the server on one of your Macs. Across networks you need a machine with a public IP; the smallest cloud VM is enough.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Windows? iPhone?</summary>
+            <div class="answer">
+              <p>Windows is planned. iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so copy-and-it's-there can't work the way it does on the Mac.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Why does macOS say it can't verify the developer?</summary>
+            <div class="answer">
+              <p>CopySync isn't notarized by Apple yet, which requires a paid developer account. Open System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once. You can also build it from source.</p>
+            </div>
+          </details>
+          <details>
+            <summary>What about large files?</summary>
+            <div class="answer">
+              <p>By default, anything under 50 MB is pushed to the other Mac as you copy it, so you can paste right away. Larger files sync as a record; pull them from the history when you need them. The limit is adjustable in Settings.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Is it free?</summary>
+            <div class="answer">
+              <p>Yes. CopySync is open source under the MIT license, with the source on <a href="https://github.com/baiyuze/copysync">GitHub</a>.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing section-band" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 id="closing-title">Two Macs, one clipboard.</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-1.0.0.dmg">Download for macOS</a>
+          <a href="https://github.com/baiyuze/copysync">View the source on GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>CopySync is open source, released under the MIT license.</span>
+      <nav aria-label="Footer">
+        <a href="https://github.com/baiyuze/copysync/releases">All releases</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://github.com/baiyuze/copysync/issues">Report an issue</a>
+        <a href="../" hreflang="zh-CN" lang="zh-CN">简体中文</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js" defer></script>
+</body>
+</html>

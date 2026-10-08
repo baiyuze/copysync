@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="100 100 824 824">
+  <!-- 浏览器标签页里尺寸很小：裁掉图标网格的留白与投影，只保留主体 -->
+  <rect x="100" y="100" width="824" height="824" rx="184" fill="#F2F2F1"/>
+  <rect x="230" y="220" width="340" height="420" rx="44" fill="#F5F5F4" stroke="#2C2C2E" stroke-width="32"/>
+  <g fill="#2C2C2E">
+    <rect x="290" y="310" width="200" height="36" rx="18"/>
+    <rect x="290" y="390" width="150" height="36" rx="18"/>
+    <rect x="290" y="470" width="104" height="36" rx="18"/>
+  </g>
+  <rect x="454" y="384" width="340" height="420" rx="44" fill="#0A66D8"/>
+  <g fill="#FFFFFF">
+    <rect x="514" y="474" width="200" height="36" rx="18"/>
+    <rect x="514" y="554" width="150" height="36" rx="18"/>
+    <rect x="514" y="634" width="104" height="36" rx="18"/>
+  </g>
+</svg>

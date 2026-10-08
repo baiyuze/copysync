@@ -1,0 +1,17 @@
+# 构建产物
+/dist/
+/release/
+/spikes/build/
+ui/tool/screenshots/out/
+
+# Go
+*.test
+*.out
+
+# macOS / 编辑器
+.DS_Store
+.idea/
+.vscode/
+
+# 本地工具配置
+.claude/

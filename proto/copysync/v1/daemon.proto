@@ -1,0 +1,229 @@
+// Flutter UI ↔ Go daemon 之间的接口。
+//
+// daemon 是常驻后台的核心进程，UI 只是控制台——关掉 UI 不影响同步。
+// 事件走 server-streaming 主动推送，避免 UI 轮询。
+
+syntax = "proto3";
+
+package copysync.v1;
+
+option go_package = "github.com/baiyuze/copysync/proto/gen/copysync/v1;copysyncv1";
+
+service DaemonService {
+  // 订阅事件流。UI 启动后第一件事，断线需重连。
+  rpc Subscribe(SubscribeRequest) returns (stream Event);
+
+  rpc ListHistory(ListHistoryRequest) returns (ListHistoryResponse);
+  rpc DeleteHistory(DeleteHistoryRequest) returns (Empty);
+
+  // 拉取仅有元数据的大文件记录。立即返回，进度走事件流。
+  rpc Fetch(FetchRequest) returns (Empty);
+  // 把某条已就绪的记录重新放进本机剪贴板
+  rpc ApplyToClipboard(ApplyToClipboardRequest) returns (Empty);
+
+  rpc ListDevices(Empty) returns (ListDevicesResponse);
+  rpc CreatePairingCode(Empty) returns (CreatePairingCodeResponse);
+  rpc RedeemPairingCode(RedeemPairingCodeRequest) returns (RedeemPairingCodeResponse);
+  // 配对双方各自确认指纹后才真正互信
+  rpc ConfirmPairing(ConfirmPairingRequest) returns (Empty);
+  rpc Unpair(UnpairRequest) returns (Empty);
+
+  rpc GetConfig(Empty) returns (Config);
+  rpc UpdateConfig(Config) returns (Config);
+
+  rpc GetStatus(Empty) returns (Status);
+  // 引导用户授予剪贴板权限（打开系统设置面板）
+  rpc RequestClipboardPermission(Empty) returns (Empty);
+}
+
+message Empty {}
+
+// ─────────────────────────── 剪贴板记录 ───────────────────────────
+
+enum ClipKind {
+  CLIP_KIND_UNSPECIFIED = 0;
+  CLIP_KIND_TEXT = 1;
+  CLIP_KIND_HTML = 2;
+  CLIP_KIND_IMAGE = 3;
+  CLIP_KIND_FILE = 4;   // 文件或文件夹，可多个
+}
+
+enum ClipStatus {
+  CLIP_STATUS_UNSPECIFIED = 0;
+  CLIP_STATUS_READY = 1;        // 内容已在本地，可直接粘贴
+  CLIP_STATUS_REMOTE_ONLY = 2;  // 超过阈值，只有元数据，需手动拉取
+  CLIP_STATUS_FETCHING = 3;
+  CLIP_STATUS_FAILED = 4;
+  CLIP_STATUS_EXPIRED = 5;      // 超过 cache_ttl，内容已被 GC 删除
+}
+
+message ClipItem {
+  string name = 1;
+  int64 size = 2;
+  bool is_dir = 3;
+  string content_type = 4;  // UTType 标识符，如 public.plain-text
+}
+
+message ClipRecord {
+  string id = 1;
+  ClipKind kind = 2;
+  ClipStatus status = 3;
+
+  string origin_device_id = 4;
+  string origin_device_name = 5;
+  bool outgoing = 6;              // true=本机复制的  false=从对端收到的
+
+  repeated ClipItem items = 7;
+  int64 total_size = 8;
+  string text_preview = 9;        // 文本/HTML 的预览片段，列表展示用
+
+  int64 created_at_unix = 10;
+  int64 expires_at_unix = 11;
+  string error = 12;              // status=FAILED 时的具体原因
+}
+
+// ─────────────────────────── 事件流 ───────────────────────────
+
+message SubscribeRequest {
+  // 断线重连时带上最后收到的记录时间，daemon 补发这之后的记录
+  int64 since_unix = 1;
+}
+
+message TransferProgress {
+  string clip_id = 1;
+  int64 transferred = 2;
+  int64 total = 3;              // 0 表示总量未知（流式打包时）
+  double bytes_per_second = 4;
+}
+
+enum ConnectionKind {
+  CONNECTION_KIND_UNSPECIFIED = 0;
+  CONNECTION_KIND_OFFLINE = 1;
+  CONNECTION_KIND_DIRECT = 2;   // P2P 打洞成功
+  CONNECTION_KIND_RELAY = 3;    // 经 TURN 中转
+}
+
+message Device {
+  string id = 1;
+  string name = 2;
+  string platform = 3;            // darwin / windows
+  bool online = 4;
+  ConnectionKind connection = 5;
+  string public_key_fingerprint = 6;
+  int64 paired_at_unix = 7;
+
+  // 非空表示这是一条**待用户核对指纹**的配对请求，而非已配对设备。
+  // 用此值调 ConfirmPairing 完成或拒绝配对。
+  // 配对码的发起方是被动收到兑换通知的，靠这个字段把确认入口推给界面。
+  string pairing_session = 8;
+}
+
+// macOS 剪贴板授权状态，对应 NSPasteboardAccessBehavior。
+// 非 ALWAYS_ALLOW 时 daemon 不会去读剪贴板内容，避免卡在授权弹窗上。
+enum ClipboardPermission {
+  CLIPBOARD_PERMISSION_UNSPECIFIED = 0;
+  CLIPBOARD_PERMISSION_NOT_APPLICABLE = 1;  // 未启用隐私机制的系统
+  CLIPBOARD_PERMISSION_DEFAULT = 2;
+  CLIPBOARD_PERMISSION_ASK = 3;
+  CLIPBOARD_PERMISSION_ALWAYS_ALLOW = 4;
+  CLIPBOARD_PERMISSION_ALWAYS_DENY = 5;
+}
+
+message Event {
+  oneof payload {
+    ClipRecord clip_added = 1;
+    ClipRecord clip_updated = 2;
+    string clip_removed = 3;              // clip id
+    TransferProgress progress = 4;
+    Device device_changed = 5;
+    ClipboardPermission permission_changed = 6;
+    Status status_changed = 7;
+  }
+}
+
+// ─────────────────────────── 查询与操作 ───────────────────────────
+
+message ListHistoryRequest {
+  int32 limit = 1;
+  int64 before_unix = 2;    // 分页游标
+  ClipKind kind_filter = 3; // UNSPECIFIED 表示不过滤
+}
+
+message ListHistoryResponse {
+  repeated ClipRecord records = 1;
+}
+
+message DeleteHistoryRequest {
+  repeated string ids = 1;
+  bool all = 2;
+}
+
+message FetchRequest {
+  string clip_id = 1;
+}
+
+message ApplyToClipboardRequest {
+  string clip_id = 1;
+}
+
+// ─────────────────────────── 设备与配对 ───────────────────────────
+
+message ListDevicesResponse {
+  Device self = 1;
+  repeated Device peers = 2;
+}
+
+message CreatePairingCodeResponse {
+  string code = 1;
+  int64 expires_at_unix = 2;
+}
+
+message RedeemPairingCodeRequest {
+  string code = 1;
+}
+
+message RedeemPairingCodeResponse {
+  // 返回对端信息供用户肉眼核对指纹，确认后再调 ConfirmPairing
+  Device peer = 1;
+  string pairing_session = 2;
+}
+
+message ConfirmPairingRequest {
+  string pairing_session = 1;
+  bool accept = 2;
+}
+
+message UnpairRequest {
+  string device_id = 1;
+}
+
+// ─────────────────────────── 配置与状态 ───────────────────────────
+
+message Config {
+  // 小于此值自动预取，大于此值只同步元数据等用户手动拉取
+  int64 auto_sync_threshold_bytes = 1;
+  int64 history_ttl_seconds = 2;
+  int64 cache_ttl_seconds = 3;
+
+  bool sync_text = 4;
+  bool sync_html = 5;
+  bool sync_image = 6;
+  bool sync_file = 7;
+
+  // 收到对端内容后是否自动覆盖本机剪贴板
+  bool auto_apply_to_clipboard = 8;
+  bool launch_at_login = 9;
+
+  string device_name = 10;
+  string signaling_url = 11;
+}
+
+message Status {
+  string device_id = 1;
+  string device_name = 2;
+  bool signaling_connected = 3;
+  ClipboardPermission clipboard_permission = 4;
+  int64 cache_bytes_used = 5;
+  int32 peers_online = 6;
+  string version = 7;
+}

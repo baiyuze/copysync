@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- 刻意关闭沙盒。CopySync 需要：
+	     1. 读取 daemon 写在 ~/Library/Application Support/CopySync 下的 daemon.json
+	     2. 访问用户复制的任意路径文件（沙盒只允许访问自身容器）
+	     分发走 Developer ID 签名 + 公证，不上 App Store。 -->
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+	<!-- 连接 daemon 的本地 gRPC 端口 -->
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.network.server</key>
+	<true/>
+</dict>
+</plist>

@@ -1,0 +1,21 @@
+# CopySync 信令服务器
+#
+#   cp env.example .env      然后把 .env 里的 TURN_IP 改成这台服务器的公网 IP
+#   docker compose up -d
+#
+# 客户端「设置」里填 ws://<公网IP>:8787/signal
+#
+# 必须用 host 网络：TURN 中转为每个会话随机分配 UDP 端口，
+# 端口映射模式下这些端口不可达，P2P 打不通时的兜底就会失效。
+services:
+  copysync-server:
+    build: .
+    image: copysync-server:local
+    container_name: copysync-server
+    network_mode: host
+    restart: unless-stopped
+    command: >
+      -addr :8787
+      -turn-ip ${TURN_IP:?在 .env 中设置 TURN_IP}
+      -turn-secret ${TURN_SECRET:?在 .env 中设置 TURN_SECRET}
+      -stun stun:${TURN_IP}:3478,stun:stun.l.google.com:19302

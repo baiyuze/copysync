@@ -1,0 +1,21 @@
+[Unit]
+Description=CopySync 信令与 TURN 中转服务器
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# 启动参数写在这里，改完 systemctl restart copysync-server 即可
+EnvironmentFile=/etc/copysync/server.env
+ExecStart=/usr/local/bin/copysync-server $OPTIONS
+Restart=on-failure
+RestartSec=5
+
+# 服务器不落盘、监听端口都在 1024 以上，无需任何特权
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

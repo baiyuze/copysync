@@ -1,0 +1,982 @@
+/* CopySync 项目主页
+ *
+ * 与 App 同一套颜色：大面积白与石墨灰，强调色只给按钮和链接。
+ * 不加载网页字体：Mac 上就是 SF Pro 与苹方，和 App 本身一致，国内访问也快。
+ */
+
+:root {
+  --page: #ffffff;
+  --band: #f5f5f4;
+  --ink: #1d1d1f;
+  --dim: #6e6e73;
+  --faint: #a1a1a6;
+  --rule: #e4e4e2;
+  --blue: #0a66d8;
+  --blue-ink: #0857b8;
+  --green: #248a3d;
+  --code-bg: #f5f5f4;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 40rem;
+  --wide: 68rem;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #161617;
+    --band: #1d1d1f;
+    --ink: #f5f5f7;
+    --dim: #98989d;
+    --faint: #636366;
+    --rule: #333335;
+    --blue: #3b8beb;
+    --blue-ink: #5aa0f0;
+    --green: #32d74b;
+    --code-bg: #232325;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 17px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--blue-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--mono);
+  font-size: 0.88em;
+}
+
+p code,
+li code,
+td code {
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.wrap {
+  width: min(100% - 3rem, var(--wide));
+  margin-inline: auto;
+}
+
+.skip {
+  position: absolute;
+  left: -999px;
+}
+
+.skip:focus {
+  left: 1rem;
+  top: 1rem;
+  background: var(--page);
+  padding: 0.5rem 0.75rem;
+  z-index: 10;
+}
+
+/* ─────────────────────────── 页头 ─────────────────────────── */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in srgb, var(--page) 86%, transparent);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: 3.25rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.brand:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand img {
+  width: 26px;
+  height: 26px;
+}
+
+.site-nav {
+  display: flex;
+  gap: 1.5rem;
+  margin-left: auto;
+  font-size: 0.875rem;
+}
+
+.site-nav a {
+  color: var(--dim);
+}
+
+.site-nav a:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+@media (max-width: 720px) {
+  .site-nav .optional {
+    display: none;
+  }
+}
+
+/* ─────────────────────────── 首屏 ─────────────────────────── */
+
+.hero {
+  padding: 5.5rem 0 4rem;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 1.2rem + 4.4vw, 4.25rem);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  max-width: 14em;
+}
+
+.hero .lede {
+  margin: 1.5rem 0 0;
+  max-width: 34rem;
+  font-size: 1.25rem;
+  line-height: 1.55;
+  color: var(--dim);
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: 2.25rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.35rem;
+  border-radius: 10px;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.button:hover {
+  background: var(--blue-ink);
+  color: #fff;
+  text-decoration: none;
+}
+
+.button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cta .note {
+  font-size: 0.875rem;
+  color: var(--dim);
+}
+
+/* 首屏演示：两台 Mac，一次复制、一次粘贴 */
+
+.demo {
+  display: grid;
+  grid-template-columns: 1fr minmax(7rem, 0.6fr) 1fr;
+  align-items: center;
+  max-width: 58rem;
+  margin-top: 4.5rem;
+}
+
+.mac {
+  margin: 0;
+}
+
+.mac-screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px 14px 4px 4px;
+  border: 1px solid var(--rule);
+  background: var(--band);
+  padding: 15% 9% 0;
+  overflow: hidden;
+}
+
+/* 屏幕顶部的菜单栏，让这块区域一眼读作 Mac 的桌面 */
+.mac-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 7%;
+  background: color-mix(in srgb, var(--ink) 6%, var(--band));
+  border-bottom: 1px solid var(--rule);
+}
+
+.mac-base {
+  height: 9px;
+  margin: 0 -5%;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(var(--rule), var(--band));
+  border: 1px solid var(--rule);
+  border-top: none;
+}
+
+.mac figcaption {
+  margin-top: 0.85rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--dim);
+}
+
+.file {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  background: var(--page);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.file svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--dim);
+}
+
+.file small {
+  color: var(--dim);
+  font-size: 0.78rem;
+}
+
+.keys {
+  position: absolute;
+  right: 9%;
+  bottom: 12%;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.keys kbd {
+  display: grid;
+  place-items: center;
+  min-width: 2.1rem;
+  height: 2.1rem;
+  padding: 0 0.4rem;
+  border-radius: 7px;
+  background: var(--page);
+  border: 1px solid var(--rule);
+  box-shadow: 0 2px 0 var(--rule);
+  font: 600 0.95rem var(--sans);
+  color: var(--ink);
+}
+
+.link {
+  position: relative;
+  height: 2px;
+  margin: 0 0.75rem;
+  margin-bottom: 2.4rem; /* 与两侧屏幕的中线对齐，抵消下方设备名的高度 */
+  background-image: linear-gradient(90deg, var(--faint) 50%, transparent 50%);
+  background-size: 8px 2px;
+}
+
+.link .packet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--blue);
+  opacity: 0;
+}
+
+.link-label {
+  position: absolute;
+  top: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.78rem;
+  color: var(--dim);
+}
+
+.mac-b .file {
+  opacity: 0;
+}
+
+/* 动画：一次性的完整演示。结束后停在终态 */
+.demo.play .mac-a .file {
+  animation: select 0.3s ease-out 0.5s both;
+}
+
+.demo.play .mac-a kbd {
+  animation: press 0.35s ease-in-out 0.7s both;
+}
+
+.demo.play .packet {
+  animation: travel 1s cubic-bezier(0.55, 0, 0.45, 1) 1.15s both;
+}
+
+.demo.play .mac-b kbd {
+  animation: press 0.35s ease-in-out 2.25s both;
+}
+
+.demo.play .mac-b .file {
+  animation: arrive 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) 2.45s both;
+}
+
+@keyframes select {
+  to {
+    background: color-mix(in srgb, var(--blue) 14%, var(--page));
+    border-color: color-mix(in srgb, var(--blue) 45%, var(--rule));
+  }
+}
+
+@keyframes press {
+  40% {
+    transform: translateY(2px);
+    box-shadow: 0 0 0 var(--rule);
+    background: color-mix(in srgb, var(--blue) 12%, var(--page));
+  }
+}
+
+@keyframes travel {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  12%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 12px);
+    opacity: 0;
+  }
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 不想看动画的用户直接看到终态 */
+@media (prefers-reduced-motion: reduce) {
+  .demo .mac-b .file {
+    opacity: 1;
+  }
+  .demo.play * {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.replay {
+  display: block;
+  margin: 1.5rem auto 0;
+  padding: 0.3rem 0.6rem;
+  border: none;
+  background: none;
+  color: var(--dim);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.replay:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .demo {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .link {
+    width: 2px;
+    height: 4.5rem;
+    margin: 1rem auto;
+    background-image: linear-gradient(180deg, var(--faint) 50%, transparent 50%);
+    background-size: 2px 8px;
+  }
+  .link .packet {
+    left: 50%;
+    margin: 0 0 0 -6px;
+  }
+  .link-label {
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+  }
+  @keyframes travel {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    12%,
+    88% {
+      opacity: 1;
+    }
+    100% {
+      top: calc(100% - 12px);
+      opacity: 0;
+    }
+  }
+}
+
+/* ─────────────────────────── 通用段落 ─────────────────────────── */
+
+.section {
+  padding: 6rem 0;
+}
+
+.section-band {
+  background: var(--band);
+}
+
+.section h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.4rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  max-width: 20em;
+}
+
+.section h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.section .intro {
+  margin: 1rem 0 0;
+  max-width: var(--measure);
+  color: var(--dim);
+  font-size: 1.1rem;
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose p,
+.prose ul {
+  margin: 1rem 0 0;
+}
+
+.prose ul {
+  padding-left: 1.2rem;
+}
+
+.prose li + li {
+  margin-top: 0.5rem;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 4rem;
+  align-items: start;
+  margin-top: 3rem;
+}
+
+@media (max-width: 880px) {
+  .two-col {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* ─────────────────────────── 截图 ─────────────────────────── */
+
+.shot {
+  margin: 3rem 0 0;
+}
+
+/* 截图自带 macOS 窗口的阴影与留白，向两侧略微出血，视觉上与正文对齐 */
+.shot img {
+  width: calc(100% + 4.5%);
+  max-width: none;
+  margin-left: -2.25%;
+}
+
+.shot figcaption {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--dim);
+}
+
+/* ─────────────────────────── 表格 ─────────────────────────── */
+
+.table-scroll {
+  overflow-x: auto;
+  margin-top: 2.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  padding: 0.8rem 1rem 0.8rem 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+}
+
+thead th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--dim);
+}
+
+tbody th {
+  font-weight: 500;
+}
+
+.compare td,
+.compare thead th:not(:first-child) {
+  text-align: center;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.compare .ours {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.yes {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.no {
+  color: var(--faint);
+}
+
+.partial {
+  color: var(--dim);
+  font-size: 0.85rem;
+}
+
+/* ─────────────────────────── 工作原理 ─────────────────────────── */
+
+.diagram {
+  margin: 3rem 0 0;
+}
+
+.diagram svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram text {
+  font-family: var(--sans);
+}
+
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 3rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem;
+}
+
+.steps li {
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin-bottom: 0.9rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.steps p {
+  margin: 0;
+  color: var(--dim);
+}
+
+@media (max-width: 880px) {
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+/* ─────────────────────────── 兜底 ─────────────────────────── */
+
+.fallbacks {
+  margin: 2.5rem 0 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  border-top: 1px solid var(--rule);
+}
+
+.fallbacks dt,
+.fallbacks dd {
+  margin: 0;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.fallbacks dt {
+  padding-right: 2rem;
+  font-weight: 600;
+}
+
+.fallbacks dd {
+  color: var(--dim);
+}
+
+@media (max-width: 720px) {
+  .fallbacks {
+    grid-template-columns: 1fr;
+  }
+  .fallbacks dt {
+    border-bottom: none;
+    padding-bottom: 0.25rem;
+  }
+  .fallbacks dd {
+    padding-top: 0;
+  }
+}
+
+/* ─────────────────────────── 安装 ─────────────────────────── */
+
+.install-steps {
+  margin: 1.5rem 0 0;
+  padding-left: 1.3rem;
+}
+
+.install-steps li {
+  padding-left: 0.3rem;
+}
+
+.install-steps li + li {
+  margin-top: 0.9rem;
+}
+
+.install-steps li::marker {
+  font-weight: 600;
+}
+
+.install-steps .aside {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--dim);
+  font-size: 0.92rem;
+}
+
+.code {
+  position: relative;
+  margin: 1.25rem 0 0;
+  border-radius: 10px;
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+}
+
+.code pre {
+  margin: 0;
+  padding: 1rem 4.5rem 1rem 1.1rem; /* 右侧给「复制」按钮留位置 */
+  overflow-x: auto;
+  line-height: 1.7;
+}
+
+.code .copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: var(--page);
+  color: var(--dim);
+  font: 500 0.75rem var(--sans);
+  cursor: pointer;
+}
+
+.code .copy:hover {
+  color: var(--ink);
+}
+
+.ports {
+  margin-top: 1.5rem;
+}
+
+.ports td:first-child {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+/* ─────────────────────────── 规格 ─────────────────────────── */
+
+.specs th {
+  width: 11rem;
+  font-weight: 600;
+  padding-right: 2rem;
+}
+
+.specs td {
+  color: var(--dim);
+}
+
+/* ─────────────────────────── 常见问题 ─────────────────────────── */
+
+.faq {
+  margin-top: 2.5rem;
+  max-width: 46rem;
+  border-top: 1px solid var(--rule);
+}
+
+.faq details {
+  border-bottom: 1px solid var(--rule);
+}
+
+.faq summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: "+";
+  flex: none;
+  color: var(--dim);
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.faq details[open] summary::after {
+  content: "−";
+}
+
+.faq .answer {
+  padding: 0 0 1.25rem;
+  color: var(--dim);
+  max-width: var(--measure);
+}
+
+.faq .answer p {
+  margin: 0;
+}
+
+.faq .answer p + p {
+  margin-top: 0.75rem;
+}
+
+/* ─────────────────────────── 页脚 ─────────────────────────── */
+
+.closing {
+  padding: 6rem 0;
+  text-align: center;
+}
+
+.closing h2 {
+  margin: 0 auto;
+}
+
+.closing .cta {
+  justify-content: center;
+}
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding: 2rem 0 3rem;
+  font-size: 0.875rem;
+  color: var(--dim);
+}
+
+.site-footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  justify-content: space-between;
+}
+
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.site-footer a {
+  color: var(--dim);
+}
+
+.site-footer a:hover {
+  color: var(--ink);
+}
+
+/* ─────────────────────────── 零散 ─────────────────────────── */
+
+.section .subhead {
+  margin-top: 4.5rem;
+}
+
+.card-shot {
+  margin: -1.5rem 0 0;
+}
+
+.card-shot img {
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+.aside-p {
+  margin: 0.75rem 0 0;
+  color: var(--dim);
+  font-size: 0.95rem;
+}
+
+/* 架构图：颜色取自页面变量，深色模式自动跟随 */
+.d-box {
+  fill: var(--page);
+  stroke: var(--rule);
+  stroke-width: 1.5;
+}
+
+.d-title {
+  font-size: 17px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.d-sub,
+.d-note,
+.d-legend text {
+  font-size: 13px;
+  fill: var(--dim);
+}
+
+.d-label {
+  font-size: 14px;
+  font-weight: 600;
+  fill: var(--blue);
+}
+
+.d-direct,
+.d-sig,
+.d-relay {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.d-direct {
+  stroke: var(--blue);
+  stroke-width: 3;
+}
+
+.d-sig {
+  stroke: var(--faint);
+  stroke-width: 1.5;
+}
+
+.d-relay {
+  stroke: var(--faint);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 6;
+}

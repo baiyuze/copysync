@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  server:
+    name: 服务器
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - run: go vet ./... && go test ./...
+        working-directory: server
+
+  client-core:
+    name: 后台服务
+    # 剪贴板部分是 cgo + AppKit，只能在 macOS 上编译
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: client-core/go.mod
+          cache-dependency-path: client-core/go.sum
+      - run: go vet ./... && go test ./...
+        working-directory: client-core
+
+  ui:
+    name: 界面
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get && flutter analyze && flutter test
+        working-directory: ui

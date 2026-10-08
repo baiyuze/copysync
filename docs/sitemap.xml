@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://baiyuze.github.io/copysync/</loc>
+    <lastmod>2026-10-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/en/</loc>
+    <lastmod>2026-10-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/"/>
+  </url>
+</urlset>

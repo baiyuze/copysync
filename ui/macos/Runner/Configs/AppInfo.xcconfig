@@ -1,0 +1,9 @@
+// Application-level settings for the Runner target.
+
+// App 名称，也是菜单栏与「关于」里显示的名字
+PRODUCT_NAME = CopySync
+
+// 剪贴板授权（TCC）以 bundle identifier 为主体，发布后不要再改
+PRODUCT_BUNDLE_IDENTIFIER = com.copysync.app
+
+PRODUCT_COPYRIGHT = Copyright © 2026 baiyuze. Released under the MIT License.

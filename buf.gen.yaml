@@ -1,0 +1,23 @@
+# 代码生成配置。
+#
+# 用 buf 而非 protoc：这台机器访问不到 GitHub releases（下载预编译 protoc 超时），
+# 而 Homebrew 在 Intel Mac 上没有 protobuf 的预编译包、要从源码编译十几分钟。
+# buf 是纯 Go 实现，可经 goproxy.cn 用 go install 装上，且自带 protobuf 编译器。
+#
+# 生成：./scripts/gen-proto.sh
+
+version: v2
+
+plugins:
+  - local: protoc-gen-go
+    out: proto/gen
+    opt: paths=source_relative
+
+  - local: protoc-gen-go-grpc
+    out: proto/gen
+    opt: paths=source_relative
+
+  # Flutter UI 侧。grpc 选项让插件同时产出 service stub。
+  - local: protoc-gen-dart
+    out: ui/lib/gen
+    opt: grpc

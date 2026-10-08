@@ -1,0 +1,250 @@
+<p align="center">
+  <img src="docs/assets/icon.png" width="112" height="112" alt="CopySync 图标">
+</p>
+
+<h1 align="center">CopySync</h1>
+
+<p align="center">
+  在这台 Mac 复制，到那台 Mac 粘贴。<br>
+  文本、图片、文件、整个文件夹都可以，不限 Apple ID，不限是否在同一个网络。
+</p>
+
+<p align="center">
+  <a href="https://github.com/baiyuze/copysync/releases/latest"><strong>下载 macOS 版</strong></a>
+  ·
+  <a href="https://baiyuze.github.io/copysync/">项目主页</a>
+  ·
+  <a href="README.en.md">English</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/baiyuze/copysync?label=%E7%89%88%E6%9C%AC&color=0A66D8" alt="版本">
+  <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
+  <img src="https://img.shields.io/badge/Intel%20%2B%20Apple%20%E8%8A%AF%E7%89%87-%E9%80%9A%E7%94%A8-1D1D1F" alt="Intel 与 Apple 芯片通用">
+  <img src="https://img.shields.io/github/license/baiyuze/copysync?color=6E6E73" alt="MIT 许可">
+</p>
+
+<p align="center">
+  <img src="docs/assets/screenshots/history.png" alt="CopySync 的复制记录界面：来自其他 Mac 的文件、图片和文字">
+</p>
+
+## 它解决什么问题
+
+手边有两台 Mac 的人，每天都在做同一件事：这台上复制了一段文字、一张截图、一个文件，要拿到那台上用。
+
+现有的办法各有各的不顺手：
+
+- **系统自带的「通用剪贴板」**要求两台设备登录同一个 Apple ID、离得足够近、蓝牙和 Wi‑Fi 都开着。公司电脑和自己的电脑通常不是同一个 Apple ID；大文件经常复制到一半就没了。
+- **隔空投送**每次都要选设备、在另一台上点接收，而且只传文件，不管剪贴板。
+- **用聊天软件发给自己**要手动下载、图片会被压缩，文件还会留在第三方的服务器上。
+
+CopySync 的做法是：两台 Mac 配对一次，之后在一台上 `⌘C`，另一台上直接 `⌘V`。数据在两台设备之间直接传输，打不通直连时经过你自己部署的服务器中转，全程端到端加密，服务器看不到内容。
+
+| | CopySync | 通用剪贴板 | 隔空投送 | 聊天软件 |
+|---|:-:|:-:|:-:|:-:|
+| 不同 Apple ID 之间 | ✓ | — | 需对方接收 | ✓ |
+| 不在同一个网络（家里 ↔ 公司） | ✓ | — | — | ✓ |
+| 复制后直接粘贴，不用点接收 | ✓ | ✓ | — | — |
+| 文件与整个文件夹 | ✓ | 不稳定 | ✓ | 打包后可以 |
+| 复制历史，可以找回之前的内容 | ✓ | — | — | 翻聊天记录 |
+| 内容不经过第三方服务器 | ✓ | ✓ | ✓ | — |
+
+## 功能
+
+- **文本、带格式的文本、图片、文件、文件夹**都能同步。复制什么，对面粘贴出来就是什么。
+- **按大小分流**：50 MB 以内（可调）的内容复制时直接推送，对面立刻能粘贴；更大的文件只同步一条记录，需要时点「拉取到本机」，不会无谓地占用带宽和磁盘。
+- **复制记录**：最近 3 天（可调）在所有设备上复制过的内容都在这里，随时可以放回剪贴板。
+- **直连优先，自动中转**：先尝试设备之间直连；在对称 NAT、公司防火墙后面打不通时，自动改走你服务器上的 TURN 中转。
+- **配对时核对安全指纹**：防止服务器或网络上的第三方冒充你的设备。
+- **后台常驻**：关掉窗口照常同步，开机自动启动，崩溃后自动恢复。
+- **Intel 与 Apple 芯片原生运行**，支持浅色与深色外观。
+
+<table>
+  <tr>
+    <td><img src="docs/assets/screenshots/devices.png" alt="设备页：已配对的设备、直连或中转状态"></td>
+    <td><img src="docs/assets/screenshots/verify.png" alt="配对时核对两台设备上显示的安全指纹"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/settings.png" alt="设置页：服务器地址、同步上限、同步的内容类型"></td>
+    <td><img src="docs/assets/screenshots/history-dark.png" alt="深色外观下的复制记录"></td>
+  </tr>
+</table>
+
+## 支持哪些电脑
+
+| | 要求 |
+|---|---|
+| **Mac 客户端** | macOS 13 Ventura 及以上；Intel 与 Apple 芯片（M1–M4 等）通用，不需要 Rosetta |
+| **服务器** | 任意 Linux（x86_64 或 ARM64），systemd 或 Docker 均可；也可以直接跑在其中一台 Mac 上 |
+| **Windows** | 计划中 |
+| **iPhone / iPad** | 暂不支持。iOS 不允许 App 在后台监听剪贴板，做不到 Mac 上这种复制即同步的体验 |
+
+## 安装
+
+整套东西由两部分组成：**每台 Mac 装一个 App**，再加**一台两端都能访问到的服务器**。两台 Mac 在同一个局域网时，服务器直接放在其中一台上就行。
+
+### 1. 部署服务器
+
+在 Linux 服务器上（需要 root）：
+
+```bash
+curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-1.0.0-linux-amd64.tar.gz
+tar xzf copysync-server-1.0.0-linux-amd64.tar.gz
+cd copysync-server-1.0.0-linux-amd64
+sudo ./install.sh <服务器公网IP>
+```
+
+脚本会注册一个开机自启的 systemd 服务，并在最后打印出客户端要填的地址。ARM 服务器下载 `linux-arm64` 版本。
+
+云服务器的安全组或防火墙需要放行：
+
+| 端口 | 协议 | 用途 |
+|---|---|---|
+| 8787 | TCP | 信令（WebSocket） |
+| 3478 | UDP | STUN / TURN |
+| 32768–60999 | UDP | TURN 中转端口，系统随机分配 |
+
+用 Docker 部署、或者只在局域网里用，见[服务器部署说明](server/deploy/README.md)。
+
+### 2. 在每台 Mac 上安装 App
+
+1. 下载 [CopySync-1.0.0.dmg](https://github.com/baiyuze/copysync/releases/latest)，打开后把 CopySync 拖进「应用程序」。
+2. 从「应用程序」里打开 CopySync。
+
+   第一次打开时 macOS 会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证（需要付费开发者账号）。到 **系统设置 → 隐私与安全性**，在页面下方点 **仍要打开**。只需要这一次。
+
+3. 点 **启用后台同步**。
+4. 在 **设置 → 信令服务器地址** 填入 `ws://<服务器地址>:8787/signal`，按回车。
+5. 较新的 macOS 会询问是否允许 CopySync Daemon 读取剪贴板，选择允许。之后可以在 **系统设置 → 隐私与安全性 → 从其他 App 粘贴** 里改为始终允许，App 里也有直达按钮。
+
+### 3. 配对
+
+1. 在一台 Mac 上点 **设备 → 添加设备 → 生成配对码**。
+2. 在另一台上点 **添加设备 → 输入配对码**，输入那 6 位字符。
+3. 两台屏幕上会各自显示一串安全指纹，**逐字核对一致后**再点确认。
+
+之后在任意一台上复制，另一台就能直接粘贴。
+
+## 工作原理
+
+```mermaid
+flowchart LR
+    subgraph A["Mac A"]
+        UA["CopySync 界面"] <-- "gRPC" --> DA["后台服务"]
+    end
+    subgraph B["Mac B"]
+        DB["后台服务"] <-- "gRPC" --> UB["CopySync 界面"]
+    end
+    S[("你的服务器\n信令 + TURN")]
+    DA -- "信令（WebSocket）" --> S
+    DB -- "信令（WebSocket）" --> S
+    DA <== "WebRTC 直连（DTLS 加密）" ==> DB
+    DA <-. "打不通时经 TURN 中转" .-> S
+    S <-.-> DB
+```
+
+| 组件 | 做什么 | 技术 |
+|---|---|---|
+| 后台服务 `copysyncd` | 监听剪贴板、与对端建立连接、收发与落盘 | Go，剪贴板部分用 cgo 调用 AppKit |
+| 界面 `CopySync.app` | 复制记录、设备配对、设置 | Flutter，经本机 gRPC 与后台服务通信 |
+| 服务器 `copysync-server` | 设备发现、转达配对码、转发信令、TURN 中转 | Go，单个静态二进制，约 15 MB 内存 |
+| 协议 `proto/` | 三方共用的消息定义 | Protocol Buffers |
+
+**一次复制的经过：**
+
+1. 后台服务每隔一小段时间检查剪贴板的变更计数。只看计数和类型不需要授权，也不会触发系统提示。
+2. 发现变化后读取内容，按类型和大小决定怎么传：文本直接内联在消息里；50 MB 以内的图片与文件打包成流（tar + zstd）立即推送；更大的只发一条记录。
+3. 对端收到后先写入本地缓存，再写入剪贴板。在那台 Mac 上 `⌘V` 粘贴出来的，就是本地的真实文件。
+
+**连接是怎么建立的：**设备通过 WebSocket 连上信令服务器，用 WebRTC 的 ICE 尝试直连（局域网地址、经 STUN 探测到的公网地址），都失败时使用 TURN 中转地址。数据走 WebRTC 数据通道，DTLS 加密。
+
+### 安全模型
+
+- **服务器不存账号**。设备身份是一把 Ed25519 密钥，设备 ID 由公钥派生，服务器据此就能验证"这个 ID 确实属于这把公钥"，无需用户表。
+- **配对时人工核对指纹**。两台设备各自显示对方公钥的指纹（SHA-256 的前 60 位，形如 `R8NF-2WTC-QL5J`）。服务器可以在配对时替换转发中的公钥，但没法让两边显示出相同的指纹，这一步就是防中间人的闸门。
+- **之后的每条信令都带签名**，服务器无法伪造设备。直连通道的 DTLS 证书指纹也经签名传递，握手后比对实际证书，不一致立即断开。
+- **中转也看不到内容**。TURN 只转发加密后的 UDP 包。中转凭证按设备单独签发，12 小时过期。
+- **不启用 App 沙盒**：需要访问你复制的任意路径下的文件。
+
+### 兜底：出问题时会发生什么
+
+| 情况 | 处理方式 |
+|---|---|
+| 两端打不通直连（对称 NAT、公司防火墙） | 自动改走服务器的 TURN 中转，内容依然加密；界面上显示「中转」 |
+| 公共 STUN 在国内时通时断 | 服务器自带 STUN，客户端优先用它 |
+| 信令服务器断开 | 指数退避自动重连（1 秒起，最长 30 秒，带随机抖动），界面实时显示连接状态 |
+| 配对时两端确认有先后 | 先确认一方发来的握手消息会被暂存，另一方确认后重放，配对完成几十毫秒内即可直连 |
+| 大文件 | 超过阈值只同步记录，按需拉取；拉取时源文件已被删除会明确提示，而不是失败得不明不白 |
+| 只认纯文本的输入框 | 带格式的文本同时写入 HTML 与纯文本两份，粘贴到哪里都不会出现标签 |
+| 还没有授权读取剪贴板 | 不去读内容（否则会卡在一个后台进程看不见的系统弹窗上），界面上提示去授权 |
+| 后台服务崩溃 | 由 launchd 自动拉起；10 秒节流，不会疯狂重启 |
+| 覆盖安装了新版、或 App 换了位置 | 打开 App 时自动校正登录项，并重启到新版本 |
+| 记录和缓存越来越多 | 到期自动清理，默认保留 3 天 |
+
+### 踩过的坑
+
+这些都是实测撞出来的，各自对应一个回归测试。完整的验证过程见 [spikes/results.md](spikes/results.md)。
+
+- **macOS 的剪贴板调用必须在主线程。**开启隐私机制后，剪贴板 API 要经系统 UI 服务通信，依赖 run loop，在普通线程上调用会直接崩溃。后台服务启动时就把主线程锁住，专门留给剪贴板，业务逻辑投递过去执行。
+- **"对方按下粘贴键才传输"在 macOS 上做不到。**系统在写入剪贴板后约 0.1 秒就会把延迟提供的数据兑现并缓存，真正按下 `⌘V` 时不再回调，也没有"剪贴板被读取"的通知。所以小文件是预先推送的，大文件改为手动拉取。
+- **WebRTC 库（pion）的三个坑**：`DetachDataChannels()` 是全局开关，开了以后所有通道的普通收发都失效；`OnMessage` 不缓冲，回调设置之前到达的消息直接丢弃（实测发 202 字节，收到 0 字节）；`OnBufferedAmountLow` 是边沿触发，等待方晚一步进入等待就再也等不到唤醒（20 MB 传到 786 KB 卡死）。
+
+局域网直连实测：20 MB 文件约 330 毫秒传完，校验和一致。
+
+## 已知限制
+
+- **没有经过 Apple 公证**，第一次打开需要手动放行一次。
+- **两台设备需要同时在线**。服务器不存数据，所以没有"离线时先存着、上线再取"。
+- **中转模式的速度取决于服务器带宽**。直连时不受影响。
+- 目前只有 macOS 客户端。
+
+## 从源码构建
+
+需要 Go 1.26、Flutter 3.44 和 Xcode。
+
+```bash
+./scripts/build.sh       # 构建全部到 dist/
+./scripts/package.sh     # 打出 DMG 与服务器发布包到 release/
+```
+
+开发时可以单独运行各部分：
+
+```bash
+cd client-core && go test ./...          # 后台服务的测试
+cd ui && flutter test                    # 界面的测试
+./scripts/install-macos.sh               # 把 dist/ 里的后台服务装成登录项
+./dist/copysync-cli status               # 查看后台服务状态
+./dist/copysync-cli watch                # 实时事件流
+```
+
+改了 `.proto` 之后运行 `./scripts/gen-proto.sh` 重新生成代码（用 buf，`go install` 即可安装，无需 protoc）。改了界面之后运行 `./tools/screenshots/render.sh` 重新生成截图，截图用演示数据渲染，不会带出本机的真实内容。
+
+```
+client-core/    后台服务（Go）
+  internal/clipboard    剪贴板（cgo + Objective-C，必须跑在主线程）
+  internal/transport    信令（WebSocket）与 P2P（WebRTC）
+  internal/sync         同步引擎：分流、打包、传输、落盘
+ui/             界面（Flutter）
+server/         信令 + TURN 中转服务器（Go），部署文件在 server/deploy/
+proto/          消息定义与设备 ID 派生规则，三方共用
+docs/           项目主页（GitHub Pages）
+spikes/         开工前的技术验证
+```
+
+## 排障
+
+**剪贴板读不到内容，`pbpaste` 也是空的**
+系统的剪贴板服务可能卡住了：某个程序声明了剪贴板内容后异常退出，会留下一个"有类型声明、没有数据"的空壳。执行 `killall pboard`，再复制一次即可。
+
+**设备一直显示「离线」**
+检查两台 Mac 的 **设置 → 连接状态** 是否都是「已连接」。不是的话，确认服务器地址正确、8787 端口可以访问。
+
+**一直显示「中转」而不是「直连」**
+NAT 打洞没成功，常见于对称 NAT 或严格的防火墙。功能不受影响，只是速度受服务器带宽限制。
+
+**查看日志**
+后台服务的日志在 `~/Library/Logs/CopySync/daemon.log`，服务器的日志用 `journalctl -u copysync-server -f` 查看。
+
+## 许可
+
+[MIT](LICENSE)
