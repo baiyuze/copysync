@@ -23,11 +23,12 @@ type Identity struct {
 }
 
 // 磁盘格式。私钥以 0600 权限存放在用户目录下——与 Syncthing 等
-// 同类工具一致。后续可换成 Keychain / DPAPI，接口不变。
+// 同类工具一致。Windows 上另用 DPAPI 加密，存在 ProtectedKey 里（见 protect_windows.go）。
 type keyFile struct {
-	DeviceID   string `json:"device_id"`
-	PublicKey  []byte `json:"public_key"`
-	PrivateKey []byte `json:"private_key"`
+	DeviceID     string `json:"device_id"`
+	PublicKey    []byte `json:"public_key"`
+	PrivateKey   []byte `json:"private_key,omitempty"`
+	ProtectedKey []byte `json:"protected_private_key,omitempty"`
 }
 
 // LoadOrCreate 读取已有身份；不存在则生成一份并落盘。
@@ -38,6 +39,12 @@ func LoadOrCreate(path string) (*Identity, error) {
 		var kf keyFile
 		if err := json.Unmarshal(data, &kf); err != nil {
 			return nil, fmt.Errorf("解析身份文件 %s: %w", path, err)
+		}
+		plaintext := len(kf.ProtectedKey) == 0
+		if !plaintext {
+			if kf.PrivateKey, err = unprotectKey(kf.ProtectedKey); err != nil {
+				return nil, err
+			}
 		}
 		if len(kf.PrivateKey) != ed25519.PrivateKeySize ||
 			len(kf.PublicKey) != ed25519.PublicKeySize {
@@ -51,6 +58,10 @@ func LoadOrCreate(path string) (*Identity, error) {
 		// 防御损坏或被篡改的文件：ID 必须能由公钥推出
 		if want := DeviceIDFor(id.PublicKey); want != id.DeviceID {
 			return nil, fmt.Errorf("身份文件 %s 的 device_id 与公钥不匹配", path)
+		}
+		// 需要加密的平台上遇到明文私钥（手工拷进来的文件），顺手加密存回去。失败也不影响使用
+		if keyProtected && plaintext {
+			_ = save(path, id)
 		}
 		return id, nil
 
@@ -72,27 +83,34 @@ func create(path string) (*Identity, error) {
 		PublicKey:  pub,
 		privateKey: priv,
 	}
-
-	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+	if err := save(path, id); err != nil {
 		return nil, err
 	}
-	data, err := json.MarshalIndent(keyFile{
-		DeviceID:   id.DeviceID,
-		PublicKey:  pub,
-		PrivateKey: priv,
-	}, "", "  ")
+	return id, nil
+}
+
+func save(path string, id *Identity) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+		return err
+	}
+	kf := keyFile{DeviceID: id.DeviceID, PublicKey: id.PublicKey, PrivateKey: id.privateKey}
+	if keyProtected {
+		sealed, err := protectKey(id.privateKey)
+		if err != nil {
+			return err
+		}
+		kf.PrivateKey, kf.ProtectedKey = nil, sealed
+	}
+	data, err := json.MarshalIndent(kf, "", "  ")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	// 0600：私钥只有当前用户可读
 	tmp := path + ".tmp"
 	if err := os.WriteFile(tmp, data, 0o600); err != nil {
-		return nil, fmt.Errorf("写入身份文件: %w", err)
+		return fmt.Errorf("写入身份文件: %w", err)
 	}
-	if err := os.Rename(tmp, path); err != nil {
-		return nil, err
-	}
-	return id, nil
+	return os.Rename(tmp, path)
 }
 
 func (i *Identity) Sign(data []byte) []byte {

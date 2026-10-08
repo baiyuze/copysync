@@ -70,11 +70,16 @@ func (w *Watcher) Run(ctx context.Context) {
 	ticker := time.NewTicker(w.interval)
 	defer ticker.Stop()
 
+	// 系统主动通知剪贴板变化的平台（Windows）上立即探测，轮询只作兜底；
+	// 其他平台这个通道为空，永远不会触发
+	notify := changeNotify
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
+			w.poll(ctx)
+		case <-notify:
 			w.poll(ctx)
 		}
 	}
@@ -116,6 +121,11 @@ func (w *Watcher) poll(ctx context.Context) {
 	if _, mine := w.selfWrites[snap.ChangeCount]; mine {
 		delete(w.selfWrites, snap.ChangeCount)
 		w.log.Debug("跳过本机写入触发的变化", "changeCount", snap.ChangeCount)
+		return
+	}
+	// 密码等敏感内容：不同步，也不进复制记录
+	if snap.Sensitive {
+		w.log.Debug("跳过标记为敏感的内容", "changeCount", snap.ChangeCount)
 		return
 	}
 

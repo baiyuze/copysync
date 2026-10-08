@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -104,6 +105,9 @@ func addPath(tw *tar.Writer, root string) error {
 		if err != nil {
 			return err
 		}
+		if skipWhenPacking(info.Name()) {
+			return nil
+		}
 		name := base
 		if rel != "." {
 			name = filepath.Join(base, rel)
@@ -122,6 +126,17 @@ func addFile(tw *tar.Writer, path, name string, info os.FileInfo) error {
 		}
 	}
 
+	// 普通文件先打开再写头：头里已经声明了大小，写完头才发现打不开的话，
+	// 整个 tar 流就坏了，对端一个文件也收不到。Windows 上被别的程序锁住的文件很常见
+	var f *os.File
+	if info.Mode().IsRegular() {
+		var err error
+		if f, err = os.Open(path); err != nil {
+			return nil // 打开失败就跳过，不因单个文件中断整次传输
+		}
+		defer f.Close()
+	}
+
 	hdr, err := tar.FileInfoHeader(info, link)
 	if err != nil {
 		return fmt.Errorf("构造 tar 头 %s: %w", path, err)
@@ -135,16 +150,9 @@ func addFile(tw *tar.Writer, path, name string, info os.FileInfo) error {
 	if err := tw.WriteHeader(hdr); err != nil {
 		return fmt.Errorf("写 tar 头 %s: %w", name, err)
 	}
-	if !info.Mode().IsRegular() {
+	if f == nil {
 		return nil // 目录与符号链接没有内容体
 	}
-
-	f, err := os.Open(path)
-	if err != nil {
-		return nil // 打开失败就跳过，不因单个文件中断整次传输
-	}
-	defer f.Close()
-
 	if _, err := io.Copy(tw, f); err != nil {
 		return fmt.Errorf("写入 %s 内容: %w", name, err)
 	}
@@ -169,6 +177,7 @@ func Unpack(r io.Reader, destDir string) ([]string, error) {
 	tr := tar.NewReader(dec)
 	seen := make(map[string]struct{})
 	var tops []string
+	names := newDestNames()
 
 	for {
 		hdr, err := tr.Next()
@@ -179,13 +188,24 @@ func Unpack(r io.Reader, destDir string) ([]string, error) {
 			return tops, fmt.Errorf("读取 tar 条目: %w", err)
 		}
 
-		target, err := safeJoin(destDir, hdr.Name)
+		// Windows 上先把名字改成合法的（见 names.go），其他平台原样使用
+		name := hdr.Name
+		if windowsNames {
+			if skipOnWindows(path.Base(strings.TrimSuffix(name, "/"))) {
+				continue
+			}
+			if name, err = names.rel(hdr.Name, hdr.Typeflag == tar.TypeDir); err != nil {
+				return tops, err
+			}
+		}
+
+		target, err := safeJoin(destDir, name)
 		if err != nil {
 			return tops, err
 		}
 
 		// 记录顶层条目，供写入剪贴板使用
-		if top := topLevel(hdr.Name); top != "" {
+		if top := topLevel(name); top != "" {
 			if _, ok := seen[top]; !ok {
 				seen[top] = struct{}{}
 				tops = append(tops, filepath.Join(destDir, top))
@@ -200,6 +220,11 @@ func Unpack(r io.Reader, destDir string) ([]string, error) {
 		case tar.TypeSymlink:
 			os.Remove(target)
 			if err := os.Symlink(hdr.Linkname, target); err != nil {
+				if windowsNames {
+					// 普通用户在 Windows 上没有创建符号链接的权限（除非开了开发者模式）。
+					// 跳过这一个，别让整次解包失败
+					continue
+				}
 				return tops, fmt.Errorf("创建符号链接 %s: %w", target, err)
 			}
 		case tar.TypeReg:
@@ -226,7 +251,8 @@ func Unpack(r io.Reader, destDir string) ([]string, error) {
 // 归档来自对端设备，即便已配对也不该无条件信任其中的路径。
 func safeJoin(base, name string) (string, error) {
 	clean := filepath.Clean(filepath.FromSlash(name))
-	if filepath.IsAbs(clean) || strings.HasPrefix(clean, "..") {
+	// VolumeName 拦住 Windows 上的「C:foo」「\\server\share」：它们不算绝对路径，Join 之后却能跑出去
+	if filepath.IsAbs(clean) || strings.HasPrefix(clean, "..") || filepath.VolumeName(clean) != "" {
 		return "", fmt.Errorf("归档中含非法路径: %q", name)
 	}
 	target := filepath.Join(base, clean)

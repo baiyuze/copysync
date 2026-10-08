@@ -162,6 +162,9 @@ func (m *Manager) Close() {
 	})
 }
 
+// Reprobe 立即重新探测出口。从睡眠中唤醒时调用：网络多半已经变了，不必等下一轮。
+func (m *Manager) Reprobe() { m.triggerProbe() }
+
 // Egress 返回最近一轮出口探测的结果（含按历史推算的出口），供诊断展示。
 func (m *Manager) Egress() EgressReport {
 	m.egressMu.Lock()

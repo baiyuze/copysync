@@ -7,6 +7,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -47,14 +48,24 @@ func main() {
 		verbose = flag.Bool("v", false, "输出调试日志")
 		probe   = flag.Bool("probe-clipboard", false,
 			"诊断用：在主线程直接读一次剪贴板并打印结果后退出")
+		supervise = flag.Bool("supervise", false,
+			"守护模式：拉起后台服务，异常退出时自动重启（Windows 开机自启用）")
 	)
 	flag.Parse()
+
+	if *supervise {
+		os.Exit(runSupervisor(*dataDir))
+	}
 
 	level := slog.LevelInfo
 	if *verbose {
 		level = slog.LevelDebug
 	}
-	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: level})))
+	logOut := logOutput(*dataDir)
+	if *probe {
+		logOut = os.Stderr
+	}
+	slog.SetDefault(slog.New(slog.NewTextHandler(logOut, &slog.HandlerOptions{Level: level})))
 
 	if *probe {
 		probeClipboard()
@@ -62,10 +73,19 @@ func main() {
 	}
 
 	if err := run(*dataDir); err != nil {
+		if errors.Is(err, errAlreadyRunning) {
+			slog.Info("已有后台服务在运行，本进程退出")
+			os.Exit(exitAlreadyRunning)
+		}
 		slog.Error("daemon 退出", "err", err)
 		os.Exit(1)
 	}
 }
+
+// exitAlreadyRunning 是「已有实例在运行」的退出码。Windows 的守护进程见到它就不再重启。
+const exitAlreadyRunning = 3
+
+var errAlreadyRunning = errors.New("已有后台服务在运行")
 
 // probeClipboard 在主线程直接走一遍探测与读取，用来把剪贴板问题
 // 与 daemon 的其余部分隔离开。
@@ -99,12 +119,20 @@ func probeClipboard() {
 func run(dataDir string) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+	// 注销、关机时由剪贴板窗口收到系统通知后调用（目前只有 Windows），见下方 SetSystemHooks
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 	// ── 路径与配置 ──
 	paths, err := resolvePaths(dataDir)
 	if err != nil {
 		return err
 	}
+	release, ok := acquireInstance(paths.Root)
+	if !ok {
+		return errAlreadyRunning
+	}
+	defer release()
 	if err := paths.EnsureDirs(); err != nil {
 		return err
 	}
@@ -354,8 +382,20 @@ func run(dataDir string) error {
 	slog.Info("daemon 已就绪",
 		"port", port, "endpoint", paths.Endpoint, "cache", paths.Cache)
 
+	// 系统事件（目前只有 Windows 上报）：注销关机时正常退出，唤醒后立即重新探测网络
+	clipboard.SetSystemHooks(
+		func() {
+			slog.Info("系统正在注销或关机，退出")
+			cancel()
+		},
+		func() {
+			slog.Info("从睡眠中唤醒，重新探测网络出口")
+			peerMgr.P2P().Reprobe()
+		},
+	)
+
 	// ── 主线程交给 MainLoop ──
-	// 剪贴板相关的一切都在这条线程上执行，同时驱动 macOS run loop。
+	// 剪贴板相关的一切都在这条线程上执行，同时驱动平台的事件循环（macOS 的 run loop、Windows 的消息泵）。
 	loop.Run(ctx)
 
 	slog.Info("正在退出")

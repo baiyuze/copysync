@@ -1,22 +1,20 @@
-//go:build !darwin
+//go:build !darwin && !windows
 
 package clipboard
 
 import "time"
 
-// 非 macOS 平台的占位实现。Windows 的实现是二期工作（M6/M7）：
-// 文本与图片走 SetClipboardData + WM_RENDERFORMAT，
-// 文件粘贴需要在 Go 里实现 COM IDataObject。
+// 既非 macOS 也非 Windows 的平台（目前只有 Linux，服务器端用不到剪贴板）的占位实现。
 type stubClipboard struct{}
 
 func New() Clipboard { return stubClipboard{} }
 
 func InitPlatform() {}
 
-func (stubClipboard) Peek() (Snapshot, error)  { return Snapshot{}, ErrUnsupported }
-func (stubClipboard) Read() (Content, error)   { return Content{}, ErrUnsupported }
-func (stubClipboard) Write(Content) error      { return ErrUnsupported }
-func (stubClipboard) Permission() Permission   { return PermissionNotApplicable }
+func (stubClipboard) Peek() (Snapshot, error)       { return Snapshot{}, ErrUnsupported }
+func (stubClipboard) Read() (Content, error)        { return Content{}, ErrUnsupported }
+func (stubClipboard) Write(Content) error           { return ErrUnsupported }
+func (stubClipboard) Permission() Permission        { return PermissionNotApplicable }
 func (stubClipboard) OpenPermissionSettings() error { return ErrUnsupported }
 
 // 无原生事件循环可驱动时，单纯让出 CPU。

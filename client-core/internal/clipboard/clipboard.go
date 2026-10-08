@@ -93,6 +93,9 @@ type Snapshot struct {
 	Kind        Kind
 	ContentType string   // UTType 标识符，如 public.plain-text
 	Types       []string // 原始类型列表，排障用
+	// Sensitive 表示复制它的程序（多为密码管理器）标明了「不要记录、不要同步」。
+	// 目前只有 Windows 实现会设置，见 windows.go 的 sensitive
+	Sensitive bool
 }
 
 // Content 是剪贴板的实际内容。读取它可能触发授权弹窗。

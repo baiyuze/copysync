@@ -6,6 +6,7 @@ import (
 	"net/netip"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 	"sync"
@@ -131,7 +132,7 @@ func localNetworkKey() string {
 	}
 	var addrs []string
 	for _, ifc := range ifaces {
-		if ifc.Flags&net.FlagUp == 0 || ifc.Flags&net.FlagLoopback != 0 {
+		if ifc.Flags&net.FlagUp == 0 || ifc.Flags&net.FlagLoopback != 0 || unstableAdapter(ifc.Name) {
 			continue
 		}
 		list, err := ifc.Addrs()
@@ -146,4 +147,13 @@ func localNetworkKey() string {
 	}
 	sort.Strings(addrs)
 	return strings.Join(addrs, ",")
+}
+
+// unstableAdapter 判断一块网卡是否该排除在网络标识之外。
+//
+// Windows 上 WSL、Hyper-V、Docker 的虚拟网卡（名字以 vEthernet 开头）每次开机地址都会变，
+// 算进来的话，同一个网络每次开机都像是新网络，出口历史就用不上了。其他平台不排除，
+// 与之前的行为一致。
+func unstableAdapter(name string) bool {
+	return runtime.GOOS == "windows" && strings.HasPrefix(name, "vEthernet")
 }
