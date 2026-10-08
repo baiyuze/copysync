@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -38,6 +39,9 @@ func TestCreateThenLoadIsStable(t *testing.T) {
 }
 
 func TestPrivateKeyFilePermissions(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Windows 不用权限位，私钥另用 DPAPI 加密，见 protect_windows_test.go")
+	}
 	path := filepath.Join(t.TempDir(), "identity.json")
 	if _, err := LoadOrCreate(path); err != nil {
 		t.Fatal(err)

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -172,13 +173,18 @@ func TestPathsLayout(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// 缓存里是用户复制过的文件，不该让同机其他用户读到
-	if perm := info.Mode().Perm(); perm != 0o700 {
+	// 缓存里是用户复制过的文件，不该让同机其他用户读到。
+	// Windows 没有 Unix 权限位，数据目录在 %LOCALAPPDATA% 下，系统默认只给当前用户访问
+	if perm := info.Mode().Perm(); runtime.GOOS != "windows" && perm != 0o700 {
 		t.Errorf("缓存目录权限 = %o，期望 0700", perm)
 	}
 }
 
 func TestSaveWritesPrivatePermissions(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		// Windows 没有 Unix 权限位；数据目录在 %LOCALAPPDATA% 下，系统默认只给当前用户访问
+		t.Skip("Windows 不用权限位")
+	}
 	p := PathsUnder(t.TempDir())
 	if err := Save(p, Default()); err != nil {
 		t.Fatal(err)

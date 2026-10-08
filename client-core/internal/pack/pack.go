@@ -252,7 +252,8 @@ func Unpack(r io.Reader, destDir string) ([]string, error) {
 func safeJoin(base, name string) (string, error) {
 	clean := filepath.Clean(filepath.FromSlash(name))
 	// VolumeName 拦住 Windows 上的「C:foo」「\\server\share」：它们不算绝对路径，Join 之后却能跑出去
-	if filepath.IsAbs(clean) || strings.HasPrefix(clean, "..") || filepath.VolumeName(clean) != "" {
+	if filepath.IsAbs(clean) || strings.HasPrefix(clean, "..") || filepath.VolumeName(clean) != "" ||
+		strings.HasPrefix(clean, string(filepath.Separator)) { // Windows 上「\etc」不算绝对路径
 		return "", fmt.Errorf("归档中含非法路径: %q", name)
 	}
 	target := filepath.Join(base, clean)
