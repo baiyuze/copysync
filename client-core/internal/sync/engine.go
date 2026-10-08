@@ -74,6 +74,10 @@ type Engine struct {
 	mu sync.Mutex
 	// 正在接收中的流：stream_id -> 接收器
 	incoming map[string]*receiver
+
+	// 每次传输上一次上报进度的时间，用于节流，见 emitProgress
+	progressMu   sync.Mutex
+	lastProgress map[string]time.Time
 }
 
 type Options struct {
@@ -98,20 +102,21 @@ func New(opts Options) *Engine {
 		log = slog.Default()
 	}
 	return &Engine{
-		log:         log,
-		store:       opts.Store,
-		cache:       opts.Cache,
-		watcher:     opts.Watcher,
-		deviceID:    opts.DeviceID,
-		deviceName:  opts.DeviceName,
-		loadConfig:  opts.LoadConfig,
-		send:        opts.Send,
-		broadcast:   opts.Broadcast,
-		openStream:  opts.OpenStream,
-		onlinePeers: opts.OnlinePeers,
-		onRecord:    opts.OnRecord,
-		onProgress:  opts.OnProgress,
-		incoming:    make(map[string]*receiver),
+		log:          log,
+		store:        opts.Store,
+		cache:        opts.Cache,
+		watcher:      opts.Watcher,
+		deviceID:     opts.DeviceID,
+		deviceName:   opts.DeviceName,
+		loadConfig:   opts.LoadConfig,
+		send:         opts.Send,
+		broadcast:    opts.Broadcast,
+		openStream:   opts.OpenStream,
+		onlinePeers:  opts.OnlinePeers,
+		onRecord:     opts.OnRecord,
+		onProgress:   opts.OnProgress,
+		incoming:     make(map[string]*receiver),
+		lastProgress: make(map[string]time.Time),
 	}
 }
 
@@ -456,6 +461,7 @@ func (e *Engine) pushTo(ctx context.Context, peer string, clip store.Clip) error
 	// 等发送缓冲排空再关闭，否则尾部数据会被丢弃
 	w.WaitDrained(ctx, 60*time.Second)
 	dc.Close()
+	e.forgetProgress(clip.ID)
 
 	ok := packErr == nil
 	errMsg := ""
@@ -621,6 +627,7 @@ func (e *Engine) finishReceive(r *receiver, cacheRel string, tops []string) {
 	e.mu.Lock()
 	delete(e.incoming, r.streamID)
 	e.mu.Unlock()
+	e.forgetProgress(r.clipID)
 
 	var size int64
 	for _, p := range tops {
@@ -770,10 +777,26 @@ func (e *Engine) emitRecord(clip store.Clip) {
 	})
 }
 
+// progressInterval 是同一次传输两次进度上报之间的最小间隔。
+//
+// 进度原本按数据块上报，一个大文件会产生上万条事件。事件队列每个订阅者只缓冲 64 条，
+// 满了就丢弃新事件——「传输完成」那条记录更新也可能被挤掉，界面上的进度条就永远停不下来。
+const progressInterval = 200 * time.Millisecond
+
 func (e *Engine) emitProgress(clipID string, sent, total int64, start time.Time) {
 	if e.onProgress == nil {
 		return
 	}
+	done := total > 0 && sent >= total
+	now := time.Now()
+	e.progressMu.Lock()
+	last, seen := e.lastProgress[clipID]
+	if !done && seen && now.Sub(last) < progressInterval {
+		e.progressMu.Unlock()
+		return
+	}
+	e.lastProgress[clipID] = now
+	e.progressMu.Unlock()
 	elapsed := time.Since(start).Seconds()
 	var rate float64
 	if elapsed > 0 {
@@ -782,6 +805,13 @@ func (e *Engine) emitProgress(clipID string, sent, total int64, start time.Time)
 	e.onProgress(&pb.TransferProgress{
 		ClipId: clipID, Transferred: sent, Total: total, BytesPerSecond: rate,
 	})
+}
+
+// forgetProgress 在一次传输结束后清掉它的节流记录。
+func (e *Engine) forgetProgress(clipID string) {
+	e.progressMu.Lock()
+	delete(e.lastProgress, clipID)
+	e.progressMu.Unlock()
 }
 
 // peerName 取对端设备名用于展示；查不到就退回 ID。

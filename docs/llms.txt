@@ -6,7 +6,7 @@
 
 Key facts:
 
-- Current version: 1.0.1, released 2026-10-08.
+- Current version: 1.0.2, released 2026-10-08.
 - Client: macOS 13 Ventura or later, universal binary for Intel and Apple silicon. Distributed as a DMG; not notarized by Apple, so the first launch needs "Open Anyway" in System Settings → Privacy & Security.
 - Server: a single static Go binary for Linux (x86_64, ARM64) or macOS, installed via systemd script or Docker Compose. Ports: 8787/tcp (signaling), 3478/udp (STUN/TURN), 32768–60999/udp (relay).
 - Content synced: plain text, rich text (HTML plus a plain-text copy), images, files, folders.

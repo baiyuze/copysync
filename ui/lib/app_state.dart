@@ -32,6 +32,9 @@ class AppState extends ChangeNotifier {
   List<Device> _peers = const [];
   final List<ClipRecord> _records = [];
 
+  /// 正在传输的记录的进度（0–1），只在界面上展示，传完即移除。
+  final Map<String, double> _progress = {};
+
   /// 待用户核对指纹的配对请求。非空时界面弹出确认。
   Device? _pendingPairing;
 
@@ -46,6 +49,9 @@ class AppState extends ChangeNotifier {
   Device? get self => _self;
   List<Device> get peers => List.unmodifiable(_peers);
   List<ClipRecord> get records => List.unmodifiable(_records);
+
+  /// 传输进度；总量未知或尚未开始时为 null。
+  double? progressOf(String clipId) => _progress[clipId];
   Device? get pendingPairing => _pendingPairing;
   ServiceState? get serviceState => _serviceState;
 
@@ -216,17 +222,13 @@ class AppState extends ChangeNotifier {
   void _onEvent(Event ev) {
     final added = ev.whichPayload();
     switch (added) {
+      // 同一条记录会被推送多次（开始接收时一次、接收完成时一次），一律按 id 合并，
+      // 否则界面上会出现两行，其中「接收中」那行的进度条永远停不下来
       case Event_Payload.clipAdded:
-        _records.insert(0, ev.clipAdded);
-        if (_records.length > 500) _records.removeLast();
+        _upsert(ev.clipAdded);
 
       case Event_Payload.clipUpdated:
-        final i = _records.indexWhere((r) => r.id == ev.clipUpdated.id);
-        if (i >= 0) {
-          _records[i] = ev.clipUpdated;
-        } else {
-          _records.insert(0, ev.clipUpdated);
-        }
+        _upsert(ev.clipUpdated);
 
       case Event_Payload.clipRemoved:
         _records.removeWhere((r) => r.id == ev.clipRemoved);
@@ -238,16 +240,46 @@ class AppState extends ChangeNotifier {
         _status = ev.statusChanged;
 
       case Event_Payload.progress:
-        final i = _records.indexWhere((r) => r.id == ev.progress.clipId);
-        if (i >= 0) {
-          _records[i] = _records[i]..status = ClipStatus.CLIP_STATUS_FETCHING;
-        }
+        _onProgress(ev.progress);
 
       default:
         break;
     }
     notifyListeners();
   }
+
+  void _upsert(ClipRecord r) {
+    final i = _records.indexWhere((x) => x.id == r.id);
+    if (i >= 0) {
+      _records[i] = r;
+    } else {
+      _records.insert(0, r);
+      if (_records.length > 500) _records.removeLast();
+    }
+    // 传完（或失败）了就不再显示进度
+    if (r.status != ClipStatus.CLIP_STATUS_FETCHING) _progress.remove(r.id);
+  }
+
+  /// 进度事件只用于「从对端接收」的记录：本机复制的记录在发送时也会产生进度，
+  /// 若把它们也标成「接收中」，就再也没有事件能把状态改回来。
+  void _onProgress(TransferProgress p) {
+    final i = _records.indexWhere((r) => r.id == p.clipId);
+    if (i < 0 || _records[i].outgoing) return;
+    final r = _records[i];
+    if (r.status == ClipStatus.CLIP_STATUS_REMOTE_ONLY) {
+      // 用户点了「拉取到本机」，开始传了
+      _records[i] = r.deepCopy()..status = ClipStatus.CLIP_STATUS_FETCHING;
+    } else if (r.status != ClipStatus.CLIP_STATUS_FETCHING) {
+      return; // 已经传完的记录，迟到的进度事件不能把它拉回「接收中」
+    }
+    if (p.total > 0) {
+      _progress[p.clipId] = (p.transferred.toInt() / p.total.toInt()).clamp(0.0, 1.0);
+    }
+  }
+
+  /// 测试用：直接注入一条后台服务的事件。
+  @visibleForTesting
+  void debugEvent(Event ev) => _onEvent(ev);
 
   void _onDeviceChanged(Device d) {
     // 带 pairingSession 的不是已配对设备，而是一条待确认的配对请求

@@ -561,6 +561,15 @@ const PeerMessage$json = {
       '9': 0,
       '10': 'done'
     },
+    {
+      '1': 'link',
+      '3': 6,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.LinkInfo',
+      '9': 0,
+      '10': 'link'
+    },
   ],
   '8': [
     {'1': 'payload'},
@@ -573,7 +582,20 @@ final $typed_data.Uint8List peerMessageDescriptor = $convert.base64Decode(
     'VvZmZlchIuCgVmZXRjaBgCIAEoCzIWLmNvcHlzeW5jLnYxLlBlZXJGZXRjaEgAUgVmZXRjaBIy'
     'CgZyZWplY3QYAyABKAsyGC5jb3B5c3luYy52MS5GZXRjaFJlamVjdEgAUgZyZWplY3QSNQoGaG'
     'VhZGVyGAQgASgLMhsuY29weXN5bmMudjEuVHJhbnNmZXJIZWFkZXJIAFIGaGVhZGVyEi8KBGRv'
-    'bmUYBSABKAsyGS5jb3B5c3luYy52MS5UcmFuc2ZlckRvbmVIAFIEZG9uZUIJCgdwYXlsb2Fk');
+    'bmUYBSABKAsyGS5jb3B5c3luYy52MS5UcmFuc2ZlckRvbmVIAFIEZG9uZRIrCgRsaW5rGAYgAS'
+    'gLMhUuY29weXN5bmMudjEuTGlua0luZm9IAFIEbGlua0IJCgdwYXlsb2Fk');
+
+@$core.Deprecated('Use linkInfoDescriptor instead')
+const LinkInfo$json = {
+  '1': 'LinkInfo',
+  '2': [
+    {'1': 'relayed', '3': 1, '4': 1, '5': 8, '10': 'relayed'},
+  ],
+};
+
+/// Descriptor for `LinkInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List linkInfoDescriptor =
+    $convert.base64Decode('CghMaW5rSW5mbxIYCgdyZWxheWVkGAEgASgIUgdyZWxheWVk');
 
 @$core.Deprecated('Use clipOfferDescriptor instead')
 const ClipOffer$json = {

@@ -168,7 +168,15 @@ message PeerMessage {
     FetchReject reject = 3;         // 拒绝：源文件没了 / 已过期
     TransferHeader header = 4;      // 数据流即将开始
     TransferDone done = 5;
+    LinkInfo link = 6;              // 连接建立后互相告知本端是否经中转
   }
+}
+
+// 连接就绪后各自发一次。只有本端能确定自己发出的数据是否走 TURN：
+// 对端经中转发来的包，在本端看来可能只是一个普通地址（peer-reflexive），
+// 单靠自己的视角会把中转误判成直连。两端交换后，任一端经中转即显示为中转。
+message LinkInfo {
+  bool relayed = 1;
 }
 
 // 复制发生时广播给所有在线对端。

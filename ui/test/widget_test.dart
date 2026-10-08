@@ -1,3 +1,4 @@
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -82,6 +83,39 @@ void main() {
       ));
       expect(find.text('CPJK-OG2H-U7O6'), findsOneWidget);
       expect(find.text('FJX6-SRL2-C2QG'), findsOneWidget);
+    });
+  });
+
+  group('复制记录事件', () {
+    AppState seeded(List<ClipRecord> records) =>
+        AppState()..debugSeed(status: Status(), config: Config(), self: Device(), records: records);
+    Event added(ClipRecord r) => Event(clipAdded: r);
+    Event progress(String id, int done, int total) => Event(
+        progress: TransferProgress(clipId: id, transferred: Int64(done), total: Int64(total)));
+
+    test('本机复制的记录在发送时不会变成「接收中」', () {
+      final state = seeded([ClipRecord(id: 'out', outgoing: true, status: ClipStatus.CLIP_STATUS_READY)]);
+      state.debugEvent(progress('out', 50, 100));
+      expect(state.records.single.status, ClipStatus.CLIP_STATUS_READY);
+      expect(state.progressOf('out'), isNull);
+    });
+
+    test('同一条记录推送两次只显示一行，并以最新状态为准', () {
+      final state = seeded([]);
+      state.debugEvent(added(ClipRecord(id: 'in', status: ClipStatus.CLIP_STATUS_FETCHING)));
+      state.debugEvent(progress('in', 50, 100));
+      expect(state.progressOf('in'), 0.5);
+
+      state.debugEvent(added(ClipRecord(id: 'in', status: ClipStatus.CLIP_STATUS_READY)));
+      expect(state.records, hasLength(1));
+      expect(state.records.single.status, ClipStatus.CLIP_STATUS_READY);
+      expect(state.progressOf('in'), isNull);
+    });
+
+    test('迟到的进度事件不会把已完成的记录拉回「接收中」', () {
+      final state = seeded([ClipRecord(id: 'in', status: ClipStatus.CLIP_STATUS_READY)]);
+      state.debugEvent(progress('in', 90, 100));
+      expect(state.records.single.status, ClipStatus.CLIP_STATUS_READY);
     });
   });
 

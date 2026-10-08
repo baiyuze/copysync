@@ -1,5 +1,18 @@
 # 更新记录 / Changelog
 
+## 1.0.2 — 2026-10-08
+
+- 修复：一端经中转时，另一端误显示为「直连」，两台设备显示不一致。只有发送方能确定自己的数据
+  是否走 TURN，现在连接建立后两端互相告知，任一端经中转即两端都显示「中转」。
+  Fixed: when only one side was relayed, the other side showed "direct". Only the sender knows whether its
+  traffic goes through TURN, so the two sides now tell each other after connecting; if either is relayed,
+  both show "relay".
+- 修复：收到图片或文件后，复制记录里同一条出现两行，其中一行进度条一直在动。
+  Fixed: a received image or file appeared twice in the history, one row with a progress bar that never stopped.
+- 修复：本机复制的图片在发送后一直显示进度条。 Fixed: items copied on this Mac kept showing a progress bar after sending.
+- 传输进度按真实比例显示，并做了节流，大文件传输时不再挤掉「传输完成」的事件。
+  Transfer progress now shows the actual percentage and is throttled, so large transfers no longer crowd out the completion event.
+
 ## 1.0.1 — 2026-10-08
 
 - 修复：配对时两台 Mac 显示的安全指纹不一样，无从核对。之前每台只显示「对方」的指纹；

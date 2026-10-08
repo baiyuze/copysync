@@ -1510,6 +1510,7 @@ type PeerMessage struct {
 	//	*PeerMessage_Reject
 	//	*PeerMessage_Header
 	//	*PeerMessage_Done
+	//	*PeerMessage_Link
 	Payload       isPeerMessage_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1597,6 +1598,15 @@ func (x *PeerMessage) GetDone() *TransferDone {
 	return nil
 }
 
+func (x *PeerMessage) GetLink() *LinkInfo {
+	if x != nil {
+		if x, ok := x.Payload.(*PeerMessage_Link); ok {
+			return x.Link
+		}
+	}
+	return nil
+}
+
 type isPeerMessage_Payload interface {
 	isPeerMessage_Payload()
 }
@@ -1621,6 +1631,10 @@ type PeerMessage_Done struct {
 	Done *TransferDone `protobuf:"bytes,5,opt,name=done,proto3,oneof"`
 }
 
+type PeerMessage_Link struct {
+	Link *LinkInfo `protobuf:"bytes,6,opt,name=link,proto3,oneof"` // 连接建立后互相告知本端是否经中转
+}
+
 func (*PeerMessage_Offer) isPeerMessage_Payload() {}
 
 func (*PeerMessage_Fetch) isPeerMessage_Payload() {}
@@ -1630,6 +1644,55 @@ func (*PeerMessage_Reject) isPeerMessage_Payload() {}
 func (*PeerMessage_Header) isPeerMessage_Payload() {}
 
 func (*PeerMessage_Done) isPeerMessage_Payload() {}
+
+func (*PeerMessage_Link) isPeerMessage_Payload() {}
+
+// 连接就绪后各自发一次。只有本端能确定自己发出的数据是否走 TURN：
+// 对端经中转发来的包，在本端看来可能只是一个普通地址（peer-reflexive），
+// 单靠自己的视角会把中转误判成直连。两端交换后，任一端经中转即显示为中转。
+type LinkInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Relayed       bool                   `protobuf:"varint,1,opt,name=relayed,proto3" json:"relayed,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LinkInfo) Reset() {
+	*x = LinkInfo{}
+	mi := &file_copysync_v1_wire_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LinkInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LinkInfo) ProtoMessage() {}
+
+func (x *LinkInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_copysync_v1_wire_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LinkInfo.ProtoReflect.Descriptor instead.
+func (*LinkInfo) Descriptor() ([]byte, []int) {
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *LinkInfo) GetRelayed() bool {
+	if x != nil {
+		return x.Relayed
+	}
+	return false
+}
 
 // 复制发生时广播给所有在线对端。
 // 小于阈值的内容会紧接着主动推送；大于阈值的只发这条，等对方来取。
@@ -1651,7 +1714,7 @@ type ClipOffer struct {
 
 func (x *ClipOffer) Reset() {
 	*x = ClipOffer{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[20]
+	mi := &file_copysync_v1_wire_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1663,7 +1726,7 @@ func (x *ClipOffer) String() string {
 func (*ClipOffer) ProtoMessage() {}
 
 func (x *ClipOffer) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[20]
+	mi := &file_copysync_v1_wire_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1676,7 +1739,7 @@ func (x *ClipOffer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClipOffer.ProtoReflect.Descriptor instead.
 func (*ClipOffer) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{20}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *ClipOffer) GetClipId() string {
@@ -1745,7 +1808,7 @@ type PeerFetch struct {
 
 func (x *PeerFetch) Reset() {
 	*x = PeerFetch{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[21]
+	mi := &file_copysync_v1_wire_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1757,7 +1820,7 @@ func (x *PeerFetch) String() string {
 func (*PeerFetch) ProtoMessage() {}
 
 func (x *PeerFetch) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[21]
+	mi := &file_copysync_v1_wire_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1770,7 +1833,7 @@ func (x *PeerFetch) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PeerFetch.ProtoReflect.Descriptor instead.
 func (*PeerFetch) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{21}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *PeerFetch) GetClipId() string {
@@ -1790,7 +1853,7 @@ type FetchReject struct {
 
 func (x *FetchReject) Reset() {
 	*x = FetchReject{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[22]
+	mi := &file_copysync_v1_wire_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1802,7 +1865,7 @@ func (x *FetchReject) String() string {
 func (*FetchReject) ProtoMessage() {}
 
 func (x *FetchReject) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[22]
+	mi := &file_copysync_v1_wire_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1815,7 +1878,7 @@ func (x *FetchReject) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FetchReject.ProtoReflect.Descriptor instead.
 func (*FetchReject) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{22}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *FetchReject) GetClipId() string {
@@ -1846,7 +1909,7 @@ type TransferHeader struct {
 
 func (x *TransferHeader) Reset() {
 	*x = TransferHeader{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[23]
+	mi := &file_copysync_v1_wire_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1858,7 +1921,7 @@ func (x *TransferHeader) String() string {
 func (*TransferHeader) ProtoMessage() {}
 
 func (x *TransferHeader) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[23]
+	mi := &file_copysync_v1_wire_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1871,7 +1934,7 @@ func (x *TransferHeader) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransferHeader.ProtoReflect.Descriptor instead.
 func (*TransferHeader) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{23}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *TransferHeader) GetClipId() string {
@@ -1922,7 +1985,7 @@ type TransferDone struct {
 
 func (x *TransferDone) Reset() {
 	*x = TransferDone{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[24]
+	mi := &file_copysync_v1_wire_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1934,7 +1997,7 @@ func (x *TransferDone) String() string {
 func (*TransferDone) ProtoMessage() {}
 
 func (x *TransferDone) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[24]
+	mi := &file_copysync_v1_wire_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1947,7 +2010,7 @@ func (x *TransferDone) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransferDone.ProtoReflect.Descriptor instead.
 func (*TransferDone) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{24}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *TransferDone) GetClipId() string {
@@ -2089,14 +2152,17 @@ const file_copysync_v1_wire_proto_rawDesc = "" +
 	"\apayload\";\n" +
 	"\vServerError\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\x94\x02\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xc1\x02\n" +
 	"\vPeerMessage\x12.\n" +
 	"\x05offer\x18\x01 \x01(\v2\x16.copysync.v1.ClipOfferH\x00R\x05offer\x12.\n" +
 	"\x05fetch\x18\x02 \x01(\v2\x16.copysync.v1.PeerFetchH\x00R\x05fetch\x122\n" +
 	"\x06reject\x18\x03 \x01(\v2\x18.copysync.v1.FetchRejectH\x00R\x06reject\x125\n" +
 	"\x06header\x18\x04 \x01(\v2\x1b.copysync.v1.TransferHeaderH\x00R\x06header\x12/\n" +
-	"\x04done\x18\x05 \x01(\v2\x19.copysync.v1.TransferDoneH\x00R\x04doneB\t\n" +
-	"\apayload\"\xa2\x02\n" +
+	"\x04done\x18\x05 \x01(\v2\x19.copysync.v1.TransferDoneH\x00R\x04done\x12+\n" +
+	"\x04link\x18\x06 \x01(\v2\x15.copysync.v1.LinkInfoH\x00R\x04linkB\t\n" +
+	"\apayload\"$\n" +
+	"\bLinkInfo\x12\x18\n" +
+	"\arelayed\x18\x01 \x01(\bR\arelayed\"\xa2\x02\n" +
 	"\tClipOffer\x12\x17\n" +
 	"\aclip_id\x18\x01 \x01(\tR\x06clipId\x12)\n" +
 	"\x04kind\x18\x02 \x01(\x0e2\x15.copysync.v1.ClipKindR\x04kind\x12+\n" +
@@ -2148,7 +2214,7 @@ func file_copysync_v1_wire_proto_rawDescGZIP() []byte {
 }
 
 var file_copysync_v1_wire_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_copysync_v1_wire_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_copysync_v1_wire_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
 var file_copysync_v1_wire_proto_goTypes = []any{
 	(Compression)(0),              // 0: copysync.v1.Compression
 	(Packaging)(0),                // 1: copysync.v1.Packaging
@@ -2172,13 +2238,14 @@ var file_copysync_v1_wire_proto_goTypes = []any{
 	(*ClientEnvelope)(nil),        // 19: copysync.v1.ClientEnvelope
 	(*ServerError)(nil),           // 20: copysync.v1.ServerError
 	(*PeerMessage)(nil),           // 21: copysync.v1.PeerMessage
-	(*ClipOffer)(nil),             // 22: copysync.v1.ClipOffer
-	(*PeerFetch)(nil),             // 23: copysync.v1.PeerFetch
-	(*FetchReject)(nil),           // 24: copysync.v1.FetchReject
-	(*TransferHeader)(nil),        // 25: copysync.v1.TransferHeader
-	(*TransferDone)(nil),          // 26: copysync.v1.TransferDone
-	(ClipKind)(0),                 // 27: copysync.v1.ClipKind
-	(*ClipItem)(nil),              // 28: copysync.v1.ClipItem
+	(*LinkInfo)(nil),              // 22: copysync.v1.LinkInfo
+	(*ClipOffer)(nil),             // 23: copysync.v1.ClipOffer
+	(*PeerFetch)(nil),             // 24: copysync.v1.PeerFetch
+	(*FetchReject)(nil),           // 25: copysync.v1.FetchReject
+	(*TransferHeader)(nil),        // 26: copysync.v1.TransferHeader
+	(*TransferDone)(nil),          // 27: copysync.v1.TransferDone
+	(ClipKind)(0),                 // 28: copysync.v1.ClipKind
+	(*ClipItem)(nil),              // 29: copysync.v1.ClipItem
 }
 var file_copysync_v1_wire_proto_depIdxs = []int32{
 	4,  // 0: copysync.v1.SignalMessage.offer:type_name -> copysync.v1.SdpOffer
@@ -2199,20 +2266,21 @@ var file_copysync_v1_wire_proto_depIdxs = []int32{
 	2,  // 15: copysync.v1.ClientEnvelope.forward:type_name -> copysync.v1.Signed
 	12, // 16: copysync.v1.ClientEnvelope.pairing_create:type_name -> copysync.v1.PairingCreateRequest
 	14, // 17: copysync.v1.ClientEnvelope.pairing_redeem:type_name -> copysync.v1.PairingRedeemRequest
-	22, // 18: copysync.v1.PeerMessage.offer:type_name -> copysync.v1.ClipOffer
-	23, // 19: copysync.v1.PeerMessage.fetch:type_name -> copysync.v1.PeerFetch
-	24, // 20: copysync.v1.PeerMessage.reject:type_name -> copysync.v1.FetchReject
-	25, // 21: copysync.v1.PeerMessage.header:type_name -> copysync.v1.TransferHeader
-	26, // 22: copysync.v1.PeerMessage.done:type_name -> copysync.v1.TransferDone
-	27, // 23: copysync.v1.ClipOffer.kind:type_name -> copysync.v1.ClipKind
-	28, // 24: copysync.v1.ClipOffer.items:type_name -> copysync.v1.ClipItem
-	0,  // 25: copysync.v1.TransferHeader.compression:type_name -> copysync.v1.Compression
-	1,  // 26: copysync.v1.TransferHeader.packaging:type_name -> copysync.v1.Packaging
-	27, // [27:27] is the sub-list for method output_type
-	27, // [27:27] is the sub-list for method input_type
-	27, // [27:27] is the sub-list for extension type_name
-	27, // [27:27] is the sub-list for extension extendee
-	0,  // [0:27] is the sub-list for field type_name
+	23, // 18: copysync.v1.PeerMessage.offer:type_name -> copysync.v1.ClipOffer
+	24, // 19: copysync.v1.PeerMessage.fetch:type_name -> copysync.v1.PeerFetch
+	25, // 20: copysync.v1.PeerMessage.reject:type_name -> copysync.v1.FetchReject
+	26, // 21: copysync.v1.PeerMessage.header:type_name -> copysync.v1.TransferHeader
+	27, // 22: copysync.v1.PeerMessage.done:type_name -> copysync.v1.TransferDone
+	22, // 23: copysync.v1.PeerMessage.link:type_name -> copysync.v1.LinkInfo
+	28, // 24: copysync.v1.ClipOffer.kind:type_name -> copysync.v1.ClipKind
+	29, // 25: copysync.v1.ClipOffer.items:type_name -> copysync.v1.ClipItem
+	0,  // 26: copysync.v1.TransferHeader.compression:type_name -> copysync.v1.Compression
+	1,  // 27: copysync.v1.TransferHeader.packaging:type_name -> copysync.v1.Packaging
+	28, // [28:28] is the sub-list for method output_type
+	28, // [28:28] is the sub-list for method input_type
+	28, // [28:28] is the sub-list for extension type_name
+	28, // [28:28] is the sub-list for extension extendee
+	0,  // [0:28] is the sub-list for field type_name
 }
 
 func init() { file_copysync_v1_wire_proto_init() }
@@ -2249,6 +2317,7 @@ func file_copysync_v1_wire_proto_init() {
 		(*PeerMessage_Reject)(nil),
 		(*PeerMessage_Header)(nil),
 		(*PeerMessage_Done)(nil),
+		(*PeerMessage_Link)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -2256,7 +2325,7 @@ func file_copysync_v1_wire_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_copysync_v1_wire_proto_rawDesc), len(file_copysync_v1_wire_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   25,
+			NumMessages:   26,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

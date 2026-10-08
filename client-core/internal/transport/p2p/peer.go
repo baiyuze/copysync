@@ -94,6 +94,8 @@ type Peer struct {
 	// 只看前者会导致状态报成"已连接"但 Send 立刻失败。
 	pcConnected bool
 	pendingKind ConnState
+	// remoteRelayed 是对端经 LinkInfo 告知的「它那边是否走中转」，见 wire.proto 的 LinkInfo
+	remoteRelayed bool
 	// connectTimer 在握手迟迟不完成时触发重置，避免永久卡在 connecting
 	connectTimer *time.Timer
 	// dialing 表示 Connect 正在进行中，防止并发重入建出两个 PeerConnection
@@ -491,7 +493,11 @@ func (p *Peer) maybeReady() {
 	p.mu.Lock()
 	ready := p.pcConnected && p.control != nil &&
 		p.control.ReadyState() == webrtc.DataChannelStateOpen
-	kind := p.pendingKind
+	ownView := p.pendingKind
+	kind := ownView
+	if p.remoteRelayed {
+		kind = StateRelay
+	}
 	p.mu.Unlock()
 
 	if ready {
@@ -502,11 +508,47 @@ func (p *Peer) maybeReady() {
 		}
 		p.mu.Unlock()
 		p.setState(kind)
+		// 只有本端能确定自己发出的数据走没走 TURN，告诉对端，让两边显示一致
+		_ = p.Send(&pb.PeerMessage{Payload: &pb.PeerMessage_Link{
+			Link: &pb.LinkInfo{Relayed: ownView == StateRelay},
+		}})
+	}
+}
+
+// handleLinkInfo 记下对端的视角；对端经中转时，本端也改报中转。
+func (p *Peer) handleLinkInfo(l *pb.LinkInfo) {
+	p.mu.Lock()
+	p.remoteRelayed = l.GetRelayed()
+	upgrade := l.GetRelayed() && p.state == StateDirect
+	p.mu.Unlock()
+	if upgrade {
+		p.setState(StateRelay)
 	}
 }
 
 // detectConnectionKind 判断当前选中的 candidate 对是直连还是经 TURN 中转。
+//
+// 两端的 candidate 都要看：只要有一端是 relay，数据就经过 TURN。
+// 常见的情形是一端在对称 NAT 后面，用自己的中转地址发送，另一端仍从普通地址收发；
+// 只看本端的话，后者会把中转误报成直连，两台设备一台显示直连、一台显示中转。
+//
+// 选中的 candidate 对直接从 ICE 传输层取：受控一方（answer 方）的统计数据里
+// 往往找不到标记为 nominated 的 candidate 对，只靠统计数据会落到默认值上。
 func (p *Peer) detectConnectionKind(pc *webrtc.PeerConnection) ConnState {
+	if sctp := pc.SCTP(); sctp != nil && sctp.Transport() != nil {
+		if ice := sctp.Transport().ICETransport(); ice != nil {
+			if pair, err := ice.GetSelectedCandidatePair(); err == nil && pair != nil &&
+				pair.Local != nil && pair.Remote != nil {
+				if pair.Local.Typ == webrtc.ICECandidateTypeRelay ||
+					pair.Remote.Typ == webrtc.ICECandidateTypeRelay {
+					return StateRelay
+				}
+				return StateDirect
+			}
+		}
+	}
+
+	// 取不到选中的 candidate 对时，退回统计数据
 	stats := pc.GetStats()
 	for _, s := range stats {
 		pair, ok := s.(webrtc.ICECandidatePairStats)
@@ -515,16 +557,14 @@ func (p *Peer) detectConnectionKind(pc *webrtc.PeerConnection) ConnState {
 		}
 		for _, cs := range stats {
 			c, ok := cs.(webrtc.ICECandidateStats)
-			if !ok || c.ID != pair.LocalCandidateID {
-				continue
-			}
-			if c.CandidateType == webrtc.ICECandidateTypeRelay {
+			if ok && (c.ID == pair.LocalCandidateID || c.ID == pair.RemoteCandidateID) &&
+				c.CandidateType == webrtc.ICECandidateTypeRelay {
 				return StateRelay
 			}
-			return StateDirect
 		}
+		return StateDirect
 	}
-	// 拿不到明细时保守地报直连——功能不受影响，只是显示可能不准
+	// 拿不到明细时报直连——功能不受影响，只是显示可能不准
 	return StateDirect
 }
 
@@ -545,6 +585,10 @@ func (p *Peer) bindControl(dc *webrtc.DataChannel) {
 		var m pb.PeerMessage
 		if err := proto.Unmarshal(msg.Data, &m); err != nil {
 			p.log.Warn("控制消息解析失败", "err", err)
+			return
+		}
+		if l := m.GetLink(); l != nil {
+			p.handleLinkInfo(l) // 连接层自己的消息，不交给同步引擎
 			return
 		}
 		if p.onMessage != nil {
@@ -606,6 +650,7 @@ func (p *Peer) closeLocked() {
 	p.pcConnected = false
 	p.makingOffer = false
 	p.pendingKind = StateOffline
+	p.remoteRelayed = false
 	p.dialing = false
 	if p.connectTimer != nil {
 		p.connectTimer.Stop()

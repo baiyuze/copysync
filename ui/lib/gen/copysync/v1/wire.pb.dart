@@ -1785,7 +1785,7 @@ class ServerError extends $pb.GeneratedMessage {
   void clearMessage() => $_clearField(2);
 }
 
-enum PeerMessage_Payload { offer, fetch, reject, header, done, notSet }
+enum PeerMessage_Payload { offer, fetch, reject, header, done, link, notSet }
 
 /// 控制通道消息
 class PeerMessage extends $pb.GeneratedMessage {
@@ -1795,6 +1795,7 @@ class PeerMessage extends $pb.GeneratedMessage {
     FetchReject? reject,
     TransferHeader? header,
     TransferDone? done,
+    LinkInfo? link,
   }) {
     final result = PeerMessage._();
     if (offer != null) result.offer = offer;
@@ -1802,6 +1803,7 @@ class PeerMessage extends $pb.GeneratedMessage {
     if (reject != null) result.reject = reject;
     if (header != null) result.header = header;
     if (done != null) result.done = done;
+    if (link != null) result.link = link;
     return result;
   }
 
@@ -1821,13 +1823,14 @@ class PeerMessage extends $pb.GeneratedMessage {
     3: PeerMessage_Payload.reject,
     4: PeerMessage_Payload.header,
     5: PeerMessage_Payload.done,
+    6: PeerMessage_Payload.link,
     0: PeerMessage_Payload.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'PeerMessage',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
       createEmptyInstance: PeerMessage.$_createMessage)
-    ..oo(0, [1, 2, 3, 4, 5])
+    ..oo(0, [1, 2, 3, 4, 5, 6])
     ..aOM<ClipOffer>(1, _omitFieldNames ? '' : 'offer',
         subBuilder: ClipOffer.$_createMessage)
     ..aOM<PeerFetch>(2, _omitFieldNames ? '' : 'fetch',
@@ -1838,6 +1841,8 @@ class PeerMessage extends $pb.GeneratedMessage {
         subBuilder: TransferHeader.$_createMessage)
     ..aOM<TransferDone>(5, _omitFieldNames ? '' : 'done',
         subBuilder: TransferDone.$_createMessage)
+    ..aOM<LinkInfo>(6, _omitFieldNames ? '' : 'link',
+        subBuilder: LinkInfo.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1867,6 +1872,7 @@ class PeerMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
   PeerMessage_Payload whichPayload() =>
       _PeerMessage_PayloadByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
@@ -1874,6 +1880,7 @@ class PeerMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
   void clearPayload() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -1930,6 +1937,75 @@ class PeerMessage extends $pb.GeneratedMessage {
   void clearDone() => $_clearField(5);
   @$pb.TagNumber(5)
   TransferDone ensureDone() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  LinkInfo get link => $_getN(5);
+  @$pb.TagNumber(6)
+  set link(LinkInfo value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasLink() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearLink() => $_clearField(6);
+  @$pb.TagNumber(6)
+  LinkInfo ensureLink() => $_ensure(5);
+}
+
+/// 连接就绪后各自发一次。只有本端能确定自己发出的数据是否走 TURN：
+/// 对端经中转发来的包，在本端看来可能只是一个普通地址（peer-reflexive），
+/// 单靠自己的视角会把中转误判成直连。两端交换后，任一端经中转即显示为中转。
+class LinkInfo extends $pb.GeneratedMessage {
+  factory LinkInfo({
+    $core.bool? relayed,
+  }) {
+    final result = LinkInfo._();
+    if (relayed != null) result.relayed = relayed;
+    return result;
+  }
+
+  LinkInfo._();
+
+  factory LinkInfo.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LinkInfo()..mergeFromBuffer(data, registry);
+  factory LinkInfo.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LinkInfo()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LinkInfo',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LinkInfo.$_createMessage)
+    ..aOB(1, _omitFieldNames ? '' : 'relayed')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LinkInfo clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LinkInfo copyWith(void Function(LinkInfo) updates) =>
+      super.copyWith((message) => updates(message as LinkInfo)) as LinkInfo;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LinkInfo() / LinkInfo.new instead')
+  static LinkInfo create() => LinkInfo._();
+  static $pb.GeneratedMessage $_createMessage() => LinkInfo._();
+  @$core.override
+  LinkInfo createEmptyInstance() => LinkInfo._();
+  @$core.pragma('dart2js:noInline')
+  static LinkInfo getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<LinkInfo>(LinkInfo.$_createMessage);
+  static LinkInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get relayed => $_getBF(0);
+  @$pb.TagNumber(1)
+  set relayed($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasRelayed() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearRelayed() => $_clearField(1);
 }
 
 /// 复制发生时广播给所有在线对端。

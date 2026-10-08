@@ -249,7 +249,14 @@ class _RecordRowState extends State<_RecordRow> {
           child: const Text('拉取到本机'),
         );
       case ClipStatus.CLIP_STATUS_FETCHING:
-        return const SizedBox(width: 72, child: LinearProgressIndicator(minHeight: 3));
+        // 知道总量时显示真实进度，否则显示不确定进度
+        return SizedBox(
+          width: 72,
+          child: LinearProgressIndicator(
+            minHeight: 3,
+            value: AppScope.of(context).progressOf(r.id),
+          ),
+        );
       case ClipStatus.CLIP_STATUS_FAILED:
         return Tooltip(
           message: r.error.isEmpty ? '传输失败' : r.error,

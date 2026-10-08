@@ -29,8 +29,8 @@ func TestRelayFallback(t *testing.T) {
 	defer turnSrv.Close()
 
 	r := newRelay()
-	alice := newRelayHarness(t, "alice", r, turnSrv)
-	bob := newRelayHarness(t, "bob", r, turnSrv)
+	alice := newRelayHarness(t, "alice", r, turnSrv, true)
+	bob := newRelayHarness(t, "bob", r, turnSrv, true)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 	defer cancel()
@@ -65,7 +65,52 @@ func TestRelayFallback(t *testing.T) {
 	}
 }
 
-func newRelayHarness(t *testing.T, id string, r *relay, turnSrv *turnrelay.Server) *harness {
+// TestRelayOneSided 验证只有一端走中转时，两端都识别为中转。
+//
+// 真实网络里常见的情形：一端在对称 NAT 后面打不通，用自己的 TURN 中转地址发送；
+// 另一端仍从普通地址收发。只看本端 candidate 的话，后者会把中转误报成直连，
+// 两台设备一台显示「直连」一台显示「中转」。
+func TestRelayOneSided(t *testing.T) {
+	turnSrv, err := turnrelay.New(turnrelay.Options{
+		PublicIP:      "127.0.0.1",
+		Port:          34781,
+		Secret:        "test-secret",
+		CredentialTTL: time.Hour,
+	})
+	if err != nil {
+		t.Skipf("无法启动 TURN 服务（端口可能被占用）: %v", err)
+	}
+	defer turnSrv.Close()
+
+	r := newRelay()
+	alice := newRelayHarness(t, "alice", r, turnSrv, true) // 只能走中转
+	bob := newRelayHarness(t, "bob", r, turnSrv, false)    // 普通设备
+
+	ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
+	defer cancel()
+	if err := alice.manager.Connect(ctx, "bob"); err != nil {
+		t.Fatalf("发起连接: %v", err)
+	}
+
+	waitConnected(t, alice, "bob")
+	waitConnected(t, bob, "alice")
+
+	// bob 自己看到的对端地址可能只是个普通地址，要等 alice 发来 LinkInfo 才改报中转，
+	// 所以这里等最终状态，而不是第一次报告的状态
+	deadline := time.Now().Add(5 * time.Second)
+	for time.Now().Before(deadline) &&
+		(alice.manager.State("bob") != p2p.StateRelay || bob.manager.State("alice") != p2p.StateRelay) {
+		time.Sleep(50 * time.Millisecond)
+	}
+	if s := alice.manager.State("bob"); s != p2p.StateRelay {
+		t.Errorf("alice 的连接方式 = %v，应为 relay", s)
+	}
+	if s := bob.manager.State("alice"); s != p2p.StateRelay {
+		t.Errorf("bob 的连接方式 = %v，对端经中转发送时也应识别为 relay", s)
+	}
+}
+
+func newRelayHarness(t *testing.T, id string, r *relay, turnSrv *turnrelay.Server, forceRelay bool) *harness {
 	t.Helper()
 
 	h := &harness{
@@ -77,7 +122,7 @@ func newRelayHarness(t *testing.T, id string, r *relay, turnSrv *turnrelay.Serve
 	h.manager = p2p.NewManager(p2p.ManagerOptions{
 		SelfID:     id,
 		SendSignal: r.send(id),
-		ForceRelay: true,
+		ForceRelay: forceRelay,
 		OnState: func(_ string, s p2p.ConnState) {
 			select {
 			case h.states <- s:
