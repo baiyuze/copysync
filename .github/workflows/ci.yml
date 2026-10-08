@@ -71,6 +71,9 @@ jobs:
           cache-dependency-path: client-core/go.sum
       - run: go vet ./... ; if ($LASTEXITCODE) { exit 1 } ; go test ./...
         working-directory: client-core
+      # 单独列出剪贴板测试的每一条：没有交互式桌面时它们会跳过，要看得出来
+      - run: go test -v -count=1 -run Windows ./internal/clipboard/
+        working-directory: client-core
       - uses: subosito/flutter-action@v2
         with:
           channel: stable

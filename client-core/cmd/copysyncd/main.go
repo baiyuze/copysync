@@ -91,7 +91,7 @@ var errAlreadyRunning = errors.New("已有后台服务在运行")
 // 与 daemon 的其余部分隔离开。
 func probeClipboard() {
 	clipboard.InitPlatform()
-	cb := clipboard.New()
+	cb := newClipboard()
 
 	fmt.Println("授权状态:", cb.Permission())
 
@@ -194,7 +194,7 @@ func run(dataDir string) error {
 	clipboard.InitPlatform()
 	loop := clipboard.NewMainLoop()
 	watcher := clipboard.NewWatcher(clipboard.WatcherOptions{
-		Clipboard: clipboard.New(),
+		Clipboard: newClipboard(),
 		MainLoop:  loop,
 		OnPermission: func(p clipboard.Permission) {
 			hub.Publish(rpc.EventPermissionChanged(permissionToProto(p)))
