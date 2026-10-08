@@ -1,6 +1,7 @@
 // 绘制 CopySync 的 App 图标，输出各尺寸 PNG。
 //
 //   swift tools/icon/render.swift <输出目录>
+//   swift tools/icon/render.swift <输出目录> --windows   # Windows 用：主体放大填满画布，再用 ico.py 打包
 //
 // 造型：两张错位的纸。后一张描边、前一张实色，表示「这台复制、那台出现」。
 // 网站用的 tools/icon/icon.svg 与这里的几何参数一一对应，改动时两边同步。
@@ -83,7 +84,9 @@ func lines(in ctx: CGContext, sheet: CGRect, color: NSColor) {
     }
 }
 
-func render(size: Int, to url: URL) throws {
+/// crop 是 1024 画布上要铺满输出图片的区域。macOS 用整张画布；Windows 的图标
+/// 不留 Apple 网格那一圈阴影空间，只留一点边，否则在任务栏和开始菜单里显得偏小。
+func render(size: Int, to url: URL, crop: CGFloat = 0) throws {
     let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: size, pixelsHigh: size,
                                bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
                                isPlanar: false, colorSpaceName: .deviceRGB,
@@ -92,7 +95,9 @@ func render(size: Int, to url: URL) throws {
     let ctx = gctx.cgContext
     ctx.interpolationQuality = .high
     ctx.setShouldAntialias(true)
-    ctx.scaleBy(x: CGFloat(size) / 1024, y: CGFloat(size) / 1024)
+    let span = 1024 - 2 * crop
+    ctx.scaleBy(x: CGFloat(size) / span, y: CGFloat(size) / span)
+    ctx.translateBy(x: -crop, y: -crop)
     draw(in: ctx)
     gctx.flushGraphics()
     guard let png = rep.representation(using: .png, properties: [:]) else {
@@ -101,9 +106,17 @@ func render(size: Int, to url: URL) throws {
     try png.write(to: url)
 }
 
-let out = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : ".")
+let args = CommandLine.arguments.dropFirst()
+let out = URL(fileURLWithPath: args.first { !$0.hasPrefix("--") } ?? ".")
 try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
-for size in [16, 32, 64, 128, 180, 256, 512, 1024] {
-    try render(size: size, to: out.appendingPathComponent("icon_\(size).png"))
+if args.contains("--windows") {
+    // 主体 824 居中（100…924），四周各留 28 给投影：主体占画布的 94%
+    for size in [16, 20, 24, 32, 40, 48, 64, 128, 256] {
+        try render(size: size, to: out.appendingPathComponent("windows_\(size).png"), crop: 72)
+    }
+} else {
+    for size in [16, 32, 64, 128, 180, 256, 512, 1024] {
+        try render(size: size, to: out.appendingPathComponent("icon_\(size).png"))
+    }
 }
 print("✓ \(out.path)")

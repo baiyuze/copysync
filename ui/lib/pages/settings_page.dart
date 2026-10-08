@@ -1,7 +1,5 @@
-import 'dart:io';
 
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
@@ -9,6 +7,8 @@ import '../gen/copysync/v1/daemon.pb.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import '../icons.dart';
+import '../platform.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           suffixIcon: _serverDirty
                               ? IconButton(
                                   tooltip: '保存',
-                                  icon: Icon(CupertinoIcons.checkmark, size: 14, color: p.accent),
+                                  icon: Icon(AppIcons.checkmark, size: 14, color: p.accent),
                                   onPressed: () => _saveServer(state, cfg),
                                 )
                               : null,
@@ -112,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ]),
               ),
               GroupSection(
-                title: '这台 Mac',
+                title: Wording.thisDevice,
                 child: GroupBox(children: [
                   SettingRow(
                     title: '设备名称',
@@ -125,7 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           suffixIcon: _nameDirty
                               ? IconButton(
                                   tooltip: '保存',
-                                  icon: Icon(CupertinoIcons.checkmark, size: 14, color: p.accent),
+                                  icon: Icon(AppIcons.checkmark, size: 14, color: p.accent),
                                   onPressed: () => _saveName(state, cfg),
                                 )
                               : null,
@@ -267,7 +267,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  static void _open(String url) => Process.run('open', [url]);
+  static void _open(String url) => openUrl(url);
 
   Future<void> _serviceAction(Future<void> Function() action, String message) async {
     try {
@@ -283,7 +283,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('停用后台同步？'),
-        content: const Text('这台 Mac 将停止同步，也不再开机启动。历史记录和配对关系会保留。'),
+        content: Text('${Wording.thisDeviceInText}将停止同步，也不再开机启动。历史记录和配对关系会保留。'),
         actions: [
           OutlinedButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
           FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('停用')),
@@ -433,7 +433,7 @@ class _Dropdown<T> extends StatelessWidget {
           children: [
             Text(current.value, style: context.text.labelLarge),
             const SizedBox(width: 6),
-            Icon(CupertinoIcons.chevron_up_chevron_down, size: 12, color: p.textDim),
+            Icon(AppIcons.chevronUpDown, size: 12, color: p.textDim),
           ],
         ),
       ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
@@ -38,7 +40,14 @@ class _ServicePageState extends State<ServicePage> {
   @override
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
+    final windows = Platform.isWindows;
     final (title, body, button) = switch (state.serviceState) {
+      ServiceState.mustMove when windows => (
+          '先解压或安装 CopySync',
+          'CopySync 现在是直接从压缩包里打开的，关掉之后它所在的临时文件夹就会被删除。'
+              '运行安装程序，或者把整个文件夹解压出来再打开，就可以启用后台同步。',
+          null,
+        ),
       ServiceState.mustMove => (
           '先把 CopySync 移到「应用程序」',
           'CopySync 现在是直接从安装盘里打开的。把它拖进「应用程序」文件夹，'
@@ -53,8 +62,11 @@ class _ServicePageState extends State<ServicePage> {
         ),
       ServiceState.stale => (
           '重新启用后台同步',
-          'CopySync 换了位置，或者之前用旧版安装脚本装过。重新启用一次，'
-              '让后台进程指向当前这个 App。历史记录与配对关系都会保留。',
+          windows
+              ? 'CopySync 换了位置，开机自启还指向原来的地方。重新启用一次，'
+                  '让后台进程指向当前这份 CopySync。历史记录与配对关系都会保留。'
+              : 'CopySync 换了位置，或者之前用旧版安装脚本装过。重新启用一次，'
+                  '让后台进程指向当前这个 App。历史记录与配对关系都会保留。',
           '重新启用',
         ),
       ServiceState.stopped => (
@@ -65,8 +77,11 @@ class _ServicePageState extends State<ServicePage> {
         ),
       _ => (
           '后台服务没有运行',
-          '这是开发构建，App 里没有内置后台服务。'
-              '在源码目录运行 ./scripts/install-macos.sh 安装它。',
+          windows
+              ? '这是开发构建，旁边没有 copysyncd.exe。'
+                  '在源码目录运行 scripts\\build-windows.ps1 构建完整的版本。'
+              : '这是开发构建，App 里没有内置后台服务。'
+                  '在源码目录运行 ./scripts/install-macos.sh 安装它。',
           null,
         ),
     };
@@ -103,7 +118,7 @@ class _ServicePageState extends State<ServicePage> {
             const SizedBox(height: Insets.xl),
             Text(
               state.serviceState == ServiceState.stopped
-                  ? '运行日志：${state.service.logPath.replaceFirst(RegExp(r'^/Users/[^/]+'), '~')}'
+                  ? '运行日志：${state.service.displayLogPath}'
                   : '随时可以在「设置」中停用后台同步。',
               style: context.text.bodySmall,
             ),

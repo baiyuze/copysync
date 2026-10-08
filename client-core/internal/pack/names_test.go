@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"testing"
 
@@ -87,8 +88,9 @@ func writeTar(t *testing.T, entries []tar.Header, bodies map[string]string) io.R
 }
 
 func TestUnpackForWindows(t *testing.T) {
+	old := windowsNames
 	windowsNames = true
-	t.Cleanup(func() { windowsNames = false })
+	t.Cleanup(func() { windowsNames = old })
 
 	r := writeTar(t, []tar.Header{
 		{Name: "会议:纪要/", Typeflag: tar.TypeDir, Mode: 0o755},
@@ -136,6 +138,9 @@ func TestUnpackForWindows(t *testing.T) {
 
 // 打不开的文件要整个跳过，不能写了头却没有内容，把整个归档弄坏。
 func TestPackSkipsUnreadableFile(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Windows 上权限位挡不住读取，造不出打不开的文件")
+	}
 	if os.Geteuid() == 0 {
 		t.Skip("root 能读任何文件")
 	}

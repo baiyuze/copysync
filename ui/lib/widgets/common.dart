@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
+import '../icons.dart';
 
 /// 页面统一的标题区。保证各页视觉节奏一致。
 class PageHeader extends StatelessWidget {
@@ -266,19 +266,20 @@ class Notice extends StatelessWidget {
     required this.title,
     required this.message,
     this.action,
-    this.icon = CupertinoIcons.exclamationmark_circle,
+    this.icon,
     this.iconColor,
   });
 
   final String title;
   final String message;
   final Widget? action;
-  final IconData icon;
+  final IconData? icon;
   final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final icon = this.icon ?? AppIcons.exclamationmarkCircle;
     return Container(
       padding: const EdgeInsets.fromLTRB(Insets.lg, Insets.md, Insets.md, Insets.md),
       decoration: BoxDecoration(
@@ -422,7 +423,7 @@ void showToast(BuildContext context, String message, {bool error = false}) {
       content: Row(
         children: [
           Icon(
-            error ? CupertinoIcons.exclamationmark_circle : CupertinoIcons.checkmark_circle,
+            error ? AppIcons.exclamationmarkCircle : AppIcons.checkmarkCircle,
             size: 16,
             color: error ? PaletteColors.onDark(p.danger) : PaletteColors.onDark(p.online),
           ),

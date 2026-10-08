@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,6 +7,8 @@ import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/pairing_dialog.dart';
+import '../icons.dart';
+import '../platform.dart';
 
 class DevicesPage extends StatelessWidget {
   const DevicesPage({super.key});
@@ -28,7 +29,7 @@ class DevicesPage extends StatelessWidget {
           actions: [
             FilledButton.icon(
               onPressed: canPair ? () => _startPairing(context) : null,
-              icon: const Icon(CupertinoIcons.plus, size: 14),
+              icon: Icon(AppIcons.plus, size: 14),
               label: const Text('添加设备'),
             ),
           ],
@@ -39,15 +40,15 @@ class DevicesPage extends StatelessWidget {
             children: [
               if (state.self != null)
                 GroupSection(
-                  title: '这台 Mac',
-                  footnote: '配对时，两台 Mac 会显示同样的两行安全指纹：这台的和对方的。逐字核对一致才能确认。',
+                  title: Wording.thisDevice,
+                  footnote: '配对时，${Wording.bothDevicesInText}会显示同样的两行安全指纹：这台的和对方的。逐字核对一致才能确认。',
                   child: GroupBox(children: [_DeviceRow(device: state.self!, isSelf: true)]),
                 ),
               if (state.peers.isEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: Insets.xl),
                   child: EmptyState(
-                    icon: CupertinoIcons.device_laptop,
+                    icon: AppIcons.deviceLaptop,
                     title: '还没有配对的设备',
                     description: canPair
                         ? '在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。'
@@ -136,8 +137,8 @@ String connectionLabel(Device d) => switch (d.connection) {
     };
 
 IconData platformIcon(String platform) => switch (platform) {
-      'windows' => CupertinoIcons.desktopcomputer,
-      _ => CupertinoIcons.device_laptop,
+      'windows' => AppIcons.desktopComputer,
+      _ => AppIcons.deviceLaptop,
     };
 
 class _DeviceMenu extends StatelessWidget {
@@ -160,8 +161,8 @@ class _DeviceMenu extends StatelessWidget {
         ),
       ],
       onSelected: (v) => v == 'copy' ? _copy(context) : _unpair(context),
-      child: const IgnorePointer(
-        child: IconAction(icon: CupertinoIcons.ellipsis, tooltip: ''),
+      child: IgnorePointer(
+        child: IconAction(icon: AppIcons.ellipsis, tooltip: ''),
       ),
     );
   }

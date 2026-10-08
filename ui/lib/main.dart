@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'app_state.dart';
@@ -10,6 +11,7 @@ import 'pages/settings_page.dart';
 import 'theme.dart';
 import 'widgets/common.dart';
 import 'widgets/pairing_dialog.dart';
+import 'icons.dart';
 
 void main() => runApp(const CopySyncApp());
 
@@ -146,8 +148,9 @@ class _Sidebar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 顶部留白是 macOS 红绿灯按钮所在的标题栏
-          const SizedBox(height: 52),
+          // Mac 上顶部留白是红绿灯按钮所在的标题栏（内容铺满了整个窗口）；
+          // Windows 用系统标题栏，内容从标题栏下面开始
+          SizedBox(height: Platform.isMacOS ? 52 : Insets.lg),
           Padding(
             padding: const EdgeInsets.fromLTRB(Insets.lg, 0, Insets.lg, Insets.lg),
             child: Row(
@@ -159,20 +162,20 @@ class _Sidebar extends StatelessWidget {
             ),
           ),
           _NavItem(
-            icon: CupertinoIcons.clock,
+            icon: AppIcons.clock,
             label: '复制记录',
             selected: current == Section.history,
             trailing: state.records.isEmpty ? null : '${state.records.length}',
             onTap: () => onSelect(Section.history),
           ),
           _NavItem(
-            icon: CupertinoIcons.device_laptop,
+            icon: AppIcons.deviceLaptop,
             label: '设备',
             selected: current == Section.devices,
             onTap: () => onSelect(Section.devices),
           ),
           _NavItem(
-            icon: CupertinoIcons.gear,
+            icon: AppIcons.gear,
             label: '设置',
             selected: current == Section.settings,
             onTap: () => onSelect(Section.settings),

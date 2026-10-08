@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,6 +6,8 @@ import '../gen/copysync/v1/daemon.pb.dart';
 import '../main.dart';
 import '../theme.dart';
 import 'common.dart';
+import '../icons.dart';
+import '../platform.dart';
 
 /// 配对对话框：既能生成配对码，也能输入对方的配对码。
 ///
@@ -36,7 +37,7 @@ class _PairingDialogState extends State<PairingDialog> {
                 children: [
                   Expanded(child: Text('添加设备', style: context.text.titleMedium)),
                   IconAction(
-                    icon: CupertinoIcons.xmark,
+                    icon: AppIcons.xmark,
                     tooltip: '关闭',
                     onTap: () => Navigator.pop(context),
                   ),
@@ -107,7 +108,7 @@ class _GenerateTabState extends State<_GenerateTab> {
       return Padding(
         padding: const EdgeInsets.all(Insets.xl),
         child: EmptyState(
-          icon: CupertinoIcons.exclamationmark_circle,
+          icon: AppIcons.exclamationmarkCircle,
           title: '没能生成配对码',
           description: _error,
           action: OutlinedButton(onPressed: _generate, child: const Text('重试')),
@@ -156,11 +157,11 @@ class _GenerateTabState extends State<_GenerateTab> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(CupertinoIcons.lock_shield, size: 15, color: p.textDim),
+              Icon(AppIcons.lockShield, size: 15, color: p.textDim),
               const SizedBox(width: Insets.sm),
               Expanded(
                 child: Text(
-                  '对方输入后，两台 Mac 会显示同样的两行安全指纹，核对一致再确认。',
+                  '对方输入后，${Wording.bothDevicesInText}会显示同样的两行安全指纹，核对一致再确认。',
                   style: context.text.bodySmall,
                 ),
               ),
@@ -374,7 +375,7 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
               ),
               const SizedBox(height: Insets.lg),
               Text(
-                '两台 Mac 上显示的这两行应当完全相同。'
+                '${Wording.bothDevicesInText}上显示的这两行应当完全相同。'
                 '有任何一个字符不同，说明连接可能被第三方篡改，请拒绝。',
                 style: context.text.bodySmall,
               ),

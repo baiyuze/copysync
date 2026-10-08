@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'background_service_windows.dart';
+
 /// 构建时注入的版本号（build.sh 传 --dart-define=APP_VERSION）。
 /// 用来判断后台服务是不是跟界面同一个版本。
 const appVersion = String.fromEnvironment('APP_VERSION', defaultValue: 'dev');
@@ -9,8 +11,9 @@ enum ServiceState {
   /// 开发构建：App 包里没有内置后台服务，只能用源码目录的脚本安装
   unavailable,
 
-  /// 直接从 DMG 里打开、或被系统随机化路径（App Translocation）运行：
-  /// 这时注册的登录项会指向一个随时消失的路径，必须先把 App 移到「应用程序」
+  /// 从一个随时会消失的位置运行，这时登记的自启项会指向不存在的路径：
+  /// Mac 上是直接从 DMG 里打开、或被系统随机化路径（App Translocation）；
+  /// Windows 上是直接在压缩包里双击打开（实际运行在临时目录）
   mustMove,
 
   /// 尚未注册为登录项
@@ -25,13 +28,36 @@ enum ServiceState {
   running,
 }
 
-/// 管理随 App 一起分发的后台服务（剪贴板监听与同步进程）。
-///
-/// 后台服务内置在 `CopySync.app/Contents/Helpers/` 下，由界面在首次启动时
-/// 注册成 launchd 的 LaunchAgent：开机自启、崩溃自动拉起，关掉窗口也照常同步。
+/// 管理随 App 一起分发的后台服务（剪贴板监听与同步进程）：开机自启、崩溃自动拉起，
+/// 关掉窗口也照常同步。各平台的做法不同，见 [MacBackgroundService] 与
+/// [WindowsBackgroundService]。
+abstract class BackgroundService {
+  factory BackgroundService() =>
+      Platform.isWindows ? WindowsBackgroundService() : MacBackgroundService();
+
+  /// App 里是否带着后台服务（开发构建没有）
+  bool get available;
+
+  /// 运行日志的位置，显示给用户看的写法
+  String get displayLogPath;
+
+  Future<ServiceState> state();
+
+  /// 注册并启动。重复调用即为修复。
+  Future<void> install();
+
+  /// 结束旧进程并按当前的 App 重新拉起。用于 App 更新后。
+  Future<void> restart();
+
+  /// 停用并取消开机自启。数据目录保留，重新启用后历史记录与配对关系都还在。
+  Future<void> uninstall();
+}
+
+/// Mac：后台服务内置在 `CopySync.app/Contents/Helpers/` 下，由界面在首次启动时
+/// 注册成 launchd 的 LaunchAgent。
 /// 用 LaunchAgent 而非 LaunchDaemon：剪贴板属于登录用户的会话，系统级进程访问不到。
-class BackgroundService {
-  BackgroundService({String? executable, String? home})
+class MacBackgroundService implements BackgroundService {
+  MacBackgroundService({String? executable, String? home})
       : _executable = executable ?? Platform.resolvedExecutable,
         _home = home ?? Platform.environment['HOME'] ?? '';
 
@@ -48,14 +74,19 @@ class BackgroundService {
   String get plistPath => '$_home/Library/LaunchAgents/$label.plist';
   String get logPath => '$_home/Library/Logs/CopySync/daemon.log';
 
+  @override
+  String get displayLogPath => logPath.replaceFirst(RegExp(r'^/Users/[^/]+'), '~');
+
   /// 旧版 install.sh 装在这里，迁移时清理掉
   String get _legacyApp => '$_home/Applications/CopySyncDaemon.app';
 
+  @override
   bool get available => Platform.isMacOS && File(helperBinary).existsSync();
 
   bool get _runningFromTemporaryLocation =>
       _bundle.startsWith('/Volumes/') || _bundle.contains('/AppTranslocation/');
 
+  @override
   Future<ServiceState> state() async {
     if (!available) return ServiceState.unavailable;
     if (_runningFromTemporaryLocation) return ServiceState.mustMove;
@@ -70,6 +101,7 @@ class BackgroundService {
   }
 
   /// 注册并启动。重复调用即为修复：先注销旧的再重新注册。
+  @override
   Future<void> install() async {
     await _bootout();
 
@@ -91,6 +123,7 @@ class BackgroundService {
   }
 
   /// 让 launchd 结束旧进程并按当前的 App 重新拉起。用于 App 更新后。
+  @override
   Future<void> restart() async {
     final r = await Process.run('launchctl', ['kickstart', '-k', await _target()]);
     if (r.exitCode != 0) {
@@ -99,6 +132,7 @@ class BackgroundService {
   }
 
   /// 停用并移除登录项。数据目录保留，重新启用后历史记录与配对关系都还在。
+  @override
   Future<void> uninstall() async {
     await _bootout();
     final plist = File(plistPath);

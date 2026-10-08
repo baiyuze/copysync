@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  # 手动运行：开发中的分支（比如 windows）不必合进 main 也能跑一遍
+  workflow_dispatch:
 
 jobs:
   server:
@@ -56,3 +58,34 @@ jobs:
       - run: CGO_ENABLED=0 go build -o /tmp/natlab ./cmd/natlab
         working-directory: client-core
       - run: sudo bash tools/natlab/run.sh /tmp/natlab
+
+  windows:
+    name: Windows 客户端
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: client-core/go.mod
+          cache-dependency-path: client-core/go.sum
+      - run: go vet ./... ; if ($LASTEXITCODE) { exit 1 } ; go test ./...
+        working-directory: client-core
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get ; flutter analyze ; if ($LASTEXITCODE) { exit 1 } ; flutter test
+        working-directory: ui
+      - name: 安装 Inno Setup
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
+            choco install innosetup -y --no-progress
+          }
+      - run: powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1
+      # 构建好的安装包与便携版留作下载，方便在真机上试
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CopySync-windows
+          path: |
+            dist/windows/CopySync-Setup.exe
+            dist/windows/CopySync-windows-x64.zip

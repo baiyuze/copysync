@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
@@ -6,6 +5,8 @@ import '../gen/copysync/v1/daemon.pb.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import '../icons.dart';
+import '../platform.dart';
 
 enum _Filter { all, text, image, file }
 
@@ -55,7 +56,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 onChanged: (f) => setState(() => _filter = f),
               ),
               IconAction(
-                icon: CupertinoIcons.trash,
+                icon: AppIcons.trash,
                 tooltip: '清空记录',
                 onTap: () => _confirmClear(context, state),
               ),
@@ -71,8 +72,8 @@ class _HistoryPageState extends State<HistoryPage> {
           child: records.isEmpty
               ? EmptyState(
                   icon: _filter == _Filter.all
-                      ? CupertinoIcons.doc_on_clipboard
-                      : CupertinoIcons.line_horizontal_3_decrease,
+                      ? AppIcons.docOnClipboard
+                      : AppIcons.filter,
                   title: _filter == _Filter.all ? '还没有记录' : '没有这一类的记录',
                   description: _filter == _Filter.all
                       ? '在任意一台已配对的设备上复制文本、图片或文件，记录会出现在这里。'
@@ -118,7 +119,7 @@ class _HistoryPageState extends State<HistoryPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('清空全部记录？'),
-        content: const Text('所有设备上同步来的记录和已缓存的文件都会从这台 Mac 上删除。原始文件不受影响。'),
+        content: Text('所有设备上同步来的记录和已缓存的文件都会从${Wording.thisDeviceInText}上删除。原始文件不受影响。'),
         actions: [
           OutlinedButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
           FilledButton(
@@ -276,7 +277,7 @@ class _RecordRowState extends State<_RecordRow> {
               child: const Text('放入剪贴板'),
             ),
             IconAction(
-              icon: CupertinoIcons.trash,
+              icon: AppIcons.trash,
               tooltip: '删除这条记录',
               onTap: () => _run(() => AppScope.read(context).deleteRecords(ids: [r.id]), '已删除'),
             ),
@@ -300,14 +301,14 @@ class _RecordRowState extends State<_RecordRow> {
 
 /// 按内容类型区分的图标：只靠形状区分，不靠颜色。
 IconData kindIcon(ClipRecord r) => switch (r.kind) {
-      ClipKind.CLIP_KIND_TEXT => CupertinoIcons.text_alignleft,
-      ClipKind.CLIP_KIND_HTML => CupertinoIcons.doc_richtext,
-      ClipKind.CLIP_KIND_IMAGE => CupertinoIcons.photo,
-      ClipKind.CLIP_KIND_FILE when r.items.length > 1 => CupertinoIcons.doc_on_doc,
+      ClipKind.CLIP_KIND_TEXT => AppIcons.textAlignLeft,
+      ClipKind.CLIP_KIND_HTML => AppIcons.docRichtext,
+      ClipKind.CLIP_KIND_IMAGE => AppIcons.photo,
+      ClipKind.CLIP_KIND_FILE when r.items.length > 1 => AppIcons.docOnDoc,
       ClipKind.CLIP_KIND_FILE when r.items.isNotEmpty && r.items.first.isDir =>
-        CupertinoIcons.folder,
-      ClipKind.CLIP_KIND_FILE => CupertinoIcons.doc,
-      _ => CupertinoIcons.question_circle,
+        AppIcons.folder,
+      ClipKind.CLIP_KIND_FILE => AppIcons.doc,
+      _ => AppIcons.questionCircle,
     };
 
 String recordTitle(ClipRecord r) {

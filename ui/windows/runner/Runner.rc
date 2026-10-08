@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.copysync" "\0"
-            VALUE "FileDescription", "copysync_ui" "\0"
+            VALUE "CompanyName", "CopySync" "\0"
+            VALUE "FileDescription", "CopySync" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "copysync_ui" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.copysync. All rights reserved." "\0"
-            VALUE "OriginalFilename", "copysync_ui.exe" "\0"
-            VALUE "ProductName", "copysync_ui" "\0"
+            VALUE "InternalName", "CopySync" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 baiyuze. MIT License." "\0"
+            VALUE "OriginalFilename", "CopySync.exe" "\0"
+            VALUE "ProductName", "CopySync" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
