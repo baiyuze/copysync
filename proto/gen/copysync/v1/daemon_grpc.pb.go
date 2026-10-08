@@ -38,6 +38,7 @@ const (
 	DaemonService_UpdateConfig_FullMethodName               = "/copysync.v1.DaemonService/UpdateConfig"
 	DaemonService_GetStatus_FullMethodName                  = "/copysync.v1.DaemonService/GetStatus"
 	DaemonService_RequestClipboardPermission_FullMethodName = "/copysync.v1.DaemonService/RequestClipboardPermission"
+	DaemonService_GetNetwork_FullMethodName                 = "/copysync.v1.DaemonService/GetNetwork"
 )
 
 // DaemonServiceClient is the client API for DaemonService service.
@@ -63,6 +64,8 @@ type DaemonServiceClient interface {
 	GetStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Status, error)
 	// 引导用户授予剪贴板权限（打开系统设置面板）
 	RequestClipboardPermission(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
+	// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
+	GetNetwork(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkInfo, error)
 }
 
 type daemonServiceClient struct {
@@ -222,6 +225,16 @@ func (c *daemonServiceClient) RequestClipboardPermission(ctx context.Context, in
 	return out, nil
 }
 
+func (c *daemonServiceClient) GetNetwork(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkInfo, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NetworkInfo)
+	err := c.cc.Invoke(ctx, DaemonService_GetNetwork_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DaemonServiceServer is the server API for DaemonService service.
 // All implementations must embed UnimplementedDaemonServiceServer
 // for forward compatibility.
@@ -245,6 +258,8 @@ type DaemonServiceServer interface {
 	GetStatus(context.Context, *Empty) (*Status, error)
 	// 引导用户授予剪贴板权限（打开系统设置面板）
 	RequestClipboardPermission(context.Context, *Empty) (*Empty, error)
+	// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
+	GetNetwork(context.Context, *Empty) (*NetworkInfo, error)
 	mustEmbedUnimplementedDaemonServiceServer()
 }
 
@@ -296,6 +311,9 @@ func (UnimplementedDaemonServiceServer) GetStatus(context.Context, *Empty) (*Sta
 }
 func (UnimplementedDaemonServiceServer) RequestClipboardPermission(context.Context, *Empty) (*Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method RequestClipboardPermission not implemented")
+}
+func (UnimplementedDaemonServiceServer) GetNetwork(context.Context, *Empty) (*NetworkInfo, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetNetwork not implemented")
 }
 func (UnimplementedDaemonServiceServer) mustEmbedUnimplementedDaemonServiceServer() {}
 func (UnimplementedDaemonServiceServer) testEmbeddedByValue()                       {}
@@ -563,6 +581,24 @@ func _DaemonService_RequestClipboardPermission_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DaemonService_GetNetwork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).GetNetwork(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_GetNetwork_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).GetNetwork(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DaemonService_ServiceDesc is the grpc.ServiceDesc for DaemonService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -621,6 +657,10 @@ var DaemonService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RequestClipboardPermission",
 			Handler:    _DaemonService_RequestClipboardPermission_Handler,
+		},
+		{
+			MethodName: "GetNetwork",
+			Handler:    _DaemonService_GetNetwork_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

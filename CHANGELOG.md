@@ -1,5 +1,20 @@
 # 更新记录 / Changelog
 
+## 1.1.0 — 2026-10-08
+
+- **多出口网络也能直连**：公司双线、运营商 NAT 地址池这类网络有多个出口，并按目标地址选出口。
+  以前只向自己的服务器探测一次，只知道其中一个出口的地址，发往对端的包从别的出口出去就对不上，
+  只能走中转。现在所有连接共用一个本地端口，在这个端口上向多台服务器探测，拿到每个出口的地址
+  一并发给对端；会改端口的出口也能拿到真实映射，探测漏掉的不改端口出口按历史推算。
+  **Direct connections on multi-uplink networks.** Office networks with several uplinks pick an uplink per
+  destination; CopySync now probes every uplink from one shared port and sends all of them to the peer.
+- 中转路径要等 3 秒才允许被选中，给直连留出打通的时间。 Relay paths wait 3 s before they can be selected.
+- 设置里新增「用公共服务器探测网络出口」开关，关闭后只用自己的服务器。 New setting to probe with your own server only.
+- 新增 `copysync-cli nat`：查看本机有几个出口、各设备走直连还是中转。 New `copysync-cli nat` diagnostics.
+- 新增 NAT 打洞实验室（`tools/natlab`），在 CI 里用真实的网络拓扑验证 8 种场景。
+  New NAT lab that checks 8 network topologies in CI.
+- 服务器：TURN 可以绑定指定 IP（`relay.Options.ListenIP`）。 Server: TURN can bind to a specific IP.
+
 ## 1.0.2 — 2026-10-08
 
 - 修复：一端经中转时，另一端误显示为「直连」，两台设备显示不一致。只有发送方能确定自己的数据

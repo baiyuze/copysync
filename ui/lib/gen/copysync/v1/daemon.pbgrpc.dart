@@ -138,6 +138,14 @@ class DaemonServiceClient extends $grpc.Client {
         options: options);
   }
 
+  /// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
+  $grpc.ResponseFuture<$0.NetworkInfo> getNetwork(
+    $0.Empty request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getNetwork, request, options: options);
+  }
+
   // method descriptors
 
   static final _$subscribe = $grpc.ClientMethod<$0.SubscribeRequest, $0.Event>(
@@ -204,6 +212,10 @@ class DaemonServiceClient extends $grpc.Client {
           '/copysync.v1.DaemonService/RequestClipboardPermission',
           ($0.Empty value) => value.writeToBuffer(),
           $0.Empty.fromBuffer);
+  static final _$getNetwork = $grpc.ClientMethod<$0.Empty, $0.NetworkInfo>(
+      '/copysync.v1.DaemonService/GetNetwork',
+      ($0.Empty value) => value.writeToBuffer(),
+      $0.NetworkInfo.fromBuffer);
 }
 
 @$pb.GrpcServiceName('copysync.v1.DaemonService')
@@ -316,6 +328,13 @@ abstract class DaemonServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
         ($0.Empty value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.Empty, $0.NetworkInfo>(
+        'GetNetwork',
+        getNetwork_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
+        ($0.NetworkInfo value) => value.writeToBuffer()));
   }
 
   $async.Stream<$0.Event> subscribe_Pre($grpc.ServiceCall $call,
@@ -427,5 +446,13 @@ abstract class DaemonServiceBase extends $grpc.Service {
   }
 
   $async.Future<$0.Empty> requestClipboardPermission(
+      $grpc.ServiceCall call, $0.Empty request);
+
+  $async.Future<$0.NetworkInfo> getNetwork_Pre(
+      $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async {
+    return getNetwork($call, await $request);
+  }
+
+  $async.Future<$0.NetworkInfo> getNetwork(
       $grpc.ServiceCall call, $0.Empty request);
 }

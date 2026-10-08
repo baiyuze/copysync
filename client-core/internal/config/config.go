@@ -30,6 +30,11 @@ type Config struct {
 
 	AutoApplyToClipboard bool `json:"auto_apply_to_clipboard"`
 	LaunchAtLogin        bool `json:"launch_at_login"`
+
+	// OnlyOwnSTUN 只用自己的服务器探测网络出口。公共 STUN 服务器能看到本机的公网 IP
+	// （与任何 WebRTC 应用一样，看不到内容），介意的用户可以关掉；代价是多出口网络里
+	// 可能探测不全，直连机会变小。
+	OnlyOwnSTUN bool `json:"only_own_stun"`
 }
 
 func Default() Config {

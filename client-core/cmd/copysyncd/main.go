@@ -184,6 +184,7 @@ func run(dataDir string) error {
 		Identity:   id,
 		Store:      db,
 		LoadConfig: loadCfg,
+		StatePath:  filepath.Join(paths.Root, "egress.json"),
 		OnDeviceChanged: func(d *pb.Device) {
 			hub.Publish(rpc.EventDeviceChanged(d))
 		},
@@ -297,6 +298,20 @@ func run(dataDir string) error {
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
 			return watcher.Permission(ctx)
+		},
+		Network: func() *pb.NetworkInfo {
+			r := peerMgr.P2P().Egress()
+			info := &pb.NetworkInfo{
+				LocalPort: int32(r.LocalPort), Probed: int32(r.Probed),
+				Answered: int32(r.Answered), ProbedAtUnix: r.At.Unix(),
+			}
+			for _, e := range r.Egresses {
+				info.Egresses = append(info.Egresses, &pb.NetworkEgress{
+					Address: e.Addr.String(), PortPreserved: e.PortPreserved,
+					Guessed: e.Guessed(), Via: e.Via,
+				})
+			}
+			return info
 		},
 		OpenPermissionSettings: func() error {
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

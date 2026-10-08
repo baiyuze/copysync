@@ -34,6 +34,9 @@ service DaemonService {
   rpc GetStatus(Empty) returns (Status);
   // 引导用户授予剪贴板权限（打开系统设置面板）
   rpc RequestClipboardPermission(Empty) returns (Empty);
+
+  // 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
+  rpc GetNetwork(Empty) returns (NetworkInfo);
 }
 
 message Empty {}
@@ -216,6 +219,26 @@ message Config {
 
   string device_name = 10;
   string signaling_url = 11;
+
+  // 只用自己的服务器探测网络出口，不用公共 STUN 服务器。
+  // 默认 false（即允许公共服务器）：旧版界面不发这个字段时，不会被误关掉。
+  bool only_own_stun = 12;
+}
+
+// 最近一轮网络出口探测的结果。
+message NetworkInfo {
+  int32 local_port = 1;           // 打洞共用的本地 UDP 端口
+  repeated NetworkEgress egresses = 2;
+  int32 probed = 3;               // 探测的服务器数（按 IP 去重后）
+  int32 answered = 4;             // 有响应的服务器数
+  int64 probed_at_unix = 5;
+}
+
+message NetworkEgress {
+  string address = 1;             // 本机在这个出口上的公网 ip:port
+  bool port_preserved = 2;        // 这个出口不改端口
+  bool guessed = 3;               // 按历史推算，而非本轮实测
+  repeated string via = 4;        // 经由哪些探测服务器发现
 }
 
 message Status {

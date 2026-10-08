@@ -166,6 +166,7 @@ flowchart LR
 - **Fingerprints are compared by a person when pairing.** Both Macs show the same two lines: the fingerprint of each side's public key (the first 60 bits of its SHA-256, like `R8NF-2WTC-QL5J`), in a fixed order. The server could swap keys in transit, but then the two screens would no longer match — this step is what stops a man in the middle. The fingerprints are shown separately rather than combined into one short code: an attacker controlling both forged keys could find a matching combined code with a birthday attack, while separate fingerprints need a preimage attack per key, roughly a billion times harder.
 - **Every signaling message after that is signed**, so the server cannot forge a device. The DTLS certificate fingerprint of the direct channel is also sent signed and checked against the actual certificate after the handshake; a mismatch drops the connection.
 - **The relay can't read anything either.** TURN only forwards encrypted UDP packets. Relay credentials are issued per device and expire after 12 hours.
+- **Public STUN servers see only your public IP.** To find every uplink on multi-uplink networks, CopySync probes a few public STUN servers by default. They see your public IP, as with any WebRTC app, never content. Turn off 用公共服务器探测网络出口 (Probe with public servers) in Settings to use only your own server.
 - **No App Sandbox**, because CopySync needs to read files at whatever path you copy them from.
 
 ### Fallbacks
@@ -174,6 +175,7 @@ flowchart LR
 |---|---|
 | No direct path (symmetric NAT, corporate firewall) | Switches to the TURN relay on your server, still encrypted; the app shows "relay" |
 | Public STUN servers unreliable (common in mainland China) | The server runs its own STUN and clients prefer it |
+| Multi-uplink networks that pick an uplink per destination (common in offices) | All connections share one local port; CopySync probes several servers from it to learn its address on every uplink and sends them all to the peer, filling gaps from history. See `copysync-cli nat` |
 | Signaling connection drops | Reconnects with exponential backoff (1 s up to 30 s, with jitter); status is shown live |
 | Pairing confirmed on one side before the other | Early handshake messages are held and replayed once the other side confirms; the direct link is up within tens of milliseconds |
 | Large files | Above the limit only a record is synced; if the source file is gone when you pull, you get a clear message |
@@ -213,6 +215,7 @@ During development:
 
 ```bash
 cd client-core && go test ./...          # service tests
+./tools/natlab/docker.sh                 # NAT lab: direct vs relay across 8 network topologies
 cd ui && flutter test                    # app tests
 ./scripts/install-macos.sh               # install the service from dist/ as a login item
 ./dist/copysync-cli status               # service status
@@ -242,7 +245,7 @@ The system pasteboard service may be stuck: an app declared clipboard content an
 Check **设置 → 连接状态** (Settings → Connection) on both Macs. If it isn't connected, verify the server address and that port 8787 is reachable.
 
 **Always "relay", never "direct"**
-NAT traversal didn't succeed, which is common with symmetric NAT or strict firewalls. Everything still works; speed is limited by the server's bandwidth.
+NAT traversal didn't succeed, which is common with NATs that randomize ports or strict firewalls. Everything still works; speed is limited by the server's bandwidth. Run `copysync-cli nat` to see how many uplinks were found; zero means UDP is blocked.
 
 **Logs**
 The background service logs to `~/Library/Logs/CopySync/daemon.log`. On the server, use `journalctl -u copysync-server -f`.

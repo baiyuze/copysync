@@ -94,6 +94,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   SettingRow(
+                    title: '用公共服务器探测网络出口',
+                    description: '公司双线这类多出口网络里，能找到更多可以直连的路径。公共服务器只会看到你的公网 IP',
+                    child: SmallSwitch(
+                      value: !cfg.onlyOwnStun,
+                      onChanged: (v) => _update(state, cfg..onlyOwnStun = !v),
+                    ),
+                  ),
+                  SettingRow(
                     title: '连接状态',
                     description: connected ? '已连接到信令服务器' : '连不上服务器。检查地址是否正确、服务器是否在运行。',
                     child: StatusDot(

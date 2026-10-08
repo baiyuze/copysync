@@ -20,18 +20,21 @@ import (
 
 // Server 封装 pion/turn，并按标准的 TURN REST API 方式签发短期凭证。
 type Server struct {
-	turn      *turn.Server
-	secret    []byte
-	publicIP  string
-	port      int
-	ttl       time.Duration
-	log       *slog.Logger
+	turn     *turn.Server
+	secret   []byte
+	publicIP string
+	port     int
+	ttl      time.Duration
+	log      *slog.Logger
 }
 
 type Options struct {
 	// PublicIP 是客户端能访问到的地址。NAT 后部署时必须显式指定，
 	// 否则 TURN 会把内网地址写进 relay candidate，外部设备连不上。
 	PublicIP string
+	// ListenIP 是本机监听的地址，默认 0.0.0.0。服务器有多个 IP 时指定它，
+	// 回包的源地址才会与客户端发往的地址一致——否则客户端的 NAT 会把回包当作陌生来源丢掉。
+	ListenIP string
 	Port     int
 	Realm    string
 	// Secret 用于派生短期凭证。与签发方共享，不下发给客户端。
@@ -48,6 +51,9 @@ func New(opts Options) (*Server, error) {
 	if opts.Port == 0 {
 		opts.Port = 3478
 	}
+	if opts.ListenIP == "" {
+		opts.ListenIP = "0.0.0.0"
+	}
 	if opts.Realm == "" {
 		opts.Realm = "copysync"
 	}
@@ -59,7 +65,7 @@ func New(opts Options) (*Server, error) {
 		log = slog.Default()
 	}
 
-	udpConn, err := net.ListenPacket("udp4", "0.0.0.0:"+strconv.Itoa(opts.Port))
+	udpConn, err := net.ListenPacket("udp4", net.JoinHostPort(opts.ListenIP, strconv.Itoa(opts.Port)))
 	if err != nil {
 		return nil, fmt.Errorf("监听 TURN 端口 %d: %w", opts.Port, err)
 	}
@@ -88,7 +94,7 @@ func New(opts Options) (*Server, error) {
 			PacketConn: udpConn,
 			RelayAddressGenerator: &turn.RelayAddressGeneratorStatic{
 				RelayAddress: net.ParseIP(opts.PublicIP),
-				Address:      "0.0.0.0",
+				Address:      opts.ListenIP,
 			},
 		}},
 	})

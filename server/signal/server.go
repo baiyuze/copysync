@@ -20,7 +20,7 @@ import (
 
 const (
 	// 信令消息都很小（最大的是 SDP，通常几 KB）
-	maxMessageBytes = 256 << 10
+	maxMessageBytes  = 256 << 10
 	handshakeTimeout = 15 * time.Second
 	writeTimeout     = 10 * time.Second
 	// 心跳：及时发现半开连接，否则对端会一直显示"在线"

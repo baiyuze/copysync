@@ -51,6 +51,7 @@ func configToProto(c config.Config) *pb.Config {
 		LaunchAtLogin:          c.LaunchAtLogin,
 		DeviceName:             c.DeviceName,
 		SignalingUrl:           c.SignalingURL,
+		OnlyOwnStun:            c.OnlyOwnSTUN,
 	}
 }
 
@@ -83,6 +84,7 @@ func configFromProto(in *pb.Config, base config.Config) config.Config {
 	c.SyncFile = in.GetSyncFile()
 	c.AutoApplyToClipboard = in.GetAutoApplyToClipboard()
 	c.LaunchAtLogin = in.GetLaunchAtLogin()
+	c.OnlyOwnSTUN = in.GetOnlyOwnStun()
 	return c
 }
 

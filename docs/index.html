@@ -40,7 +40,7 @@
         "description": "在两台 Mac 之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台 Mac 可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）",
-        "softwareVersion": "1.0.2",
+        "softwareVersion": "1.1.0",
         "datePublished": "2026-10-08",
         "inLanguage": "zh-CN",
         "license": "https://opensource.org/licenses/MIT",
@@ -73,6 +73,11 @@
             "@type": "Question",
             "name": "CopySync 的服务器会看到我复制的内容吗？",
             "acceptedAnswer": { "@type": "Answer", "text": "不会。直连时数据不经过服务器；需要中转时，服务器只转发 DTLS 加密后的 UDP 包。服务器不存账号，也不存任何复制内容。" }
+          },
+          {
+            "@type": "Question",
+            "name": "公司网络（双线、多出口）能用 CopySync 直连吗？",
+            "acceptedAnswer": { "@type": "Answer", "text": "能。这类网络按目标地址选出口，CopySync 在同一个端口上向多台服务器探测，拿到每个出口的地址一并发给对端，对端逐个尝试。对端是端口随机分配的 NAT 时仍会经服务器中转。" }
           },
           {
             "@type": "Question",
@@ -134,7 +139,7 @@
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
             下载 macOS 版
           </a>
-          <span class="note">版本 1.0.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
+          <span class="note">版本 1.1.0，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
         </div>
 
         <div class="demo" role="img" aria-label="演示：在 MacBook Pro 上选中文件并按下 Command C，文件经直连传到 MacBook Air，在那里按下 Command V 粘贴出来">
@@ -298,6 +303,8 @@
           <dd>常见于对称 NAT 和公司防火墙。自动改走你服务器上的 TURN 中转，内容依然加密，设备列表里显示「中转」。</dd>
           <dt>公共 STUN 服务器连不上</dt>
           <dd>国内访问公共 STUN 时通时断。服务器自带 STUN，客户端优先用它。</dd>
+          <dt>公司网络有多个出口</dt>
+          <dd>双线、运营商地址池这类网络按目标地址选出口，只探测一次只会知道其中一个出口的地址。CopySync 在同一个端口上向多台服务器探测，把每个出口的地址都发给对端，由它逐个尝试。</dd>
           <dt>服务器断开</dt>
           <dd>自动重连，间隔从 1 秒开始翻倍、最长 30 秒，并带随机抖动，避免一群设备同时重连。界面实时显示连接状态。</dd>
           <dt>文件太大</dt>
@@ -362,11 +369,11 @@ sudo ./install.sh 你的公网IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">版本</th><td>1.0.2，<time datetime="2026-10-08">2026 年 10 月 8 日</time>发布</td></tr>
+              <tr><th scope="row">版本</th><td>1.1.0，<time datetime="2026-10-08">2026 年 10 月 8 日</time>发布</td></tr>
               <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包 45 MB</td></tr>
               <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存</td></tr>
               <tr><th scope="row">同步的内容</th><td>纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭</td></tr>
-              <tr><th scope="row">传输</th><td>WebRTC 数据通道，直连优先，打不通时经 TURN 中转；文件以 tar + zstd 流式打包</td></tr>
+              <tr><th scope="row">传输</th><td>WebRTC 数据通道，直连优先，打不通时经 TURN 中转；多出口网络逐个探测每个出口；文件以 tar + zstd 流式打包</td></tr>
               <tr><th scope="row">加密与身份</th><td>DTLS 端到端加密；设备身份为 Ed25519 密钥；信令消息逐条签名</td></tr>
               <tr><th scope="row">配对</th><td>6 位配对码，5 分钟内有效，字符集去掉了 0/O、1/I 等易混字符；配对时人工核对安全指纹</td></tr>
               <tr><th scope="row">自动同步上限</th><td>默认 50 MB，可在 1 MB 到 1 GB 之间调整</td></tr>
@@ -395,6 +402,12 @@ sudo ./install.sh 你的公网IP</code></pre>
             <summary>服务器会看到我复制的内容吗？</summary>
             <div class="answer">
               <p>不会。直连时数据根本不经过服务器；需要中转时，服务器转发的是 DTLS 加密后的数据包。服务器不存账号，也不存任何复制内容。代码是开源的，可以自己核对。</p>
+            </div>
+          </details>
+          <details>
+            <summary>公司网络（双线、多出口）能直连吗？</summary>
+            <div class="answer">
+              <p>能。这类网络按目标地址选出口，CopySync 会在同一个端口上向多台服务器探测，拿到每个出口的地址一并发给对端，对端逐个尝试，总有一个对得上。实测公司 4 个出口与家用宽带之间可以直连。对端是端口随机分配的 NAT 时仍会走中转。</p>
             </div>
           </details>
           <details>

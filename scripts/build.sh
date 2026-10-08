@@ -14,7 +14,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 DIST=dist
-VERSION=${VERSION:-1.0.2}
+VERSION=${VERSION:-1.1.0}
 rm -rf "$DIST" && mkdir -p "$DIST"
 
 # 构建 x86_64 + arm64 通用二进制：两台 Mac 的芯片未必相同，单架构的

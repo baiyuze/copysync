@@ -1546,6 +1546,7 @@ class Config extends $pb.GeneratedMessage {
     $core.bool? launchAtLogin,
     $core.String? deviceName,
     $core.String? signalingUrl,
+    $core.bool? onlyOwnStun,
   }) {
     final result = Config._();
     if (autoSyncThresholdBytes != null)
@@ -1561,6 +1562,7 @@ class Config extends $pb.GeneratedMessage {
     if (launchAtLogin != null) result.launchAtLogin = launchAtLogin;
     if (deviceName != null) result.deviceName = deviceName;
     if (signalingUrl != null) result.signalingUrl = signalingUrl;
+    if (onlyOwnStun != null) result.onlyOwnStun = onlyOwnStun;
     return result;
   }
 
@@ -1588,6 +1590,7 @@ class Config extends $pb.GeneratedMessage {
     ..aOB(9, _omitFieldNames ? '' : 'launchAtLogin')
     ..aOS(10, _omitFieldNames ? '' : 'deviceName')
     ..aOS(11, _omitFieldNames ? '' : 'signalingUrl')
+    ..aOB(12, _omitFieldNames ? '' : 'onlyOwnStun')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1710,6 +1713,205 @@ class Config extends $pb.GeneratedMessage {
   $core.bool hasSignalingUrl() => $_has(10);
   @$pb.TagNumber(11)
   void clearSignalingUrl() => $_clearField(11);
+
+  /// 只用自己的服务器探测网络出口，不用公共 STUN 服务器。
+  /// 默认 false（即允许公共服务器）：旧版界面不发这个字段时，不会被误关掉。
+  @$pb.TagNumber(12)
+  $core.bool get onlyOwnStun => $_getBF(11);
+  @$pb.TagNumber(12)
+  set onlyOwnStun($core.bool value) => $_setBool(11, value);
+  @$pb.TagNumber(12)
+  $core.bool hasOnlyOwnStun() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearOnlyOwnStun() => $_clearField(12);
+}
+
+/// 最近一轮网络出口探测的结果。
+class NetworkInfo extends $pb.GeneratedMessage {
+  factory NetworkInfo({
+    $core.int? localPort,
+    $core.Iterable<NetworkEgress>? egresses,
+    $core.int? probed,
+    $core.int? answered,
+    $fixnum.Int64? probedAtUnix,
+  }) {
+    final result = NetworkInfo._();
+    if (localPort != null) result.localPort = localPort;
+    if (egresses != null) result.egresses.addAll(egresses);
+    if (probed != null) result.probed = probed;
+    if (answered != null) result.answered = answered;
+    if (probedAtUnix != null) result.probedAtUnix = probedAtUnix;
+    return result;
+  }
+
+  NetworkInfo._();
+
+  factory NetworkInfo.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NetworkInfo()..mergeFromBuffer(data, registry);
+  factory NetworkInfo.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NetworkInfo()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'NetworkInfo',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: NetworkInfo.$_createMessage)
+    ..aI(1, _omitFieldNames ? '' : 'localPort')
+    ..pPM<NetworkEgress>(2, _omitFieldNames ? '' : 'egresses',
+        subBuilder: NetworkEgress.$_createMessage)
+    ..aI(3, _omitFieldNames ? '' : 'probed')
+    ..aI(4, _omitFieldNames ? '' : 'answered')
+    ..aInt64(5, _omitFieldNames ? '' : 'probedAtUnix')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NetworkInfo clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NetworkInfo copyWith(void Function(NetworkInfo) updates) =>
+      super.copyWith((message) => updates(message as NetworkInfo))
+          as NetworkInfo;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use NetworkInfo() / NetworkInfo.new instead')
+  static NetworkInfo create() => NetworkInfo._();
+  static $pb.GeneratedMessage $_createMessage() => NetworkInfo._();
+  @$core.override
+  NetworkInfo createEmptyInstance() => NetworkInfo._();
+  @$core.pragma('dart2js:noInline')
+  static NetworkInfo getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<NetworkInfo>(
+          NetworkInfo.$_createMessage);
+  static NetworkInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get localPort => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set localPort($core.int value) => $_setSignedInt32(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasLocalPort() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLocalPort() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $pb.PbList<NetworkEgress> get egresses => $_getList(1);
+
+  @$pb.TagNumber(3)
+  $core.int get probed => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set probed($core.int value) => $_setSignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasProbed() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearProbed() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get answered => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set answered($core.int value) => $_setSignedInt32(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasAnswered() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearAnswered() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $fixnum.Int64 get probedAtUnix => $_getI64(4);
+  @$pb.TagNumber(5)
+  set probedAtUnix($fixnum.Int64 value) => $_setInt64(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasProbedAtUnix() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearProbedAtUnix() => $_clearField(5);
+}
+
+class NetworkEgress extends $pb.GeneratedMessage {
+  factory NetworkEgress({
+    $core.String? address,
+    $core.bool? portPreserved,
+    $core.bool? guessed,
+    $core.Iterable<$core.String>? via,
+  }) {
+    final result = NetworkEgress._();
+    if (address != null) result.address = address;
+    if (portPreserved != null) result.portPreserved = portPreserved;
+    if (guessed != null) result.guessed = guessed;
+    if (via != null) result.via.addAll(via);
+    return result;
+  }
+
+  NetworkEgress._();
+
+  factory NetworkEgress.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NetworkEgress()..mergeFromBuffer(data, registry);
+  factory NetworkEgress.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NetworkEgress()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'NetworkEgress',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: NetworkEgress.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'address')
+    ..aOB(2, _omitFieldNames ? '' : 'portPreserved')
+    ..aOB(3, _omitFieldNames ? '' : 'guessed')
+    ..pPS(4, _omitFieldNames ? '' : 'via')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NetworkEgress clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NetworkEgress copyWith(void Function(NetworkEgress) updates) =>
+      super.copyWith((message) => updates(message as NetworkEgress))
+          as NetworkEgress;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use NetworkEgress() / NetworkEgress.new instead')
+  static NetworkEgress create() => NetworkEgress._();
+  static $pb.GeneratedMessage $_createMessage() => NetworkEgress._();
+  @$core.override
+  NetworkEgress createEmptyInstance() => NetworkEgress._();
+  @$core.pragma('dart2js:noInline')
+  static NetworkEgress getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<NetworkEgress>(
+          NetworkEgress.$_createMessage);
+  static NetworkEgress? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get address => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set address($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasAddress() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAddress() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.bool get portPreserved => $_getBF(1);
+  @$pb.TagNumber(2)
+  set portPreserved($core.bool value) => $_setBool(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasPortPreserved() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPortPreserved() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.bool get guessed => $_getBF(2);
+  @$pb.TagNumber(3)
+  set guessed($core.bool value) => $_setBool(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasGuessed() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearGuessed() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $pb.PbList<$core.String> get via => $_getList(3);
 }
 
 class Status extends $pb.GeneratedMessage {

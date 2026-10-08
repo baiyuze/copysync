@@ -18,6 +18,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"google.golang.org/grpc"
@@ -36,7 +37,7 @@ func main() {
 	cmd := flag.Arg(0)
 	if cmd == "" {
 		fmt.Fprintln(os.Stderr,
-			"用法: copysync-cli [-data-dir DIR] <status|watch|history|config|devices|pair|join CODE>")
+			"用法: copysync-cli [-data-dir DIR] <status|watch|history|config|devices|nat|pair|join CODE>")
 		os.Exit(2)
 	}
 
@@ -82,6 +83,8 @@ func run(cmd, dataDir string) error {
 		return showConfig(ctx, client)
 	case "devices":
 		return showDevices(ctx, client)
+	case "nat":
+		return showNetwork(ctx, client)
 	case "pair":
 		return createPairing(ctx, client)
 	case "join":
@@ -208,6 +211,62 @@ func printFingerprints(ctx context.Context, c pb.DaemonServiceClient, peer *pb.D
 		fmt.Printf("    %s  %s\n", d.GetPublicKeyFingerprint(), d.GetName())
 	}
 	fmt.Println("\n  两台设备上显示的这两行应当完全相同，一致才继续。")
+	return nil
+}
+
+// showNetwork 打印后台服务最近一轮的网络出口探测结果，以及各设备当前走直连还是中转。
+// 看的是后台服务实际在用的数据，而不是另起炉灶再测一遍。
+func showNetwork(ctx context.Context, c pb.DaemonServiceClient) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	info, err := c.GetNetwork(ctx, &pb.Empty{})
+	if err != nil {
+		return err
+	}
+	when := "尚未探测"
+	if info.GetProbedAtUnix() > 0 {
+		when = time.Unix(info.GetProbedAtUnix(), 0).Format("15:04:05")
+	}
+	fmt.Printf("打洞端口  %d（UDP）\n", info.GetLocalPort())
+	fmt.Printf("最近探测  %s，%d 个服务器中 %d 个响应\n\n", when, info.GetProbed(), info.GetAnswered())
+
+	measured := 0
+	for _, e := range info.GetEgresses() {
+		mode := "改端口  "
+		if e.GetPortPreserved() {
+			mode = "不改端口"
+		}
+		source := strings.Join(e.GetVia(), ", ")
+		if e.GetGuessed() {
+			source = "按历史推算"
+		} else {
+			measured++
+		}
+		fmt.Printf("  %-22s %s  %s\n", e.GetAddress(), mode, source)
+	}
+	switch n := len(info.GetEgresses()); {
+	case n == 0:
+		fmt.Println("  没有探测到出口：UDP 可能被拦截，设备之间只能走中转。")
+	case n == 1:
+		fmt.Println("\n单一出口。")
+	default:
+		fmt.Printf("\n%d 个出口：这是多出口网络。每个出口的地址都会发给对端，由对端逐个尝试。\n", n)
+	}
+	if measured > 0 && measured < len(info.GetEgresses()) {
+		fmt.Println("按历史推算的出口这一轮没探测到，但它不改端口，地址可以推算出来。")
+	}
+
+	devs, err := c.ListDevices(ctx, &pb.Empty{})
+	if err != nil {
+		return nil
+	}
+	if peers := devs.GetPeers(); len(peers) > 0 {
+		fmt.Println("\n设备连接：")
+		for _, p := range peers {
+			fmt.Printf("  %-18s %s\n", p.GetName(), connectionLabel(p))
+		}
+	}
 	return nil
 }
 

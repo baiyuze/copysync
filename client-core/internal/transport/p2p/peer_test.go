@@ -89,7 +89,7 @@ func newHarness(t *testing.T, id string, r *relay) *harness {
 	// 本地回环测试不需要 STUN/TURN：host candidate 足以直连
 	h.manager.SetICEServers(nil)
 	r.register(id, h.manager)
-	t.Cleanup(h.manager.CloseAll)
+	t.Cleanup(h.manager.Close)
 	return h
 }
 

@@ -42,3 +42,17 @@ jobs:
           cache: true
       - run: flutter pub get && flutter analyze && flutter test
         working-directory: ui
+
+  natlab:
+    name: NAT 打洞实验室
+    # 用网络命名空间与 iptables 搭出多出口、对称 NAT 等拓扑，验证直连与中转兜底
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: client-core/go.mod
+          cache-dependency-path: client-core/go.sum
+      - run: CGO_ENABLED=0 go build -o /tmp/natlab ./cmd/natlab
+        working-directory: client-core
+      - run: sudo bash tools/natlab/run.sh /tmp/natlab

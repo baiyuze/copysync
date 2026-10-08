@@ -534,6 +534,7 @@ const Config$json = {
     {'1': 'launch_at_login', '3': 9, '4': 1, '5': 8, '10': 'launchAtLogin'},
     {'1': 'device_name', '3': 10, '4': 1, '5': 9, '10': 'deviceName'},
     {'1': 'signaling_url', '3': 11, '4': 1, '5': 9, '10': 'signalingUrl'},
+    {'1': 'only_own_stun', '3': 12, '4': 1, '5': 8, '10': 'onlyOwnStun'},
   ],
 };
 
@@ -546,7 +547,51 @@ final $typed_data.Uint8List configDescriptor = $convert.base64Decode(
     'eW5jX2ltYWdlGAYgASgIUglzeW5jSW1hZ2USGwoJc3luY19maWxlGAcgASgIUghzeW5jRmlsZR'
     'I1ChdhdXRvX2FwcGx5X3RvX2NsaXBib2FyZBgIIAEoCFIUYXV0b0FwcGx5VG9DbGlwYm9hcmQS'
     'JgoPbGF1bmNoX2F0X2xvZ2luGAkgASgIUg1sYXVuY2hBdExvZ2luEh8KC2RldmljZV9uYW1lGA'
-    'ogASgJUgpkZXZpY2VOYW1lEiMKDXNpZ25hbGluZ191cmwYCyABKAlSDHNpZ25hbGluZ1VybA==');
+    'ogASgJUgpkZXZpY2VOYW1lEiMKDXNpZ25hbGluZ191cmwYCyABKAlSDHNpZ25hbGluZ1VybBIi'
+    'Cg1vbmx5X293bl9zdHVuGAwgASgIUgtvbmx5T3duU3R1bg==');
+
+@$core.Deprecated('Use networkInfoDescriptor instead')
+const NetworkInfo$json = {
+  '1': 'NetworkInfo',
+  '2': [
+    {'1': 'local_port', '3': 1, '4': 1, '5': 5, '10': 'localPort'},
+    {
+      '1': 'egresses',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.copysync.v1.NetworkEgress',
+      '10': 'egresses'
+    },
+    {'1': 'probed', '3': 3, '4': 1, '5': 5, '10': 'probed'},
+    {'1': 'answered', '3': 4, '4': 1, '5': 5, '10': 'answered'},
+    {'1': 'probed_at_unix', '3': 5, '4': 1, '5': 3, '10': 'probedAtUnix'},
+  ],
+};
+
+/// Descriptor for `NetworkInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List networkInfoDescriptor = $convert.base64Decode(
+    'CgtOZXR3b3JrSW5mbxIdCgpsb2NhbF9wb3J0GAEgASgFUglsb2NhbFBvcnQSNgoIZWdyZXNzZX'
+    'MYAiADKAsyGi5jb3B5c3luYy52MS5OZXR3b3JrRWdyZXNzUghlZ3Jlc3NlcxIWCgZwcm9iZWQY'
+    'AyABKAVSBnByb2JlZBIaCghhbnN3ZXJlZBgEIAEoBVIIYW5zd2VyZWQSJAoOcHJvYmVkX2F0X3'
+    'VuaXgYBSABKANSDHByb2JlZEF0VW5peA==');
+
+@$core.Deprecated('Use networkEgressDescriptor instead')
+const NetworkEgress$json = {
+  '1': 'NetworkEgress',
+  '2': [
+    {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    {'1': 'port_preserved', '3': 2, '4': 1, '5': 8, '10': 'portPreserved'},
+    {'1': 'guessed', '3': 3, '4': 1, '5': 8, '10': 'guessed'},
+    {'1': 'via', '3': 4, '4': 3, '5': 9, '10': 'via'},
+  ],
+};
+
+/// Descriptor for `NetworkEgress`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List networkEgressDescriptor = $convert.base64Decode(
+    'Cg1OZXR3b3JrRWdyZXNzEhgKB2FkZHJlc3MYASABKAlSB2FkZHJlc3MSJQoOcG9ydF9wcmVzZX'
+    'J2ZWQYAiABKAhSDXBvcnRQcmVzZXJ2ZWQSGAoHZ3Vlc3NlZBgDIAEoCFIHZ3Vlc3NlZBIQCgN2'
+    'aWEYBCADKAlSA3ZpYQ==');
 
 @$core.Deprecated('Use statusDescriptor instead')
 const Status$json = {

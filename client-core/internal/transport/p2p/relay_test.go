@@ -146,6 +146,6 @@ func newRelayHarness(t *testing.T, id string, r *relay, turnSrv *turnrelay.Serve
 	}})
 
 	r.register(id, h.manager)
-	t.Cleanup(h.manager.CloseAll)
+	t.Cleanup(h.manager.Close)
 	return h
 }

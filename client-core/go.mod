@@ -11,7 +11,6 @@ require (
 	github.com/ncruces/go-strftime v1.0.0 // indirect
 	github.com/pion/datachannel v1.6.2 // indirect
 	github.com/pion/dtls/v3 v3.1.8 // indirect
-	github.com/pion/ice/v4 v4.4.2 // indirect
 	github.com/pion/interceptor v0.1.48 // indirect
 	github.com/pion/logging v0.2.4 // indirect
 	github.com/pion/mdns/v2 v2.2.0 // indirect
@@ -22,7 +21,6 @@ require (
 	github.com/pion/sdp/v3 v3.0.19 // indirect
 	github.com/pion/srtp/v3 v3.0.13 // indirect
 	github.com/pion/stun/v3 v3.0.1 // indirect
-	github.com/pion/stun/v4 v4.0.0 // indirect
 	github.com/pion/transport/v3 v3.0.8 // indirect
 	github.com/pion/transport/v4 v4.1.0 // indirect
 	github.com/pion/turn/v4 v4.1.4 // indirect
@@ -51,6 +49,8 @@ replace github.com/baiyuze/copysync/proto => ../proto
 require (
 	github.com/baiyuze/copysync/server v0.0.0
 	github.com/klauspost/compress v1.20.0
+	github.com/pion/ice/v4 v4.4.2
+	github.com/pion/stun/v4 v4.0.0
 	github.com/pion/webrtc/v4 v4.2.20
 	golang.org/x/net v0.57.0
 )

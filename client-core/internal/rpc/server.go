@@ -38,13 +38,15 @@ type Deps struct {
 	ApplyToClipboard       func(ctx context.Context, clipID string) error
 	Permission             func() clipboard.Permission
 	OpenPermissionSettings func() error
-	Devices                func() (self *pb.Device, peers []*pb.Device)
-	CreatePairingCode      func(ctx context.Context) (code string, expiresAt time.Time, err error)
-	RedeemPairingCode      func(ctx context.Context, code string) (*pb.Device, string, error)
-	ConfirmPairing         func(ctx context.Context, session string, accept bool) error
-	Unpair                 func(ctx context.Context, deviceID string) error
-	SignalingConnected     func() bool
-	CacheBytesUsed         func() int64
+	// Network 返回最近一轮网络出口探测的结果
+	Network            func() *pb.NetworkInfo
+	Devices            func() (self *pb.Device, peers []*pb.Device)
+	CreatePairingCode  func(ctx context.Context) (code string, expiresAt time.Time, err error)
+	RedeemPairingCode  func(ctx context.Context, code string) (*pb.Device, string, error)
+	ConfirmPairing     func(ctx context.Context, session string, accept bool) error
+	Unpair             func(ctx context.Context, deviceID string) error
+	SignalingConnected func() bool
+	CacheBytesUsed     func() int64
 }
 
 type Server struct {
@@ -263,6 +265,13 @@ func (s *Server) GetStatus(context.Context, *pb.Empty) (*pb.Status, error) {
 		}
 	}
 	return st, nil
+}
+
+func (s *Server) GetNetwork(context.Context, *pb.Empty) (*pb.NetworkInfo, error) {
+	if s.deps.Network == nil {
+		return nil, status.Error(codes.Unimplemented, "当前版本不支持网络诊断")
+	}
+	return s.deps.Network(), nil
 }
 
 func (s *Server) RequestClipboardPermission(context.Context, *pb.Empty) (*pb.Empty, error) {

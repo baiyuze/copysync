@@ -79,6 +79,8 @@ type Options struct {
 	// OnPeerMessage / OnPeerStream 是 P2P 数据面的入口，M4 的同步逻辑挂在这里
 	OnPeerMessage func(deviceID string, msg *pb.PeerMessage)
 	OnPeerStream  func(deviceID, label string, stream *p2p.Stream)
+	// StatePath 保存网络出口历史的文件，见 p2p/egress_history.go
+	StatePath string
 }
 
 func NewManager(opts Options) (*Manager, error) {
@@ -117,6 +119,14 @@ func NewManager(opts Options) (*Manager, error) {
 		OnState:    m.handleP2PState,
 		OnMessage:  opts.OnPeerMessage,
 		OnStream:   opts.OnPeerStream,
+		StatePath:  opts.StatePath,
+		// 公共 STUN 服务器 IP 分散，能探测到更多出口；用户可以在设置里关掉
+		ProbeServers: func() []string {
+			if opts.LoadConfig().OnlyOwnSTUN {
+				return nil
+			}
+			return p2p.DefaultProbeServers
+		},
 	})
 
 	m.client = signaling.New(signaling.Options{

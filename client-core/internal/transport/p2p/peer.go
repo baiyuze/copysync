@@ -15,6 +15,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pion/ice/v4"
 	"github.com/pion/webrtc/v4"
 	"google.golang.org/protobuf/proto"
 
@@ -60,6 +61,8 @@ func (s ConnState) Proto() pb.ConnectionKind {
 const (
 	controlChannelLabel = "control"
 	connectTimeout      = 30 * time.Second
+	// relayAcceptanceWait 是中转路径最早可以被选中的时间，给直连留出打通的机会
+	relayAcceptanceWait = 3 * time.Second
 )
 
 // Peer 管理与单个对端的 WebRTC 连接。
@@ -73,6 +76,8 @@ type Peer struct {
 	onMessage  func(*pb.PeerMessage)
 	// onStream 处理对端新开的数据流（大文件传输用）
 	onStream func(label string, stream *Stream)
+	// extraCands 返回出口探测得到的公网地址，见 sendExtraCandidates
+	extraCands func() []string
 
 	api    *webrtc.API
 	config webrtc.Configuration
@@ -110,10 +115,14 @@ type PeerOptions struct {
 	// ForceRelay 强制只用 TURN 中转，不尝试直连。
 	// 用于验证中转链路是否可用——正常运行时应保持关闭。
 	ForceRelay bool
-	SendSignal func(ctx context.Context, msg *pb.SignalMessage) error
-	OnState    func(ConnState)
-	OnMessage  func(*pb.PeerMessage)
-	OnStream   func(label string, stream *Stream)
+	// UDPMux 是所有连接共用的打洞端口；为空则由 pion 为每个连接各开端口
+	UDPMux ice.UDPMux
+	// ExtraCandidates 返回出口探测得到的公网地址（srflx candidate），握手时一并发给对端
+	ExtraCandidates func() []string
+	SendSignal      func(ctx context.Context, msg *pb.SignalMessage) error
+	OnState         func(ConnState)
+	OnMessage       func(*pb.PeerMessage)
+	OnStream        func(label string, stream *Stream)
 }
 
 func NewPeer(opts PeerOptions) (*Peer, error) {
@@ -128,10 +137,16 @@ func NewPeer(opts PeerOptions) (*Peer, error) {
 	// 分片与背压（BufferedAmount / OnBufferedAmountLow）本来就要自己处理，
 	// 统一走消息接口反而让两类通道的代码保持一致。
 	settings := webrtc.SettingEngine{}
+	if opts.UDPMux != nil {
+		settings.SetICEUDPMux(opts.UDPMux)
+	}
 
 	config := webrtc.Configuration{ICEServers: opts.ICEServers}
 	if opts.ForceRelay {
 		config.ICETransportPolicy = webrtc.ICETransportPolicyRelay
+	} else {
+		// 中转路径握手快，若不加等待，往往在直连打通之前就被选中，之后再也不会换成直连
+		settings.SetRelayAcceptanceMinWait(relayAcceptanceWait)
 	}
 
 	return &Peer{
@@ -141,6 +156,7 @@ func NewPeer(opts PeerOptions) (*Peer, error) {
 		onState:    opts.OnState,
 		onMessage:  opts.OnMessage,
 		onStream:   opts.OnStream,
+		extraCands: opts.ExtraCandidates,
 		api:        webrtc.NewAPI(webrtc.WithSettingEngine(settings)),
 		config:     config,
 		// 用 device_id 字典序决定礼让方：双方规则一致且无需协商，
@@ -226,12 +242,38 @@ func (p *Peer) Connect(ctx context.Context) error {
 	p.setState(StateConnecting)
 	p.armConnectTimeout()
 
-	return p.sendSignal(ctx, &pb.SignalMessage{
+	if err := p.sendSignal(ctx, &pb.SignalMessage{
 		Payload: &pb.SignalMessage_Offer{Offer: &pb.SdpOffer{
 			Sdp:             offer.SDP,
 			DtlsFingerprint: fingerprintFromSDP(offer.SDP),
 		}},
-	})
+	}); err != nil {
+		return err
+	}
+	go p.sendExtraCandidates()
+	return nil
+}
+
+// sendExtraCandidates 把出口探测得到的各个公网地址作为 srflx candidate 发给对端。
+//
+// pion 自己只会探测出一个公网地址；在多出口网络里，发往对端的包很可能从另一个出口
+// 出去，那个地址对不上，打洞就失败了。把每个出口的地址都告诉对端，对端逐个检查连通性，
+// 总有一个与实际出口吻合。必须在 offer/answer 之后发：对端设好远端描述前收到的
+// candidate 会先缓存起来。
+func (p *Peer) sendExtraCandidates() {
+	if p.extraCands == nil {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	for _, c := range p.extraCands() {
+		if err := p.sendSignal(ctx, &pb.SignalMessage{
+			Payload: &pb.SignalMessage_Candidate{Candidate: &pb.IceCandidate{Candidate: c, SdpMid: "0"}},
+		}); err != nil {
+			p.log.Debug("发送出口地址失败", "err", err)
+			return
+		}
+	}
 }
 
 // armConnectTimeout 在握手迟迟不完成时重置连接，让上层得以重试。
@@ -321,12 +363,16 @@ func (p *Peer) handleOffer(ctx context.Context, offer *pb.SdpOffer) error {
 	p.setState(StateConnecting)
 	p.armConnectTimeout()
 
-	return p.sendSignal(ctx, &pb.SignalMessage{
+	if err := p.sendSignal(ctx, &pb.SignalMessage{
 		Payload: &pb.SignalMessage_Answer{Answer: &pb.SdpAnswer{
 			Sdp:             answer.SDP,
 			DtlsFingerprint: fingerprintFromSDP(answer.SDP),
 		}},
-	})
+	}); err != nil {
+		return err
+	}
+	go p.sendExtraCandidates()
+	return nil
 }
 
 func (p *Peer) handleAnswer(answer *pb.SdpAnswer) error {
