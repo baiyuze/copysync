@@ -91,7 +91,7 @@ sync
 hdiutil detach "$MNT" -quiet
 hdiutil convert "$STAGE/rw.dmg" -format UDZO -imagekey zlib-level=9 \
     -o "$OUT/CopySync.dmg" -quiet
-echo "  ✓ CopySync.dmg（$VERSION）"
+echo "  ✓ CopySync.dmg（${VERSION}）"
 
 # ─────────────────────────── 服务器 ───────────────────────────
 
