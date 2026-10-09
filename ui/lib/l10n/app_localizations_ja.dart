@@ -545,7 +545,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get about => 'このアプリについて';
 
   @override
-  String get aboutDesc => 'オープンソース（MIT ライセンス）';
+  String get aboutDesc => 'オープンソース（AGPL-3.0）';
 
   @override
   String get homepage => 'ウェブサイト';

@@ -337,7 +337,7 @@
   "restarted": "Background service restarted",
   "disableEllipsis": "Turn off…",
   "about": "About",
-  "aboutDesc": "Open source, MIT License",
+  "aboutDesc": "Open source under the AGPL-3.0",
   "homepage": "Website",
   "feedback": "Report a problem",
   "disableTitle": "Turn off background sync?",

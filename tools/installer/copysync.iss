@@ -1,6 +1,6 @@
 ﻿; CopySync 的 Windows 安装程序（Inno Setup 6）。由 scripts\build-windows.ps1 调用：
 ;
-;   iscc /DAppVersion=1.2.0 /DSourceDir=<构建好的目录> /DOutputDir=<输出目录> tools\installer\copysync.iss
+;   iscc /DAppVersion=1.3.0 /DSourceDir=<构建好的目录> /DOutputDir=<输出目录> tools\installer\copysync.iss
 ;
 ; 按用户安装：装到 %LOCALAPPDATA%\Programs\CopySync，不需要管理员权限、不弹 UAC。
 ; 数据目录 %LOCALAPPDATA%\CopySync 与安装目录分开，升级、重装都不受影响。

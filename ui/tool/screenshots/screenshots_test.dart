@@ -23,10 +23,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// 截图的界面语言：zh 或 en，由 render.sh 设置。演示数据里的文件名、文字也跟着换。
+/// 截图的界面语言：zh、en 或 ja，由 render.sh 设置。演示数据里的文件名、文字也跟着换。
 final _lang = Platform.environment['SCREENSHOT_LANG'] ?? 'zh';
 final _locale = Locale(_lang);
-String _t(String zh, String en) => _lang == 'en' ? en : zh;
+String _t(String zh, String en, String ja) => switch (_lang) { 'en' => en, 'ja' => ja, _ => zh };
+
+/// 汉字的字形跟着语言走：日文界面用冬青黑体，否则用苹方
+final _cjk = _lang == 'ja' ? const ['Hiragino', 'PingFang'] : const ['PingFang'];
 
 /// 生成配对码不走后台服务，直接给一个固定值。
 class _DemoState extends AppState {
@@ -48,6 +51,7 @@ Future<void> _loadFonts() async {
 
   await family('SF', ['SF-Regular.ttf', 'SF-Medium.ttf', 'SF-Semibold.ttf']);
   await family('PingFang', ['PingFang-Regular.ttf', 'PingFang-Medium.ttf', 'PingFang-Semibold.ttf']);
+  await family('Hiragino', ['Hiragino-Regular.ttf', 'Hiragino-Medium.ttf', 'Hiragino-Semibold.ttf']);
   await family(monoFamily, ['Menlo-Regular.ttf', 'Menlo-Bold.ttf']);
   // 图标字体随依赖包打进测试资源，但测试环境不会自动加载
   final icons = FontLoader('packages/cupertino_icons/CupertinoIcons')
@@ -82,7 +86,7 @@ ClipRecord _clip(
     );
 
 const _mb = 1024 * 1024;
-final _quarterly = _t('季度汇报-终版.key', 'Q3 review - final.key');
+final _quarterly = _t('季度汇报-终版.key', 'Q3 review - final.key', '四半期報告_最終版.key');
 
 AppState _demo({LinkState link = LinkState.online,
     ServiceState? service, Device? pending, bool empty = false}) {
@@ -136,7 +140,7 @@ AppState _demo({LinkState link = LinkState.online,
           preview: 'git push origin release/1.0 && gh release create v1.0.0',
           outgoing: true, size: 54, ago: const Duration(seconds: 4)),
       _clip('2', ClipKind.CLIP_KIND_IMAGE,
-          preview: _t('图片 2.4 MB', 'Image 2.4 MB'), size: (2.4 * _mb).round(), ago: const Duration(minutes: 2),
+          preview: _t('图片 2.4 MB', 'Image 2.4 MB', '画像 2.4 MB'), size: (2.4 * _mb).round(), ago: const Duration(minutes: 2),
           items: [ClipItem(name: 'image.png', size: Int64((2.4 * _mb).round()))]),
       _clip('3', ClipKind.CLIP_KIND_FILE,
           size: (38.2 * _mb).round(), ago: const Duration(minutes: 9),
@@ -144,10 +148,11 @@ AppState _demo({LinkState link = LinkState.online,
       _clip('4', ClipKind.CLIP_KIND_FILE,
           size: (1.3 * 1024 * _mb).round(), ago: const Duration(minutes: 14),
           from: 'Mac mini', status: ClipStatus.CLIP_STATUS_REMOTE_ONLY,
-          items: [ClipItem(name: _t('发布演示录屏.mov', 'launch-demo.mov'), size: Int64((1.3 * 1024 * _mb).round()))]),
+          items: [ClipItem(name: _t('发布演示录屏.mov', 'launch-demo.mov', '発表デモ.mov'), size: Int64((1.3 * 1024 * _mb).round()))]),
       _clip('5', ClipKind.CLIP_KIND_HTML,
           preview: _t('会议结论：周二灰度 10%，观察两天没问题周四全量；回滚预案见文档第 3 节',
-              'Decision: ship to 10% on Tuesday, everyone on Thursday if two days look clean. Rollback plan in section 3'),
+              'Decision: ship to 10% on Tuesday, everyone on Thursday if two days look clean. Rollback plan in section 3',
+              '決定事項：火曜に 10% へ先行公開、2 日問題なければ木曜に全体公開。切り戻し手順は資料の第 3 節'),
           from: 'Mac mini', size: 2310, ago: const Duration(minutes: 26)),
       _clip('6', ClipKind.CLIP_KIND_FILE,
           outgoing: true, size: 126 * _mb, ago: const Duration(minutes: 41),
@@ -155,7 +160,7 @@ AppState _demo({LinkState link = LinkState.online,
       _clip('7', ClipKind.CLIP_KIND_FILE,
           size: (18.6 * _mb).round(), ago: const Duration(hours: 1),
           status: ClipStatus.CLIP_STATUS_FETCHING,
-          items: [ClipItem(name: _t('合同扫描件.pdf', 'signed-contract.pdf'), size: Int64((18.6 * _mb).round()))]),
+          items: [ClipItem(name: _t('合同扫描件.pdf', 'signed-contract.pdf', '契約書_署名済み.pdf'), size: Int64((18.6 * _mb).round()))]),
       _clip('8', ClipKind.CLIP_KIND_TEXT,
           preview: 'https://github.com/baiyuze/copysync/releases', outgoing: true, size: 44,
           ago: const Duration(hours: 3)),
@@ -167,7 +172,7 @@ AppState _demo({LinkState link = LinkState.online,
             ClipItem(name: 'IMG_2043.HEIC', size: Int64((1.4 * _mb).round())),
           ]),
       _clip('10', ClipKind.CLIP_KIND_IMAGE,
-          preview: _t('图片 864 KB', 'Image 864 KB'), outgoing: true, size: 864 * 1024, ago: const Duration(days: 1),
+          preview: _t('图片 864 KB', 'Image 864 KB', '画像 864 KB'), outgoing: true, size: 864 * 1024, ago: const Duration(days: 1),
           items: [ClipItem(name: 'image.png', size: Int64(864 * 1024))]),
     ],
   );
@@ -212,7 +217,7 @@ Future<void> _render(
   required bool settle,
 }) async {
 
-  final theme = buildTheme(brightness, fontFamily: 'SF', fontFamilyFallback: const ['PingFang']);
+  final theme = buildTheme(brightness, fontFamily: 'SF', fontFamilyFallback: _cjk);
   await tester.pumpWidget(RepaintBoundary(
     key: _boundary,
     child: AppScope(
@@ -324,7 +329,7 @@ void main() {
             state: _demo(),
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              theme: buildTheme(brightness, fontFamily: 'SF', fontFamilyFallback: const ['PingFang']),
+              theme: buildTheme(brightness, fontFamily: 'SF', fontFamilyFallback: _cjk),
               locale: _locale,
               supportedLocales: supportedLocales,
               localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -3,16 +3,34 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://baiyuze.github.io/copysync/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/"/>
   </url>
   <url>
     <loc>https://baiyuze.github.io/copysync/en/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/ja/</loc>
+    <lastmod>2026-10-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/design/nat-traversal.html</loc>
+    <lastmod>2026-10-09</lastmod>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/design/windows-client.html</loc>
+    <lastmod>2026-10-09</lastmod>
   </url>
 </urlset>

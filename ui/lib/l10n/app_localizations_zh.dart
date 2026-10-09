@@ -542,7 +542,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get about => '关于';
 
   @override
-  String get aboutDesc => '开源软件，MIT 许可';
+  String get aboutDesc => '开源软件，AGPL-3.0 许可';
 
   @override
   String get homepage => '项目主页';

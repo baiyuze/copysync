@@ -32,6 +32,15 @@ for font in TTCollection(pingfang).fonts:
 if wanted:
     sys.exit(f"PingFang.ttc 里缺少：{', '.join(wanted)}")
 
+# ── 日文：冬青黑体（Hiragino Sans）的三个字重，日文界面的截图用它，汉字是日文字形 ──
+for weight, label in [("W3", "Regular"), ("W5", "Medium"), ("W6", "Semibold")]:
+    for font in TTCollection(f"/System/Library/Fonts/ヒラギノ角ゴシック {weight}.ttc").fonts:
+        if font["name"].getDebugName(4) == f"Hiragino Sans {weight}":
+            font.save(os.path.join(out, f"Hiragino-{label}.ttf"))
+            break
+    else:
+        sys.exit(f"缺少 Hiragino Sans {weight}")
+
 # ── 等宽：Menlo，用于配对码与安全指纹 ──
 menlo = {"Menlo Regular": "Menlo-Regular", "Menlo Bold": "Menlo-Bold"}
 for font in TTCollection("/System/Library/Fonts/Menlo.ttc").fonts:

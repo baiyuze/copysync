@@ -24,14 +24,12 @@
   <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1D1D1F" alt="Windows 10 / 11">
   <img src="https://img.shields.io/badge/Intel%20%2B%20Apple%20silicon-universal-1D1D1F" alt="Universal binary">
-  <img src="https://img.shields.io/github/license/baiyuze/copysync?color=6E6E73" alt="MIT License">
+  <img src="https://img.shields.io/badge/license-AGPL--3.0-6E6E73" alt="AGPL-3.0 License">
 </p>
 
 <p align="center">
   <img src="docs/assets/screenshots/en/history.png" alt="CopySync's history view: files, images and text arriving from other Macs">
 </p>
-
-> The app's interface is in Simplified Chinese for now. The screenshots below are annotated in the alt text.
 
 ## Why
 
@@ -65,6 +63,7 @@ With CopySync you pair two computers once. After that, copy on one and paste on 
 - **Fingerprint check when pairing**, so neither the server nor anyone on the network can impersonate your device.
 - **Runs in the background.** Keeps syncing with the window closed, starts at login, recovers from crashes. On Windows it lives in the notification area.
 - **Mac and Windows.** Native on Intel and Apple silicon Macs; Windows 10 and 11. Pasted files are real files you can drop into Explorer, WeChat or Office. Light and dark appearance.
+- **English, Chinese and Japanese.** The interface follows your system language, and you can switch it in Settings.
 - **Passwords stay put** (Windows). Content that a password manager marks as "don't record" is skipped: not synced, not kept in the history.
 
 <table>
@@ -123,8 +122,8 @@ For Docker, or for LAN-only use, see the [server deployment guide](server/deploy
 
    The first time, macOS says it can't verify the developer: CopySync isn't notarized by Apple yet (that requires a paid developer account). Go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. You only need to do this once.
 
-3. Click **启用后台同步** (Enable background sync).
-4. In **设置 → 信令服务器地址** (Settings → Signaling server), enter `ws://<server address>:8787/signal` and press Return.
+3. Click **Turn on background sync**.
+4. In **Settings → Signaling server**, enter `ws://<server address>:8787/signal` and press Return.
 5. Recent versions of macOS ask whether CopySync Daemon may read the clipboard. Allow it; you can switch it to always allow under **System Settings → Privacy & Security → Paste from Other Apps**.
 
 **Windows**
@@ -133,16 +132,16 @@ For Docker, or for LAN-only use, see the [server deployment guide](server/deploy
 
    CopySync isn't code-signed yet, so Windows says "Windows protected your PC": click **More info → Run anyway**. To skip the installer, download the [portable zip](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip), extract it and open CopySync.
 
-2. Open CopySync (it opens when setup finishes; there's also a desktop shortcut) and click **启用后台同步** (Enable background sync).
-3. In **设置 → 信令服务器地址** (Settings → Signaling server), enter `ws://<server address>:8787/signal` and press Enter.
+2. Open CopySync (it opens when setup finishes; there's also a desktop shortcut) and click **Turn on background sync**.
+3. In **Settings → Signaling server**, enter `ws://<server address>:8787/signal` and press Enter.
 4. If Windows Firewall asks about copysyncd, allow it.
 
 After you close the window, CopySync keeps running in the notification area; open it again from the tray icon or the desktop shortcut.
 
 ### 3. Pair
 
-1. On one computer: **设备 → 添加设备 → 生成配对码** (Devices → Add device → Generate code).
-2. On the other: **添加设备 → 输入配对码** (Add device → Enter code), and type the 6 characters.
+1. On one computer: **Devices → Add device → Show a code**.
+2. On the other: **Add device → Enter a code**, and type the 6 characters.
 3. Both screens show the same two lines of fingerprints, one for each device. **Confirm only if the two screens match line for line.**
 
 From then on, copy on either one and paste on the other.
@@ -232,7 +231,7 @@ The **NAT lab** (`tools/natlab`) builds real topologies with Linux network names
 - **Fingerprints are compared by a person when pairing.** Both Macs show the same two lines: the fingerprint of each side's public key (the first 60 bits of its SHA-256, like `R8NF-2WTC-QL5J`), in a fixed order. The server could swap keys in transit, but then the two screens would no longer match — this step is what stops a man in the middle. The fingerprints are shown separately rather than combined into one short code: an attacker controlling both forged keys could find a matching combined code with a birthday attack, while separate fingerprints need a preimage attack per key, roughly a billion times harder.
 - **Every signaling message after that is signed**, so the server cannot forge a device. The DTLS certificate fingerprint of the direct channel is also sent signed and checked against the actual certificate after the handshake; a mismatch drops the connection.
 - **The relay can't read anything either.** TURN only forwards encrypted UDP packets. Relay credentials are issued per device and expire after 12 hours.
-- **Public STUN servers see only your public IP.** To find every uplink on multi-uplink networks, CopySync probes a few public STUN servers by default. They see your public IP, as with any WebRTC app, never content. Turn off 用公共服务器探测网络出口 (Probe with public servers) in Settings to use only your own server.
+- **Public STUN servers see only your public IP.** To find every uplink on multi-uplink networks, CopySync probes a few public STUN servers by default. They see your public IP, as with any WebRTC app, never content. Turn off **Probe with public servers** in Settings to use only your own server.
 - **Device key.** On Mac it's stored readable only by you; on Windows it's additionally encrypted with DPAPI, so another user or another computer can't decrypt a copied file.
 - **No App Sandbox**, because CopySync needs to read files at whatever path you copy them from.
 
@@ -279,7 +278,6 @@ Measured on a LAN with a direct connection: a 20 MB file transfers in about 330 
 - **The Mac app doesn't skip password-manager content yet**; the Windows app does.
 - **Items aren't resent after a long absence.** The server stores nothing. While the other Mac is unreachable, this Mac keeps the latest 20 items (from the last 24 hours) in memory, and they're lost if its background service restarts.
 - **Relayed transfers are limited by your server's bandwidth.** Direct connections aren't.
-- The interface is in Simplified Chinese.
 
 ## Build from source
 
@@ -332,7 +330,7 @@ tools/installer/ Windows installer (Inno Setup)
 The system pasteboard service may be stuck: an app declared clipboard content and then crashed, leaving types without data. Run `killall pboard` and copy again.
 
 **A device stays offline**
-Check **设置 → 连接状态** (Settings → Connection) on both computers. If it isn't connected, verify the server address and that port 8787 is reachable.
+Check **Settings → Connection** on both computers. If it isn't connected, verify the server address and that port 8787 is reachable.
 
 **Always "relay", never "direct"**
 Showing "relay" right after connecting and "direct" a little later is normal: the relay makes things work first, and the direct path takes over when the link is idle. If it stays "relay", NAT traversal didn't succeed, which is common with NATs that randomize ports or strict firewalls. Everything still works; speed is limited by the server's bandwidth. Run `copysync-cli nat` to see how many uplinks were found; zero means UDP is blocked.
@@ -342,4 +340,4 @@ The background service logs to `~/Library/Logs/CopySync/daemon.log` on Mac and `
 
 ## License
 
-[MIT](LICENSE)
+CopySync is dual-licensed. It's free under the [GNU AGPL-3.0](LICENSE): anyone, companies included, can use and modify it, but distributing it or offering a modified version over a network means publishing your source under the same license. A [commercial license](LICENSING.md) is available for closed-source products, private modifications and hosted services; [open a "Commercial license" issue](https://github.com/baiyuze/copysync/issues/new?template=commercial-license.yml) to ask. Versions 1.2.0 and earlier remain under the MIT License. Details are in [LICENSING.md](LICENSING.md).

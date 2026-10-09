@@ -1,12 +1,12 @@
 # CopySync
 
-> CopySync is a free, open-source (MIT) app for macOS and Windows that syncs the clipboard and files between computers: copy on one, paste on another — Mac to Mac, Mac to Windows, or Windows to Windows. It works across different accounts and different networks. Devices connect peer-to-peer over WebRTC with end-to-end DTLS encryption; when a direct connection fails, traffic is relayed through a TURN server the user hosts themselves. The server stores no accounts and cannot read clipboard content.
+> CopySync is a free, open-source (GNU AGPL-3.0, with commercial licenses available) app for macOS and Windows that syncs the clipboard and files between computers: copy on one, paste on another — Mac to Mac, Mac to Windows, or Windows to Windows. It works across different accounts and different networks. Devices connect peer-to-peer over WebRTC with end-to-end DTLS encryption; when a direct connection fails, traffic is relayed through a TURN server the user hosts themselves. The server stores no accounts and cannot read clipboard content.
 >
-> CopySync 是一款免费开源（MIT）的 macOS 与 Windows 工具，在两台电脑之间同步剪贴板与文件：一台复制，另一台直接粘贴，Mac 与 Windows 互通。不要求同一个账号，跨网络可用。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转；服务器不存账号，看不到复制内容。
+> CopySync 是一款免费开源（GNU AGPL-3.0，另提供商业授权）的 macOS 与 Windows 工具，在两台电脑之间同步剪贴板与文件：一台复制，另一台直接粘贴，Mac 与 Windows 互通。不要求同一个账号，跨网络可用。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转；服务器不存账号，看不到复制内容。
 
 Key facts:
 
-- Current version: 1.2.0, released 2026-10-09. Adds the Windows client.
+- Current version: 1.3.0, released 2026-10-09. Adds an English and Japanese interface (follows the system language, switchable in Settings) and moves to the GNU AGPL-3.0 with an optional commercial license. 1.2.0 added the Windows client.
 - Mac client: macOS 13 Ventura or later, universal binary for Intel and Apple silicon. Distributed as a DMG; not notarized by Apple, so the first launch needs "Open Anyway" in System Settings → Privacy & Security.
 - Windows client: Windows 10 (21H2+) and Windows 11, x64. Per-user installer (CopySync-Setup.exe, no admin rights) or portable zip; not code-signed, so SmartScreen needs "More info → Run anyway" once. Runs in the notification area; pasted files are real files usable in Explorer, WeChat and Office. Skips content that password managers mark as sensitive.
 - Server: a single static Go binary for Linux (x86_64, ARM64) or macOS, installed via systemd script or Docker Compose. Ports: 8787/tcp (signaling), 3478/udp (STUN/TURN), 32768–60999/udp (relay).
@@ -20,11 +20,13 @@ Key facts:
 
 ## Docs
 
+- [Website (English)](https://baiyuze.github.io/copysync/en/), [简体中文](https://baiyuze.github.io/copysync/), [日本語](https://baiyuze.github.io/copysync/ja/)
 - [README (English)](https://github.com/baiyuze/copysync/blob/main/README.md): features, installation, architecture, security model, fallbacks
 - [README (中文)](https://github.com/baiyuze/copysync/blob/main/README.zh-CN.md): the same in Simplified Chinese
 - [Server deployment](https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md): systemd, Docker and manual setup
-- [Windows client design (中文)](https://github.com/baiyuze/copysync/blob/main/design/windows-client.md): clipboard formats, file-name compatibility, background process, installer
-- [NAT traversal design (中文)](https://github.com/baiyuze/copysync/blob/main/design/nat-traversal.md): multi-uplink probing, relay-to-direct upgrade, measurements and the NAT lab
+- [Licensing](https://github.com/baiyuze/copysync/blob/main/LICENSING.md): AGPL-3.0 terms and the commercial license; versions 1.2.0 and earlier remain MIT
+- [Windows client design (中文)](https://baiyuze.github.io/copysync/design/windows-client.html): clipboard formats, file-name compatibility, background process, installer
+- [NAT traversal design (中文)](https://baiyuze.github.io/copysync/design/nat-traversal.html): multi-uplink probing, relay-to-direct upgrade, measurements and the NAT lab
 - [Changelog](https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md)
 
 ## Download

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 重新生成 README 与网站用的界面截图：中文界面输出到 docs/assets/screenshots/，
-# 英文界面输出到 docs/assets/screenshots/en/。
+# 英文、日文界面分别输出到 docs/assets/screenshots/en/ 与 ja/。
 #
 #   ./tools/screenshots/render.sh
 #
@@ -16,7 +16,7 @@ trap 'rm -rf "$FONTS"' EXIT
 echo "▶ 准备字体"
 python3 tools/screenshots/prepare_fonts.py "$FONTS"
 
-for lang in zh en; do
+for lang in zh en ja; do
   out=docs/assets/screenshots
   [ "$lang" = zh ] || out="$out/$lang"
 

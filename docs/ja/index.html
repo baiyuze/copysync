@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CopySync：Mac と Windows のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK</title>
+  <meta name="description" content="CopySync は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac と Windows の両方に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントや同じネットワークは不要。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。サーバーは自分で用意し、内容は見えません。無料・オープンソース。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="CopySync：このコンピューターでコピーして、あのコンピューターで貼り付け">
+  <meta property="og:description" content="Mac と Windows に対応。テキスト、画像、ファイル、フォルダを、アカウントやネットワークをまたいで同期。P2P 直接接続、エンドツーエンド暗号化、サーバーはセルフホスト。無料・オープンソース。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:locale:alternate" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://baiyuze.github.io/copysync/#app",
+        "name": "CopySync",
+        "description": "Mac と Windows のコンピューター間でクリップボードとファイルを同期するオープンソースのアプリ。テキスト、画像、ファイル、フォルダを一台でコピーし、もう一台で貼り付けられる。デバイス間は WebRTC で直接つながり DTLS でエンドツーエンド暗号化、つながらないときはユーザーが用意したサーバーの TURN で中継する。",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "macOS 13 以降（Intel と Apple シリコン）、Windows 10、Windows 11（x64）",
+        "softwareVersion": "1.3.0",
+        "datePublished": "2026-10-09",
+        "inLanguage": "ja",
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "JPY"
+        },
+        "downloadUrl": "https://github.com/baiyuze/copysync/releases/latest",
+        "codeRepository": "https://github.com/baiyuze/copysync",
+        "image": "https://baiyuze.github.io/copysync/assets/icon.png",
+        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/ja/history-dark.png",
+        "featureList": [
+          "プレーンテキスト、書式付きテキスト、画像、ファイル、フォルダを同期",
+          "Mac と Windows のあいだで、アカウントやネットワークをまたいで使える",
+          "WebRTC の直接接続、つながらないときは自動で TURN 中継",
+          "DTLS のエンドツーエンド暗号化、ペアリング時に指紋を人が照合",
+          "50 MB まではコピーと同時に送信、それより大きいファイルは必要なときに取り込み",
+          "直近 3 日分の履歴、画像のプレビュー",
+          "表示言語は日本語、英語、簡体字中国語"
+        ],
+        "author": {
+          "@type": "Person",
+          "name": "baiyuze",
+          "url": "https://github.com/baiyuze"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "macOS のユニバーサルクリップボードとの違いは？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync に必要なのは、両方のコンピューターがあなたのサーバーにつながることだけです。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。 2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "サーバーにコピーした内容は見えますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "見えません。直接接続のときデータはサーバーを通りません。中継が必要なときも、サーバーが転送するのは DTLS で暗号化されたパケットです。サーバーはアカウントもコピーした内容も保存しません。コードは公開されているので、ご自身で確かめられます。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "出口が複数ある会社のネットワークでも直接つながりますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "つながります。こうしたネットワークは宛先ごとに出口を選びます。CopySync はひとつのポートから複数のサーバーに問い合わせて出口ごとのアドレスを集め、すべて相手に送り、相手がひとつずつ試します。テストでは、出口が 4 つある会社の Mac と家庭の回線が直接つながりました。相手がポートをランダムに割り当てる NAT の場合は中継になります。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "サーバーは自分で用意する必要がありますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。2 台が同じ LAN にあるならどちらかの Mac でサーバーを動かせば十分で、ネットワークをまたぐ場合はグローバル IP を持つサーバーが 1 台必要です。最小構成のクラウドサーバーで足ります。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Windows に対応していますか？iPhone は？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Windows 10 と Windows 11（x64）に対応し、Mac と相互に使えます。Windows で貼り付けたファイルは本物のファイルなので、エクスプローラーや Office にそのまま貼り付けられます。 iPhone と iPad には対応していません。iOS ではアプリがバックグラウンドでクリップボードを監視できないため、コピーしてすぐ同期することができないからです。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "初めて開くときにシステムに止められるのはなぜ？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "CopySync はまだ Apple の公証を受けておらず、Windows 版もコード署名していません。どちらも毎年費用のかかる証明書が必要です。 Mac では「システム設定 → プライバシーとセキュリティ」でページ下部の「このまま開く」をクリック、Windows では「Windows によって PC が保護されました」で「詳細情報」から「実行」を押してください。どちらも一度だけで済みます。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "大きなファイルはどうなりますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "初期設定では 50 MB までのものはコピーした時点でもう一台に送られ、そのまま貼り付けられます。それより大きいファイルは記録だけを同期し、必要なときに履歴から「このデバイスに取り込む」で転送します。上限は「設定」で変えられます。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "無料ですか？会社で使えますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "無料です。CopySync は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。 クローズドソースの製品に組み込む、改変を公開したくない、ホスティングサービスとして運用する、といった場合は商用ライセンスをご利用ください。"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="./" aria-label="CopySync ホーム"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="ページ内の移動">
+        <a class="wide" href="#how">しくみ</a>
+        <a class="wide" href="#install">インストール</a>
+        <a class="wide" href="#faq">よくある質問</a>
+        <a href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <h1 class="display">こっちでコピーして、<br>あっちで貼り付け。</h1>
+        <p class="lede">Mac と Windows に対応。テキスト、画像、ファイル、フォルダまるごと。同じアカウントも、同じネットワークも要りません。データはデバイス間を直接流れ、自分のサーバーを経由するときも暗号化されたままです。</p>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+        </div>
+        <p class="note">バージョン 1.3.0、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <div class="stage" data-play role="img" aria-label="デモ：MacBook で Command C を押すと、ファイルが一枚の紙になって直接接続で Windows ノートへ飛び、そこで Ctrl V を押して貼り付けます">
+          <figure class="device mac">
+            <div class="screen"><div class="desk">
+              <div class="file"><span class="doc"><span class="lines"><i></i><i></i><i></i></span></span><span class="name">四半期報告_最終版.pptx</span></div>
+              <div class="keys"><kbd>⌘</kbd><kbd>C</kbd></div>
+            </div></div>
+            <div class="base"></div>
+            <figcaption>MacBook</figcaption>
+          </figure>
+          <div></div>
+          <figure class="device win">
+            <div class="screen"><div class="desk">
+              <div class="file"><span class="doc"><span class="lines"><i></i><i></i><i></i></span></span><span class="name">四半期報告_最終版.pptx</span></div>
+              <div class="keys"><kbd>Ctrl</kbd><kbd>V</kbd></div>
+              <div class="taskbar"><i></i><i></i><i></i><i></i><i></i></div>
+            </div></div>
+            <div class="base"></div>
+            <figcaption>Windows ノート</figcaption>
+          </figure>
+          <svg class="arc" aria-hidden="true"><path d=""/></svg>
+          <span class="arc-label" aria-hidden="true">直接接続、エンドツーエンド暗号化</span>
+          <span class="sheet-fly" aria-hidden="true"><span class="lines"><i></i><i></i><i></i></span></span>
+        </div>
+        <button class="replay" type="button">もう一度再生</button>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="history-title">
+      <div class="wrap">
+        <h2 id="history-title">どのデバイスでコピーしたものも、ここに</h2>
+        <p class="intro">履歴には直近 3 日分が残り、いつでもクリップボードに戻せます。画像はクリックでプレビュー。50 MB までのファイルはコピーした時点で届いていて、それより大きいものは必要なときにワンクリックで取り込めます。</p>
+        <figure class="shot">
+          <img src="../assets/screenshots/ja/history-dark.png" width="2112" height="1472" alt="CopySync の履歴画面：MacBook Air と Mac mini から届いたファイル、画像、テキスト。大きなファイルには「このデバイスに取り込む」ボタン">
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="flow-title">
+      <div class="wrap">
+        <h2 id="flow-title">コピーしたあと、何が起きるか</h2>
+        <p class="intro">テキストも画像も、ファイルもフォルダも、同じ道を通ります。</p>
+        <ol class="flow">
+          <li><h3>気づく</h3><p>Mac ではバックグラウンドサービスが短い間隔でクリップボードの変更カウントを確認します。カウントと種類を見るだけなので許可は不要で、確認ダイアログも出ません。Windows ではコピーした瞬間にシステムが知らせます。</p></li>
+          <li><h3>送る</h3><p>テキストはメッセージと一緒に送ります。50 MB までの画像とファイルはその場でストリームとして送り、それより大きいファイルは記録だけを送って、必要になったときに転送します。</p></li>
+          <li><h3>貼り付ける</h3><p>受け取った側はまず内容をローカルに保存してから、クリップボードに入れます。⌘V や Ctrl+V で貼り付けられるのは、手元にある本物のファイルです。</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="why-title">
+      <div class="wrap">
+        <h2 id="why-title">いまある方法では足りない理由</h2>
+        <p class="intro">ユニバーサルクリップボードは同じ Apple ID で、近くにいる必要があります。AirDrop は毎回受け取り操作が要ります。自分宛てにメッセージで送ると手動でダウンロードすることになり、ファイルは他社のサーバーに残ります。Mac と Windows の組み合わせでは、標準の方法はどれも使えません。</p>
+        <div class="block table-scroll">
+          <table class="compare">
+            <caption class="skip">CopySync とほかの方法の比較</caption>
+            <thead><tr><td></td><th scope="col" class="ours">CopySync</th><th scope="col">ユニバーサル<br>クリップボード</th><th scope="col">AirDrop</th><th scope="col">チャットアプリ</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">別々の Apple ID のあいだ</th><td class="yes ours">できる</td><td class="no">できない</td><td class="partial">受け取り操作が必要</td><td class="yes">できる</td></tr>
+              <tr><th scope="row">Mac と Windows のあいだ</th><td class="yes ours">できる</td><td class="no">できない</td><td class="no">できない</td><td class="yes">できる</td></tr>
+              <tr><th scope="row">別のネットワーク（自宅と会社）</th><td class="yes ours">できる</td><td class="no">できない</td><td class="no">できない</td><td class="yes">できる</td></tr>
+              <tr><th scope="row">コピーしてすぐ貼り付け、受け取り操作なし</th><td class="yes ours">できる</td><td class="yes">できる</td><td class="no">できない</td><td class="no">できない</td></tr>
+              <tr><th scope="row">ファイルとフォルダまるごと</th><td class="yes ours">できる</td><td class="partial">不安定</td><td class="yes">できる</td><td class="partial">先に圧縮</td></tr>
+              <tr><th scope="row">前にコピーしたものを探す</th><td class="yes ours">できる</td><td class="no">できない</td><td class="no">できない</td><td class="partial">履歴をさかのぼる</td></tr>
+              <tr><th scope="row">内容が第三者のサーバーを通らない</th><td class="yes ours">通らない</td><td class="yes">通らない</td><td class="yes">通らない</td><td class="no">通る</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <h2 id="how-title">しくみ</h2>
+        <p class="intro">2 台のコンピューターは、暗号化された接続で直接つながります。サーバーの役目はお互いを見つけさせることと、直接つながらないときに中継することだけです。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">CopySync の接続のしかた</title>
+            <desc id="diagram-desc">コンピューター A と B（Mac または Windows）は WebRTC で直接つながります。どちらもシグナリングのためにあなたのサーバーへ接続し、直接接続に失敗したときはサーバーの TURN でデータを中継します。</desc>
+            <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
+            <text class="d-title" x="480" y="64" text-anchor="middle">あなたのサーバー</text>
+            <text class="d-sub" x="480" y="92" text-anchor="middle">シグナリング、STUN、TURN 中継</text>
+            <path class="d-sig" d="M140 210V58H360"/>
+            <path class="d-sig" d="M820 210V58H600"/>
+            <path class="d-relay" d="M196 210V100H360"/>
+            <path class="d-relay" d="M764 210V100H600"/>
+            <text class="d-note" x="210" y="50">シグナリング：接続情報の交換</text>
+            <text class="d-note" x="210" y="128">中継：直接つながらないときだけ</text>
+            <rect class="d-box" x="40" y="210" width="240" height="120" rx="14"/>
+            <text class="d-title" x="160" y="262" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="290" text-anchor="middle">ここでコピー</text>
+            <rect class="d-box" x="680" y="210" width="240" height="120" rx="14"/>
+            <text class="d-title" x="800" y="262" text-anchor="middle">Mac または Windows</text>
+            <text class="d-sub" x="800" y="290" text-anchor="middle">ここで貼り付け</text>
+            <path class="d-direct" d="M280 270H680"/>
+            <text class="d-label" x="480" y="256" text-anchor="middle">WebRTC 直接接続、DTLS 暗号化</text>
+            <text class="d-note" x="480" y="298" text-anchor="middle">データは 2 台のあいだだけを流れる</text>
+            <g class="d-legend" transform="translate(40 372)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">データ（直接）</text>
+              <path class="d-relay" d="M210 0H238"/><text x="248" y="5">データ（中継、予備）</text>
+              <path class="d-sig" d="M470 0H498"/><text x="508" y="5">シグナリング</text>
+            </g>
+          </svg>
+          <ul class="points diagram-text">
+            <li><strong>WebRTC 直接接続、DTLS 暗号化</strong> データは 2 台のあいだだけを流れる</li>
+            <li><strong>あなたのサーバー</strong> シグナリング、STUN、TURN 中継</li>
+            <li>中継：直接つながらないときだけ</li>
+          </ul>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="multi-uplink" aria-labelledby="multi-title">
+      <div class="wrap">
+        <h2 id="multi-title">会社のネットワークでも直接つながる</h2>
+        <p class="intro">2 つの回線を持つ会社や、キャリアの NAT アドレスプールのようなネットワークには出口が複数あり、宛先ごとに出口が変わります。一度調べただけでは出口のひとつしか分からず、中継頼みになります。CopySync はすべての出口を調べ、そのアドレスをすべて相手に伝えます。</p>
+        <div class="cols">
+          <div>
+            <h3>やっていること</h3>
+            <ul class="points">
+              <li><strong>ポートはひとつ。</strong>すべての接続をひとつのローカル UDP ポートで送受信するので、別々のサーバーから得たアドレスがかみ合います。</li>
+              <li><strong>出口をすべて調べる。</strong>そのポートから IP の散らばった 7 台のサーバーに同時に問い合わせ、出口の数だけアドレスを得ます。DNS 汚染されたアドレスは先に除外します。</li>
+              <li><strong>すべて相手に伝える。</strong>相手はひとつずつ試し、実際の出口と合うものがつながります。</li>
+              <li><strong>見た出口を覚えておく。</strong>ポートを書き換えない出口を取りこぼしたときは、「出口の IP ＋ローカルポート」で補います。</li>
+              <li><strong>どちらが先に送るかを決める。</strong>相手のパケットが先に届くとポートをふさいでしまうルーターがあります。片方が先にアドレスを公開し、もう片方はそこへ送ってから自分のアドレスを公開します。再試行では順番を入れ替えます。</li>
+              <li><strong>まず中継、あとで直接。</strong>最初のハンドシェイクが中継になったら、アイドル時にもう一度穴あけを試み、成功すれば直接接続に切り替えます。</li>
+            </ul>
+          </div>
+          <div>
+            <h3>実際のネットワーク構成で検証</h3>
+            <p class="small">NAT 穴あけ実験室では、Linux のネットワーク名前空間と iptables でこれらの構成を組み、CopySync の本物の接続コードをそれぞれで動かします。コミットのたびに自動で実行されます。</p>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th scope="col">構成</th><th scope="col">結果</th></tr></thead>
+                <tbody>
+                <tr><td>出口ひとつ ↔ 家庭用ルーター</td><td>直接</td></tr>
+                <tr><td>出口ふたつ、旧バージョン（対照）</td><td>中継</td></tr>
+                <tr><td>出口ふたつ ↔ 家庭用ルーター</td><td>直接</td></tr>
+                <tr><td>出口よっつ ↔ 家庭用ルーター</td><td>直接</td></tr>
+                <tr><td>出口ふたつ、2 本目を取りこぼし、履歴なし</td><td>中継</td></tr>
+                <tr><td>出口ふたつ、2 本目を取りこぼし、履歴あり</td><td>直接</td></tr>
+                <tr><td>出口ふたつ ↔ 出口ふたつ</td><td>直接</td></tr>
+                <tr><td>出口ふたつ ↔ ポートをランダムに割り当てる NAT</td><td>中継</td></tr>
+                <tr><td>最初はつながらず、あとでネットワークが回復</td><td>中継のあと直接</td></tr>
+                <tr><td>会社のルーターが外からのパケットでポートをふさぐ</td><td>直接</td></tr>
+                <tr><td>家庭用ルーターが外からのパケットでポートをふさぐ</td><td>中継のあと、1 回の再試行で直接</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="small">実測：出口が 4 つある会社の Mac と自宅の Mac は、以前は中継しかできず、サーバーの帯域で 0.6 MB/s に抑えられていました。いまは直接つながり、サーバーに接続してから約 3 秒で確立します。</p>
+            <p class="small">測定の過程、設計の判断、ハマった点は<a href="../design/nat-traversal.html">技術資料</a>（中国語）にまとめています。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="security-title">
+      <div class="wrap">
+        <h2 id="security-title">サーバーにはコピーした内容が見えない</h2>
+        <div class="cols">
+          <ul class="points">
+            <li><strong>サーバーはアカウントも内容も保存しない。</strong>デバイスの身元は Ed25519 の鍵で、デバイス ID は公開鍵から計算されます。サーバーはユーザー表なしで身元を確かめられます。</li>
+            <li><strong>ペアリングでは指紋をあなたが照合する。</strong>両方の画面に同じ 2 行、つまりお互いの公開鍵の指紋が表示されます。サーバーは転送中の公開鍵をすり替えられますが、すり替えれば 2 つの画面が一致しなくなります。この照合が中間者攻撃を防ぐ関門です。</li>
+            <li><strong>その後のメッセージはすべて署名付き。</strong>サーバーがあなたのデバイスになりすますことはできません。直接接続の証明書もハンドシェイク後にもう一度照合し、食い違えばすぐ切断します。</li>
+            <li><strong>中継も暗号文を転送するだけ。</strong>TURN が運ぶのは暗号化済みのパケットです。中継用の認証情報はデバイスごとに発行され、12 時間で失効します。</li>
+          </ul>
+          <figure class="figure-card">
+            <img src="../assets/screenshots/ja/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="ペアリング時の「セキュリティ指紋を確認」ダイアログ。R8NF-2WTC-QL5J が表示され、もう一台の表示と完全に一致するか確かめるよう求めている">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="fallback-title">
+      <div class="wrap">
+        <h2 id="fallback-title">うまくいかないときに起きること</h2>
+        <p class="intro">ネットワークの事情は人それぞれです。ここに挙げたケースはどれも想定済みで、テストがあります。</p>
+        <dl class="fallbacks">
+          <div><dt>2 台が直接つながらない</dt><dd>対称型 NAT や会社のファイアウォールでよく起きます。自動であなたのサーバーの TURN 中継に切り替わり、内容は暗号化されたまま。デバイス一覧には「中継」と表示されます。</dd></div>
+          <div><dt>公開 STUN サーバーにつながらない</dt><dd>中国本土などでは公開 STUN が不安定です。サーバーは STUN を内蔵していて、クライアントはそちらを優先します。</dd></div>
+          <div><dt>先に中継でつながった</dt><dd>中継のハンドシェイクは速く、直接接続より先に決まることがあります。接続後、接続を始めた側がアイドル時にもう一度穴あけを試み、成功すれば直接接続に切り替えます。転送中は邪魔しません。</dd></div>
+          <div><dt>相手がスリープ、切断、再起動した</dt><dd>黙って切れた接続にも気づき、すぐに閉じて再接続します。そのあいだにコピーしたものは記録しておき、つながったら相手の履歴に追加します。相手のいまのクリップボードは上書きしません。</dd></div>
+          <div><dt>サーバーとの接続が切れた</dt><dd>自動で再接続します。間隔は 1 秒から倍々で最大 30 秒、ランダムな揺らぎ付きで、たくさんのデバイスが一斉に再接続しないようにしています。接続状態はアプリにリアルタイムで表示されます。</dd></div>
+          <div><dt>ファイルが大きすぎる</dt><dd>上限を超えるものは記録だけを同期し、必要なときに取り込みます。そのとき元のファイルが消えていれば、あいまいな失敗ではなく、はっきりそう伝えます。</dd></div>
+          <div><dt>プレーンテキストしか受け付けない場所に貼り付ける</dt><dd>Web からコピーした書式付きテキストは HTML とプレーンテキストの両方で書き込むので、どこに貼り付けてもタグが混ざりません。</dd></div>
+          <div><dt>Windows では使えないファイル名</dt><dd>Mac では使えるコロンや疑問符などは、対応する全角文字に置き換えて受け取るので、名前はそのまま読めます。大文字と小文字だけが違う 2 つのファイルが上書きし合うこともありません。</dd></div>
+          <div><dt>パスワードをコピーした</dt><dd>Windows ではパスワードマネージャーがコピーした内容に「記録しない」印が付きます。CopySync はそれを見て飛ばします。同期も履歴への保存もしません。</dd></div>
+          <div><dt>クリップボードの読み取りをまだ許可していない</dt><dd>内容は読みに行きません。読みに行くと、バックグラウンドプロセスが見えないダイアログで止まってしまうからです。アプリが許可を促し、設定へ直接飛べるボタンを出します。</dd></div>
+          <div><dt>バックグラウンドサービスが落ちた</dt><dd>Mac ではシステムの launchd が、Windows では CopySync 自身の監視プロセスが再起動します。10 秒に 1 回までに抑え、暴走はしません。</dd></div>
+          <div><dt>アプリを更新した、または移動した</dt><dd>アプリを開いたときにログイン項目を正しい場所に向け直し、バックグラウンドサービスを新しいバージョンで再起動します。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <h2 id="install-title">インストール</h2>
+        <p class="intro">それぞれのコンピューターにアプリを入れ、両方からアクセスできるサーバーを 1 台用意します。2 台が同じ LAN にあるなら、サーバーはどちらかの Mac で動かせば十分です。</p>
+        <div class="install">
+          <div>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
+            <ol>
+              <li>CopySync.dmg をダウンロードして開き、CopySync を「アプリケーション」にドラッグします。</li>
+              <li>「アプリケーション」から開きます。<span class="aside">初回は「開発元を検証できません」と表示されます。CopySync はまだ Apple の公証を受けていないためです。「システム設定 → プライバシーとセキュリティ」を開き、ページ下部の「このまま開く」をクリックします。必要なのは一度だけです。</span></li>
+              <li>「バックグラウンド同期を有効にする」をクリックし、「設定」でサーバーのアドレス <code>ws://サーバーアドレス:8787/signal</code> を入力して Return を押します。</li>
+              <li>クリップボードの読み取りを許可するか聞かれたら、許可します。</li>
+            </ol>
+            <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+          </div>
+          <div>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+            <ol>
+              <li>CopySync-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。<span class="aside">CopySync はまだコード署名されていないため、「Windows によって PC が保護されました」と表示されます。「詳細情報」を押してから「実行」を押してください。インストーラーを使いたくない場合は<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">ポータブル版</a>もあります。</span></li>
+              <li>CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ウィンドウを閉じても、画面右下の通知領域で動き続けます。</li>
+              <li>「設定」でサーバーのアドレスを入力して Enter を押します。ファイアウォールに聞かれたら許可します。</li>
+            </ol>
+            <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+          </div>
+          <div>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>サーバー</h3>
+            <p class="small">Linux なら何でも可、root 権限が必要です。ARM の場合は <code>amd64</code> を <code>arm64</code> に置き換えます。</p>
+            <div class="code">
+              <button class="copy" type="button" data-done="コピーしました">コピー</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh グローバルIP</code></pre>
+            </div>
+            <p class="small">スクリプトは起動時に立ち上がる systemd サービスを登録し、最後にアプリへ入力するアドレスを表示します。ファイアウォールやセキュリティグループで次のポートを開けてください。</p>
+            <table>
+              <thead><tr><th scope="col">ポート</th><th scope="col">用途</th></tr></thead>
+              <tbody>
+                <tr><td>8787/tcp</td><td>シグナリング</td></tr>
+                <tr><td>3478/udp</td><td>STUN と TURN</td></tr>
+                <tr><td>32768–60999/udp</td><td>中継用ポート</td></tr>
+              </tbody>
+            </table>
+            <p class="small">Docker でも動かせます。<a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">サーバーの構築手順</a>（英語）をご覧ください。</p>
+          </div>
+        </div>
+        <p class="pairing"><strong>ペアリング：</strong>一台で「デバイス → デバイスを追加」を開いて 6 桁のコードを表示し、もう一台で入力します。両方の画面に同じ 2 行の指紋が表示されたら確定します。Mac と Windows、Windows 同士でも同じ手順です。</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="specs-title">
+      <div class="wrap">
+        <h2 id="specs-title">仕様</h2>
+        <div class="table-scroll">
+          <table class="specs">
+            <tbody>
+            <tr><th scope="row">バージョン</th><td>1.3.0（<time datetime="2026-10-09">2026 年 10 月 9 日</time>公開）</td></tr>
+            <tr><th scope="row">Mac アプリ</th><td>macOS 13 Ventura 以降。Intel と Apple シリコンのユニバーサルバイナリで Rosetta 不要。ダウンロードは約 45 MB</td></tr>
+            <tr><th scope="row">Windows アプリ</th><td>Windows 10（21H2 以降）と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 21 MB</td></tr>
+            <tr><th scope="row">サーバー</th><td>Linux（x86_64 または ARM64、systemd または Docker）、macOS でも動作。メモリは約 15 MB</td></tr>
+            <tr><th scope="row">表示言語</th><td>日本語、英語、簡体字中国語。初期設定はシステムに合わせ、「設定」で切り替え可能</td></tr>
+            <tr><th scope="row">同期する内容</th><td>プレーンテキスト、書式付きテキスト、画像とスクリーンショット、ファイル、フォルダ。種類ごとにオフにできる</td></tr>
+            <tr><th scope="row">転送</th><td>WebRTC データチャネル。直接接続を優先し、つながらなければ TURN で中継。複数の出口があるネットワークでは出口ごとに調査。ファイルは tar + zstd でストリーム転送</td></tr>
+            <tr><th scope="row">暗号化と身元</th><td>DTLS によるエンドツーエンド暗号化。デバイスの身元は Ed25519 の鍵。シグナリングのメッセージはすべて署名付き</td></tr>
+            <tr><th scope="row">ペアリング</th><td>5 分間有効な 6 桁のコード。0/O や 1/I のような紛らわしい文字は使わない。指紋は人が照合</td></tr>
+            <tr><th scope="row">自動同期の上限</th><td>初期値 50 MB、1 MB〜1 GB で調整可能</td></tr>
+            <tr><th scope="row">履歴の保存期間</th><td>初期値 3 日、1 時間〜30 日で調整可能。期限が来たら自動で削除</td></tr>
+            <tr><th scope="row">実測の速度</th><td>LAN の直接接続で 20 MB のファイルを約 330 ミリ秒で転送、チェックサム一致</td></tr>
+            <tr><th scope="row">技術スタック</th><td>バックグラウンドサービスとサーバーは Go（Windows では Go から Win32 を直接呼び出し）、アプリは Flutter（Mac と Windows で同じコード）、メッセージ定義は Protocol Buffers</td></tr>
+            <tr><th scope="row">ライセンス</th><td>GNU AGPL-3.0。クローズドソースでの利用などには<a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>を用意</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">よくある質問</h2>
+        <div class="faq">
+          <details>
+            <summary>macOS のユニバーサルクリップボードとの違いは？</summary>
+            <div class="answer"><p>ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync に必要なのは、両方のコンピューターがあなたのサーバーにつながることだけです。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。</p><p>2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。</p></div>
+          </details>
+          <details>
+            <summary>サーバーにコピーした内容は見えますか？</summary>
+            <div class="answer"><p>見えません。直接接続のときデータはサーバーを通りません。中継が必要なときも、サーバーが転送するのは DTLS で暗号化されたパケットです。サーバーはアカウントもコピーした内容も保存しません。コードは公開されているので、ご自身で確かめられます。</p></div>
+          </details>
+          <details>
+            <summary>出口が複数ある会社のネットワークでも直接つながりますか？</summary>
+            <div class="answer"><p>つながります。こうしたネットワークは宛先ごとに出口を選びます。CopySync はひとつのポートから複数のサーバーに問い合わせて出口ごとのアドレスを集め、すべて相手に送り、相手がひとつずつ試します。テストでは、出口が 4 つある会社の Mac と家庭の回線が直接つながりました。相手がポートをランダムに割り当てる NAT の場合は中継になります。</p></div>
+          </details>
+          <details>
+            <summary>サーバーは自分で用意する必要がありますか？</summary>
+            <div class="answer"><p>はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。2 台が同じ LAN にあるならどちらかの Mac でサーバーを動かせば十分で、ネットワークをまたぐ場合はグローバル IP を持つサーバーが 1 台必要です。最小構成のクラウドサーバーで足ります。</p></div>
+          </details>
+          <details>
+            <summary>Windows に対応していますか？iPhone は？</summary>
+            <div class="answer"><p>Windows 10 と Windows 11（x64）に対応し、Mac と相互に使えます。Windows で貼り付けたファイルは本物のファイルなので、エクスプローラーや Office にそのまま貼り付けられます。</p><p>iPhone と iPad には対応していません。iOS ではアプリがバックグラウンドでクリップボードを監視できないため、コピーしてすぐ同期することができないからです。</p></div>
+          </details>
+          <details>
+            <summary>初めて開くときにシステムに止められるのはなぜ？</summary>
+            <div class="answer"><p>CopySync はまだ Apple の公証を受けておらず、Windows 版もコード署名していません。どちらも毎年費用のかかる証明書が必要です。</p><p>Mac では「システム設定 → プライバシーとセキュリティ」でページ下部の「このまま開く」をクリック、Windows では「Windows によって PC が保護されました」で「詳細情報」から「実行」を押してください。どちらも一度だけで済みます。</p></div>
+          </details>
+          <details>
+            <summary>大きなファイルはどうなりますか？</summary>
+            <div class="answer"><p>初期設定では 50 MB までのものはコピーした時点でもう一台に送られ、そのまま貼り付けられます。それより大きいファイルは記録だけを同期し、必要なときに履歴から「このデバイスに取り込む」で転送します。上限は「設定」で変えられます。</p></div>
+          </details>
+          <details>
+            <summary>無料ですか？会社で使えますか？</summary>
+            <div class="answer"><p>無料です。CopySync は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。</p><p>クローズドソースの製品に組み込む、改変を公開したくない、ホスティングサービスとして運用する、といった場合は<a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>をご利用ください。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">2 台のコンピューター、<br>ひとつのクリップボード。</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+        </div>
+        <p class="note">バージョン 1.3.0、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <a class="source" href="https://github.com/baiyuze/copysync">GitHub でソースコードを見る</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync は GNU AGPL-3.0 のオープンソースです。商用ライセンスもあります。</p>
+      <nav aria-label="フッターのリンク">
+        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>
+        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+      </nav>
+      <nav aria-label="言語">
+        <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js" defer></script>
+</body>
+</html>

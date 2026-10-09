@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>多出口网络的 NAT 打洞：CopySync 技术方案</title>
+  <meta name="description" content="状态：已实现。多出口探测随 1.1.0 发布（2026-10-08）；中转后换直连、连接失效检测与补发随 1.1.1 发布（2026-10-09）；谁先发包随 1.1.2 发布（2026-10-09）">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/design/nat-traversal.html">
+  <meta name="theme-color" content="#141416">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="页面导航">
+        <a href="https://github.com/baiyuze/copysync/blob/main/design/nat-traversal.md">在 GitHub 上查看</a>
+        <a href="https://github.com/baiyuze/copysync">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <article class="article">
+      <p class="crumb"><a href="../">CopySync</a> 的技术方案</p>
+      <h1>多出口网络的 NAT 打洞</h1>
+<blockquote><p>状态：已实现。多出口探测随 1.1.0 发布（2026-10-08）；中转后换直连、连接失效检测与补发随 1.1.1 发布（2026-10-09）；谁先发包随 1.1.2 发布（2026-10-09）</p><p>代码：<code>client-core/internal/transport/p2p/egress*.go</code>、<code>manager.go</code>、<code>peer.go</code>；补发在 <code>client-core/internal/sync/backlog.go</code></p><p>验证：<code>tools/natlab/</code>（NAT 打洞实验室，CI 中运行）</p></blockquote>
+<nav class="toc" aria-label="目录"><strong>目录</strong><ul><li><a href="#一-问题">一、问题</a></li><li><a href="#二-测量">二、测量</a></li><li><a href="#三-方案">三、方案</a></li><li><a href="#四-能覆盖哪些场景">四、能覆盖哪些场景</a></li><li><a href="#五-验证">五、验证</a></li><li><a href="#六-踩过的坑">六、踩过的坑</a></li><li><a href="#七-局限与后续">七、局限与后续</a></li></ul></nav>
+<h2 id="一-问题">一、问题</h2>
+<p>两台 Mac 配对成功，同步也正常，但设备列表里一直显示「中转」：数据全部经服务器转发，速度被服务器带宽卡在约 0.6 MB/s。</p>
+<p>两台设备分别在公司和家里。逐一排查后确认，打不通的根源是公司网络有多个出口。</p>
+<h2 id="二-测量">二、测量</h2>
+<h3 id="公司这台">公司这台</h3>
+<p>从同一个本地 UDP 端口，向分布在不同网络的多台 STUN 服务器发 Binding 请求，记录每台服务器看到的本机公网地址。实测有 4 个不同的出口 IP，下文以出口 A–D 代称（公网地址不公开）：</p>
+<div class="table-scroll"><table><thead><tr><th scope="col">出口</th><th scope="col">落在这个出口上的服务器</th><th scope="col">公网端口</th></tr></thead><tbody><tr><td>出口 A</td><td>自己的服务器（百度云北京）、Twilio</td><td>与本地端口相同</td></tr><tr><td>出口 B</td><td>B 站、Google、Nextcloud</td><td>与本地端口相同</td></tr><tr><td>出口 C</td><td>Cloudflare、FreeSWITCH</td><td>改写，但对不同目标相同</td></tr><tr><td>出口 D</td><td>阿里云上的服务、有时是 Google（经 Wi-Fi 时）</td><td>改写</td></tr></tbody></table></div>
+<p>另外两组对照实验：</p>
+<ul><li><strong>出口只按目标 IP 选择</strong>。向同一台服务器的 8 个不同端口探测，全部从同一个出口出去、得到同一个公网端口。</li><li><strong>同一线路上映射固定</strong>。同一本地端口发往 Cloudflare 与 Twilio，看到的都是出口 C 上的同一个端口。</li></ul>
+<p>结论：公司网络等于 4 个并列的、各自「端点无关映射」的 NAT，按目标 IP 选择走哪一个。单看每一条都很好打洞，难点只在于「发往对端的包走哪一条」事先不知道。</p>
+<p>公司路由器不支持 UPnP 与 NAT-PMP，也没有 IPv6。</p>
+<h3 id="家里这台">家里这台</h3>
+<div class="table-scroll"><table><thead><tr><th scope="col">项目</th><th scope="col">结果</th></tr></thead><tbody><tr><td>国内目标</td><td>同一本地端口发往不同服务器，公网地址与端口都相同：端点无关映射，好打洞</td></tr><tr><td>国外目标</td><td>经本机的代理出去，与 CopySync 无关</td></tr><tr><td>路由器</td><td>支持 UPnP，但它自己的外网地址与服务器看到的地址不同：运营商还有一层 NAT，在路由器上映射端口没用</td></tr><tr><td>IPv6</td><td>只有内网地址</td></tr></tbody></table></div>
+<h3 id="旧版本为什么打不通">旧版本为什么打不通</h3>
+<ol><li><strong>只问了一台服务器</strong>。客户端只从自己的服务器得知本机公网地址，即出口 A，也只把它告诉对端。发往对端的包按目标 IP 很可能从另外三个出口之一出去，对端收到的源地址与告诉它的不一致，被它的路由器当作陌生来源丢弃。</li><li><strong>多配几台 STUN 也没用</strong>。pion 每问一台 STUN 服务器都单独开一个本地端口，问到的地址只对那个端口成立，互相用不上。</li></ol>
+<h2 id="三-方案">三、方案</h2>
+<h3 id="1-所有连接共用一个本地端口">1. 所有连接共用一个本地端口</h3>
+<p><code>p2p.Manager</code> 启动时打开一个 UDP 端口，用 pion 的 <code>UniversalUDPMux</code> 包装，交给所有 <code>PeerConnection</code>（<code>SettingEngine.SetICEUDPMux</code>）。之后本机的所有连通性检查都从这个端口收发，于是「这个端口在每条线路上的公网地址」是一组固定、可知的值。</p>
+<p>信令服务器下发的 STUN 地址不再交给 pion，改由本端在共享端口上探测；TURN 照常交给 pion 用于中转。打不开端口时退回 pion 的默认做法。</p>
+<h3 id="2-探测每个出口">2. 探测每个出口</h3>
+<p>在共享端口上并发探测一组 IP 分散的服务器：信令服务器下发的 STUN，加上内置的公共服务器（B 站、Cloudflare、Twilio、Nextcloud、Google、FreeSWITCH）。实测 7 台服务器覆盖了公司全部出口。</p>
+<ul><li><strong>按 IP 去重</strong>：出口只按目标 IP 选择，同一 IP 的多个域名或端口探多少次都落在同一个出口。</li><li><strong>过滤不可能是公网 STUN 的地址</strong>：实测有域名被 DNS 污染到 <code>192.0.2.42</code>；代理软件的 fake-ip 常用 <code>198.18.0.0/15</code>。这些地址直接丢弃，不当成出口。</li><li><strong>域名并发解析，每台 1.5 秒超时</strong>。1.1.0 逐个解析域名，一台 DNS 慢就拖住整轮，实测整轮约 1.6 秒；1.1.1 改为并发后在 0.2 秒以内。启动时、服务器配置变化时、每 5 分钟、本机网络变化时、尝试换直连之前各探测一轮；探测进行中又被触发，结束后补一轮，不并发。</li></ul>
+<h3 id="3-把所有出口地址告诉对端">3. 把所有出口地址告诉对端</h3>
+<p>每个出口的公网地址作为一条 srflx candidate，在 offer 或 answer 之后经信令发给对端，最多 8 条。对端为每条建立 candidate pair 做连通性检查，与实际出口吻合的那一条能打通。</p>
+<ul><li>优先级按 RFC 8445 计算，实测地址排在推算地址之前。</li><li>会改写端口的线路，探测拿到的就是这个端口在该线路上的真实映射，不需要猜。</li><li>首轮探测还没结束时最多等 4 秒，免得刚上线就发一份空结果。这是在发出 offer/answer 之后的后台里等，不耽误握手，但要短于中转的等待时限。</li></ul>
+<h3 id="4-记住见过的出口">4. 记住见过的出口</h3>
+<p>某一轮的探测服务器可能恰好都没落到某条线路上（实测出口 D 就时有时无）。本端按「本机各网卡的 IPv4 地址」区分网络，记下每个网络见过的出口 IP 及其是否改写端口，保存 7 天（<code>~/Library/Application Support/CopySync/egress.json</code>）。</p>
+<p>不改写端口的线路，地址就是「出口 IP + 本地端口」，这一轮没探测到也可以推算出来补发给对端；会改写端口的线路无法推算，不补。</p>
+<h3 id="5-优先直连">5. 优先直连</h3>
+<p>中转路径经服务器，握手往往比直连快。若不加约束，常常在直连打通之前就选中了中转，之后不再更换。中转路径要等一段时间才允许被选中（<code>SetRelayAcceptanceMinWait</code>）：1.1.0 是 3 秒，1.1.1 放宽到 5 秒，见第 8 节。</p>
+<h3 id="6-两端显示一致">6. 两端显示一致</h3>
+<p>只有发送方能确定自己的数据是否走 TURN：对端经中转发来的包，在本端看来可能只是一个普通的 peer-reflexive 地址。连接就绪后两端经控制通道交换 <code>LinkInfo{relayed}</code>，任一端经中转，两端都显示「中转」（1.0.2 引入）。</p>
+<h3 id="7-隐私开关与诊断">7. 隐私开关与诊断</h3>
+<ul><li>设置「用公共服务器探测网络出口」，默认开启。公共 STUN 服务器能看到本机公网 IP，与任何 WebRTC 应用相同，看不到内容。关闭后只用自己的服务器探测。配置字段 <code>only_own_stun</code> 刻意设计为「关闭」语义：旧版界面不发这个字段时，默认值 false 不会把功能误关。</li><li><code>copysync-cli nat</code>（后台接口 <code>GetNetwork</code>）显示打洞端口、每个出口的地址与来源，以及各设备当前走直连还是中转。</li></ul>
+<h3 id="8-落到中转后-再试直连-1-1-1">8. 落到中转后，再试直连（1.1.1）</h3>
+<p><strong>问题。</strong>1.1.0 实机验收直连之后约 10 分钟，家里那台重启了后台服务，重连后变成了中转，之后一直是中转：</p>
+<pre><code>23:19:42  P2P 连接状态  direct
+23:29:01  P2P 连接状态  offline      家里那台断开
+23:29:06  P2P 连接状态  connecting   它重新上线，本端发起握手
+23:29:10  P2P 连接状态  relay</code></pre>
+<p>这是一场赛跑。家里那台刚启动，要先探测完出口才能把出口地址发过来，而它访问部分公共 STUN 要经过代理，探测慢。出口地址到达之前，3 秒的中转等待时限已到，中转被选中。pion 选定 candidate 对之后不会再换，于是整个连接期间都走中转，哪怕直连其实打得通。</p>
+<p><strong>做法。</strong></p>
+<ol><li><strong>缩短探测、放宽等待</strong>：域名并发解析，整轮探测从约 1.6 秒降到 0.2 秒以内；中转等待从 3 秒放宽到 5 秒，比等待出口地址的上限（4 秒）长。</li><li><strong>中转时用 ICE 重启再打一次洞</strong>：连接以中转就绪后，由发起连接的一方（不礼让方，两端规则一致，不会同时发起）安排一次尝试：先重新探测出口，再发一个 <code>ICERestart</code> 的 offer。两端重新收集地址、同时再打一次洞。打通就换成直连；仍打不通，还是落回中转，下次隔得更久再试：10 秒、30 秒、2 分钟、5 分钟、15 分钟，之后每 15 分钟一次。</li><li><strong>只在空闲时重启</strong>：有数据流未关闭，或 10 秒内有过消息往来，就推迟。重启期间 pion 会清掉选中的 candidate 对，发出的数据暂时丢弃，由 SCTP 重传补上：连接不断、DTLS 与数据通道不变，只停顿几秒，但仍不该在传文件时做。</li></ol>
+<p><strong>ICE 重启要处理的细节：</strong></p>
+<ul><li><strong>对端不能把它当成新握手</strong>。应答方收到 offer 时，若连接已就绪且 DTLS 证书指纹没变，就是对端在重启 ICE：状态保持直连/中转，不打回「连接中」，也不启动 30 秒的握手超时，改由一个「重启 30 秒内没恢复就重置连接」的计时兜底（重启用的 offer 或 answer 若在信令里丢了，ICE 会一直停在检查中，自己不会失败）。</li><li><strong>新一代 candidate 不能早于描述发出</strong>。生成 offer/answer 时 pion 就开始收集地址，candidate 可能抢在描述之前发出；初次握手时对端会先缓存，重启时对端手里还是旧的远端描述，新 candidate 的 ufrag 对不上，pion 会直接丢弃。现在生成描述期间收集到的 candidate 先攒着，描述发出后再发。</li><li><strong>信令不保序，接收端也要兜底</strong>。candidate 的 ufrag 与当前远端描述对不上时，先缓存起来，设好新的远端描述后再加；缓存里混进的旧一代 candidate，补加时由 pion 按 ufrag 丢弃。</li><li><strong>显示要能从「中转」改回「直连」</strong>。1.0.2 的 <code>LinkInfo</code> 只会把状态改成中转。现在两端的视角合起来决定显示：重启后两端各自重新判断，再互发一次 <code>LinkInfo</code>，都不经中转就改回直连。</li></ul>
+<p>pion 4.4 也带有自动续提名（renomination），能不重启就换线路，但要求两端都开启，对端是旧版本时不起作用。ICE 重启是标准做法；对端是 1.1.0 时，按代码逻辑也能配合：它会把重启的 offer 当成新握手，状态短暂显示「连接中」，随后照常恢复。这一点没有单独测试，两台都升级最稳妥。</p>
+<h3 id="9-发现失效的连接-补发没送达的内容-1-1-1">9. 发现失效的连接，补发没送达的内容（1.1.1）</h3>
+<p><strong>问题。</strong>1.1.1 开发期间又遇到一次：家里那台断线后，本端一直以为连接还在，此后复制的 6 个文件全部「发」进了一条死连接，对方一个也没收到，日志却记着「内容已发送」。三处缺陷叠在一起：</p>
+<ol><li>pion 报告连接「失败」或「已关闭」后，本端只把状态改成离线，没有关闭连接。<code>Connect</code> 看到连接对象还在就直接返回，重连巡检因此永远重连不上。</li><li>控制通道在连接失败后仍显示「打开」，消息照样写进去，发送不报错。</li><li>推送文件时，等发送缓冲排空的 60 秒超时到了也按成功处理。</li></ol>
+<p><strong>做法。</strong></p>
+<ul><li>连接进入「失败」或「已关闭」就关闭清理，交给重连巡检重建。本端主动关闭、或已被新连接替换的旧连接发来的迟到状态一律忽略，不影响新连接。</li><li>对端重建了连接（例如重启了后台服务）时，它发来的 offer 带着新的 DTLS 证书。本端发现指纹变了就丢弃旧连接、新建一个应答，不在旧连接上协商到超时。</li><li>连接不在直连/中转状态时，发送一律返回「未连接」。缓冲排不空按失败处理。</li><li><strong>补发</strong>：同步引擎不再「广播一次了事」，而是逐台设备发送。没送达的（连不上、推送中途断开）记进该设备的待补发队列，连接建立或恢复时补发。队列在内存里，每台设备最多 20 条、24 小时内的；已删除的记录跳过。补发的 offer 带 <code>backlog</code> 标记，对端只记进复制记录，不写进剪贴板：对方此刻剪贴板里的内容比这些旧内容更新。</li></ul>
+<h3 id="10-谁先发包-1-1-2">10. 谁先发包（1.1.2）</h3>
+<p><strong>问题。</strong>1.1.1 装上之后，本机重启时 1～3 秒就直连；家里那台一重启，就落到中转，之后几次 ICE 重启也换不回直连：</p>
+<pre><code>00:28:00.185  P2P 连接状态  connecting   家里那台刚重启上线
+00:28:05.947  P2P 连接状态  relay
+00:28:15.947  当前经中转，尝试换成直连  attempt=1
+00:28:51.411  当前经中转，尝试换成直连  attempt=2
+00:30:16.195  信令已连接                 本机重启
+00:30:17.363  P2P 连接状态  direct</code></pre>
+<p>临时打开 pion 的 ICE 日志对比成功的那次：本机往家里那台的地址发出第一个包，65 毫秒后才收到对方的第一个包，本机先发。失败的几次正好相反：</p>
+<ul><li>家里那台刚重启时，本机的出口地址早已探测好，随 offer 一起发过去；对方一收到就开始往这些地址发包。本机要等对方的 answer 和出口地址经服务器绕回来，才能往对方发包，晚了一个信令来回。</li><li>ICE 重启也是这个顺序：本机发出重启的 offer 和出口地址，对方先发包。</li><li>本机重启时，出口要现探测（几百毫秒），出口地址晚于 offer 发出，本机反而先发包，所以总能直连。</li></ul>
+<p><strong>根因。</strong>谁的包先到，谁的路由器就先收到一个「陌生来源」的包。公司路由器没有丢弃它，而是留下了一条连接记录，占住了「出口地址:端口 ↔ 对方地址:端口」这一对。本机随后往同一个对方地址发包时，源端口与这条记录冲突，路由器只好换一个端口；事先告诉对方的地址就对不上了，对方的包也一直撞在那条记录上。这条记录要在对方停止发包 30 秒左右后才过期，而每次重启对方又先发包，于是一直打不通。家里的路由器（运营商级 NAT）直接丢弃这类包，不受影响。</p>
+<p>NAT 实验室起初没有复现，是因为模拟路由器都丢弃外来的新连接（第六节「踩过的坑」里那条），而且实验室里信令没有延迟，两端几乎同时发包。去掉公司侧路由器的丢弃规则、给信令加上 80 毫秒延迟后，旧代码稳定落到中转，后续的重启也都失败；连探测服务器看到的公网端口都被挤得变了，与实测公司网络里出口 C、D 端口忽变的现象一致。</p>
+<p><strong>做法。</strong>让「先发包」由规则决定，而不是靠运气：</p>
+<ul><li>等待的一方先不公布出口地址，等收到对方本轮的出口地址、本端发往那里的包已经发出（再留 200 毫秒），才公布自己的。这样本端的路由器先有一条本端发起的记录，对方的包回来正好对上；先收到陌生包的是对方的路由器。最多等 3 秒，对方是没有出口地址的旧版本时照常发出。</li><li>初次握手由发起方等。用户这一对设备里发起方恰好是公司那台，初次握手就能打通。</li><li>若先收到包的那一侧路由器才是会占端口的，初次握手会失败。所以换直连的重试里两种顺序轮流用：第一次重试请应答方等（<code>SdpOffer.answerer_waits</code>），第二次换回发起方等，依此类推。哪一侧的路由器有这个毛病，最多一次重试就能避开；两侧都有就只能中转。</li><li>「出口地址」靠格式识别：出口探测生成的 srflx candidate 不带 ufrag 扩展，pion 自己收集的都带。</li></ul>
+<h3 id="代码位置">代码位置</h3>
+<div class="table-scroll"><table><thead><tr><th scope="col">文件</th><th scope="col">内容</th></tr></thead><tbody><tr><td><code>p2p/egress.go</code></td><td>探测、地址过滤、srflx candidate 生成</td></tr><tr><td><code>p2p/egress_history.go</code></td><td>出口历史与推算</td></tr><tr><td><code>p2p/manager.go</code></td><td>共享端口、探测时机、把地址交给每个连接</td></tr><tr><td><code>p2p/peer.go</code></td><td>发送出口地址（含谁先发包）、中转等待、<code>LinkInfo</code>、ICE 重启换直连、失效连接的清理</td></tr><tr><td><code>sync/backlog.go</code></td><td>逐台发送、待补发队列、连接恢复后补发</td></tr><tr><td><code>server/relay/turn.go</code></td><td>TURN 可绑定指定 IP（<code>ListenIP</code>），实验室需要</td></tr></tbody></table></div>
+<h2 id="四-能覆盖哪些场景">四、能覆盖哪些场景</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">本端</th><th scope="col">对端</th><th scope="col">结果</th></tr></thead><tbody><tr><td>单出口</td><td>单出口</td><td>直连</td></tr><tr><td>多出口（按目标 IP 选）</td><td>单出口</td><td>直连</td></tr><tr><td>多出口</td><td>多出口</td><td>直连（实验室验证；能否成立取决于两边线路组合，属于尽力而为）</td></tr><tr><td>任意</td><td>端口随机分配的 NAT</td><td>中转</td></tr><tr><td>任意</td><td>UDP 被拦截</td><td>中转</td></tr><tr><td>同一局域网</td><td>—</td><td>直连</td></tr></tbody></table></div>
+<p>只要多出口的一侧升级，就能与旧版本的对端直连：新增的只是标准的 srflx candidate，旧版本照常处理。</p>
+<h2 id="五-验证">五、验证</h2>
+<h3 id="单元测试与集成测试">单元测试与集成测试</h3>
+<p><code>p2p/egress_test.go</code>：解析服务器地址；过滤污染地址；同一出口被多台服务器看到时归并；区分改写端口与不改写端口；按历史补出口、换网络不串用、过期失效；生成的 candidate 能被 pion 解析，且实测地址优先级高于推算地址。</p>
+<p><code>p2p/egress_integration_test.go</code>：起一台本机 STUN 服务，验证管理器在共享端口上完成探测，把出口地址作为 srflx candidate 发给对端，连接照常建立。</p>
+<p><code>p2p/upgrade_test.go</code>（1.1.1）：ICE 重启期间两端状态一直是直连、重启中发出的消息照样送达；中转时发起方自己重启并改回直连，礼让方不主动重启；对端换了证书时本端重建连接（去掉这个处理，测试会卡在「连接中」）；连接断开时发送报错。信令桩异步、不保序地投递，比真实服务器更苛刻。<code>TestEgressOrder</code>（1.1.2）核对出口地址的收发顺序：初次握手发起方先收到对方的再发自己的，请应答方等的重启反过来；去掉等待，这个测试会失败。</p>
+<p><code>sync/backlog_test.go</code>（1.1.1）：连不上的设备在连接恢复后按复制先后收到补发、带补发标记，已送达的不重复；太旧的、已删除的不补发，补发途中又断开的留到下次；收到补发的文件不写进剪贴板。</p>
+<h3 id="nat-打洞实验室">NAT 打洞实验室</h3>
+<p><code>tools/natlab/run.sh</code> 用 Linux 网络命名空间与 iptables 搭出真实拓扑，<code>client-core/cmd/natlab</code> 用 CopySync 真实的 P2P 代码扮演两台设备：</p>
+<pre><code>[a] 192.168.10.2 ── [rA] 出口 10.255.0.11–14 ──┐
+                                               [inet] 信令  TURN  STUN×4
+[b] 192.168.20.2 ── [rB] 出口 10.254.0.21–22 ──┘</code></pre>
+<p>rA 用 SNAT 规则按目标地址选出口，还原公司网络；rB 还原家用路由器或端口随机分配的 NAT。两台路由器都丢弃外网主动发起的新连接，与真实路由器一致（原因见「踩过的坑」）。</p>
+<div class="table-scroll"><table><thead><tr><th scope="col">场景</th><th scope="col">预期</th><th scope="col">结果</th></tr></thead><tbody><tr><td>单出口 ↔ 家用路由器</td><td>直连</td><td>通过</td></tr><tr><td>两个出口，旧版本（对照）</td><td>中转</td><td>通过：复现了原问题</td></tr><tr><td>两个出口 ↔ 家用路由器</td><td>直连</td><td>通过</td></tr><tr><td>四个出口 ↔ 家用路由器</td><td>直连</td><td>通过</td></tr><tr><td>两个出口，第二条没探测到，无历史</td><td>中转</td><td>通过</td></tr><tr><td>两个出口，第二条没探测到，有历史</td><td>直连</td><td>通过</td></tr><tr><td>两个出口 ↔ 两个出口</td><td>直连</td><td>通过</td></tr><tr><td>两个出口 ↔ 端口随机分配的 NAT</td><td>中转</td><td>通过</td></tr><tr><td>一开始打不通，8 秒后网络恢复（1.1.1）</td><td>先中转，随后换成直连</td><td>通过</td></tr><tr><td>公司路由器会为外来的包占住端口，信令延迟 80 毫秒（1.1.2）</td><td>直连（初次握手即打通）</td><td>通过；1.1.1 在这里落到中转，重试也失败</td></tr><tr><td>家用路由器会为外来的包占住端口，信令延迟 80 毫秒（1.1.2）</td><td>先中转，第一次重试换对方先发包后直连</td><td>通过</td></tr></tbody></table></div>
+<p>最后一个场景让家用路由器开头 8 秒不放行发往公司出口的 UDP，第一次握手只能落到中转；放开后，脚本还要求日志里确实出现了「中转 → 尝试换成直连」，排除一开始就碰巧直连的情况。</p>
+<p>本地运行：<code>./tools/natlab/docker.sh</code>（macOS 上在特权容器里跑；国内网络加 <code>APK_MIRROR=mirrors.aliyun.com</code>）。CI 的 <code>natlab</code> 任务在每次提交时运行。</p>
+<h3 id="实机验收">实机验收</h3>
+<p>公司这台（4 个出口）升级到 1.1.0，家里那台仍是 1.0.2：</p>
+<pre><code>23:19:40.083  信令已连接
+23:19:41.718  出口探测完成  B:64778  C:17820  A:64778
+23:19:42.884  P2P 连接状态  direct</code></pre>
+<p>连上信令后约 3 秒建立直连。改造前同一对设备只能中转。</p>
+<p>公司这台升级到 1.1.1 之后：</p>
+<pre><code>00:12:14.666  信令已连接
+00:12:14.837  出口探测完成  C:19735  B:49454  D:60103  A:49454
+00:12:18.127  P2P 连接状态  direct</code></pre>
+<p>探测在连上信令后 0.17 秒完成（1.1.0 约 1.6 秒），4 条线路全部探到。</p>
+<h2 id="六-踩过的坑">六、踩过的坑</h2>
+<ul><li><strong>pion 为每台 STUN 服务器单独开端口。</strong>这是多配 STUN 服务器也打不通的原因，也是改用共享端口的出发点。</li><li><strong>单靠本端判断「是否中转」会出错。</strong>一端经 TURN 发送时，另一端看到的源地址可能是 peer-reflexive 地址，并不标为 relay。这曾导致两台设备一台显示直连、一台显示中转，靠两端交换 <code>LinkInfo</code> 解决。</li><li><strong>实验室路由器必须丢弃外网主动发起的新连接。</strong>两端同时打洞时，对方的包可能先到达本端路由器。若放行到路由器本机，Linux conntrack 会为它建一条「未应答」记录；随后本端往外发时源端口与之冲突，SNAT 只好换一个端口，事先告诉对端的地址就失效了。真实路由器的防火墙直接丢弃这类包，被丢弃的包不会留下连接记录。没加这条规则时，连最简单的单出口场景都会误判为打不通。</li><li><strong>公共 STUN 域名可能被污染。</strong><code>stun.syncthing.net</code> 在测试网络里被解析到 <code>192.0.2.42</code>。不过滤的话，要么白等超时，要么被当成一个出口。</li><li><strong>实验室场景要互相隔离。</strong>出口历史文件跨场景残留，曾让「无历史」场景意外直连。这反过来也说明历史推算确实生效。</li><li><strong>pion 选定 candidate 对后不再更换。</strong>一次握手输给中转，整个连接期间都是中转。等待时限只能降低输的概率，要补救得靠 ICE 重启（第 8 节）。</li><li><strong>模拟路由器太「规矩」会掩盖问题。</strong>实验室里的路由器都丢弃外来的新连接、信令又没有延迟，于是「谁先发包」从来不是问题；真实的公司路由器会为外来包占住端口，信令也要绕服务器几十毫秒。现在实验室两种路由器都有，会占端口的场景给信令加了延迟。</li><li><strong>pion 报告失败后不会自己关闭连接</strong>，控制通道也仍显示打开。只把状态改成离线是不够的，必须关闭清理，否则上层永远不会重连（第 9 节）。</li></ul>
+<h2 id="七-局限与后续">七、局限与后续</h2>
+<ul><li><strong>对端是端口随机分配的 NAT 时仍会中转。</strong>理论上可以做端口预测或大规模并发打洞，但成功率低、流量大，暂不做。</li><li><strong>UDP 被拦截时只能中转。</strong>后续可以增加 TURN over TCP/TLS（443 端口）。</li><li><strong>探测覆盖取决于服务器 IP 的分散程度。</strong>线路越多，越需要更多 IP。服务器可以用 <code>-stun</code> 参数下发更多 STUN 地址，客户端会一并探测。</li><li><strong>待补发队列只在内存里。</strong>本机后台服务重启后清空；对方离线超过 24 小时的内容也不补发。</li><li><strong>两边都有公网 IPv6 时最省事。</strong>pion 会直接收集 IPv6 地址，无需穿越 NAT。这次的两台设备都没有。</li></ul>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync 以 GNU AGPL-3.0 开源，另提供商业授权。</p>
+      <nav aria-label="页脚链接">
+        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商业授权</a>
+        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+      </nav>
+      <nav aria-label="语言">
+        <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>
+        <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

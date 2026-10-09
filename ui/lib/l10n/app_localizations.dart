@@ -1069,7 +1069,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutDesc.
   ///
   /// In en, this message translates to:
-  /// **'Open source, MIT License'**
+  /// **'Open source under the AGPL-3.0'**
   String get aboutDesc;
 
   /// No description provided for @homepage.

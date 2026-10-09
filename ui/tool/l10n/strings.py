@@ -192,7 +192,7 @@ S = [
     ("restarted", "Background service restarted", "后台服务已重新启动", "バックグラウンドサービスを再起動しました"),
     ("disableEllipsis", "Turn off…", "停用…", "オフにする…"),
     ("about", "About", "关于", "このアプリについて"),
-    ("aboutDesc", "Open source, MIT License", "开源软件，MIT 许可", "オープンソース（MIT ライセンス）"),
+    ("aboutDesc", "Open source under the AGPL-3.0", "开源软件，AGPL-3.0 许可", "オープンソース（AGPL-3.0）"),
     ("homepage", "Website", "项目主页", "ウェブサイト"),
     ("feedback", "Report a problem", "反馈问题", "問題を報告"),
     ("disableTitle", "Turn off background sync?", "停用后台同步？", "バックグラウンド同期をオフにしますか？"),

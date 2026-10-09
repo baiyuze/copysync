@@ -161,7 +161,7 @@
   "restarted": "后台服务已重新启动",
   "disableEllipsis": "停用…",
   "about": "关于",
-  "aboutDesc": "开源软件，MIT 许可",
+  "aboutDesc": "开源软件，AGPL-3.0 许可",
   "homepage": "项目主页",
   "feedback": "反馈问题",
   "disableTitle": "停用后台同步？",

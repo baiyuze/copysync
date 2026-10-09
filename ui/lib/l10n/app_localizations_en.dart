@@ -612,7 +612,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
-  String get aboutDesc => 'Open source, MIT License';
+  String get aboutDesc => 'Open source under the AGPL-3.0';
 
   @override
   String get homepage => 'Website';

@@ -1,0 +1,34 @@
+name: Commercial license / 商业授权
+description: Use CopySync without the AGPL-3.0 obligations. 不受 AGPL-3.0 条件约束地使用 CopySync。
+title: "Commercial license: "
+labels: ["commercial-license"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is public. Leave out anything confidential; we'll continue in private.
+        See [LICENSING.md](https://github.com/baiyuze/copysync/blob/main/LICENSING.md) for what the AGPL-3.0 already allows for free.
+
+        issue 是公开的，请不要写机密信息，后续会转到私下沟通。AGPL-3.0 下哪些用法本来就免费，见 [LICENSING.md](https://github.com/baiyuze/copysync/blob/main/LICENSING.md)。
+  - type: input
+    id: organization
+    attributes:
+      label: Organization / 公司或组织
+    validations:
+      required: true
+  - type: textarea
+    id: use
+    attributes:
+      label: How you plan to use CopySync / 打算怎么用
+      description: For example, inside a closed-source product, a modified internal build, or a hosted server. 比如放进闭源产品、内部使用修改版、或运营托管服务。
+    validations:
+      required: true
+  - type: input
+    id: scale
+    attributes:
+      label: Roughly how many devices or users / 大约多少台设备或多少用户
+  - type: input
+    id: contact
+    attributes:
+      label: How to reach you privately / 私下联系方式
+      description: An email address or other channel. Only if you're comfortable posting it publicly; otherwise we'll reply here first. 只在愿意公开时填写，否则我们先在这里回复。

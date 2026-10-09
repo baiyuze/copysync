@@ -161,7 +161,7 @@
   "restarted": "バックグラウンドサービスを再起動しました",
   "disableEllipsis": "オフにする…",
   "about": "このアプリについて",
-  "aboutDesc": "オープンソース（MIT ライセンス）",
+  "aboutDesc": "オープンソース（AGPL-3.0）",
   "homepage": "ウェブサイト",
   "feedback": "問題を報告",
   "disableTitle": "バックグラウンド同期をオフにしますか？",

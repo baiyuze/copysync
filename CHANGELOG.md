@@ -1,5 +1,26 @@
 # 更新记录 / Changelog
 
+## 1.3.0 — 2026-10-09
+
+- **界面支持简体中文、英文、日文**：默认跟随系统语言，也可以在「设置 → 这台 Mac / 这台电脑 → 语言」里切换。
+  Windows 托盘菜单也跟着变。图片和文件记录的标题按当前语言显示。
+  **The interface is now in English, Simplified Chinese and Japanese.** It follows the system language and can be
+  switched in Settings; the Windows tray menu follows too.
+- **许可改为 GNU AGPL-3.0，另提供商业授权。**个人和公司都可以免费使用和修改；分发、或通过网络提供修改过的版本时，
+  需要以同样的许可公开源码。闭源产品、不公开的修改、托管服务等情况可以购买商业授权，见 `LICENSING.md`。
+  1.2.0 及更早的版本仍适用 MIT。
+  **License changed to the GNU AGPL-3.0, with commercial licenses available.** Versions 1.2.0 and earlier remain MIT.
+  See `LICENSING.md`.
+- 复制记录：鼠标移到一行上时，「预览」按钮不再被挤开换位置，不容易点错。
+  History: the Preview button no longer shifts when you hover a row.
+- 图片预览按应用窗口的比例定大小（窗口的 80%），小图按原始大小显示、不放大。
+  Image preview is sized relative to the app window, and small images are no longer upscaled.
+- 配对对话框在文字较长（英文、日文、系统字号调大）时改为滚动，不再溢出。
+  The pairing dialog scrolls instead of overflowing with longer text.
+- 网站改版：整页深色，新增日文页面，首次打开按浏览器语言显示；技术方案放到网站上，不用再跳到 GitHub。
+  New website design with a Japanese page and language detection; design notes are now hosted on the site.
+- 服务器不需要升级；设备之间的协议没有变化。 No server upgrade needed; the device-to-device protocol is unchanged.
+
 ## 1.2.0 — 2026-10-09
 
 - **新增 Windows 客户端**：Windows 10（21H2 起）与 Windows 11，x64。与 Mac 互通，Mac 与 Mac、

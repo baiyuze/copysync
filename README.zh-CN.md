@@ -24,7 +24,7 @@
   <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1D1D1F" alt="Windows 10 / 11">
   <img src="https://img.shields.io/badge/Intel%20%2B%20Apple%20%E8%8A%AF%E7%89%87-%E9%80%9A%E7%94%A8-1D1D1F" alt="Intel 与 Apple 芯片通用">
-  <img src="https://img.shields.io/github/license/baiyuze/copysync?color=6E6E73" alt="MIT 许可">
+  <img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-AGPL--3.0-6E6E73" alt="AGPL-3.0 许可">
 </p>
 
 <p align="center">
@@ -63,6 +63,7 @@ CopySync 的做法是：两台电脑配对一次，之后在一台上复制，�
 - **配对时核对安全指纹**：防止服务器或网络上的第三方冒充你的设备。
 - **后台常驻**：关掉窗口照常同步，开机自动启动，崩溃后自动恢复。Windows 上在任务栏右下角有托盘图标。
 - **Mac 与 Windows 互通**：Mac 上 Intel 与 Apple 芯片原生运行；Windows 10、11 均可，粘贴文件时得到的是真实文件，能直接粘进资源管理器、微信、Office。支持浅色与深色外观。
+- **中文、英文、日文界面**：默认跟随系统语言，也可以在设置里切换。
 - **不同步密码**（Windows）：密码管理器复制的内容带着「不要记录」的标记，CopySync 跳过它们，不同步也不进复制记录。
 
 <table>
@@ -339,4 +340,4 @@ tools/installer/ Windows 安装程序（Inno Setup）
 
 ## 许可
 
-[MIT](LICENSE)
+CopySync 采用双授权。按 [GNU AGPL-3.0](LICENSE) 免费使用：任何人（包括公司）都可以使用和修改，但分发它、或通过网络提供修改过的版本时，必须以同样的许可公开你的源码。闭源产品、不公开的修改、托管服务等情况可以购买[商业授权](LICENSING.md)，请[提交「商业授权」issue](https://github.com/baiyuze/copysync/issues/new?template=commercial-license.yml)。1.2.0 及更早的版本仍适用 MIT 许可。详见 [LICENSING.md](LICENSING.md)。
