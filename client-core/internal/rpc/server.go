@@ -35,7 +35,9 @@ type Deps struct {
 
 	// 以下在对应里程碑接上，未实现时为 nil，方法返回 Unimplemented
 	Fetch                  func(ctx context.Context, clipID string) error
+	FetchForPreview        func(ctx context.Context, clipID string) error
 	ApplyToClipboard       func(ctx context.Context, clipID string) error
+	ImagePreviewPath       func(ctx context.Context, clipID string) (string, error)
 	Permission             func() clipboard.Permission
 	OpenPermissionSettings func() error
 	// Network 返回最近一轮网络出口探测的结果
@@ -205,10 +207,14 @@ func (s *Server) DeleteHistory(_ context.Context, req *pb.DeleteHistoryRequest) 
 }
 
 func (s *Server) Fetch(ctx context.Context, req *pb.FetchRequest) (*pb.Empty, error) {
-	if s.deps.Fetch == nil {
+	fetch := s.deps.Fetch
+	if req.GetPreserveClipboard() {
+		fetch = s.deps.FetchForPreview
+	}
+	if fetch == nil {
 		return nil, status.Error(codes.Unimplemented, "传输层尚未接入（M4）")
 	}
-	if err := s.deps.Fetch(ctx, req.GetClipId()); err != nil {
+	if err := fetch(ctx, req.GetClipId()); err != nil {
 		return nil, status.Errorf(codes.Internal, "拉取失败: %v", err)
 	}
 	return &pb.Empty{}, nil
@@ -223,6 +229,21 @@ func (s *Server) ApplyToClipboard(ctx context.Context,
 		return nil, status.Errorf(codes.Internal, "写入剪贴板失败: %v", err)
 	}
 	return &pb.Empty{}, nil
+}
+
+func (s *Server) GetImagePreview(ctx context.Context,
+	req *pb.GetImagePreviewRequest) (*pb.GetImagePreviewResponse, error) {
+	if req.GetClipId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "缺少图片记录 ID")
+	}
+	if s.deps.ImagePreviewPath == nil {
+		return nil, status.Error(codes.Unimplemented, "请更新后台服务后再预览图片")
+	}
+	path, err := s.deps.ImagePreviewPath(ctx, req.GetClipId())
+	if err != nil {
+		return nil, status.Error(codes.FailedPrecondition, err.Error())
+	}
+	return &pb.GetImagePreviewResponse{Path: path}, nil
 }
 
 // ─────────────────────────── 配置与状态 ───────────────────────────

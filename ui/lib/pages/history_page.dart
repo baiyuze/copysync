@@ -5,6 +5,7 @@ import '../gen/copysync/v1/daemon.pb.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import '../widgets/image_preview_dialog.dart';
 import '../icons.dart';
 import '../platform.dart';
 
@@ -187,47 +188,52 @@ class _RecordRowState extends State<_RecordRow> {
     final p = context.palette;
 
     return MouseRegion(
+      cursor: r.kind == ClipKind.CLIP_KIND_IMAGE ? SystemMouseCursors.click : MouseCursor.defer,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 52),
-        padding: const EdgeInsets.symmetric(horizontal: Insets.md, vertical: Insets.sm),
-        decoration: BoxDecoration(
-          color: _hovered ? p.hover : Colors.transparent,
-          borderRadius: BorderRadius.circular(Radii.sm),
-        ),
-        child: Row(
-          children: [
-            Icon(kindIcon(r), size: 18, color: p.textDim),
-            const SizedBox(width: Insets.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    recordTitle(r),
-                    style: context.text.labelLarge,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    [
-                      r.outgoing ? '本机' : '来自 ${r.originDeviceName}',
-                      if (r.totalSize > 0) humanBytes(r.totalSize.toInt()),
-                      relativeTime(DateTime.fromMillisecondsSinceEpoch(r.createdAtUnix.toInt() * 1000)),
-                    ].join(' · '),
-                    style: context.text.bodySmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+      child: InkWell(
+        onTap: r.kind == ClipKind.CLIP_KIND_IMAGE ? () => _preview(r) : null,
+        borderRadius: BorderRadius.circular(Radii.sm),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 52),
+          padding: const EdgeInsets.symmetric(horizontal: Insets.md, vertical: Insets.sm),
+          decoration: BoxDecoration(
+            color: _hovered ? p.hover : Colors.transparent,
+            borderRadius: BorderRadius.circular(Radii.sm),
+          ),
+          child: Row(
+            children: [
+              Icon(kindIcon(r), size: 18, color: p.textDim),
+              const SizedBox(width: Insets.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      recordTitle(r),
+                      style: context.text.labelLarge,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      [
+                        r.outgoing ? '本机' : '来自 ${r.originDeviceName}',
+                        if (r.totalSize > 0) humanBytes(r.totalSize.toInt()),
+                        relativeTime(DateTime.fromMillisecondsSinceEpoch(r.createdAtUnix.toInt() * 1000)),
+                      ].join(' · '),
+                      style: context.text.bodySmall,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: Insets.md),
-            _trailing(context, r),
-          ],
+              const SizedBox(width: Insets.md),
+              _trailing(context, r),
+            ],
+          ),
         ),
       ),
     );
@@ -267,24 +273,30 @@ class _RecordRowState extends State<_RecordRow> {
         return Text('已过期', style: context.text.bodySmall?.copyWith(color: p.textFaint));
       default:
         // 悬停时才显示操作，静态时列表保持干净
-        if (!_hovered) return const SizedBox(height: 28);
+        if (!_hovered && r.kind != ClipKind.CLIP_KIND_IMAGE) return const SizedBox(height: 28);
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextButton(
-              onPressed: () =>
-                  _run(() => AppScope.read(context).applyToClipboard(r.id), '已放入剪贴板'),
-              child: const Text('放入剪贴板'),
-            ),
-            IconAction(
-              icon: AppIcons.trash,
-              tooltip: '删除这条记录',
-              onTap: () => _run(() => AppScope.read(context).deleteRecords(ids: [r.id]), '已删除'),
-            ),
+            if (r.kind == ClipKind.CLIP_KIND_IMAGE)
+              TextButton(onPressed: () => _preview(r), child: const Text('预览')),
+            if (_hovered) ...[
+              TextButton(
+                onPressed: () =>
+                    _run(() => AppScope.read(context).applyToClipboard(r.id), '已放入剪贴板'),
+                child: const Text('放入剪贴板'),
+              ),
+              IconAction(
+                icon: AppIcons.trash,
+                tooltip: '删除这条记录',
+                onTap: () => _run(() => AppScope.read(context).deleteRecords(ids: [r.id]), '已删除'),
+              ),
+            ],
           ],
         );
     }
   }
+
+  void _preview(ClipRecord record) => showImagePreview(context, record.id);
 
   Future<void> _run(Future<void> Function() action, String success) async {
     setState(() => _busy = true);

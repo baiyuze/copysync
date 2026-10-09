@@ -378,12 +378,20 @@ const FetchRequest$json = {
   '1': 'FetchRequest',
   '2': [
     {'1': 'clip_id', '3': 1, '4': 1, '5': 9, '10': 'clipId'},
+    {
+      '1': 'preserve_clipboard',
+      '3': 2,
+      '4': 1,
+      '5': 8,
+      '10': 'preserveClipboard'
+    },
   ],
 };
 
 /// Descriptor for `FetchRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List fetchRequestDescriptor = $convert
-    .base64Decode('CgxGZXRjaFJlcXVlc3QSFwoHY2xpcF9pZBgBIAEoCVIGY2xpcElk');
+final $typed_data.Uint8List fetchRequestDescriptor = $convert.base64Decode(
+    'CgxGZXRjaFJlcXVlc3QSFwoHY2xpcF9pZBgBIAEoCVIGY2xpcElkEi0KEnByZXNlcnZlX2NsaX'
+    'Bib2FyZBgCIAEoCFIRcHJlc2VydmVDbGlwYm9hcmQ=');
 
 @$core.Deprecated('Use applyToClipboardRequestDescriptor instead')
 const ApplyToClipboardRequest$json = {
@@ -628,3 +636,29 @@ final $typed_data.Uint8List statusDescriptor = $convert.base64Decode(
     'lwYm9hcmRQZXJtaXNzaW9uUhNjbGlwYm9hcmRQZXJtaXNzaW9uEigKEGNhY2hlX2J5dGVzX3Vz'
     'ZWQYBSABKANSDmNhY2hlQnl0ZXNVc2VkEiEKDHBlZXJzX29ubGluZRgGIAEoBVILcGVlcnNPbm'
     'xpbmUSGAoHdmVyc2lvbhgHIAEoCVIHdmVyc2lvbg==');
+
+@$core.Deprecated('Use getImagePreviewRequestDescriptor instead')
+const GetImagePreviewRequest$json = {
+  '1': 'GetImagePreviewRequest',
+  '2': [
+    {'1': 'clip_id', '3': 1, '4': 1, '5': 9, '10': 'clipId'},
+  ],
+};
+
+/// Descriptor for `GetImagePreviewRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getImagePreviewRequestDescriptor =
+    $convert.base64Decode(
+        'ChZHZXRJbWFnZVByZXZpZXdSZXF1ZXN0EhcKB2NsaXBfaWQYASABKAlSBmNsaXBJZA==');
+
+@$core.Deprecated('Use getImagePreviewResponseDescriptor instead')
+const GetImagePreviewResponse$json = {
+  '1': 'GetImagePreviewResponse',
+  '2': [
+    {'1': 'path', '3': 1, '4': 1, '5': 9, '10': 'path'},
+  ],
+};
+
+/// Descriptor for `GetImagePreviewResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getImagePreviewResponseDescriptor =
+    $convert.base64Decode(
+        'ChdHZXRJbWFnZVByZXZpZXdSZXNwb25zZRISCgRwYXRoGAEgASgJUgRwYXRo');

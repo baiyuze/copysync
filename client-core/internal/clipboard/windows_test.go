@@ -125,6 +125,53 @@ func TestWindowsImage(t *testing.T) {
 	}
 }
 
+// 不提供 PNG，覆盖 Windows 为普通位图自动合成其他格式的路径。
+// 固定优先读取 CF_DIBV5 会读到系统从 CF_DIB 转换出的错位像素。
+func TestWindowsNativeBitmap(t *testing.T) {
+	for _, format := range []uint32{cfDIB, cfDIBV5} {
+		t.Run(map[uint32]string{cfDIB: "DIB", cfDIBV5: "DIBV5"}[format], func(t *testing.T) {
+			src := image.NewNRGBA(image.Rect(0, 0, 16, 16))
+			for y := range 16 {
+				for x := range 16 {
+					a := uint8(255)
+					if format == cfDIBV5 && x >= 8 {
+						a = 128
+					}
+					src.SetNRGBA(x, y, color.NRGBA{uint8(x * 17), uint8(y * 17), uint8((x + y) * 8), a})
+				}
+			}
+			data := imageToDIBV5(src)
+			if format == cfDIB {
+				data = dib(16, 16, 32, biBitfields, data[40:52], data[124:])
+			}
+			onMain(t, func() (struct{}, error) {
+				if err := openClipboard(); err != nil {
+					return struct{}{}, err
+				}
+				defer procCloseClipboard.Call()
+				procEmptyClipboard.Call()
+				return struct{}{}, setData(format, data)
+			})
+			got := onMain(t, New().Read)
+			img, err := png.Decode(bytes.NewReader(got.Image))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if img.Bounds() != src.Bounds() {
+				t.Fatalf("图片尺寸 = %v，应为 %v", img.Bounds(), src.Bounds())
+			}
+			for y := range 16 {
+				for x := range 16 {
+					want := src.NRGBAAt(x, y)
+					if c := color.NRGBAModel.Convert(img.At(x, y)); c != want {
+						t.Fatalf("(%d,%d) = %v，应为 %v", x, y, c, want)
+					}
+				}
+			}
+		})
+	}
+}
+
 func TestWindowsFiles(t *testing.T) {
 	dir := t.TempDir()
 	var paths []string

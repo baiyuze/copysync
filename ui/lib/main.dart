@@ -98,6 +98,11 @@ class _ShellState extends State<Shell> {
     if (pending != null && !_pairingDialogOpen) {
       _pairingDialogOpen = true;
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        if (state.pendingPairing?.pairingSession != pending.pairingSession) {
+          setState(() => _pairingDialogOpen = false);
+          return;
+        }
         await showPairingConfirmDialog(context, pending);
         if (mounted) setState(() => _pairingDialogOpen = false);
       });

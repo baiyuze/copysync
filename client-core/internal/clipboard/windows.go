@@ -32,6 +32,7 @@ var (
 	procCloseClipboard              = user32.NewProc("CloseClipboard")
 	procEmptyClipboard              = user32.NewProc("EmptyClipboard")
 	procGetClipboardData            = user32.NewProc("GetClipboardData")
+	procEnumClipboardFormats        = user32.NewProc("EnumClipboardFormats")
 	procSetClipboardData            = user32.NewProc("SetClipboardData")
 	procIsClipboardFormatAvailable  = user32.NewProc("IsClipboardFormatAvailable")
 	procRegisterClipboardFormatW    = user32.NewProc("RegisterClipboardFormatW")
@@ -366,8 +367,22 @@ func readImage() ([]byte, error) {
 			return b, nil
 		}
 	}
+	// Windows 枚举时先返回应用提供的格式，再返回由它合成的格式。
+	// 保留这个顺序：系统把普通 CF_DIB 转成 CF_DIBV5 时可能保留多余的
+	// 颜色掩码，导致像素偏移；而原生 CF_DIBV5 应优先读取，以保留透明度。
+	bitmapFormats := []uint32{cfDIBV5, cfDIB}
+	for f := uintptr(0); ; {
+		f, _, _ = procEnumClipboardFormats.Call(f)
+		if f == 0 || f == cfDIBV5 {
+			break
+		}
+		if f == cfDIB {
+			bitmapFormats = []uint32{cfDIB, cfDIBV5}
+			break
+		}
+	}
 	var lastErr error
-	for _, f := range []uint32{cfDIBV5, cfDIB} {
+	for _, f := range bitmapFormats {
 		b, err := getData(f)
 		if err != nil {
 			lastErr = err

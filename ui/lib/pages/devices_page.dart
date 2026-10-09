@@ -78,8 +78,7 @@ class DevicesPage extends StatelessWidget {
     );
   }
 
-  void _startPairing(BuildContext context) =>
-      showDialog(context: context, builder: (_) => const PairingDialog());
+  void _startPairing(BuildContext context) => showPairingDialog(context);
 }
 
 class _DeviceRow extends StatelessWidget {

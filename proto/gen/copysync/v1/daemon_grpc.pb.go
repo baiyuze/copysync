@@ -29,6 +29,7 @@ const (
 	DaemonService_DeleteHistory_FullMethodName              = "/copysync.v1.DaemonService/DeleteHistory"
 	DaemonService_Fetch_FullMethodName                      = "/copysync.v1.DaemonService/Fetch"
 	DaemonService_ApplyToClipboard_FullMethodName           = "/copysync.v1.DaemonService/ApplyToClipboard"
+	DaemonService_GetImagePreview_FullMethodName            = "/copysync.v1.DaemonService/GetImagePreview"
 	DaemonService_ListDevices_FullMethodName                = "/copysync.v1.DaemonService/ListDevices"
 	DaemonService_CreatePairingCode_FullMethodName          = "/copysync.v1.DaemonService/CreatePairingCode"
 	DaemonService_RedeemPairingCode_FullMethodName          = "/copysync.v1.DaemonService/RedeemPairingCode"
@@ -53,6 +54,8 @@ type DaemonServiceClient interface {
 	Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*Empty, error)
 	// 把某条已就绪的记录重新放进本机剪贴板
 	ApplyToClipboard(ctx context.Context, in *ApplyToClipboardRequest, opts ...grpc.CallOption) (*Empty, error)
+	// 只返回已就绪图片在本机的路径，不改动剪贴板，也不把路径发给对端。
+	GetImagePreview(ctx context.Context, in *GetImagePreviewRequest, opts ...grpc.CallOption) (*GetImagePreviewResponse, error)
 	ListDevices(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ListDevicesResponse, error)
 	CreatePairingCode(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*CreatePairingCodeResponse, error)
 	RedeemPairingCode(ctx context.Context, in *RedeemPairingCodeRequest, opts ...grpc.CallOption) (*RedeemPairingCodeResponse, error)
@@ -129,6 +132,16 @@ func (c *daemonServiceClient) ApplyToClipboard(ctx context.Context, in *ApplyToC
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, DaemonService_ApplyToClipboard_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonServiceClient) GetImagePreview(ctx context.Context, in *GetImagePreviewRequest, opts ...grpc.CallOption) (*GetImagePreviewResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetImagePreviewResponse)
+	err := c.cc.Invoke(ctx, DaemonService_GetImagePreview_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -247,6 +260,8 @@ type DaemonServiceServer interface {
 	Fetch(context.Context, *FetchRequest) (*Empty, error)
 	// 把某条已就绪的记录重新放进本机剪贴板
 	ApplyToClipboard(context.Context, *ApplyToClipboardRequest) (*Empty, error)
+	// 只返回已就绪图片在本机的路径，不改动剪贴板，也不把路径发给对端。
+	GetImagePreview(context.Context, *GetImagePreviewRequest) (*GetImagePreviewResponse, error)
 	ListDevices(context.Context, *Empty) (*ListDevicesResponse, error)
 	CreatePairingCode(context.Context, *Empty) (*CreatePairingCodeResponse, error)
 	RedeemPairingCode(context.Context, *RedeemPairingCodeRequest) (*RedeemPairingCodeResponse, error)
@@ -284,6 +299,9 @@ func (UnimplementedDaemonServiceServer) Fetch(context.Context, *FetchRequest) (*
 }
 func (UnimplementedDaemonServiceServer) ApplyToClipboard(context.Context, *ApplyToClipboardRequest) (*Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ApplyToClipboard not implemented")
+}
+func (UnimplementedDaemonServiceServer) GetImagePreview(context.Context, *GetImagePreviewRequest) (*GetImagePreviewResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetImagePreview not implemented")
 }
 func (UnimplementedDaemonServiceServer) ListDevices(context.Context, *Empty) (*ListDevicesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListDevices not implemented")
@@ -415,6 +433,24 @@ func _DaemonService_ApplyToClipboard_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DaemonServiceServer).ApplyToClipboard(ctx, req.(*ApplyToClipboardRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DaemonService_GetImagePreview_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetImagePreviewRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).GetImagePreview(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_GetImagePreview_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).GetImagePreview(ctx, req.(*GetImagePreviewRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -621,6 +657,10 @@ var DaemonService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ApplyToClipboard",
 			Handler:    _DaemonService_ApplyToClipboard_Handler,
+		},
+		{
+			MethodName: "GetImagePreview",
+			Handler:    _DaemonService_GetImagePreview_Handler,
 		},
 		{
 			MethodName: "ListDevices",

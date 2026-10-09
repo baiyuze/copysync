@@ -1022,10 +1022,11 @@ func (x *DeleteHistoryRequest) GetAll() bool {
 }
 
 type FetchRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ClipId        string                 `protobuf:"bytes,1,opt,name=clip_id,json=clipId,proto3" json:"clip_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	ClipId            string                 `protobuf:"bytes,1,opt,name=clip_id,json=clipId,proto3" json:"clip_id,omitempty"`
+	PreserveClipboard bool                   `protobuf:"varint,2,opt,name=preserve_clipboard,json=preserveClipboard,proto3" json:"preserve_clipboard,omitempty"` // 预览下载：收完后不覆盖用户的剪贴板
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *FetchRequest) Reset() {
@@ -1063,6 +1064,13 @@ func (x *FetchRequest) GetClipId() string {
 		return x.ClipId
 	}
 	return ""
+}
+
+func (x *FetchRequest) GetPreserveClipboard() bool {
+	if x != nil {
+		return x.PreserveClipboard
+	}
+	return false
 }
 
 type ApplyToClipboardRequest struct {
@@ -1779,6 +1787,94 @@ func (x *Status) GetVersion() string {
 	return ""
 }
 
+type GetImagePreviewRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ClipId        string                 `protobuf:"bytes,1,opt,name=clip_id,json=clipId,proto3" json:"clip_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetImagePreviewRequest) Reset() {
+	*x = GetImagePreviewRequest{}
+	mi := &file_copysync_v1_daemon_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetImagePreviewRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetImagePreviewRequest) ProtoMessage() {}
+
+func (x *GetImagePreviewRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_copysync_v1_daemon_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetImagePreviewRequest.ProtoReflect.Descriptor instead.
+func (*GetImagePreviewRequest) Descriptor() ([]byte, []int) {
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GetImagePreviewRequest) GetClipId() string {
+	if x != nil {
+		return x.ClipId
+	}
+	return ""
+}
+
+type GetImagePreviewResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Path          string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetImagePreviewResponse) Reset() {
+	*x = GetImagePreviewResponse{}
+	mi := &file_copysync_v1_daemon_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetImagePreviewResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetImagePreviewResponse) ProtoMessage() {}
+
+func (x *GetImagePreviewResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_copysync_v1_daemon_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetImagePreviewResponse.ProtoReflect.Descriptor instead.
+func (*GetImagePreviewResponse) Descriptor() ([]byte, []int) {
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GetImagePreviewResponse) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
 var File_copysync_v1_daemon_proto protoreflect.FileDescriptor
 
 const file_copysync_v1_daemon_proto_rawDesc = "" +
@@ -1845,9 +1941,10 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\arecords\x18\x01 \x03(\v2\x17.copysync.v1.ClipRecordR\arecords\":\n" +
 	"\x14DeleteHistoryRequest\x12\x10\n" +
 	"\x03ids\x18\x01 \x03(\tR\x03ids\x12\x10\n" +
-	"\x03all\x18\x02 \x01(\bR\x03all\"'\n" +
+	"\x03all\x18\x02 \x01(\bR\x03all\"V\n" +
 	"\fFetchRequest\x12\x17\n" +
-	"\aclip_id\x18\x01 \x01(\tR\x06clipId\"2\n" +
+	"\aclip_id\x18\x01 \x01(\tR\x06clipId\x12-\n" +
+	"\x12preserve_clipboard\x18\x02 \x01(\bR\x11preserveClipboard\"2\n" +
 	"\x17ApplyToClipboardRequest\x12\x17\n" +
 	"\aclip_id\x18\x01 \x01(\tR\x06clipId\"i\n" +
 	"\x13ListDevicesResponse\x12'\n" +
@@ -1902,7 +1999,11 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x14clipboard_permission\x18\x04 \x01(\x0e2 .copysync.v1.ClipboardPermissionR\x13clipboardPermission\x12(\n" +
 	"\x10cache_bytes_used\x18\x05 \x01(\x03R\x0ecacheBytesUsed\x12!\n" +
 	"\fpeers_online\x18\x06 \x01(\x05R\vpeersOnline\x12\x18\n" +
-	"\aversion\x18\a \x01(\tR\aversion*v\n" +
+	"\aversion\x18\a \x01(\tR\aversion\"1\n" +
+	"\x16GetImagePreviewRequest\x12\x17\n" +
+	"\aclip_id\x18\x01 \x01(\tR\x06clipId\"-\n" +
+	"\x17GetImagePreviewResponse\x12\x12\n" +
+	"\x04path\x18\x01 \x01(\tR\x04path*v\n" +
 	"\bClipKind\x12\x19\n" +
 	"\x15CLIP_KIND_UNSPECIFIED\x10\x00\x12\x12\n" +
 	"\x0eCLIP_KIND_TEXT\x10\x01\x12\x12\n" +
@@ -1928,13 +2029,14 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x1cCLIPBOARD_PERMISSION_DEFAULT\x10\x02\x12\x1c\n" +
 	"\x18CLIPBOARD_PERMISSION_ASK\x10\x03\x12%\n" +
 	"!CLIPBOARD_PERMISSION_ALWAYS_ALLOW\x10\x04\x12$\n" +
-	" CLIPBOARD_PERMISSION_ALWAYS_DENY\x10\x052\x97\b\n" +
+	" CLIPBOARD_PERMISSION_ALWAYS_DENY\x10\x052\xf5\b\n" +
 	"\rDaemonService\x12@\n" +
 	"\tSubscribe\x12\x1d.copysync.v1.SubscribeRequest\x1a\x12.copysync.v1.Event0\x01\x12P\n" +
 	"\vListHistory\x12\x1f.copysync.v1.ListHistoryRequest\x1a .copysync.v1.ListHistoryResponse\x12F\n" +
 	"\rDeleteHistory\x12!.copysync.v1.DeleteHistoryRequest\x1a\x12.copysync.v1.Empty\x126\n" +
 	"\x05Fetch\x12\x19.copysync.v1.FetchRequest\x1a\x12.copysync.v1.Empty\x12L\n" +
-	"\x10ApplyToClipboard\x12$.copysync.v1.ApplyToClipboardRequest\x1a\x12.copysync.v1.Empty\x12C\n" +
+	"\x10ApplyToClipboard\x12$.copysync.v1.ApplyToClipboardRequest\x1a\x12.copysync.v1.Empty\x12\\\n" +
+	"\x0fGetImagePreview\x12#.copysync.v1.GetImagePreviewRequest\x1a$.copysync.v1.GetImagePreviewResponse\x12C\n" +
 	"\vListDevices\x12\x12.copysync.v1.Empty\x1a .copysync.v1.ListDevicesResponse\x12O\n" +
 	"\x11CreatePairingCode\x12\x12.copysync.v1.Empty\x1a&.copysync.v1.CreatePairingCodeResponse\x12b\n" +
 	"\x11RedeemPairingCode\x12%.copysync.v1.RedeemPairingCodeRequest\x1a&.copysync.v1.RedeemPairingCodeResponse\x12H\n" +
@@ -1960,7 +2062,7 @@ func file_copysync_v1_daemon_proto_rawDescGZIP() []byte {
 }
 
 var file_copysync_v1_daemon_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_copysync_v1_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_copysync_v1_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_copysync_v1_daemon_proto_goTypes = []any{
 	(ClipKind)(0),                     // 0: copysync.v1.ClipKind
 	(ClipStatus)(0),                   // 1: copysync.v1.ClipStatus
@@ -1988,6 +2090,8 @@ var file_copysync_v1_daemon_proto_goTypes = []any{
 	(*NetworkInfo)(nil),               // 23: copysync.v1.NetworkInfo
 	(*NetworkEgress)(nil),             // 24: copysync.v1.NetworkEgress
 	(*Status)(nil),                    // 25: copysync.v1.Status
+	(*GetImagePreviewRequest)(nil),    // 26: copysync.v1.GetImagePreviewRequest
+	(*GetImagePreviewResponse)(nil),   // 27: copysync.v1.GetImagePreviewResponse
 }
 var file_copysync_v1_daemon_proto_depIdxs = []int32{
 	0,  // 0: copysync.v1.ClipRecord.kind:type_name -> copysync.v1.ClipKind
@@ -2012,33 +2116,35 @@ var file_copysync_v1_daemon_proto_depIdxs = []int32{
 	13, // 19: copysync.v1.DaemonService.DeleteHistory:input_type -> copysync.v1.DeleteHistoryRequest
 	14, // 20: copysync.v1.DaemonService.Fetch:input_type -> copysync.v1.FetchRequest
 	15, // 21: copysync.v1.DaemonService.ApplyToClipboard:input_type -> copysync.v1.ApplyToClipboardRequest
-	4,  // 22: copysync.v1.DaemonService.ListDevices:input_type -> copysync.v1.Empty
-	4,  // 23: copysync.v1.DaemonService.CreatePairingCode:input_type -> copysync.v1.Empty
-	18, // 24: copysync.v1.DaemonService.RedeemPairingCode:input_type -> copysync.v1.RedeemPairingCodeRequest
-	20, // 25: copysync.v1.DaemonService.ConfirmPairing:input_type -> copysync.v1.ConfirmPairingRequest
-	21, // 26: copysync.v1.DaemonService.Unpair:input_type -> copysync.v1.UnpairRequest
-	4,  // 27: copysync.v1.DaemonService.GetConfig:input_type -> copysync.v1.Empty
-	22, // 28: copysync.v1.DaemonService.UpdateConfig:input_type -> copysync.v1.Config
-	4,  // 29: copysync.v1.DaemonService.GetStatus:input_type -> copysync.v1.Empty
-	4,  // 30: copysync.v1.DaemonService.RequestClipboardPermission:input_type -> copysync.v1.Empty
-	4,  // 31: copysync.v1.DaemonService.GetNetwork:input_type -> copysync.v1.Empty
-	10, // 32: copysync.v1.DaemonService.Subscribe:output_type -> copysync.v1.Event
-	12, // 33: copysync.v1.DaemonService.ListHistory:output_type -> copysync.v1.ListHistoryResponse
-	4,  // 34: copysync.v1.DaemonService.DeleteHistory:output_type -> copysync.v1.Empty
-	4,  // 35: copysync.v1.DaemonService.Fetch:output_type -> copysync.v1.Empty
-	4,  // 36: copysync.v1.DaemonService.ApplyToClipboard:output_type -> copysync.v1.Empty
-	16, // 37: copysync.v1.DaemonService.ListDevices:output_type -> copysync.v1.ListDevicesResponse
-	17, // 38: copysync.v1.DaemonService.CreatePairingCode:output_type -> copysync.v1.CreatePairingCodeResponse
-	19, // 39: copysync.v1.DaemonService.RedeemPairingCode:output_type -> copysync.v1.RedeemPairingCodeResponse
-	4,  // 40: copysync.v1.DaemonService.ConfirmPairing:output_type -> copysync.v1.Empty
-	4,  // 41: copysync.v1.DaemonService.Unpair:output_type -> copysync.v1.Empty
-	22, // 42: copysync.v1.DaemonService.GetConfig:output_type -> copysync.v1.Config
-	22, // 43: copysync.v1.DaemonService.UpdateConfig:output_type -> copysync.v1.Config
-	25, // 44: copysync.v1.DaemonService.GetStatus:output_type -> copysync.v1.Status
-	4,  // 45: copysync.v1.DaemonService.RequestClipboardPermission:output_type -> copysync.v1.Empty
-	23, // 46: copysync.v1.DaemonService.GetNetwork:output_type -> copysync.v1.NetworkInfo
-	32, // [32:47] is the sub-list for method output_type
-	17, // [17:32] is the sub-list for method input_type
+	26, // 22: copysync.v1.DaemonService.GetImagePreview:input_type -> copysync.v1.GetImagePreviewRequest
+	4,  // 23: copysync.v1.DaemonService.ListDevices:input_type -> copysync.v1.Empty
+	4,  // 24: copysync.v1.DaemonService.CreatePairingCode:input_type -> copysync.v1.Empty
+	18, // 25: copysync.v1.DaemonService.RedeemPairingCode:input_type -> copysync.v1.RedeemPairingCodeRequest
+	20, // 26: copysync.v1.DaemonService.ConfirmPairing:input_type -> copysync.v1.ConfirmPairingRequest
+	21, // 27: copysync.v1.DaemonService.Unpair:input_type -> copysync.v1.UnpairRequest
+	4,  // 28: copysync.v1.DaemonService.GetConfig:input_type -> copysync.v1.Empty
+	22, // 29: copysync.v1.DaemonService.UpdateConfig:input_type -> copysync.v1.Config
+	4,  // 30: copysync.v1.DaemonService.GetStatus:input_type -> copysync.v1.Empty
+	4,  // 31: copysync.v1.DaemonService.RequestClipboardPermission:input_type -> copysync.v1.Empty
+	4,  // 32: copysync.v1.DaemonService.GetNetwork:input_type -> copysync.v1.Empty
+	10, // 33: copysync.v1.DaemonService.Subscribe:output_type -> copysync.v1.Event
+	12, // 34: copysync.v1.DaemonService.ListHistory:output_type -> copysync.v1.ListHistoryResponse
+	4,  // 35: copysync.v1.DaemonService.DeleteHistory:output_type -> copysync.v1.Empty
+	4,  // 36: copysync.v1.DaemonService.Fetch:output_type -> copysync.v1.Empty
+	4,  // 37: copysync.v1.DaemonService.ApplyToClipboard:output_type -> copysync.v1.Empty
+	27, // 38: copysync.v1.DaemonService.GetImagePreview:output_type -> copysync.v1.GetImagePreviewResponse
+	16, // 39: copysync.v1.DaemonService.ListDevices:output_type -> copysync.v1.ListDevicesResponse
+	17, // 40: copysync.v1.DaemonService.CreatePairingCode:output_type -> copysync.v1.CreatePairingCodeResponse
+	19, // 41: copysync.v1.DaemonService.RedeemPairingCode:output_type -> copysync.v1.RedeemPairingCodeResponse
+	4,  // 42: copysync.v1.DaemonService.ConfirmPairing:output_type -> copysync.v1.Empty
+	4,  // 43: copysync.v1.DaemonService.Unpair:output_type -> copysync.v1.Empty
+	22, // 44: copysync.v1.DaemonService.GetConfig:output_type -> copysync.v1.Config
+	22, // 45: copysync.v1.DaemonService.UpdateConfig:output_type -> copysync.v1.Config
+	25, // 46: copysync.v1.DaemonService.GetStatus:output_type -> copysync.v1.Status
+	4,  // 47: copysync.v1.DaemonService.RequestClipboardPermission:output_type -> copysync.v1.Empty
+	23, // 48: copysync.v1.DaemonService.GetNetwork:output_type -> copysync.v1.NetworkInfo
+	33, // [33:49] is the sub-list for method output_type
+	17, // [17:33] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
 	17, // [17:17] is the sub-list for extension extendee
 	0,  // [0:17] is the sub-list for field type_name
@@ -2064,7 +2170,7 @@ func file_copysync_v1_daemon_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_copysync_v1_daemon_proto_rawDesc), len(file_copysync_v1_daemon_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   22,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

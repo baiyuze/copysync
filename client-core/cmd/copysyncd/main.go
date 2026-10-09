@@ -322,7 +322,9 @@ func run(dataDir string) error {
 		Unpair:             peerMgr.Unpair,
 		SignalingConnected: peerMgr.Connected,
 		Fetch:              engine.Fetch,
+		FetchForPreview:    engine.FetchForPreview,
 		ApplyToClipboard:   engine.ApplyToClipboard,
+		ImagePreviewPath:   engine.ImagePreviewPath,
 		CacheBytesUsed:     blobs.Size,
 		Permission: func() clipboard.Permission {
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -381,6 +383,11 @@ func run(dataDir string) error {
 
 	slog.Info("daemon 已就绪",
 		"port", port, "endpoint", paths.Endpoint, "cache", paths.Cache)
+
+	// 托盘属于后台服务：关掉界面后仍能打开它。独立数据目录用于测试，
+	// 不创建托盘，避免与用户正在运行的实例混在一起。
+	stopTray := startTray(ctx, cancel, dataDir == "")
+	defer stopTray()
 
 	// 系统事件（目前只有 Windows 上报）：注销关机时正常退出，唤醒后立即重新探测网络
 	clipboard.SetSystemHooks(

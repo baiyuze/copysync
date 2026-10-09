@@ -20,6 +20,8 @@ service DaemonService {
   rpc Fetch(FetchRequest) returns (Empty);
   // 把某条已就绪的记录重新放进本机剪贴板
   rpc ApplyToClipboard(ApplyToClipboardRequest) returns (Empty);
+  // 只返回已就绪图片在本机的路径，不改动剪贴板，也不把路径发给对端。
+  rpc GetImagePreview(GetImagePreviewRequest) returns (GetImagePreviewResponse);
 
   rpc ListDevices(Empty) returns (ListDevicesResponse);
   rpc CreatePairingCode(Empty) returns (CreatePairingCodeResponse);
@@ -163,6 +165,7 @@ message DeleteHistoryRequest {
 
 message FetchRequest {
   string clip_id = 1;
+  bool preserve_clipboard = 2; // 预览下载：收完后不覆盖用户的剪贴板
 }
 
 message ApplyToClipboardRequest {
@@ -249,4 +252,12 @@ message Status {
   int64 cache_bytes_used = 5;
   int32 peers_online = 6;
   string version = 7;
+}
+
+message GetImagePreviewRequest {
+  string clip_id = 1;
+}
+
+message GetImagePreviewResponse {
+  string path = 1;
 }

@@ -72,6 +72,14 @@ class DaemonServiceClient extends $grpc.Client {
     return $createUnaryCall(_$applyToClipboard, request, options: options);
   }
 
+  /// 只返回已就绪图片在本机的路径，不改动剪贴板，也不把路径发给对端。
+  $grpc.ResponseFuture<$0.GetImagePreviewResponse> getImagePreview(
+    $0.GetImagePreviewRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getImagePreview, request, options: options);
+  }
+
   $grpc.ResponseFuture<$0.ListDevicesResponse> listDevices(
     $0.Empty request, {
     $grpc.CallOptions? options,
@@ -171,6 +179,11 @@ class DaemonServiceClient extends $grpc.Client {
           '/copysync.v1.DaemonService/ApplyToClipboard',
           ($0.ApplyToClipboardRequest value) => value.writeToBuffer(),
           $0.Empty.fromBuffer);
+  static final _$getImagePreview =
+      $grpc.ClientMethod<$0.GetImagePreviewRequest, $0.GetImagePreviewResponse>(
+          '/copysync.v1.DaemonService/GetImagePreview',
+          ($0.GetImagePreviewRequest value) => value.writeToBuffer(),
+          $0.GetImagePreviewResponse.fromBuffer);
   static final _$listDevices =
       $grpc.ClientMethod<$0.Empty, $0.ListDevicesResponse>(
           '/copysync.v1.DaemonService/ListDevices',
@@ -262,6 +275,15 @@ abstract class DaemonServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.ApplyToClipboardRequest.fromBuffer(value),
         ($0.Empty value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetImagePreviewRequest,
+            $0.GetImagePreviewResponse>(
+        'GetImagePreview',
+        getImagePreview_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetImagePreviewRequest.fromBuffer(value),
+        ($0.GetImagePreviewResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.Empty, $0.ListDevicesResponse>(
         'ListDevices',
         listDevices_Pre,
@@ -376,6 +398,15 @@ abstract class DaemonServiceBase extends $grpc.Service {
 
   $async.Future<$0.Empty> applyToClipboard(
       $grpc.ServiceCall call, $0.ApplyToClipboardRequest request);
+
+  $async.Future<$0.GetImagePreviewResponse> getImagePreview_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetImagePreviewRequest> $request) async {
+    return getImagePreview($call, await $request);
+  }
+
+  $async.Future<$0.GetImagePreviewResponse> getImagePreview(
+      $grpc.ServiceCall call, $0.GetImagePreviewRequest request);
 
   $async.Future<$0.ListDevicesResponse> listDevices_Pre(
       $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async {

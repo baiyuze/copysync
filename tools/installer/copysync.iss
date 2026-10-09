@@ -57,6 +57,7 @@ Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 
 [Icons]
 Name: "{autoprograms}\CopySync"; Filename: "{app}\CopySync.exe"
+Name: "{autodesktop}\CopySync"; Filename: "{app}\CopySync.exe"
 
 [Registry]
 ; 卸载时删掉开机自启项与窗口位置记录。ValueType: none 表示安装时不写，只在卸载时删

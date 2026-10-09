@@ -9,6 +9,24 @@ import 'common.dart';
 import '../icons.dart';
 import '../platform.dart';
 
+// 保存“添加设备”这条路由。配对请求到达时只移除它，不误关上层的确认框。
+final _pairingSetupRoutes = Expando<DialogRoute<void>>();
+
+Future<void> showPairingDialog(BuildContext context) {
+  final navigator = Navigator.of(context, rootNavigator: true);
+  if (_pairingSetupRoutes[navigator] != null) return Future.value();
+  final route = DialogRoute<void>(
+    context: context,
+    builder: (_) => const PairingDialog(),
+  );
+  _pairingSetupRoutes[navigator] = route;
+  return navigator.push(route).whenComplete(() {
+    if (identical(_pairingSetupRoutes[navigator], route)) {
+      _pairingSetupRoutes[navigator] = null;
+    }
+  });
+}
+
 /// 配对对话框：既能生成配对码，也能输入对方的配对码。
 ///
 /// 两种角色放在一个对话框里切换，因为用户在打开它之前
@@ -192,6 +210,7 @@ class _JoinTabState extends State<_JoinTab> {
   }
 
   Future<void> _submit() async {
+    if (_busy) return;
     final code = _controller.text.trim();
     if (code.length != 6) {
       setState(() => _error = '配对码是 6 位字母或数字');
@@ -202,10 +221,9 @@ class _JoinTabState extends State<_JoinTab> {
       _error = null;
     });
     try {
-      final peer = await AppScope.read(context).redeemPairingCode(code);
-      if (!mounted) return;
-      Navigator.pop(context);
-      await showPairingConfirmDialog(context, peer);
+      // Shell 统一响应 pendingPairing，生成方和输入方都只有一个确认入口。
+      // 事件可能先于 RPC 返回，因此这里也不能 pop 最上层路由。
+      await AppScope.read(context).redeemPairingCode(code);
     } catch (e) {
       if (mounted) setState(() => _error = AppState.describeError(e));
     } finally {
@@ -281,6 +299,12 @@ class _JoinTabState extends State<_JoinTab> {
 /// 但无法让两台设备显示出相同的指纹。所以这一步不能做成"点确定就过"，
 /// 必须让用户真的看见并比对。
 Future<void> showPairingConfirmDialog(BuildContext context, Device peer) {
+  final navigator = Navigator.of(context, rootNavigator: true);
+  final setup = _pairingSetupRoutes[navigator];
+  if (setup != null) {
+    _pairingSetupRoutes[navigator] = null;
+    if (setup.isActive) navigator.removeRoute(setup);
+  }
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -301,6 +325,7 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
   bool _busy = false;
 
   Future<void> _respond(bool accept) async {
+    if (_busy) return;
     setState(() => _busy = true);
     final state = AppScope.read(context);
     try {
@@ -309,6 +334,7 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
       Navigator.pop(context);
       showToast(context, accept ? '配对完成' : '已拒绝配对');
     } catch (e) {
+      state.dismissPendingPairing(widget.peer.pairingSession);
       if (!mounted) return;
       Navigator.pop(context);
       showToast(context, AppState.describeError(e), error: true);

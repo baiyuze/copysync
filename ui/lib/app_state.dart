@@ -37,6 +37,7 @@ class AppState extends ChangeNotifier {
 
   /// 待用户核对指纹的配对请求。非空时界面弹出确认。
   Device? _pendingPairing;
+  final Set<String> _handledPairingSessions = {};
 
   /// 连不上后台服务时，它的安装状态。界面据此决定显示欢迎页还是重启提示。
   ServiceState? _serviceState;
@@ -284,7 +285,7 @@ class AppState extends ChangeNotifier {
   void _onDeviceChanged(Device d) {
     // 带 pairingSession 的不是已配对设备，而是一条待确认的配对请求
     if (d.pairingSession.isNotEmpty) {
-      _pendingPairing = d;
+      _setPendingPairing(d);
       return;
     }
     final i = _peers.indexWhere((p) => p.id == d.id);
@@ -315,21 +316,32 @@ class AppState extends ChangeNotifier {
     final resp = await _client.redeemPairingCode(
       RedeemPairingCodeRequest(code: code.trim().toUpperCase()),
     );
-    _pendingPairing = resp.peer..pairingSession = resp.pairingSession;
+    final peer = resp.peer..pairingSession = resp.pairingSession;
+    _setPendingPairing(peer);
     notifyListeners();
-    return _pendingPairing!;
+    return peer;
   }
 
   Future<void> confirmPairing(String session, bool accept) async {
     await _client.confirmPairing(
       ConfirmPairingRequest(pairingSession: session, accept: accept),
     );
-    _pendingPairing = null;
+    dismissPendingPairing(session);
     await _loadDevices();
   }
 
-  void dismissPendingPairing() {
-    _pendingPairing = null;
+  void _setPendingPairing(Device peer) {
+    // 事件流和兑换 RPC 返回同一个会话，先后顺序不固定。
+    if (!_handledPairingSessions.contains(peer.pairingSession)) {
+      _pendingPairing = peer;
+    }
+  }
+
+  void dismissPendingPairing([String? session]) {
+    final handled = session ?? _pendingPairing?.pairingSession;
+    if (handled != null) _handledPairingSessions.add(handled);
+    // 确认旧会话期间可能来了另一条请求，不能把新请求一并清掉。
+    if (_pendingPairing?.pairingSession == handled) _pendingPairing = null;
     notifyListeners();
   }
 
@@ -359,8 +371,17 @@ class AppState extends ChangeNotifier {
   Future<void> fetch(String clipId) =>
       _client.fetch(FetchRequest(clipId: clipId));
 
+  Future<void> fetchImagePreview(String clipId) =>
+      _client.fetch(FetchRequest(clipId: clipId, preserveClipboard: true));
+
   Future<void> applyToClipboard(String clipId) =>
       _client.applyToClipboard(ApplyToClipboardRequest(clipId: clipId));
+
+  Future<String> imagePreviewPath(String clipId) async {
+    final response = await _client.getImagePreview(GetImagePreviewRequest(clipId: clipId),
+        options: CallOptions(timeout: const Duration(seconds: 10)));
+    return response.path;
+  }
 
   Future<void> requestClipboardPermission() =>
       _client.requestClipboardPermission(Empty());

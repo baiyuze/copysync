@@ -1014,9 +1014,11 @@ class DeleteHistoryRequest extends $pb.GeneratedMessage {
 class FetchRequest extends $pb.GeneratedMessage {
   factory FetchRequest({
     $core.String? clipId,
+    $core.bool? preserveClipboard,
   }) {
     final result = FetchRequest._();
     if (clipId != null) result.clipId = clipId;
+    if (preserveClipboard != null) result.preserveClipboard = preserveClipboard;
     return result;
   }
 
@@ -1034,6 +1036,7 @@ class FetchRequest extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
       createEmptyInstance: FetchRequest.$_createMessage)
     ..aOS(1, _omitFieldNames ? '' : 'clipId')
+    ..aOB(2, _omitFieldNames ? '' : 'preserveClipboard')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1066,6 +1069,15 @@ class FetchRequest extends $pb.GeneratedMessage {
   $core.bool hasClipId() => $_has(0);
   @$pb.TagNumber(1)
   void clearClipId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.bool get preserveClipboard => $_getBF(1);
+  @$pb.TagNumber(2)
+  set preserveClipboard($core.bool value) => $_setBool(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasPreserveClipboard() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPreserveClipboard() => $_clearField(2);
 }
 
 class ApplyToClipboardRequest extends $pb.GeneratedMessage {
@@ -2042,6 +2054,124 @@ class Status extends $pb.GeneratedMessage {
   $core.bool hasVersion() => $_has(6);
   @$pb.TagNumber(7)
   void clearVersion() => $_clearField(7);
+}
+
+class GetImagePreviewRequest extends $pb.GeneratedMessage {
+  factory GetImagePreviewRequest({
+    $core.String? clipId,
+  }) {
+    final result = GetImagePreviewRequest._();
+    if (clipId != null) result.clipId = clipId;
+    return result;
+  }
+
+  GetImagePreviewRequest._();
+
+  factory GetImagePreviewRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      GetImagePreviewRequest()..mergeFromBuffer(data, registry);
+  factory GetImagePreviewRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      GetImagePreviewRequest()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetImagePreviewRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: GetImagePreviewRequest.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'clipId')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetImagePreviewRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetImagePreviewRequest copyWith(
+          void Function(GetImagePreviewRequest) updates) =>
+      super.copyWith((message) => updates(message as GetImagePreviewRequest))
+          as GetImagePreviewRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated(
+      'Use GetImagePreviewRequest() / GetImagePreviewRequest.new instead')
+  static GetImagePreviewRequest create() => GetImagePreviewRequest._();
+  static $pb.GeneratedMessage $_createMessage() => GetImagePreviewRequest._();
+  @$core.override
+  GetImagePreviewRequest createEmptyInstance() => GetImagePreviewRequest._();
+  @$core.pragma('dart2js:noInline')
+  static GetImagePreviewRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetImagePreviewRequest>(
+          GetImagePreviewRequest.$_createMessage);
+  static GetImagePreviewRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get clipId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set clipId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasClipId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearClipId() => $_clearField(1);
+}
+
+class GetImagePreviewResponse extends $pb.GeneratedMessage {
+  factory GetImagePreviewResponse({
+    $core.String? path,
+  }) {
+    final result = GetImagePreviewResponse._();
+    if (path != null) result.path = path;
+    return result;
+  }
+
+  GetImagePreviewResponse._();
+
+  factory GetImagePreviewResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      GetImagePreviewResponse()..mergeFromBuffer(data, registry);
+  factory GetImagePreviewResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      GetImagePreviewResponse()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetImagePreviewResponse',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: GetImagePreviewResponse.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'path')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetImagePreviewResponse clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetImagePreviewResponse copyWith(
+          void Function(GetImagePreviewResponse) updates) =>
+      super.copyWith((message) => updates(message as GetImagePreviewResponse))
+          as GetImagePreviewResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated(
+      'Use GetImagePreviewResponse() / GetImagePreviewResponse.new instead')
+  static GetImagePreviewResponse create() => GetImagePreviewResponse._();
+  static $pb.GeneratedMessage $_createMessage() => GetImagePreviewResponse._();
+  @$core.override
+  GetImagePreviewResponse createEmptyInstance() => GetImagePreviewResponse._();
+  @$core.pragma('dart2js:noInline')
+  static GetImagePreviewResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetImagePreviewResponse>(
+          GetImagePreviewResponse.$_createMessage);
+  static GetImagePreviewResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get path => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set path($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasPath() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPath() => $_clearField(1);
 }
 
 const $core.bool _omitFieldNames =

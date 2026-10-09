@@ -3,9 +3,12 @@
 package main
 
 import (
+	"context"
 	"io"
 	"os"
 )
+
+func startTray(context.Context, context.CancelFunc, bool) func() { return func() {} }
 
 // Mac 上这些都由 launchd 负责：日志重定向到文件、只运行一个实例、崩溃自动拉起。
 

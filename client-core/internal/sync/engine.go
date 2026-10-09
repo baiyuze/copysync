@@ -668,12 +668,26 @@ func (e *Engine) handleDone(d *pb.TransferDone) {
 
 // Fetch 主动拉取一条仅有元数据的记录。
 func (e *Engine) Fetch(ctx context.Context, clipID string) error {
+	return e.fetch(ctx, clipID, false)
+}
+
+// FetchForPreview 下载旧图片只用于查看，不能覆盖用户刚复制的内容。
+func (e *Engine) FetchForPreview(ctx context.Context, clipID string) error {
+	return e.fetch(ctx, clipID, true)
+}
+
+func (e *Engine) fetch(ctx context.Context, clipID string, preserveClipboard bool) error {
 	clip, err := e.store.GetClip(clipID)
 	if err != nil {
 		return err
 	}
 	if clip.Outgoing {
 		return errors.New("这是本机复制的内容，无需拉取")
+	}
+	if preserveClipboard {
+		e.mu.Lock()
+		e.quiet[clipID] = true
+		e.mu.Unlock()
 	}
 	if err := e.send(clip.OriginDeviceID, &pb.PeerMessage{
 		Payload: &pb.PeerMessage_Fetch{Fetch: &pb.PeerFetch{ClipId: clipID}},
@@ -724,6 +738,29 @@ func (e *Engine) applyToClipboard(ctx context.Context, clip store.Clip) error {
 	}
 
 	return e.watcher.Write(ctx, content)
+}
+
+// ImagePreviewPath 只解析本地图片位置，不拉取文件、不写剪贴板。
+func (e *Engine) ImagePreviewPath(_ context.Context, clipID string) (string, error) {
+	clip, err := e.store.GetClip(clipID)
+	if err != nil {
+		return "", errors.New("找不到这条图片记录")
+	}
+	if clip.Kind != store.KindImage {
+		return "", errors.New("这条记录不是图片")
+	}
+	if clip.Status != store.StatusReady {
+		return "", errors.New("图片尚未下载或已经过期")
+	}
+	paths, err := e.localPaths(clip)
+	if err != nil || len(paths) != 1 {
+		return "", errors.New("图片已不在本机，可能已被清理")
+	}
+	info, err := os.Stat(paths[0])
+	if err != nil || !info.Mode().IsRegular() {
+		return "", errors.New("图片文件不可用")
+	}
+	return paths[0], nil
 }
 
 // localPaths 返回这条记录在本机可用的实际路径。
