@@ -167,8 +167,8 @@ C = {
     "specs_h2": "技术规格",
     "specs": [
         ("版本", '1.3.0，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布'),
-        ("Mac 客户端", "macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 45 MB"),
-        ("Windows 客户端", "Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 21 MB"),
+        ("Mac 客户端", "macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB"),
+        ("Windows 客户端", "Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
         ("服务器", "Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存"),
         ("界面语言", "简体中文、English、日本語，默认跟随系统，可在设置里切换"),
         ("同步的内容", "纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭"),

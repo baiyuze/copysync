@@ -182,8 +182,8 @@ C = {
     "specs_h2": "Specifications",
     "specs": [
         ("Version", '1.3.0, released <time datetime="2026-10-09">October 9, 2026</time>'),
-        ("Mac app", "macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 45 MB download"),
-        ("Windows app", "Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 21 MB download"),
+        ("Mac app", "macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 47 MB download"),
+        ("Windows app", "Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
         ("Server", "Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM"),
         ("Languages", "English, Simplified Chinese and Japanese; follows the system by default, switchable in Settings"),
         ("Content", "Plain text, rich text, images and screenshots, files, folders; each type can be turned off"),
