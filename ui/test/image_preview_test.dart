@@ -6,26 +6,31 @@ import 'package:copysync_ui/main.dart';
 import 'package:copysync_ui/widgets/image_preview_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class PreviewState extends AppState {
-  PreviewState(this.path, {ClipStatus status = ClipStatus.CLIP_STATUS_READY}) {
+  PreviewState(this.path, {ClipStatus status = ClipStatus.CLIP_STATUS_READY, List<ClipRecord>? records}) {
     debugSeed(
       status: Status(signalingConnected: true),
       config: Config(),
       self: Device(id: 'self'),
-      records: [
-        ClipRecord(
-          id: 'image',
-          kind: ClipKind.CLIP_KIND_IMAGE,
-          status: status,
-          textPreview: '测试图片',
-          originDeviceName: '测试电脑',
-        ),
-      ],
+      records: records ??
+          [
+            ClipRecord(
+              id: 'image',
+              kind: ClipKind.CLIP_KIND_IMAGE,
+              status: status,
+              textPreview: '测试图片',
+              originDeviceName: '测试电脑',
+              imageCount: 1,
+            ),
+          ],
     );
   }
   String path;
+  // 多张图片时每张的文件名；为空表示剪贴板里的单张图片
+  List<String> names = const [];
   int previewCalls = 0;
   int fetchCalls = 0;
   int clipboardCalls = 0;
@@ -33,10 +38,14 @@ class PreviewState extends AppState {
   bool failFetch = false;
 
   @override
-  Future<String> imagePreviewPath(String clipId) async {
+  Future<GetImagePreviewResponse> imagePreview(String clipId, {int index = 0}) async {
     previewCalls++;
     if (failPreview) throw StateError('图片已不在本机，可能已被清理');
-    return path;
+    return GetImagePreviewResponse(
+      path: path,
+      count: names.isEmpty ? 1 : names.length,
+      name: names.isEmpty ? '' : names[index],
+    );
   }
 
   @override
@@ -56,14 +65,10 @@ class PreviewState extends AppState {
   );
 }
 
-Future<void> openPreview(
-  WidgetTester tester,
-  PreviewState state, {
-  bool button = false,
-}) async {
+Future<void> openPreview(WidgetTester tester, PreviewState state) async {
   await tester.pumpWidget(CopySyncApp(state: state));
   await tester.pump();
-  await tester.tap(button ? find.text('预览') : find.textContaining('来自 测试电脑'));
+  await tester.tap(find.textContaining('来自 测试电脑'));
   await tester.pump(const Duration(milliseconds: 250));
   expect(find.byType(ImagePreviewDialog), findsOneWidget);
 }
@@ -112,13 +117,38 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('预览按钮同样打开图片', (tester) async {
+  testWidgets('复制的几张图片文件点开后可以左右翻看', (tester) async {
     final state = PreviewState(
       File('test/fixtures/image-preview.png').absolute.path,
-    );
+      records: [
+        ClipRecord(
+          id: 'photos',
+          kind: ClipKind.CLIP_KIND_FILE,
+          status: ClipStatus.CLIP_STATUS_READY,
+          originDeviceName: '测试电脑',
+          items: [ClipItem(name: 'a.heic'), ClipItem(name: 'b.jpg')],
+          imageCount: 2,
+        ),
+      ],
+    )..names = ['a.heic', 'b.jpg'];
     addTearDown(state.dispose);
-    await openPreview(tester, state, button: true);
+    await openPreview(tester, state);
     await decodedImage(tester);
+    expect(find.text('a.heic'), findsWidgets);
+    expect(find.text('1 / 2'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('下一张'));
+    await tester.pump();
+    await decodedImage(tester);
+    expect(find.text('2 / 2'), findsOneWidget);
+    expect(find.text('b.jpg'), findsOneWidget);
+
+    // 方向键也能翻，翻过最后一张回到第一张
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    await decodedImage(tester);
+    expect(find.text('1 / 2'), findsOneWidget);
+    expect(state.previewCalls, 3);
     expect(state.clipboardCalls, 0);
   });
 
@@ -227,26 +257,46 @@ void main() {
     expect(image.fit, BoxFit.scaleDown);
   });
 
-  testWidgets('鼠标移到记录上时，「预览」按钮不挪位置', (tester) async {
-    tester.view.physicalSize = const Size(1000, 700);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+  testWidgets('列表里不放「预览」按钮，点记录本身预览；没有图片的记录点了不打开', (tester) async {
     final state = PreviewState(
       File('test/fixtures/image-preview.png').absolute.path,
+      records: [
+        ClipRecord(
+          id: 'image',
+          kind: ClipKind.CLIP_KIND_IMAGE,
+          status: ClipStatus.CLIP_STATUS_READY,
+          originDeviceName: '测试电脑',
+          imageCount: 1,
+        ),
+        ClipRecord(
+          id: 'notes',
+          kind: ClipKind.CLIP_KIND_FILE,
+          status: ClipStatus.CLIP_STATUS_READY,
+          originDeviceName: '另一台',
+          items: [ClipItem(name: 'notes.txt')],
+        ),
+      ],
     );
     addTearDown(state.dispose);
     await tester.pumpWidget(CopySyncApp(state: state));
     await tester.pump();
-    final before = tester.getCenter(find.text('预览'));
-    expect(find.text('放入剪贴板').hitTestable(), findsNothing);
+    expect(find.text('预览'), findsNothing);
 
+    // 悬停时才出现「放入剪贴板」
+    expect(find.text('放入剪贴板').hitTestable(), findsNothing);
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     addTearDown(mouse.removePointer);
     await mouse.addPointer(location: Offset.zero);
     await mouse.moveTo(tester.getCenter(find.textContaining('来自 测试电脑')));
     await tester.pump();
-
     expect(find.text('放入剪贴板').hitTestable(), findsOneWidget);
-    expect(tester.getCenter(find.text('预览')), before);
+
+    await tester.tap(find.text('notes.txt'));
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(find.byType(ImagePreviewDialog), findsNothing);
+
+    await tester.tap(find.textContaining('来自 测试电脑'));
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(find.byType(ImagePreviewDialog), findsOneWidget);
   });
 }

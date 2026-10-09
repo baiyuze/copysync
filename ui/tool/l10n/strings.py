@@ -85,7 +85,6 @@ S = [
     ("fetchStarted", "Pulling…", "开始拉取", "取り込みを開始しました"),
     ("transferFailed", "Transfer failed", "传输失败", "転送に失敗しました"),
     ("expired", "Expired", "已过期", "期限切れ"),
-    ("preview", "Preview", "预览", "プレビュー"),
     ("putOnClipboard", "Copy to clipboard", "放入剪贴板", "クリップボードに入れる"),
     ("putOnClipboardDone", "On the clipboard", "已放入剪贴板", "クリップボードに入れました"),
     ("deleteRecord", "Delete this item", "删除这条记录", "この履歴を削除"),
@@ -97,6 +96,8 @@ S = [
     # ── 图片预览 ──
     ("imagePreviewTitle", "Image preview", "图片预览", "画像プレビュー"),
     ("closePreview", "Close preview", "关闭预览", "プレビューを閉じる"),
+    ("previousImage", "Previous image", "上一张", "前の画像"),
+    ("nextImage", "Next image", "下一张", "次の画像"),
     ("previewHint", "Scroll or pinch to zoom, drag to move around", "滚轮或触控板缩放，拖动查看", "ホイールやトラックパッドで拡大縮小、ドラッグで移動"),
     ("fitWindow", "Fit to window", "适应窗口", "ウィンドウに合わせる"),
     ("previewDeleted", "This image has been deleted from the history", "这条图片记录已被删除", "この画像は履歴から削除されました"),

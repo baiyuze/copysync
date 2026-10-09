@@ -228,9 +228,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get expired => '已过期';
 
   @override
-  String get preview => '预览';
-
-  @override
   String get putOnClipboard => '放入剪贴板';
 
   @override
@@ -258,6 +255,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get closePreview => '关闭预览';
+
+  @override
+  String get previousImage => '上一张';
+
+  @override
+  String get nextImage => '下一张';
 
   @override
   String get previewHint => '滚轮或触控板缩放，拖动查看';

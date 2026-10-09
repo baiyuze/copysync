@@ -20,6 +20,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -29,6 +30,7 @@ import (
 	"github.com/baiyuze/copysync/client-core/internal/cache"
 	"github.com/baiyuze/copysync/client-core/internal/clipboard"
 	"github.com/baiyuze/copysync/client-core/internal/config"
+	"github.com/baiyuze/copysync/client-core/internal/imagepreview"
 	"github.com/baiyuze/copysync/client-core/internal/pack"
 	"github.com/baiyuze/copysync/client-core/internal/store"
 	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
@@ -740,27 +742,51 @@ func (e *Engine) applyToClipboard(ctx context.Context, clip store.Clip) error {
 	return e.watcher.Write(ctx, content)
 }
 
-// ImagePreviewPath 只解析本地图片位置，不拉取文件、不写剪贴板。
-func (e *Engine) ImagePreviewPath(_ context.Context, clipID string) (string, error) {
+// ImagePreview 解析一条记录里第 index 张图片在本机的位置，不拉取文件、不写剪贴板。
+// 剪贴板图片只有一张；文件记录按文件名排序，只看其中的图片文件，不进文件夹。
+// 返回界面可以直接解码的路径（HEIC 等格式是转换出来的 PNG）、文件名（剪贴板图片为空）
+// 与这条记录在本机能预览的图片数。
+func (e *Engine) ImagePreview(_ context.Context, clipID string, index int) (path, name string, count int, err error) {
 	clip, err := e.store.GetClip(clipID)
 	if err != nil {
-		return "", errors.New("找不到这条图片记录")
+		return "", "", 0, errors.New("找不到这条记录")
 	}
-	if clip.Kind != store.KindImage {
-		return "", errors.New("这条记录不是图片")
+	if imagepreview.ImageCount(clip) == 0 {
+		return "", "", 0, errors.New("这条记录里没有能预览的图片")
 	}
 	if clip.Status != store.StatusReady {
-		return "", errors.New("图片尚未下载或已经过期")
+		return "", "", 0, errors.New("图片尚未下载或已经过期")
 	}
 	paths, err := e.localPaths(clip)
-	if err != nil || len(paths) != 1 {
-		return "", errors.New("图片已不在本机，可能已被清理")
+	if err != nil {
+		return "", "", 0, errors.New("图片已不在本机，可能已被清理")
 	}
-	info, err := os.Stat(paths[0])
-	if err != nil || !info.Mode().IsRegular() {
-		return "", errors.New("图片文件不可用")
+	var images []string
+	for _, p := range paths {
+		info, err := os.Stat(p)
+		if err != nil || !info.Mode().IsRegular() {
+			continue
+		}
+		if clip.Kind == store.KindImage || imagepreview.Previewable(p) {
+			images = append(images, p)
+		}
 	}
-	return paths[0], nil
+	if len(images) == 0 || clip.Kind == store.KindImage && len(images) != 1 {
+		return "", "", 0, errors.New("图片已不在本机，可能已被清理")
+	}
+	if clip.Kind == store.KindImage {
+		// 剪贴板图片收发时统一存成 PNG，界面能直接解码
+		return images[0], "", 1, nil
+	}
+	sort.Slice(images, func(i, j int) bool { return filepath.Base(images[i]) < filepath.Base(images[j]) })
+	if index < 0 || index >= len(images) {
+		index = 0
+	}
+	path, err = imagepreview.Prepare(images[index])
+	if err != nil {
+		return "", "", 0, err
+	}
+	return path, filepath.Base(images[index]), len(images), nil
 }
 
 // localPaths 返回这条记录在本机可用的实际路径。
@@ -807,6 +833,7 @@ func (e *Engine) emitRecord(clip store.Clip) {
 		CreatedAtUnix:    clip.CreatedAt.Unix(),
 		ExpiresAtUnix:    clip.ExpiresAt.Unix(),
 		Error:            clip.Error,
+		ImageCount:       imagepreview.ImageCount(clip),
 	})
 }
 

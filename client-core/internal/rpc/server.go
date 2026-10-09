@@ -37,7 +37,7 @@ type Deps struct {
 	Fetch                  func(ctx context.Context, clipID string) error
 	FetchForPreview        func(ctx context.Context, clipID string) error
 	ApplyToClipboard       func(ctx context.Context, clipID string) error
-	ImagePreviewPath       func(ctx context.Context, clipID string) (string, error)
+	ImagePreview           func(ctx context.Context, clipID string, index int) (path, name string, count int, err error)
 	Permission             func() clipboard.Permission
 	OpenPermissionSettings func() error
 	// Network 返回最近一轮网络出口探测的结果
@@ -236,14 +236,14 @@ func (s *Server) GetImagePreview(ctx context.Context,
 	if req.GetClipId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "缺少图片记录 ID")
 	}
-	if s.deps.ImagePreviewPath == nil {
+	if s.deps.ImagePreview == nil {
 		return nil, status.Error(codes.Unimplemented, "请更新后台服务后再预览图片")
 	}
-	path, err := s.deps.ImagePreviewPath(ctx, req.GetClipId())
+	path, name, count, err := s.deps.ImagePreview(ctx, req.GetClipId(), int(req.GetIndex()))
 	if err != nil {
 		return nil, status.Error(codes.FailedPrecondition, err.Error())
 	}
-	return &pb.GetImagePreviewResponse{Path: path}, nil
+	return &pb.GetImagePreviewResponse{Path: path, Name: name, Count: int32(count)}, nil
 }
 
 // ─────────────────────────── 配置与状态 ───────────────────────────

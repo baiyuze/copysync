@@ -369,8 +369,11 @@ type ClipRecord struct {
 	CreatedAtUnix    int64                  `protobuf:"varint,10,opt,name=created_at_unix,json=createdAtUnix,proto3" json:"created_at_unix,omitempty"`
 	ExpiresAtUnix    int64                  `protobuf:"varint,11,opt,name=expires_at_unix,json=expiresAtUnix,proto3" json:"expires_at_unix,omitempty"`
 	Error            string                 `protobuf:"bytes,12,opt,name=error,proto3" json:"error,omitempty"` // status=FAILED 时的具体原因
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// 能在界面里预览的图片数：剪贴板图片为 1，文件记录是其中图片文件的个数。
+	// 由本机后台服务按文件名判断，HEIC、TIFF 这类格式只有能转换它的平台才算。
+	ImageCount    int32 `protobuf:"varint,13,opt,name=image_count,json=imageCount,proto3" json:"image_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ClipRecord) Reset() {
@@ -485,6 +488,13 @@ func (x *ClipRecord) GetError() string {
 		return x.Error
 	}
 	return ""
+}
+
+func (x *ClipRecord) GetImageCount() int32 {
+	if x != nil {
+		return x.ImageCount
+	}
+	return 0
 }
 
 type SubscribeRequest struct {
@@ -1800,6 +1810,7 @@ func (x *Status) GetVersion() string {
 type GetImagePreviewRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ClipId        string                 `protobuf:"bytes,1,opt,name=clip_id,json=clipId,proto3" json:"clip_id,omitempty"`
+	Index         int32                  `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty"` // 一条记录里有多张图片时看第几张，从 0 开始
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1841,9 +1852,18 @@ func (x *GetImagePreviewRequest) GetClipId() string {
 	return ""
 }
 
+func (x *GetImagePreviewRequest) GetIndex() int32 {
+	if x != nil {
+		return x.Index
+	}
+	return 0
+}
+
 type GetImagePreviewResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Path          string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	Path          string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`    // 界面可以直接解码的图片文件；HEIC 等格式是转换出来的 PNG
+	Count         int32                  `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"` // 这条记录在本机实际能预览的图片数
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`    // 文件名；剪贴板里的图片没有文件名，为空
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1885,6 +1905,20 @@ func (x *GetImagePreviewResponse) GetPath() string {
 	return ""
 }
 
+func (x *GetImagePreviewResponse) GetCount() int32 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+func (x *GetImagePreviewResponse) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 var File_copysync_v1_daemon_proto protoreflect.FileDescriptor
 
 const file_copysync_v1_daemon_proto_rawDesc = "" +
@@ -1895,7 +1929,7 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04size\x18\x02 \x01(\x03R\x04size\x12\x15\n" +
 	"\x06is_dir\x18\x03 \x01(\bR\x05isDir\x12!\n" +
-	"\fcontent_type\x18\x04 \x01(\tR\vcontentType\"\xc1\x03\n" +
+	"\fcontent_type\x18\x04 \x01(\tR\vcontentType\"\xe2\x03\n" +
 	"\n" +
 	"ClipRecord\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12)\n" +
@@ -1911,7 +1945,9 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x0fcreated_at_unix\x18\n" +
 	" \x01(\x03R\rcreatedAtUnix\x12&\n" +
 	"\x0fexpires_at_unix\x18\v \x01(\x03R\rexpiresAtUnix\x12\x14\n" +
-	"\x05error\x18\f \x01(\tR\x05error\"1\n" +
+	"\x05error\x18\f \x01(\tR\x05error\x12\x1f\n" +
+	"\vimage_count\x18\r \x01(\x05R\n" +
+	"imageCount\"1\n" +
 	"\x10SubscribeRequest\x12\x1d\n" +
 	"\n" +
 	"since_unix\x18\x01 \x01(\x03R\tsinceUnix\"\x8d\x01\n" +
@@ -2010,11 +2046,14 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x14clipboard_permission\x18\x04 \x01(\x0e2 .copysync.v1.ClipboardPermissionR\x13clipboardPermission\x12(\n" +
 	"\x10cache_bytes_used\x18\x05 \x01(\x03R\x0ecacheBytesUsed\x12!\n" +
 	"\fpeers_online\x18\x06 \x01(\x05R\vpeersOnline\x12\x18\n" +
-	"\aversion\x18\a \x01(\tR\aversion\"1\n" +
+	"\aversion\x18\a \x01(\tR\aversion\"G\n" +
 	"\x16GetImagePreviewRequest\x12\x17\n" +
-	"\aclip_id\x18\x01 \x01(\tR\x06clipId\"-\n" +
+	"\aclip_id\x18\x01 \x01(\tR\x06clipId\x12\x14\n" +
+	"\x05index\x18\x02 \x01(\x05R\x05index\"W\n" +
 	"\x17GetImagePreviewResponse\x12\x12\n" +
-	"\x04path\x18\x01 \x01(\tR\x04path*v\n" +
+	"\x04path\x18\x01 \x01(\tR\x04path\x12\x14\n" +
+	"\x05count\x18\x02 \x01(\x05R\x05count\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name*v\n" +
 	"\bClipKind\x12\x19\n" +
 	"\x15CLIP_KIND_UNSPECIFIED\x10\x00\x12\x12\n" +
 	"\x0eCLIP_KIND_TEXT\x10\x01\x12\x12\n" +

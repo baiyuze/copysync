@@ -38,6 +38,8 @@ abstract final class AppIcons {
   static IconData get docOnClipboard =>
       _pick(CupertinoIcons.doc_on_clipboard, FluentIcons.clipboard_paste_24_regular);
   static IconData get doc => _pick(CupertinoIcons.doc, FluentIcons.document_24_regular);
+  static IconData get chevronLeft => _pick(CupertinoIcons.chevron_left, FluentIcons.chevron_left_24_regular);
+  static IconData get chevronRight => _pick(CupertinoIcons.chevron_right, FluentIcons.chevron_right_24_regular);
   static IconData get chevronUpDown =>
       _pick(CupertinoIcons.chevron_up_chevron_down, FluentIcons.chevron_up_down_24_regular);
 }

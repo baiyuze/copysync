@@ -229,9 +229,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get expired => '期限切れ';
 
   @override
-  String get preview => 'プレビュー';
-
-  @override
   String get putOnClipboard => 'クリップボードに入れる';
 
   @override
@@ -259,6 +256,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get closePreview => 'プレビューを閉じる';
+
+  @override
+  String get previousImage => '前の画像';
+
+  @override
+  String get nextImage => '次の画像';
 
   @override
   String get previewHint => 'ホイールやトラックパッドで拡大縮小、ドラッグで移動';

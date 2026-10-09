@@ -280,9 +280,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expired => 'Expired';
 
   @override
-  String get preview => 'Preview';
-
-  @override
   String get putOnClipboard => 'Copy to clipboard';
 
   @override
@@ -316,6 +313,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get closePreview => 'Close preview';
+
+  @override
+  String get previousImage => 'Previous image';
+
+  @override
+  String get nextImage => 'Next image';
 
   @override
   String get previewHint => 'Scroll or pinch to zoom, drag to move around';

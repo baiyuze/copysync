@@ -165,6 +165,7 @@ class ClipRecord extends $pb.GeneratedMessage {
     $fixnum.Int64? createdAtUnix,
     $fixnum.Int64? expiresAtUnix,
     $core.String? error,
+    $core.int? imageCount,
   }) {
     final result = ClipRecord._();
     if (id != null) result.id = id;
@@ -179,6 +180,7 @@ class ClipRecord extends $pb.GeneratedMessage {
     if (createdAtUnix != null) result.createdAtUnix = createdAtUnix;
     if (expiresAtUnix != null) result.expiresAtUnix = expiresAtUnix;
     if (error != null) result.error = error;
+    if (imageCount != null) result.imageCount = imageCount;
     return result;
   }
 
@@ -210,6 +212,7 @@ class ClipRecord extends $pb.GeneratedMessage {
     ..aInt64(10, _omitFieldNames ? '' : 'createdAtUnix')
     ..aInt64(11, _omitFieldNames ? '' : 'expiresAtUnix')
     ..aOS(12, _omitFieldNames ? '' : 'error')
+    ..aI(13, _omitFieldNames ? '' : 'imageCount')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -333,6 +336,17 @@ class ClipRecord extends $pb.GeneratedMessage {
   $core.bool hasError() => $_has(11);
   @$pb.TagNumber(12)
   void clearError() => $_clearField(12);
+
+  /// 能在界面里预览的图片数：剪贴板图片为 1，文件记录是其中图片文件的个数。
+  /// 由本机后台服务按文件名判断，HEIC、TIFF 这类格式只有能转换它的平台才算。
+  @$pb.TagNumber(13)
+  $core.int get imageCount => $_getIZ(12);
+  @$pb.TagNumber(13)
+  set imageCount($core.int value) => $_setSignedInt32(12, value);
+  @$pb.TagNumber(13)
+  $core.bool hasImageCount() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearImageCount() => $_clearField(13);
 }
 
 class SubscribeRequest extends $pb.GeneratedMessage {
@@ -2073,9 +2087,11 @@ class Status extends $pb.GeneratedMessage {
 class GetImagePreviewRequest extends $pb.GeneratedMessage {
   factory GetImagePreviewRequest({
     $core.String? clipId,
+    $core.int? index,
   }) {
     final result = GetImagePreviewRequest._();
     if (clipId != null) result.clipId = clipId;
+    if (index != null) result.index = index;
     return result;
   }
 
@@ -2093,6 +2109,7 @@ class GetImagePreviewRequest extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
       createEmptyInstance: GetImagePreviewRequest.$_createMessage)
     ..aOS(1, _omitFieldNames ? '' : 'clipId')
+    ..aI(2, _omitFieldNames ? '' : 'index')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2127,14 +2144,27 @@ class GetImagePreviewRequest extends $pb.GeneratedMessage {
   $core.bool hasClipId() => $_has(0);
   @$pb.TagNumber(1)
   void clearClipId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get index => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set index($core.int value) => $_setSignedInt32(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasIndex() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearIndex() => $_clearField(2);
 }
 
 class GetImagePreviewResponse extends $pb.GeneratedMessage {
   factory GetImagePreviewResponse({
     $core.String? path,
+    $core.int? count,
+    $core.String? name,
   }) {
     final result = GetImagePreviewResponse._();
     if (path != null) result.path = path;
+    if (count != null) result.count = count;
+    if (name != null) result.name = name;
     return result;
   }
 
@@ -2152,6 +2182,8 @@ class GetImagePreviewResponse extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
       createEmptyInstance: GetImagePreviewResponse.$_createMessage)
     ..aOS(1, _omitFieldNames ? '' : 'path')
+    ..aI(2, _omitFieldNames ? '' : 'count')
+    ..aOS(3, _omitFieldNames ? '' : 'name')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2186,6 +2218,24 @@ class GetImagePreviewResponse extends $pb.GeneratedMessage {
   $core.bool hasPath() => $_has(0);
   @$pb.TagNumber(1)
   void clearPath() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get count => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set count($core.int value) => $_setSignedInt32(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasCount() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearCount() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get name => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set name($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasName() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearName() => $_clearField(3);
 }
 
 const $core.bool _omitFieldNames =

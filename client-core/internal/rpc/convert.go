@@ -5,6 +5,7 @@ import (
 
 	"github.com/baiyuze/copysync/client-core/internal/clipboard"
 	"github.com/baiyuze/copysync/client-core/internal/config"
+	"github.com/baiyuze/copysync/client-core/internal/imagepreview"
 	"github.com/baiyuze/copysync/client-core/internal/store"
 	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
 )
@@ -35,6 +36,7 @@ func clipToProto(c store.Clip) *pb.ClipRecord {
 		CreatedAtUnix:    c.CreatedAt.Unix(),
 		ExpiresAtUnix:    c.ExpiresAt.Unix(),
 		Error:            c.Error,
+		ImageCount:       imagepreview.ImageCount(c),
 	}
 }
 

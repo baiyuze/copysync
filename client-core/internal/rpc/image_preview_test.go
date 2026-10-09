@@ -19,12 +19,12 @@ func TestImagePreviewRPC(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	called := 0
-	s := NewServer(Deps{ImagePreviewPath: func(_ context.Context, id string) (string, error) {
+	s := NewServer(Deps{ImagePreview: func(_ context.Context, id string, index int) (string, string, int, error) {
 		called++
 		if id == "missing" {
-			return "", errors.New("图片已被清理")
+			return "", "", 0, errors.New("图片已被清理")
 		}
-		return "/test/中文 图片.png", nil
+		return "/test/中文 图片.png", "中文 图片.png", 3 + index, nil
 	}}, NewHub(), "test-token")
 	port, server, err := s.Serve(ctx)
 	if err != nil {
@@ -52,8 +52,8 @@ func TestImagePreviewRPC(t *testing.T) {
 	if _, err := client.GetImagePreview(auth, &pb.GetImagePreviewRequest{ClipId: "missing"}); status.Code(err) != codes.FailedPrecondition {
 		t.Fatalf("missing image: %v", err)
 	}
-	got, err := client.GetImagePreview(auth, &pb.GetImagePreviewRequest{ClipId: "image"})
-	if err != nil || got.GetPath() != "/test/中文 图片.png" {
+	got, err := client.GetImagePreview(auth, &pb.GetImagePreviewRequest{ClipId: "image", Index: 1})
+	if err != nil || got.GetPath() != "/test/中文 图片.png" || got.GetName() != "中文 图片.png" || got.GetCount() != 4 {
 		t.Fatalf("preview response: %v, %v", got, err)
 	}
 }

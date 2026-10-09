@@ -72,7 +72,7 @@ class DaemonServiceClient extends $grpc.Client {
     return $createUnaryCall(_$applyToClipboard, request, options: options);
   }
 
-  /// 只返回已就绪图片在本机的路径，不改动剪贴板，也不把路径发给对端。
+  /// 只返回已就绪图片（或图片文件）在本机的路径，不改动剪贴板，也不把路径发给对端。
   $grpc.ResponseFuture<$0.GetImagePreviewResponse> getImagePreview(
     $0.GetImagePreviewRequest request, {
     $grpc.CallOptions? options,

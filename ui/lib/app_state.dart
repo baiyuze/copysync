@@ -378,11 +378,11 @@ class AppState extends ChangeNotifier {
   Future<void> applyToClipboard(String clipId) =>
       _client.applyToClipboard(ApplyToClipboardRequest(clipId: clipId));
 
-  Future<String> imagePreviewPath(String clipId) async {
-    final response = await _client.getImagePreview(GetImagePreviewRequest(clipId: clipId),
-        options: CallOptions(timeout: const Duration(seconds: 10)));
-    return response.path;
-  }
+  /// 一条记录里第 [index] 张图片：本机路径、文件名，以及能预览的图片总数。
+  /// HEIC 这类格式由后台服务先转换，大图可能要一两秒，超时放宽一些。
+  Future<GetImagePreviewResponse> imagePreview(String clipId, {int index = 0}) =>
+      _client.getImagePreview(GetImagePreviewRequest(clipId: clipId, index: index),
+          options: CallOptions(timeout: const Duration(seconds: 20)));
 
   Future<void> requestClipboardPermission() =>
       _client.requestClipboardPermission(Empty());

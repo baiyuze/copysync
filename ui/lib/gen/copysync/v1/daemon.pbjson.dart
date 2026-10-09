@@ -159,6 +159,7 @@ const ClipRecord$json = {
     {'1': 'created_at_unix', '3': 10, '4': 1, '5': 3, '10': 'createdAtUnix'},
     {'1': 'expires_at_unix', '3': 11, '4': 1, '5': 3, '10': 'expiresAtUnix'},
     {'1': 'error', '3': 12, '4': 1, '5': 9, '10': 'error'},
+    {'1': 'image_count', '3': 13, '4': 1, '5': 5, '10': 'imageCount'},
   ],
 };
 
@@ -172,7 +173,7 @@ final $typed_data.Uint8List clipRecordDescriptor = $convert.base64Decode(
     'RlbXMSHQoKdG90YWxfc2l6ZRgIIAEoA1IJdG90YWxTaXplEiEKDHRleHRfcHJldmlldxgJIAEo'
     'CVILdGV4dFByZXZpZXcSJgoPY3JlYXRlZF9hdF91bml4GAogASgDUg1jcmVhdGVkQXRVbml4Ei'
     'YKD2V4cGlyZXNfYXRfdW5peBgLIAEoA1INZXhwaXJlc0F0VW5peBIUCgVlcnJvchgMIAEoCVIF'
-    'ZXJyb3I=');
+    'ZXJyb3ISHwoLaW1hZ2VfY291bnQYDSABKAVSCmltYWdlQ291bnQ=');
 
 @$core.Deprecated('Use subscribeRequestDescriptor instead')
 const SubscribeRequest$json = {
@@ -644,23 +645,28 @@ const GetImagePreviewRequest$json = {
   '1': 'GetImagePreviewRequest',
   '2': [
     {'1': 'clip_id', '3': 1, '4': 1, '5': 9, '10': 'clipId'},
+    {'1': 'index', '3': 2, '4': 1, '5': 5, '10': 'index'},
   ],
 };
 
 /// Descriptor for `GetImagePreviewRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getImagePreviewRequestDescriptor =
     $convert.base64Decode(
-        'ChZHZXRJbWFnZVByZXZpZXdSZXF1ZXN0EhcKB2NsaXBfaWQYASABKAlSBmNsaXBJZA==');
+        'ChZHZXRJbWFnZVByZXZpZXdSZXF1ZXN0EhcKB2NsaXBfaWQYASABKAlSBmNsaXBJZBIUCgVpbm'
+        'RleBgCIAEoBVIFaW5kZXg=');
 
 @$core.Deprecated('Use getImagePreviewResponseDescriptor instead')
 const GetImagePreviewResponse$json = {
   '1': 'GetImagePreviewResponse',
   '2': [
     {'1': 'path', '3': 1, '4': 1, '5': 9, '10': 'path'},
+    {'1': 'count', '3': 2, '4': 1, '5': 5, '10': 'count'},
+    {'1': 'name', '3': 3, '4': 1, '5': 9, '10': 'name'},
   ],
 };
 
 /// Descriptor for `GetImagePreviewResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getImagePreviewResponseDescriptor =
     $convert.base64Decode(
-        'ChdHZXRJbWFnZVByZXZpZXdSZXNwb25zZRISCgRwYXRoGAEgASgJUgRwYXRo');
+        'ChdHZXRJbWFnZVByZXZpZXdSZXNwb25zZRISCgRwYXRoGAEgASgJUgRwYXRoEhQKBWNvdW50GA'
+        'IgASgFUgVjb3VudBISCgRuYW1lGAMgASgJUgRuYW1l');

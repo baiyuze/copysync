@@ -54,7 +54,7 @@ type DaemonServiceClient interface {
 	Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*Empty, error)
 	// 把某条已就绪的记录重新放进本机剪贴板
 	ApplyToClipboard(ctx context.Context, in *ApplyToClipboardRequest, opts ...grpc.CallOption) (*Empty, error)
-	// 只返回已就绪图片在本机的路径，不改动剪贴板，也不把路径发给对端。
+	// 只返回已就绪图片（或图片文件）在本机的路径，不改动剪贴板，也不把路径发给对端。
 	GetImagePreview(ctx context.Context, in *GetImagePreviewRequest, opts ...grpc.CallOption) (*GetImagePreviewResponse, error)
 	ListDevices(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ListDevicesResponse, error)
 	CreatePairingCode(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*CreatePairingCodeResponse, error)
@@ -260,7 +260,7 @@ type DaemonServiceServer interface {
 	Fetch(context.Context, *FetchRequest) (*Empty, error)
 	// 把某条已就绪的记录重新放进本机剪贴板
 	ApplyToClipboard(context.Context, *ApplyToClipboardRequest) (*Empty, error)
-	// 只返回已就绪图片在本机的路径，不改动剪贴板，也不把路径发给对端。
+	// 只返回已就绪图片（或图片文件）在本机的路径，不改动剪贴板，也不把路径发给对端。
 	GetImagePreview(context.Context, *GetImagePreviewRequest) (*GetImagePreviewResponse, error)
 	ListDevices(context.Context, *Empty) (*ListDevicesResponse, error)
 	CreatePairingCode(context.Context, *Empty) (*CreatePairingCodeResponse, error)

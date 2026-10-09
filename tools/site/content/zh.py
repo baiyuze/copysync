@@ -23,7 +23,7 @@ C = {
             "数据在你的设备之间直接传输，经过你自己的服务器时也是加密的。",
     "dl_mac": "下载 Mac 版",
     "dl_win": "下载 Windows 版",
-    "dl_note": "版本 1.3.0，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
+    "dl_note": "版本 1.3.1，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
     "stage_label": "演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来",
     "stage_file": "季度汇报-终版.pptx",
     "stage_win": "Windows 笔记本",
@@ -166,7 +166,7 @@ C = {
 
     "specs_h2": "技术规格",
     "specs": [
-        ("版本", '1.3.0，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布'),
+        ("版本", '1.3.1，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布'),
         ("Mac 客户端", "macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB"),
         ("Windows 客户端", "Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
         ("服务器", "Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存"),

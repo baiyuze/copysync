@@ -324,7 +324,7 @@ func run(dataDir string) error {
 		Fetch:              engine.Fetch,
 		FetchForPreview:    engine.FetchForPreview,
 		ApplyToClipboard:   engine.ApplyToClipboard,
-		ImagePreviewPath:   engine.ImagePreviewPath,
+		ImagePreview:       engine.ImagePreview,
 		CacheBytesUsed:     blobs.Size,
 		Permission: func() clipboard.Permission {
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)

@@ -20,7 +20,7 @@ service DaemonService {
   rpc Fetch(FetchRequest) returns (Empty);
   // 把某条已就绪的记录重新放进本机剪贴板
   rpc ApplyToClipboard(ApplyToClipboardRequest) returns (Empty);
-  // 只返回已就绪图片在本机的路径，不改动剪贴板，也不把路径发给对端。
+  // 只返回已就绪图片（或图片文件）在本机的路径，不改动剪贴板，也不把路径发给对端。
   rpc GetImagePreview(GetImagePreviewRequest) returns (GetImagePreviewResponse);
 
   rpc ListDevices(Empty) returns (ListDevicesResponse);
@@ -85,6 +85,10 @@ message ClipRecord {
   int64 created_at_unix = 10;
   int64 expires_at_unix = 11;
   string error = 12;              // status=FAILED 时的具体原因
+
+  // 能在界面里预览的图片数：剪贴板图片为 1，文件记录是其中图片文件的个数。
+  // 由本机后台服务按文件名判断，HEIC、TIFF 这类格式只有能转换它的平台才算。
+  int32 image_count = 13;
 }
 
 // ─────────────────────────── 事件流 ───────────────────────────
@@ -260,8 +264,11 @@ message Status {
 
 message GetImagePreviewRequest {
   string clip_id = 1;
+  int32 index = 2;   // 一条记录里有多张图片时看第几张，从 0 开始
 }
 
 message GetImagePreviewResponse {
-  string path = 1;
+  string path = 1;   // 界面可以直接解码的图片文件；HEIC 等格式是转换出来的 PNG
+  int32 count = 2;   // 这条记录在本机实际能预览的图片数
+  string name = 3;   // 文件名；剪贴板里的图片没有文件名，为空
 }

@@ -6,7 +6,7 @@
 
 Key facts:
 
-- Current version: 1.3.0, released 2026-10-09. Adds an English and Japanese interface (follows the system language, switchable in Settings) and moves to the GNU AGPL-3.0 with an optional commercial license. 1.2.0 added the Windows client.
+- Current version: 1.3.1, released 2026-10-09. Click a history item to preview images, including copied image files (PNG, JPEG, GIF, WebP, BMP; HEIC and TIFF on Mac), with arrows to step through several. 1.3.0 added an English and Japanese interface (follows the system language, switchable in Settings) and moves to the GNU AGPL-3.0 with an optional commercial license. 1.2.0 added the Windows client.
 - Mac client: macOS 13 Ventura or later, universal binary for Intel and Apple silicon. Distributed as a DMG; not notarized by Apple, so the first launch needs "Open Anyway" in System Settings → Privacy & Security.
 - Windows client: Windows 10 (21H2+) and Windows 11, x64. Per-user installer (CopySync-Setup.exe, no admin rights) or portable zip; not code-signed, so SmartScreen needs "More info → Run anyway" once. Runs in the notification area; pasted files are real files usable in Explorer, WeChat and Office. Skips content that password managers mark as sensitive.
 - Server: a single static Go binary for Linux (x86_64, ARM64) or macOS, installed via systemd script or Docker Compose. Ports: 8787/tcp (signaling), 3478/udp (STUN/TURN), 32768–60999/udp (relay).

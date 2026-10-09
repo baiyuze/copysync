@@ -1,5 +1,15 @@
 # 更新记录 / Changelog
 
+## 1.3.1 — 2026-10-09
+
+- **点一下记录就能预览图片，去掉了单独的「预览」按钮**（它和悬停才出现的按钮挤在一起，位置看起来是错的）。
+  **Click a history item to preview it**; the separate Preview button is gone.
+- **复制的图片文件也能预览**：PNG、JPEG、GIF、WebP、BMP，Mac 上还有 iPhone 照片常见的 HEIC 和 TIFF
+  （由系统转换，按拍摄方向转正）。一次复制了几张图片的，可以用左右箭头或方向键翻看。
+  **Copied image files can be previewed too**: PNG, JPEG, GIF, WebP, BMP, plus HEIC and TIFF on Mac. Step through
+  several with the arrows or arrow keys.
+- 单张图片文件在列表里显示图片图标。 Single image files show an image icon in the list.
+
 ## 1.3.0 — 2026-10-09
 
 - **界面支持简体中文、英文、日文**：默认跟随系统语言，也可以在「设置 → 这台 Mac / 这台电脑 → 语言」里切换。

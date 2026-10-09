@@ -472,12 +472,6 @@ abstract class AppLocalizations {
   /// **'Expired'**
   String get expired;
 
-  /// No description provided for @preview.
-  ///
-  /// In en, this message translates to:
-  /// **'Preview'**
-  String get preview;
-
   /// No description provided for @putOnClipboard.
   ///
   /// In en, this message translates to:
@@ -531,6 +525,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close preview'**
   String get closePreview;
+
+  /// No description provided for @previousImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous image'**
+  String get previousImage;
+
+  /// No description provided for @nextImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Next image'**
+  String get nextImage;
 
   /// No description provided for @previewHint.
   ///

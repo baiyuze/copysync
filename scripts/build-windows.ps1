@@ -4,7 +4,7 @@
 #   CopySync-Setup.exe           安装程序（需要 Inno Setup 6）
 #   CopySync-windows-x64.zip     便携版
 #
-#   powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1 [-Version 1.3.0]
+#   powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1 [-Version 1.3.1]
 #
 # 需要 Go、Flutter 与 Visual Studio（「使用 C++ 的桌面开发」）。
 # 后台服务是纯 Go，也可以在 Mac 上交叉编译；界面只能在 Windows 上构建。

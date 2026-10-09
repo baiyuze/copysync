@@ -188,13 +188,15 @@ class _RecordRowState extends State<_RecordRow> {
   Widget build(BuildContext context) {
     final r = widget.record;
     final p = context.palette;
+    // 剪贴板里的图片、以及复制的图片文件，点一下这一行就能预览，不另放按钮
+    final previewable = r.imageCount > 0;
 
     return MouseRegion(
-      cursor: r.kind == ClipKind.CLIP_KIND_IMAGE ? SystemMouseCursors.click : MouseCursor.defer,
+      cursor: previewable ? SystemMouseCursors.click : MouseCursor.defer,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: InkWell(
-        onTap: r.kind == ClipKind.CLIP_KIND_IMAGE ? () => _preview(r) : null,
+        onTap: previewable ? () => showImagePreview(context, r.id) : null,
         borderRadius: BorderRadius.circular(Radii.sm),
         child: Container(
           constraints: const BoxConstraints(minHeight: 52),
@@ -276,7 +278,7 @@ class _RecordRowState extends State<_RecordRow> {
         return Text(l.expired, style: context.text.bodySmall?.copyWith(color: p.textFaint));
       default:
         // 悬停时才显示「放入剪贴板」与删除，静态时列表保持干净。
-        // 不悬停时它们只是看不见，位置照样留着：鼠标移上来时「预览」不会被挤开，不容易点错
+        // 不悬停时它们只是看不见，位置照样留着：鼠标移上来时标题不会被挤短一截
         Widget hoverOnly(Widget child) => Visibility(
               visible: _hovered,
               maintainSize: true,
@@ -287,8 +289,6 @@ class _RecordRowState extends State<_RecordRow> {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (r.kind == ClipKind.CLIP_KIND_IMAGE)
-              TextButton(onPressed: () => _preview(r), child: Text(l.preview)),
             hoverOnly(TextButton(
               onPressed: () =>
                   _run(() => AppScope.read(context).applyToClipboard(r.id), l.putOnClipboardDone),
@@ -303,8 +303,6 @@ class _RecordRowState extends State<_RecordRow> {
         );
     }
   }
-
-  void _preview(ClipRecord record) => showImagePreview(context, record.id);
 
   Future<void> _run(Future<void> Function() action, String success) async {
     setState(() => _busy = true);
@@ -324,6 +322,8 @@ IconData kindIcon(ClipRecord r) => switch (r.kind) {
       ClipKind.CLIP_KIND_TEXT => AppIcons.textAlignLeft,
       ClipKind.CLIP_KIND_HTML => AppIcons.docRichtext,
       ClipKind.CLIP_KIND_IMAGE => AppIcons.photo,
+      // 单张图片文件也用图片图标，一眼看出点开能预览
+      ClipKind.CLIP_KIND_FILE when r.items.length == 1 && r.imageCount == 1 => AppIcons.photo,
       ClipKind.CLIP_KIND_FILE when r.items.length > 1 => AppIcons.docOnDoc,
       ClipKind.CLIP_KIND_FILE when r.items.isNotEmpty && r.items.first.isDir =>
         AppIcons.folder,

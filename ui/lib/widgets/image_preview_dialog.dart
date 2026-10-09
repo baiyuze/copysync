@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../gen/copysync/v1/daemon.pb.dart';
@@ -26,9 +27,35 @@ class ImagePreviewDialog extends StatefulWidget {
 
 class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
   final _transform = TransformationController();
-  Future<String>? _preview;
+  Future<GetImagePreviewResponse>? _preview;
   bool _requesting = false;
   String? _downloadError;
+
+  // 一条记录里有多张图片时（复制了几张照片），左右翻看
+  int _index = 0;
+  int _count = 1;
+  String _name = '';
+
+  Future<GetImagePreviewResponse> _load(AppState state, String clipId) =>
+      state.imagePreview(clipId, index: _index).then((response) {
+        if (mounted) {
+          setState(() {
+            _count = response.count < 1 ? 1 : response.count;
+            _name = response.name;
+          });
+        }
+        return response;
+      });
+
+  void _go(int delta) {
+    if (_count < 2) return;
+    setState(() {
+      _index = (_index + delta) % _count;
+      if (_index < 0) _index += _count;
+      _preview = null;
+      _transform.value = Matrix4.identity();
+    });
+  }
 
   @override
   void dispose() {
@@ -60,7 +87,8 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
         .firstOrNull;
     // 预览框按应用窗口的比例定大小：窗口小，预览也小，不会一打开就把整个窗口盖满
     final window = MediaQuery.sizeOf(context);
-    return Dialog(
+    final l = context.l10n;
+    final dialog = Dialog(
       insetPadding: EdgeInsets.zero,
       child: SizedBox(
         width: (window.width * 0.8).clamp(280.0, 1400.0),
@@ -77,10 +105,29 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(context.l10n.imagePreviewTitle, style: context.text.titleMedium),
+                    child: Text(
+                      _name.isEmpty ? l.imagePreviewTitle : _name,
+                      style: context.text.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+                  if (_count > 1) ...[
+                    IconButton(
+                      tooltip: l.previousImage,
+                      onPressed: () => _go(-1),
+                      icon: Icon(AppIcons.chevronLeft, size: 16),
+                    ),
+                    Text('${_index + 1} / $_count', style: context.text.bodySmall),
+                    IconButton(
+                      tooltip: l.nextImage,
+                      onPressed: () => _go(1),
+                      icon: Icon(AppIcons.chevronRight, size: 16),
+                    ),
+                    const SizedBox(width: Insets.sm),
+                  ],
                   IconButton(
-                    tooltip: context.l10n.closePreview,
+                    tooltip: l.closePreview,
                     onPressed: () => Navigator.pop(context),
                     icon: Icon(AppIcons.xmark),
                   ),
@@ -114,6 +161,14 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
           ],
         ),
       ),
+    );
+    // 左右方向键翻看上一张、下一张
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.arrowLeft): () => _go(-1),
+        const SingleActivator(LogicalKeyboardKey.arrowRight): () => _go(1),
+      },
+      child: Focus(autofocus: true, child: dialog),
     );
   }
 
@@ -151,8 +206,8 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
       return _message(context.l10n.previewUnavailable);
     }
 
-    _preview ??= state.imagePreviewPath(record.id);
-    return FutureBuilder<String>(
+    _preview ??= _load(state, record.id);
+    return FutureBuilder<GetImagePreviewResponse>(
       future: _preview,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -177,7 +232,7 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
               key: const ValueKey('image-preview-content'),
               // 预览限制解码尺寸并保持比例，超大截图不占用整张原图的内存。
               image: ResizeImage(
-                FileImage(File(snapshot.data!)),
+                FileImage(File(snapshot.data!.path)),
                 width: 2048,
                 height: 2048,
                 policy: ResizeImagePolicy.fit,
