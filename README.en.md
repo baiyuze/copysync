@@ -5,12 +5,14 @@
 <h1 align="center">CopySync</h1>
 
 <p align="center">
-  Copy on one Mac, paste on the other.<br>
-  Text, images, files and whole folders — across Apple IDs and across networks.
+  Copy on one computer, paste on the other. Mac and Windows both.<br>
+  Text, images, files and whole folders — across accounts and across networks.
 </p>
 
 <p align="center">
-  <a href="https://github.com/baiyuze/copysync/releases/latest"><strong>Download for macOS</strong></a>
+  <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><strong>Download for Mac</strong></a>
+  ·
+  <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><strong>Download for Windows</strong></a>
   ·
   <a href="https://baiyuze.github.io/copysync/en/">Website</a>
   ·
@@ -20,6 +22,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/baiyuze/copysync?color=0A66D8" alt="Release">
   <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
+  <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1D1D1F" alt="Windows 10 / 11">
   <img src="https://img.shields.io/badge/Intel%20%2B%20Apple%20silicon-universal-1D1D1F" alt="Universal binary">
   <img src="https://img.shields.io/github/license/baiyuze/copysync?color=6E6E73" alt="MIT License">
 </p>
@@ -32,21 +35,23 @@
 
 ## Why
 
-If you work on two Macs, you move things between them all day: a snippet of text, a screenshot, a file.
+If you work on two computers, you move things between them all day: a snippet of text, a screenshot, a file.
 
 The built-in options each get in the way:
 
 - **Universal Clipboard** needs both Macs on the same Apple ID, close to each other, with Bluetooth and Wi‑Fi on. A work Mac and a personal Mac rarely share an Apple ID, and large files often fail halfway.
 - **AirDrop** makes you pick a device and accept on the other side every time, and it only moves files, not the clipboard.
 - **Messaging yourself** through a chat app means manual downloads, recompressed images, and your files sitting on someone else's server.
+- **With one Mac and one Windows PC**, none of the built-in options work at all.
 
-With CopySync you pair two Macs once. After that, `⌘C` on one and `⌘V` on the other. Data goes directly between the devices; when a direct connection can't be made, it is relayed through a server you run yourself. Everything is end-to-end encrypted and the server cannot read it.
+With CopySync you pair two computers once. After that, copy on one and paste on the other — Mac to Mac, Mac to Windows, or Windows to Windows. Data goes directly between the devices; when a direct connection can't be made, it is relayed through a server you run yourself. Everything is end-to-end encrypted and the server cannot read it.
 
 | | CopySync | Universal Clipboard | AirDrop | Chat apps |
 |---|:-:|:-:|:-:|:-:|
 | Different Apple IDs | ✓ | — | Needs accepting | ✓ |
 | Different networks (home ↔ office) | ✓ | — | — | ✓ |
 | Paste right away, nothing to accept | ✓ | ✓ | — | — |
+| Between Mac and Windows | ✓ | — | — | ✓ |
 | Files and whole folders | ✓ | Unreliable | ✓ | Zipped |
 | History of what you copied | ✓ | — | — | Scroll back |
 | Content stays off third-party servers | ✓ | ✓ | ✓ | — |
@@ -55,11 +60,12 @@ With CopySync you pair two Macs once. After that, `⌘C` on one and `⌘V` on th
 
 - **Text, rich text, images, files and folders.** What you copy is what comes out on the other side.
 - **Size-aware transfer.** Anything under 50 MB (adjustable) is pushed as soon as you copy, so the other Mac can paste immediately. Larger files sync as a record you can pull when you need them.
-- **History.** Everything copied on any of your Macs in the last 3 days (adjustable), ready to put back on the clipboard.
+- **History.** Everything copied on any of your computers in the last 3 days (adjustable), ready to put back on the clipboard. Click an image to preview and zoom it.
 - **Direct first, relay as fallback.** Devices connect peer-to-peer; behind symmetric NAT or a strict firewall, traffic switches to the TURN relay on your server automatically.
 - **Fingerprint check when pairing**, so neither the server nor anyone on the network can impersonate your device.
-- **Runs in the background.** Keeps syncing with the window closed, starts at login, recovers from crashes.
-- **Native on Intel and Apple silicon**, light and dark appearance.
+- **Runs in the background.** Keeps syncing with the window closed, starts at login, recovers from crashes. On Windows it lives in the notification area.
+- **Mac and Windows.** Native on Intel and Apple silicon Macs; Windows 10 and 11. Pasted files are real files you can drop into Explorer, WeChat or Office. Light and dark appearance.
+- **Passwords stay put** (Windows). Content that a password manager marks as "don't record" is skipped: not synced, not kept in the history.
 
 <table>
   <tr>
@@ -78,12 +84,12 @@ With CopySync you pair two Macs once. After that, `⌘C` on one and `⌘V` on th
 |---|---|
 | **Mac app** | macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta needed |
 | **Server** | Any Linux on x86_64 or ARM64 with systemd or Docker; it can also run on one of your Macs |
-| **Windows** | Planned |
+| **Windows app** | Windows 10 (21H2 or later) and Windows 11, x64; runs under emulation on Windows on ARM |
 | **iPhone / iPad** | Not supported. iOS does not let apps watch the clipboard in the background, so copy-and-it's-there can't work the way it does on the Mac |
 
 ## Install
 
-There are two parts: **the app on each Mac**, and **a server both Macs can reach**. If both Macs are on the same LAN, the server can run on one of them.
+There are two parts: **the app on each computer**, and **a server both can reach**. If both computers are on the same LAN, the server can run on one of the Macs.
 
 ### 1. Deploy the server
 
@@ -108,7 +114,9 @@ Open these ports in your firewall or cloud security group:
 
 For Docker, or for LAN-only use, see the [server deployment guide](server/deploy/README.md).
 
-### 2. Install the app on each Mac
+### 2. Install the app on each computer
+
+**Mac**
 
 1. Download [CopySync.dmg](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg), open it and drag CopySync into Applications.
 2. Open CopySync from Applications.
@@ -119,22 +127,34 @@ For Docker, or for LAN-only use, see the [server deployment guide](server/deploy
 4. In **设置 → 信令服务器地址** (Settings → Signaling server), enter `ws://<server address>:8787/signal` and press Return.
 5. Recent versions of macOS ask whether CopySync Daemon may read the clipboard. Allow it; you can switch it to always allow under **System Settings → Privacy & Security → Paste from Other Apps**.
 
+**Windows**
+
+1. Download [CopySync-Setup.exe](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe) and run it. It installs for the current user and needs no administrator rights.
+
+   CopySync isn't code-signed yet, so Windows says "Windows protected your PC": click **More info → Run anyway**. To skip the installer, download the [portable zip](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip), extract it and open CopySync.
+
+2. Open CopySync (it opens when setup finishes; there's also a desktop shortcut) and click **启用后台同步** (Enable background sync).
+3. In **设置 → 信令服务器地址** (Settings → Signaling server), enter `ws://<server address>:8787/signal` and press Enter.
+4. If Windows Firewall asks about copysyncd, allow it.
+
+After you close the window, CopySync keeps running in the notification area; open it again from the tray icon or the desktop shortcut.
+
 ### 3. Pair
 
-1. On one Mac: **设备 → 添加设备 → 生成配对码** (Devices → Add device → Generate code).
+1. On one computer: **设备 → 添加设备 → 生成配对码** (Devices → Add device → Generate code).
 2. On the other: **添加设备 → 输入配对码** (Add device → Enter code), and type the 6 characters.
-3. Both screens show the same two lines of fingerprints, one for each Mac. **Confirm only if the two screens match line for line.**
+3. Both screens show the same two lines of fingerprints, one for each device. **Confirm only if the two screens match line for line.**
 
-From then on, copy on either Mac and paste on the other.
+From then on, copy on either one and paste on the other.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    subgraph A["Mac A"]
+    subgraph A["Computer A (Mac or Windows)"]
         UA["CopySync app"] <-- "gRPC" --> DA["Background service"]
     end
-    subgraph B["Mac B"]
+    subgraph B["Computer B (Mac or Windows)"]
         DB["Background service"] <-- "gRPC" --> UB["CopySync app"]
     end
     S[("Your server\nsignaling + TURN")]
@@ -147,16 +167,16 @@ flowchart LR
 
 | Component | Role | Built with |
 |---|---|---|
-| Background service `copysyncd` | Watches the clipboard, connects to peers, sends, receives and stores | Go, with cgo calling AppKit for the clipboard |
-| App `CopySync.app` | History, pairing, settings | Flutter, talks to the service over local gRPC |
+| Background service `copysyncd` | Watches the clipboard, connects to peers, sends, receives and stores | Go. The clipboard uses cgo and AppKit on Mac, and calls Win32 directly on Windows (pure Go, no C compiler) |
+| App `CopySync` | History, pairing, settings | Flutter, one codebase for Mac and Windows; talks to the service over local gRPC |
 | Server `copysync-server` | Device discovery, pairing codes, signaling, TURN relay | Go, a single static binary using about 15 MB of RAM |
 | Protocol `proto/` | Messages shared by all three | Protocol Buffers |
 
 **What happens when you copy:**
 
-1. The service checks the clipboard's change count at short intervals. Reading the count and types needs no permission and never triggers a prompt.
+1. The service notices the clipboard changed: on Mac it checks the change count at short intervals (reading the count and types needs no permission and never triggers a prompt); on Windows the system notifies it right away.
 2. On a change it reads the content and picks a transport: text is inlined in the message; images and files under 50 MB are streamed right away (tar + zstd); anything larger is announced as a record only.
-3. The receiving Mac writes the data to a local cache and then onto its clipboard, so `⌘V` pastes real local files.
+3. The receiving computer writes the data to a local cache and then onto its clipboard, so `⌘V` or `Ctrl+V` pastes real local files. File names that are fine on Mac but not on Windows (with a colon, say) get the matching full-width character on Windows.
 
 **How the connection is made:**
 
@@ -213,6 +233,7 @@ The **NAT lab** (`tools/natlab`) builds real topologies with Linux network names
 - **Every signaling message after that is signed**, so the server cannot forge a device. The DTLS certificate fingerprint of the direct channel is also sent signed and checked against the actual certificate after the handshake; a mismatch drops the connection.
 - **The relay can't read anything either.** TURN only forwards encrypted UDP packets. Relay credentials are issued per device and expire after 12 hours.
 - **Public STUN servers see only your public IP.** To find every uplink on multi-uplink networks, CopySync probes a few public STUN servers by default. They see your public IP, as with any WebRTC app, never content. Turn off 用公共服务器探测网络出口 (Probe with public servers) in Settings to use only your own server.
+- **Device key.** On Mac it's stored readable only by you; on Windows it's additionally encrypted with DPAPI, so another user or another computer can't decrypt a copied file.
 - **No App Sandbox**, because CopySync needs to read files at whatever path you copy them from.
 
 ### Fallbacks
@@ -253,19 +274,29 @@ Measured on a LAN with a direct connection: a 20 MB file transfers in about 330 
 
 ## Limitations
 
-- **Not notarized by Apple**, so the first launch needs one manual approval.
+- **Not notarized by Apple, and the Windows build isn't code-signed**, so the first launch needs one manual approval.
+- **No "virtual files" on Windows.** Files copied straight out of an Outlook attachment or a zip have no real path on the clipboard and aren't synced. Save or extract them first.
+- **The Mac app doesn't skip password-manager content yet**; the Windows app does.
 - **Items aren't resent after a long absence.** The server stores nothing. While the other Mac is unreachable, this Mac keeps the latest 20 items (from the last 24 hours) in memory, and they're lost if its background service restarts.
 - **Relayed transfers are limited by your server's bandwidth.** Direct connections aren't.
-- macOS only for now. The interface is in Simplified Chinese.
+- The interface is in Simplified Chinese.
 
 ## Build from source
 
-Requires Go 1.26, Flutter 3.44 and Xcode.
+The Mac app needs Go 1.26, Flutter 3.44 and Xcode:
 
 ```bash
 ./scripts/build.sh       # build everything into dist/
 ./scripts/package.sh     # build the DMG and server packages into release/
 ```
+
+The Windows app needs Go, Flutter, Visual Studio ("Desktop development with C++") and Inno Setup 6. On Windows:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1   # installer and portable zip into dist\windows\
+```
+
+The background service is pure Go and also cross-compiles from a Mac: `GOOS=windows go build ./cmd/copysyncd`. CI builds the Windows installer on every commit.
 
 During development:
 
@@ -282,7 +313,7 @@ After changing a `.proto` file, run `./scripts/gen-proto.sh` (uses buf; install 
 
 ```
 client-core/    background service (Go)
-  internal/clipboard    clipboard (cgo + Objective-C, main thread only)
+  internal/clipboard    clipboard (Mac: cgo + Objective-C; Windows: Win32; main thread only)
   internal/transport    signaling (WebSocket) and P2P (WebRTC)
   internal/sync         sync engine: routing, packing, transfer, storage
 ui/             app (Flutter)
@@ -292,6 +323,7 @@ docs/           website (GitHub Pages)
 spikes/         technical validation done before development
 design/         design documents
 tools/natlab/   NAT traversal lab
+tools/installer/ Windows installer (Inno Setup)
 ```
 
 ## Troubleshooting
@@ -300,13 +332,13 @@ tools/natlab/   NAT traversal lab
 The system pasteboard service may be stuck: an app declared clipboard content and then crashed, leaving types without data. Run `killall pboard` and copy again.
 
 **A device stays offline**
-Check **设置 → 连接状态** (Settings → Connection) on both Macs. If it isn't connected, verify the server address and that port 8787 is reachable.
+Check **设置 → 连接状态** (Settings → Connection) on both computers. If it isn't connected, verify the server address and that port 8787 is reachable.
 
 **Always "relay", never "direct"**
 Showing "relay" right after connecting and "direct" a little later is normal: the relay makes things work first, and the direct path takes over when the link is idle. If it stays "relay", NAT traversal didn't succeed, which is common with NATs that randomize ports or strict firewalls. Everything still works; speed is limited by the server's bandwidth. Run `copysync-cli nat` to see how many uplinks were found; zero means UDP is blocked.
 
 **Logs**
-The background service logs to `~/Library/Logs/CopySync/daemon.log`. On the server, use `journalctl -u copysync-server -f`.
+The background service logs to `~/Library/Logs/CopySync/daemon.log` on Mac and `%LOCALAPPDATA%\CopySync\logs\daemon.log` on Windows. On the server, use `journalctl -u copysync-server -f`.
 
 ## License
 

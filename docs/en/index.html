@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync: sync the clipboard and files between Macs, across Apple IDs — open source</title>
-  <meta name="description" content="CopySync lets you copy on one Mac and paste on another: text, images, files and folders. Works across Apple IDs and networks. Peer-to-peer, end-to-end encrypted, with a server you host yourself that can't read your data. Free and MIT licensed.">
+  <title>CopySync: sync the clipboard and files between Mac and Windows, across accounts and networks — open source</title>
+  <meta name="description" content="CopySync lets you copy on one computer and paste on another, Mac or Windows: text, images, files and folders. Works across accounts and networks. Peer-to-peer, end-to-end encrypted, with a server you host yourself that can't read your data. Free and MIT licensed.">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/en/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
@@ -14,8 +14,8 @@
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="CopySync: copy on one Mac, paste on the other">
-  <meta property="og:description" content="Text, images, files and folders. Across Apple IDs and networks, peer-to-peer and end-to-end encrypted, with a server you host. Free and open source.">
+  <meta property="og:title" content="CopySync: copy on one computer, paste on the other">
+  <meta property="og:description" content="Mac and Windows. Text, images, files and folders, across accounts and networks, peer-to-peer and end-to-end encrypted, with a server you host. Free and open source.">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/en/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
   <meta property="og:image:width" content="1200">
@@ -37,10 +37,10 @@
         "@type": "SoftwareApplication",
         "@id": "https://baiyuze.github.io/copysync/#app",
         "name": "CopySync",
-        "description": "Open-source tool that syncs the clipboard and files between Macs. Copy text, images, files or folders on one Mac and paste them on another. Devices connect directly over WebRTC with DTLS encryption, falling back to a TURN relay on a server the user hosts.",
+        "description": "Open-source tool that syncs the clipboard and files between Mac and Windows computers. Copy text, images, files or folders on one and paste them on another. Devices connect directly over WebRTC with DTLS encryption, falling back to a TURN relay on a server the user hosts.",
         "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "macOS 13 or later (Intel and Apple silicon)",
-        "softwareVersion": "1.1.2",
+        "operatingSystem": "macOS 13 or later (Intel and Apple silicon); Windows 10 and 11 (x64)",
+        "softwareVersion": "1.2.0",
         "datePublished": "2026-10-09",
         "inLanguage": "en",
         "license": "https://opensource.org/licenses/MIT",
@@ -53,11 +53,11 @@
         "fileSize": "45MB",
         "featureList": [
           "Syncs plain text, rich text, images, files and folders",
-          "Works across Apple IDs and across networks",
+          "Works between Mac and Windows, across accounts and networks",
           "Direct WebRTC connection with automatic TURN relay fallback",
           "End-to-end DTLS encryption and fingerprint verification when pairing",
           "Items under 50 MB are pushed on copy; larger files are pulled on demand",
-          "History of the last 3 days"
+          "History of the last 3 days, with image preview"
         ],
         "author": { "@type": "Person", "name": "baiyuze", "url": "https://github.com/baiyuze" }
       },
@@ -67,7 +67,7 @@
           {
             "@type": "Question",
             "name": "How is CopySync different from Universal Clipboard?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi-Fi on, close to each other. CopySync only needs both Macs to reach your server, so different Apple IDs and different networks work. It also keeps a history and lets you pull large files on demand." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi-Fi on, close to each other. CopySync only needs both computers to reach your server, so different Apple IDs, different networks and Mac-to-Windows all work. It also keeps a history and lets you pull large files on demand." }
           },
           {
             "@type": "Question",
@@ -86,18 +86,18 @@
           },
           {
             "@type": "Question",
-            "name": "Does CopySync support Windows or iPhone?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Windows is planned. iPhone and iPad are not supported: iOS does not allow apps to watch the clipboard in the background, so copy-and-it's-there can't work the way it does on the Mac." }
+            "name": "Does CopySync support Windows? iPhone?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Windows 10 and 11 (x64) are supported from version 1.2 and work together with Macs; pasted files are real files. iPhone and iPad are not supported: iOS does not allow apps to watch the clipboard in the background, so copy-and-it's-there can't work." }
           },
           {
             "@type": "Question",
-            "name": "Why does macOS say it can't verify the developer of CopySync?",
-            "acceptedAnswer": { "@type": "Answer", "text": "CopySync isn't notarized by Apple yet, which requires a paid developer account. Open System Settings, go to Privacy & Security and click Open Anyway. You only need to do this once." }
+            "name": "Why does the system warn me the first time I open CopySync?",
+            "acceptedAnswer": { "@type": "Answer", "text": "CopySync isn't notarized by Apple yet, and the Windows build isn't code-signed yet; both require paid certificates. On Mac, open System Settings, go to Privacy & Security and click Open Anyway. On Windows, click More info and then Run anyway in the \"Windows protected your PC\" prompt. You only need to do this once." }
           },
           {
             "@type": "Question",
             "name": "How does CopySync handle large files?",
-            "acceptedAnswer": { "@type": "Answer", "text": "By default, anything under 50 MB is pushed to the other Mac as soon as you copy it. Larger files sync as a record, and you pull them from the history when you need them. The limit is adjustable from 1 MB to 1 GB." }
+            "acceptedAnswer": { "@type": "Answer", "text": "By default, anything under 50 MB is pushed to the other computer as soon as you copy it. Larger files sync as a record, and you pull them from the history when you need them. The limit is adjustable from 1 MB to 1 GB." }
           },
           {
             "@type": "Question",
@@ -132,27 +132,31 @@
   <main id="main">
     <section class="hero">
       <div class="wrap">
-        <h1>Copy on this Mac.<br>Paste on that one.</h1>
-        <p class="lede">Text, images, files, whole folders. No shared Apple&nbsp;ID required, no shared network required. Data moves directly between your devices, and stays encrypted even when it passes through your own server.</p>
+        <h1>Copy on this computer.<br>Paste on that one.</h1>
+        <p class="lede">Mac and Windows. Text, images, files, whole folders. No shared account required, no shared network required. Data moves directly between your devices, and stays encrypted even when it passes through your own server.</p>
         <div class="cta">
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
-            Download for macOS
+            Download for Mac
           </a>
-          <span class="note">Version 1.1.2, free and open source. macOS 13 or later, Intel and Apple silicon.</span>
+          <a class="button button-alt" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
+            Download for Windows
+          </a>
+          <span class="note">Version 1.2.0, free and open source. macOS 13 or later (Intel and Apple silicon); Windows 10 and 11.</span>
         </div>
 
-        <div class="demo" role="img" aria-label="Demo: a file is selected on a MacBook Pro and copied with Command C, travels over a direct connection to a MacBook Air, and is pasted there with Command V">
+        <div class="demo" role="img" aria-label="Demo: a file is selected on a MacBook and copied with Command C, travels over a direct connection to a Windows laptop, and is pasted there with Ctrl V">
           <figure class="mac mac-a">
             <div class="mac-screen">
               <div class="file">
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h6.5L15.5 6.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z"/><path d="M11.5 2.5v4h4"/></svg>
-                <span>Q3 Review – final.key <small>38.2 MB</small></span>
+                <span>Q3 Review – final.pptx <small>38.2 MB</small></span>
               </div>
               <div class="keys"><kbd>⌘</kbd><kbd>C</kbd></div>
             </div>
             <div class="mac-base"></div>
-            <figcaption>MacBook Pro</figcaption>
+            <figcaption>MacBook</figcaption>
           </figure>
           <div class="link" aria-hidden="true">
             <span class="packet"></span>
@@ -162,12 +166,12 @@
             <div class="mac-screen">
               <div class="file">
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h6.5L15.5 6.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z"/><path d="M11.5 2.5v4h4"/></svg>
-                <span>Q3 Review – final.key <small>38.2 MB</small></span>
+                <span>Q3 Review – final.pptx <small>38.2 MB</small></span>
               </div>
-              <div class="keys"><kbd>⌘</kbd><kbd>V</kbd></div>
+              <div class="keys"><kbd>Ctrl</kbd><kbd>V</kbd></div>
             </div>
             <div class="mac-base"></div>
-            <figcaption>MacBook Air</figcaption>
+            <figcaption>Windows laptop</figcaption>
           </figure>
         </div>
         <button class="replay" type="button">Play again</button>
@@ -191,11 +195,12 @@
       <div class="wrap">
         <h2 id="why-title">Why not what's already there</h2>
         <div class="prose">
-          <p>If you work on two Macs, you move things between them all day: a snippet of text, a screenshot, a file. The existing options each fall a little short:</p>
+          <p>If you work on two computers, you move things between them all day: a snippet of text, a screenshot, a file. The existing options each fall a little short:</p>
           <ul>
             <li><strong>Universal Clipboard</strong> needs both Macs on the same Apple ID, close together, with Bluetooth and Wi‑Fi on. A work Mac and a personal one rarely share an Apple ID, and large files often fail halfway.</li>
             <li><strong>AirDrop</strong> makes you pick a device and accept on the other side every time, and it moves files, not the clipboard.</li>
             <li><strong>Messaging yourself</strong> means manual downloads, recompressed images, and files left on someone else's server.</li>
+            <li><strong>With one Mac and one Windows PC</strong>, none of the built-in options work at all.</li>
           </ul>
         </div>
         <div class="table-scroll">
@@ -206,6 +211,7 @@
             </thead>
             <tbody>
               <tr><th scope="row">Different Apple IDs</th><td class="yes">Yes</td><td class="no">No</td><td class="partial">Needs accepting</td><td class="yes">Yes</td></tr>
+              <tr><th scope="row">Between Mac and Windows</th><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
               <tr><th scope="row">Different networks (home and office)</th><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
               <tr><th scope="row">Paste right away, nothing to accept</th><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
               <tr><th scope="row">Files and whole folders</th><td class="yes">Yes</td><td class="partial">Unreliable</td><td class="yes">Yes</td><td class="partial">Zip first</td></tr>
@@ -220,12 +226,12 @@
     <section class="section section-band" id="how" aria-labelledby="how-title">
       <div class="wrap">
         <h2 id="how-title">How it works</h2>
-        <p class="intro">Your two Macs open an encrypted connection to each other. Your server only helps them find one another, and relays traffic when a direct path can't be made.</p>
+        <p class="intro">Your two computers open an encrypted connection to each other. Your server only helps them find one another, and relays traffic when a direct path can't be made.</p>
 
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">How CopySync connects</title>
-            <desc id="diagram-desc">Mac A and Mac B connect directly over WebRTC. Both connect to your server for signaling. If the direct connection fails, data is relayed through the server's TURN service.</desc>
+            <desc id="diagram-desc">Computer A and computer B (Mac or Windows) connect directly over WebRTC. Both connect to your server for signaling. If the direct connection fails, data is relayed through the server's TURN service.</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
             <text class="d-title" x="480" y="64" text-anchor="middle">Your server</text>
             <text class="d-sub" x="480" y="92" text-anchor="middle">Signaling, STUN, TURN relay</text>
@@ -238,15 +244,15 @@
             <text class="d-note" x="206" y="128">Relay: only if direct fails</text>
 
             <rect class="d-box" x="40" y="210" width="240" height="120" rx="14"/>
-            <text class="d-title" x="160" y="262" text-anchor="middle">Mac A</text>
+            <text class="d-title" x="160" y="262" text-anchor="middle">Mac</text>
             <text class="d-sub" x="160" y="290" text-anchor="middle">You copy here</text>
             <rect class="d-box" x="680" y="210" width="240" height="120" rx="14"/>
-            <text class="d-title" x="800" y="262" text-anchor="middle">Mac B</text>
+            <text class="d-title" x="800" y="262" text-anchor="middle">Mac or Windows</text>
             <text class="d-sub" x="800" y="290" text-anchor="middle">You paste here</text>
 
             <path class="d-direct" d="M280 270H680"/>
             <text class="d-label" x="480" y="256" text-anchor="middle">Direct WebRTC, DTLS encrypted</text>
-            <text class="d-note" x="480" y="298" text-anchor="middle">Data moves only between your Macs</text>
+            <text class="d-note" x="480" y="298" text-anchor="middle">Data moves only between your computers</text>
 
             <g class="d-legend" transform="translate(40 372)">
               <path class="d-direct" d="M0 0H28"/><text x="38" y="5">Data (direct)</text>
@@ -260,7 +266,7 @@
         <ol class="steps">
           <li>
             <h3>Notice</h3>
-            <p>The background service checks the clipboard's change count at short intervals. Reading the count and types needs no permission and never shows a prompt.</p>
+            <p>On Mac, the background service checks the clipboard's change count at short intervals; reading the count and types needs no permission and never shows a prompt. On Windows, the system tells it the moment you copy.</p>
           </li>
           <li>
             <h3>Send</h3>
@@ -268,7 +274,7 @@
           </li>
           <li>
             <h3>Paste</h3>
-            <p>The other Mac stores the content locally, then puts it on the clipboard. What you paste with ⌘V is a real local file.</p>
+            <p>The other computer stores the content locally, then puts it on the clipboard. What you paste with ⌘V or Ctrl+V is a real local file.</p>
           </li>
         </ol>
       </div>
@@ -354,7 +360,7 @@
         <h2 id="fallback-title">When things go wrong</h2>
         <p class="intro">Every network is different. Each of these cases was considered, and each has a test.</p>
         <dl class="fallbacks">
-          <dt>No direct path between the Macs</dt>
+          <dt>No direct path between the computers</dt>
           <dd>Common behind symmetric NAT and corporate firewalls. Traffic switches to the TURN relay on your server, still encrypted, and the device list shows "relay".</dd>
           <dt>Public STUN servers unreachable</dt>
           <dd>Public STUN is unreliable in some regions, including mainland China. Your server runs its own STUN, and clients prefer it.</dd>
@@ -370,10 +376,14 @@
           <dd>Above the limit only a record is synced, pulled when you need it. If the source file is gone by then, you get a clear message instead of a vague failure.</dd>
           <dt>Pasting into plain-text fields</dt>
           <dd>Rich text copied from the web is written as both HTML and plain text, so no markup leaks into what you paste.</dd>
+          <dt>A file name Windows doesn't allow</dt>
+          <dd>Colons, question marks and a few other characters are fine in Mac file names but not on Windows. They arrive as the matching full-width characters, so the name still reads the same, and two names that differ only in case never overwrite each other.</dd>
+          <dt>Copying a password</dt>
+          <dd>On Windows, password managers mark what they copy as "don't record". CopySync skips it: not synced, not kept in the history.</dd>
           <dt>Clipboard access not granted yet</dt>
           <dd>Content isn't read, which would block on a prompt a background process can't show. The app asks you to grant access and links straight to the setting.</dd>
           <dt>Background service crashes</dt>
-          <dd>macOS's launchd restarts it, throttled to once every 10 seconds.</dd>
+          <dd>launchd on Mac, and CopySync's own supervisor on Windows, restart it, throttled to once every 10 seconds.</dd>
           <dt>App updated or moved</dt>
           <dd>On launch the app re-points its login item and restarts the service on the new version.</dd>
         </dl>
@@ -383,10 +393,10 @@
     <section class="section section-band" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">Install</h2>
-        <p class="intro">Install the app on each Mac, and set up a server both of them can reach. If both Macs share a LAN, the server can run on one of them.</p>
+        <p class="intro">Install the app on each computer, and set up a server both of them can reach. If both share a LAN, the server can run on one of your Macs.</p>
         <div class="two-col">
           <div>
-            <h3>On each Mac</h3>
+            <h3>On a Mac</h3>
             <ol class="install-steps">
               <li>Download <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">CopySync.dmg</a>, open it and drag CopySync into Applications.</li>
               <li>Open it from Applications.
@@ -394,8 +404,16 @@
               <li>Click 启用后台同步 (Enable background sync).</li>
               <li>In 设置 (Settings), enter your server as <code>ws://server-address:8787/signal</code> and press Return.</li>
               <li>When macOS asks whether CopySync may read the clipboard, allow it.</li>
-              <li>On one Mac, choose 设备 → 添加设备 (Devices → Add device) to get a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints.</li>
             </ol>
+            <h3>On Windows</h3>
+            <ol class="install-steps">
+              <li>Download <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe">CopySync-Setup.exe</a> and run it. It installs for the current user, no administrator rights needed.
+                <span class="aside">CopySync isn't code-signed yet, so Windows says "Windows protected your PC": click More info, then Run anyway. To skip the installer, get the <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">portable zip</a>.</span></li>
+              <li>Open CopySync and click 启用后台同步 (Enable background sync). After you close the window it keeps running in the notification area.</li>
+              <li>In 设置 (Settings), enter your server address and press Enter. Allow it if Windows Firewall asks.</li>
+            </ol>
+            <h3>Pairing</h3>
+            <p class="aside-p">On one computer, choose 设备 → 添加设备 (Devices → Add device) to get a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints. Mac with Windows, or two Windows PCs, works the same way.</p>
           </div>
           <div>
             <h3>On the server</h3>
@@ -428,8 +446,9 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">Version</th><td>1.1.2, released <time datetime="2026-10-09">October 9, 2026</time></td></tr>
+              <tr><th scope="row">Version</th><td>1.2.0, released <time datetime="2026-10-09">October 9, 2026</time></td></tr>
               <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; 45 MB download</td></tr>
+              <tr><th scope="row">Windows app</th><td>Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 21 MB download</td></tr>
               <tr><th scope="row">Server</th><td>Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM</td></tr>
               <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>
               <tr><th scope="row">Transport</th><td>WebRTC data channels, direct first with TURN relay fallback; every uplink probed on multi-uplink networks; files streamed as tar + zstd</td></tr>
@@ -438,7 +457,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
               <tr><th scope="row">Auto-sync limit</th><td>50 MB by default, adjustable from 1 MB to 1 GB</td></tr>
               <tr><th scope="row">History</th><td>3 days by default, adjustable from 1 hour to 30 days; expired items removed automatically</td></tr>
               <tr><th scope="row">Measured speed</th><td>A 20 MB file transfers in about 330 ms over a direct LAN connection, checksums matching</td></tr>
-              <tr><th scope="row">Built with</th><td>Go for the background service and server, Flutter for the app, Protocol Buffers for messages</td></tr>
+              <tr><th scope="row">Built with</th><td>Go for the background service and server (pure Go calling Win32 on Windows), Flutter for the app (one codebase for Mac and Windows), Protocol Buffers for messages</td></tr>
               <tr><th scope="row">License</th><td>MIT</td></tr>
             </tbody>
           </table>
@@ -453,7 +472,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
           <details>
             <summary>How is this different from Universal Clipboard?</summary>
             <div class="answer">
-              <p>Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other. CopySync only needs both Macs to reach your server, so different Apple IDs work, and so does one Mac at home and one at the office. It also keeps a history and lets you pull large files on demand.</p>
+              <p>Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other. CopySync only needs both computers to reach your server, so different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand.</p>
               <p>If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.</p>
             </div>
           </details>
@@ -478,19 +497,21 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
           <details>
             <summary>Windows? iPhone?</summary>
             <div class="answer">
-              <p>Windows is planned. iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so copy-and-it's-there can't work the way it does on the Mac.</p>
+              <p>Windows 10 and 11 (x64) are supported from version 1.2 and work together with Macs. Files you paste on Windows are real files you can drop into Explorer, WeChat or Office.</p>
+              <p>iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so copy-and-it's-there can't work.</p>
             </div>
           </details>
           <details>
-            <summary>Why does macOS say it can't verify the developer?</summary>
+            <summary>Why does the system warn me the first time?</summary>
             <div class="answer">
-              <p>CopySync isn't notarized by Apple yet, which requires a paid developer account. Open System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once. You can also build it from source.</p>
+              <p>CopySync isn't notarized by Apple yet, and the Windows build isn't code-signed yet; both require paid certificates.</p>
+              <p>On Mac, open System Settings → Privacy &amp; Security and click Open Anyway near the bottom. On Windows, click More info and then Run anyway in the "Windows protected your PC" prompt. You only do this once. You can also build it from source.</p>
             </div>
           </details>
           <details>
             <summary>What about large files?</summary>
             <div class="answer">
-              <p>By default, anything under 50 MB is pushed to the other Mac as you copy it, so you can paste right away. Larger files sync as a record; pull them from the history when you need them. The limit is adjustable in Settings.</p>
+              <p>By default, anything under 50 MB is pushed to the other computer as you copy it, so you can paste right away. Larger files sync as a record; pull them from the history when you need them. The limit is adjustable in Settings.</p>
             </div>
           </details>
           <details>
@@ -505,9 +526,10 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 id="closing-title">Two Macs, one clipboard.</h2>
+        <h2 id="closing-title">Two computers, one clipboard.</h2>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">Download for macOS</a>
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">Download for Mac</a>
+          <a class="button button-alt" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe">Download for Windows</a>
           <a href="https://github.com/baiyuze/copysync">View the source on GitHub</a>
         </div>
       </div>

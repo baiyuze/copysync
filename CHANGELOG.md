@@ -1,5 +1,34 @@
 # 更新记录 / Changelog
 
+## 1.2.0 — 2026-10-09
+
+- **新增 Windows 客户端**：Windows 10（21H2 起）与 Windows 11，x64。与 Mac 互通，Mac 与 Mac、
+  Mac 与 Windows、Windows 与 Windows 都可以配对同步。文本、带格式文本、图片、文件、文件夹都支持，
+  粘贴文件时得到的是真实文件，能直接粘进资源管理器、微信、Office。
+  **New: Windows client** (Windows 10 21H2+ and 11, x64). Works with Macs and with other Windows PCs; pasted
+  files are real files.
+  - 安装程序按用户安装，不需要管理员权限；另有便携版 zip。开机自启、崩溃后自动重启，
+    关掉窗口后在右下角托盘里继续运行，桌面上有快捷方式。
+    Per-user installer with no admin rights, plus a portable zip. Starts at login, restarts after a crash, and
+    stays in the notification area; desktop shortcut included.
+  - Mac 上合法、Windows 上不合法的文件名（含冒号、问号等）换成对应的全角字符；只差大小写的
+    文件不会互相覆盖；跳过 `.DS_Store` 等 Mac 系统文件。
+    File names Windows doesn't allow get full-width characters; names differing only in case never overwrite
+    each other.
+  - 密码管理器标记为「不要记录」的内容不同步、不进复制记录（Mac 版尚未支持）。
+    Content that password managers mark as sensitive is skipped (not yet on Mac).
+  - 设备私钥用 Windows 的 DPAPI 加密存放。 The device key is encrypted with DPAPI.
+- **复制记录里的图片可以点开预览**：缩放、拖动、适应窗口；还没下载的先拉取，预览用的下载
+  不会改写当前剪贴板。 **Image preview** in the history, with zoom and pan; downloading for a preview doesn't
+  touch your clipboard.
+- 修复：配对成功后多出一个确认框，点了也没用。 Fixed: an extra, useless confirmation dialog after pairing.
+- 修复：打包文件夹时其中某个文件打不开（比如正被别的程序锁住），整个传输都会失败。现在跳过那一个。
+  Fixed: one unreadable file inside a folder broke the whole transfer; it's now skipped.
+- 网站与 README 增加 Windows 的安装说明；技术方案见 `design/windows-client.md`，实机验证记录见
+  `design/windows-validation-2026-10-09.md`。
+- 服务器不需要升级。新增的 `GetImagePreview` 只是界面与本机后台服务之间的接口，设备之间的协议没有变化。
+  No server upgrade needed; the device-to-device protocol is unchanged.
+
 ## 1.1.2 — 2026-10-09
 
 - **修复：家里那台一重启就只能中转，重试也换不回直连。**谁的包先到，谁的路由器就先收到陌生来源的包；

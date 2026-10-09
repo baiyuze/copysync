@@ -5,12 +5,14 @@
 <h1 align="center">CopySync</h1>
 
 <p align="center">
-  在这台 Mac 复制，到那台 Mac 粘贴。<br>
-  文本、图片、文件、整个文件夹都可以，不限 Apple ID，不限是否在同一个网络。
+  在这台电脑复制，到那台电脑粘贴。Mac 与 Windows 互通。<br>
+  文本、图片、文件、整个文件夹都可以，不限账号，不限是否在同一个网络。
 </p>
 
 <p align="center">
-  <a href="https://github.com/baiyuze/copysync/releases/latest"><strong>下载 macOS 版</strong></a>
+  <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><strong>下载 Mac 版</strong></a>
+  ·
+  <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><strong>下载 Windows 版</strong></a>
   ·
   <a href="https://baiyuze.github.io/copysync/">项目主页</a>
   ·
@@ -20,6 +22,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/baiyuze/copysync?label=%E7%89%88%E6%9C%AC&color=0A66D8" alt="版本">
   <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
+  <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1D1D1F" alt="Windows 10 / 11">
   <img src="https://img.shields.io/badge/Intel%20%2B%20Apple%20%E8%8A%AF%E7%89%87-%E9%80%9A%E7%94%A8-1D1D1F" alt="Intel 与 Apple 芯片通用">
   <img src="https://img.shields.io/github/license/baiyuze/copysync?color=6E6E73" alt="MIT 许可">
 </p>
@@ -30,21 +33,23 @@
 
 ## 它解决什么问题
 
-手边有两台 Mac 的人，每天都在做同一件事：这台上复制了一段文字、一张截图、一个文件，要拿到那台上用。
+手边有两台电脑的人，每天都在做同一件事：这台上复制了一段文字、一张截图、一个文件，要拿到那台上用。
 
 现有的办法各有各的不顺手：
 
 - **系统自带的「通用剪贴板」**要求两台设备登录同一个 Apple ID、离得足够近、蓝牙和 Wi‑Fi 都开着。公司电脑和自己的电脑通常不是同一个 Apple ID；大文件经常复制到一半就没了。
 - **隔空投送**每次都要选设备、在另一台上点接收，而且只传文件，不管剪贴板。
 - **用聊天软件发给自己**要手动下载、图片会被压缩，文件还会留在第三方的服务器上。
+- **一台 Mac、一台 Windows** 时，上面这些系统自带的办法都用不了。
 
-CopySync 的做法是：两台 Mac 配对一次，之后在一台上 `⌘C`，另一台上直接 `⌘V`。数据在两台设备之间直接传输，打不通直连时经过你自己部署的服务器中转，全程端到端加密，服务器看不到内容。
+CopySync 的做法是：两台电脑配对一次，之后在一台上复制，另一台上直接粘贴。Mac 与 Mac、Mac 与 Windows、Windows 与 Windows 都可以。数据在两台设备之间直接传输，打不通直连时经过你自己部署的服务器中转，全程端到端加密，服务器看不到内容。
 
 | | CopySync | 通用剪贴板 | 隔空投送 | 聊天软件 |
 |---|:-:|:-:|:-:|:-:|
 | 不同 Apple ID 之间 | ✓ | — | 需对方接收 | ✓ |
 | 不在同一个网络（家里 ↔ 公司） | ✓ | — | — | ✓ |
 | 复制后直接粘贴，不用点接收 | ✓ | ✓ | — | — |
+| Mac 与 Windows 之间 | ✓ | — | — | ✓ |
 | 文件与整个文件夹 | ✓ | 不稳定 | ✓ | 打包后可以 |
 | 复制历史，可以找回之前的内容 | ✓ | — | — | 翻聊天记录 |
 | 内容不经过第三方服务器 | ✓ | ✓ | ✓ | — |
@@ -53,11 +58,12 @@ CopySync 的做法是：两台 Mac 配对一次，之后在一台上 `⌘C`，�
 
 - **文本、带格式的文本、图片、文件、文件夹**都能同步。复制什么，对面粘贴出来就是什么。
 - **按大小分流**：50 MB 以内（可调）的内容复制时直接推送，对面立刻能粘贴；更大的文件只同步一条记录，需要时点「拉取到本机」，不会无谓地占用带宽和磁盘。
-- **复制记录**：最近 3 天（可调）在所有设备上复制过的内容都在这里，随时可以放回剪贴板。
+- **复制记录**：最近 3 天（可调）在所有设备上复制过的内容都在这里，随时可以放回剪贴板；图片点开就能预览，可以缩放。
 - **直连优先，自动中转**：先尝试设备之间直连；在对称 NAT、公司防火墙后面打不通时，自动改走你服务器上的 TURN 中转。
 - **配对时核对安全指纹**：防止服务器或网络上的第三方冒充你的设备。
-- **后台常驻**：关掉窗口照常同步，开机自动启动，崩溃后自动恢复。
-- **Intel 与 Apple 芯片原生运行**，支持浅色与深色外观。
+- **后台常驻**：关掉窗口照常同步，开机自动启动，崩溃后自动恢复。Windows 上在任务栏右下角有托盘图标。
+- **Mac 与 Windows 互通**：Mac 上 Intel 与 Apple 芯片原生运行；Windows 10、11 均可，粘贴文件时得到的是真实文件，能直接粘进资源管理器、微信、Office。支持浅色与深色外观。
+- **不同步密码**（Windows）：密码管理器复制的内容带着「不要记录」的标记，CopySync 跳过它们，不同步也不进复制记录。
 
 <table>
   <tr>
@@ -75,13 +81,13 @@ CopySync 的做法是：两台 Mac 配对一次，之后在一台上 `⌘C`，�
 | | 要求 |
 |---|---|
 | **Mac 客户端** | macOS 13 Ventura 及以上；Intel 与 Apple 芯片（M1–M4 等）通用，不需要 Rosetta |
+| **Windows 客户端** | Windows 10（21H2 及以上）与 Windows 11，x64；ARM 版 Windows 可以模拟运行 |
 | **服务器** | 任意 Linux（x86_64 或 ARM64），systemd 或 Docker 均可；也可以直接跑在其中一台 Mac 上 |
-| **Windows** | 计划中 |
 | **iPhone / iPad** | 暂不支持。iOS 不允许 App 在后台监听剪贴板，做不到 Mac 上这种复制即同步的体验 |
 
 ## 安装
 
-整套东西由两部分组成：**每台 Mac 装一个 App**，再加**一台两端都能访问到的服务器**。两台 Mac 在同一个局域网时，服务器直接放在其中一台上就行。
+整套东西由两部分组成：**每台电脑装一个 App**，再加**一台两端都能访问到的服务器**。两台电脑在同一个局域网时，服务器直接放在其中一台 Mac 上就行。
 
 ### 1. 部署服务器
 
@@ -106,7 +112,9 @@ sudo ./install.sh <服务器公网IP>
 
 用 Docker 部署、或者只在局域网里用，见[服务器部署说明](server/deploy/README.md)。
 
-### 2. 在每台 Mac 上安装 App
+### 2. 在每台电脑上安装 App
+
+**Mac**
 
 1. 下载 [CopySync.dmg](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg)，打开后把 CopySync 拖进「应用程序」。
 2. 从「应用程序」里打开 CopySync。
@@ -117,9 +125,21 @@ sudo ./install.sh <服务器公网IP>
 4. 在 **设置 → 信令服务器地址** 填入 `ws://<服务器地址>:8787/signal`，按回车。
 5. 较新的 macOS 会询问是否允许 CopySync Daemon 读取剪贴板，选择允许。之后可以在 **系统设置 → 隐私与安全性 → 从其他 App 粘贴** 里改为始终允许，App 里也有直达按钮。
 
+**Windows**
+
+1. 下载 [CopySync-Setup.exe](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe) 并运行。装在当前用户目录下，不需要管理员权限。
+
+   CopySync 还没有代码签名，Windows 会提示「Windows 已保护你的电脑」：点 **更多信息 → 仍要运行**。不想运行安装程序的话，可以下载[便携版 zip](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip)，解压后直接打开。
+
+2. 打开 CopySync（安装完会自动打开，桌面和开始菜单里也有），点 **启用后台同步**。
+3. 在 **设置 → 信令服务器地址** 填入 `ws://<服务器地址>:8787/signal`，按回车。
+4. Windows 防火墙询问是否允许 copysyncd 通信时，选择允许。
+
+关掉窗口后，CopySync 在右下角的托盘里继续运行；从托盘图标或桌面快捷方式都能再打开它。
+
 ### 3. 配对
 
-1. 在一台 Mac 上点 **设备 → 添加设备 → 生成配对码**。
+1. 在一台电脑上点 **设备 → 添加设备 → 生成配对码**。
 2. 在另一台上点 **添加设备 → 输入配对码**，输入那 6 位字符。
 3. 两台屏幕上会显示同样的两行安全指纹（这台的和对方的），**逐行核对两边完全一致后**再点确认。
 
@@ -129,10 +149,10 @@ sudo ./install.sh <服务器公网IP>
 
 ```mermaid
 flowchart LR
-    subgraph A["Mac A"]
+    subgraph A["电脑 A（Mac 或 Windows）"]
         UA["CopySync 界面"] <-- "gRPC" --> DA["后台服务"]
     end
-    subgraph B["Mac B"]
+    subgraph B["电脑 B（Mac 或 Windows）"]
         DB["后台服务"] <-- "gRPC" --> UB["CopySync 界面"]
     end
     S[("你的服务器\n信令 + TURN")]
@@ -145,16 +165,16 @@ flowchart LR
 
 | 组件 | 做什么 | 技术 |
 |---|---|---|
-| 后台服务 `copysyncd` | 监听剪贴板、与对端建立连接、收发与落盘 | Go，剪贴板部分用 cgo 调用 AppKit |
-| 界面 `CopySync.app` | 复制记录、设备配对、设置 | Flutter，经本机 gRPC 与后台服务通信 |
+| 后台服务 `copysyncd` | 监听剪贴板、与对端建立连接、收发与落盘 | Go。剪贴板部分在 Mac 上用 cgo 调用 AppKit，在 Windows 上直接调用 Win32（纯 Go，不需要 C 编译器） |
+| 界面 `CopySync` | 复制记录、设备配对、设置 | Flutter，经本机 gRPC 与后台服务通信；Mac 与 Windows 共用一套代码 |
 | 服务器 `copysync-server` | 设备发现、转达配对码、转发信令、TURN 中转 | Go，单个静态二进制，约 15 MB 内存 |
 | 协议 `proto/` | 三方共用的消息定义 | Protocol Buffers |
 
 **一次复制的经过：**
 
-1. 后台服务每隔一小段时间检查剪贴板的变更计数。只看计数和类型不需要授权，也不会触发系统提示。
+1. 后台服务发现剪贴板变了：Mac 上每隔一小段时间检查剪贴板的变更计数（只看计数和类型不需要授权，也不会触发系统提示）；Windows 上由系统即时通知。
 2. 发现变化后读取内容，按类型和大小决定怎么传：文本直接内联在消息里；50 MB 以内的图片与文件打包成流（tar + zstd）立即推送；更大的只发一条记录。
-3. 对端收到后先写入本地缓存，再写入剪贴板。在那台 Mac 上 `⌘V` 粘贴出来的，就是本地的真实文件。
+3. 对端收到后先写入本地缓存，再写入剪贴板。在那台电脑上 `⌘V` 或 `Ctrl+V` 粘贴出来的，就是本地的真实文件。Mac 上合法、Windows 上不合法的文件名（比如带冒号的）在 Windows 上换成对应的全角字符。
 
 **连接是怎么建立的：**
 
@@ -211,6 +231,7 @@ flowchart LR
 - **之后的每条信令都带签名**，服务器无法伪造设备。直连通道的 DTLS 证书指纹也经签名传递，握手后比对实际证书，不一致立即断开。
 - **中转也看不到内容**。TURN 只转发加密后的 UDP 包。中转凭证按设备单独签发，12 小时过期。
 - **公共 STUN 服务器只看到公网 IP**。为了在多出口网络里找到每个出口，默认会向几台公共 STUN 服务器探测，它们能看到你的公网 IP（与任何 WebRTC 应用一样），看不到内容。介意的话在设置里关掉「用公共服务器探测网络出口」，只用自己的服务器。
+- **设备私钥**：Mac 上以仅本人可读的权限存放；Windows 上另用系统的 DPAPI 加密，换个用户、或把文件拷到别的电脑上都解不开。
 - **不启用 App 沙盒**：需要访问你复制的任意路径下的文件。
 
 ### 兜底：出问题时会发生什么
@@ -251,19 +272,28 @@ flowchart LR
 
 ## 已知限制
 
-- **没有经过 Apple 公证**，第一次打开需要手动放行一次。
+- **没有经过 Apple 公证，Windows 版也没有代码签名**，第一次打开时需要手动放行一次。
+- **Windows 上不支持「虚拟文件」**：从 Outlook 附件、压缩包里直接复制的文件，剪贴板里没有真实路径，不会同步。先保存或解压出来再复制即可。
+- **Mac 版还不会跳过密码管理器复制的内容**，Windows 版已经会。
 - **对方离线太久的内容不会补发**。服务器不存数据；对方暂时连不上时，本机只在内存里记下最近 20 条（24 小时内的），本机的后台服务重启后就清空了。
 - **中转模式的速度取决于服务器带宽**。直连时不受影响。
-- 目前只有 macOS 客户端。
 
 ## 从源码构建
 
-需要 Go 1.26、Flutter 3.44 和 Xcode。
+Mac 版需要 Go 1.26、Flutter 3.44 和 Xcode：
 
 ```bash
 ./scripts/build.sh       # 构建全部到 dist/
 ./scripts/package.sh     # 打出 DMG 与服务器发布包到 release/
 ```
+
+Windows 版需要 Go、Flutter、Visual Studio（「使用 C++ 的桌面开发」）与 Inno Setup 6，在 Windows 上运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1   # 安装程序与便携版到 dist\windows\
+```
+
+后台服务是纯 Go，也可以在 Mac 上交叉编译：`GOOS=windows go build ./cmd/copysyncd`。CI 在每次提交时构建 Windows 安装包。
 
 开发时可以单独运行各部分：
 
@@ -280,7 +310,7 @@ cd ui && flutter test                    # 界面的测试
 
 ```
 client-core/    后台服务（Go）
-  internal/clipboard    剪贴板（cgo + Objective-C，必须跑在主线程）
+  internal/clipboard    剪贴板（Mac：cgo + Objective-C；Windows：Win32；都必须跑在主线程）
   internal/transport    信令（WebSocket）与 P2P（WebRTC）
   internal/sync         同步引擎：分流、打包、传输、落盘
 ui/             界面（Flutter）
@@ -290,6 +320,7 @@ docs/           项目主页（GitHub Pages）
 spikes/         开工前的技术验证
 design/         技术方案文档
 tools/natlab/   NAT 打洞实验室
+tools/installer/ Windows 安装程序（Inno Setup）
 ```
 
 ## 排障
@@ -298,13 +329,13 @@ tools/natlab/   NAT 打洞实验室
 系统的剪贴板服务可能卡住了：某个程序声明了剪贴板内容后异常退出，会留下一个"有类型声明、没有数据"的空壳。执行 `killall pboard`，再复制一次即可。
 
 **设备一直显示「离线」**
-检查两台 Mac 的 **设置 → 连接状态** 是否都是「已连接」。不是的话，确认服务器地址正确、8787 端口可以访问。
+检查两台电脑的 **设置 → 连接状态** 是否都是「已连接」。不是的话，确认服务器地址正确、8787 端口可以访问。
 
 **一直显示「中转」而不是「直连」**
 刚连上时显示中转、过一会儿变成直连是正常的：先用中转保证能用，空闲时再换直连。一直是中转，说明 NAT 打洞没成功，常见于端口随机分配的 NAT 或严格的防火墙。功能不受影响，只是速度受服务器带宽限制。运行 `copysync-cli nat` 看本机探测到了几个出口：出口为 0 说明 UDP 被拦截了。
 
 **查看日志**
-后台服务的日志在 `~/Library/Logs/CopySync/daemon.log`，服务器的日志用 `journalctl -u copysync-server -f` 查看。
+后台服务的日志：Mac 上在 `~/Library/Logs/CopySync/daemon.log`，Windows 上在 `%LOCALAPPDATA%\CopySync\logs\daemon.log`。服务器的日志用 `journalctl -u copysync-server -f` 查看。
 
 ## 许可
 

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync：在两台 Mac 之间同步剪贴板与文件，跨 Apple ID，开源免费</title>
-  <meta name="description" content="CopySync 让你在一台 Mac 上复制，另一台 Mac 上直接粘贴。支持文本、图片、文件和文件夹，不要求同一个 Apple ID，跨网络可用。设备间 P2P 直连、端到端加密，服务器自己部署且看不到内容。MIT 开源。">
+  <title>CopySync：在 Mac 与 Windows 之间同步剪贴板与文件，跨账号跨网络，开源免费</title>
+  <meta name="description" content="CopySync 让你在一台电脑上复制，另一台上直接粘贴，Mac 与 Windows 互通。支持文本、图片、文件和文件夹，不要求同一个账号，跨网络可用。设备间 P2P 直连、端到端加密，服务器自己部署且看不到内容。MIT 开源。">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
@@ -14,8 +14,8 @@
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="CopySync：在这台 Mac 复制，到那台 Mac 粘贴">
-  <meta property="og:description" content="文本、图片、文件、文件夹。跨 Apple ID、跨网络，P2P 直连、端到端加密，服务器自己部署。开源免费。">
+  <meta property="og:title" content="CopySync：在这台电脑复制，到那台电脑粘贴">
+  <meta property="og:description" content="Mac 与 Windows 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，服务器自己部署。开源免费。">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
   <meta property="og:image:width" content="1200">
@@ -37,10 +37,10 @@
         "@type": "SoftwareApplication",
         "@id": "https://baiyuze.github.io/copysync/#app",
         "name": "CopySync",
-        "description": "在两台 Mac 之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台 Mac 可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
+        "description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）",
-        "softwareVersion": "1.1.2",
+        "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）",
+        "softwareVersion": "1.2.0",
         "datePublished": "2026-10-09",
         "inLanguage": "zh-CN",
         "license": "https://opensource.org/licenses/MIT",
@@ -53,11 +53,11 @@
         "fileSize": "45MB",
         "featureList": [
           "同步纯文本、带格式的文本、图片、文件与文件夹",
-          "不要求同一个 Apple ID，跨网络可用",
+          "Mac 与 Windows 互通，不要求同一个账号，跨网络可用",
           "WebRTC 直连，打不通时自动经 TURN 中转",
           "DTLS 端到端加密，配对时人工核对安全指纹",
           "50 MB 以内复制即推送，更大的文件按需拉取",
-          "最近 3 天的复制记录"
+          "最近 3 天的复制记录，图片可以预览"
         ],
         "author": { "@type": "Person", "name": "baiyuze", "url": "https://github.com/baiyuze" }
       },
@@ -67,7 +67,7 @@
           {
             "@type": "Question",
             "name": "CopySync 和 macOS 自带的通用剪贴板有什么区别？",
-            "acceptedAnswer": { "@type": "Answer", "text": "通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi-Fi 并且离得近。CopySync 只要求两台 Mac 都能连上你部署的服务器，不同 Apple ID、不同网络都可以，另外有复制记录和大文件按需拉取。" }
+            "acceptedAnswer": { "@type": "Answer", "text": "通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi-Fi 并且离得近。CopySync 只要求两台电脑都能连上你部署的服务器，不同 Apple ID、不同网络都可以，还能在 Mac 与 Windows 之间使用，另外有复制记录和大文件按需拉取。" }
           },
           {
             "@type": "Question",
@@ -82,22 +82,22 @@
           {
             "@type": "Question",
             "name": "使用 CopySync 必须自己准备服务器吗？",
-            "acceptedAnswer": { "@type": "Answer", "text": "是的，CopySync 不提供公共服务器。两台 Mac 在同一个局域网时，在其中一台上运行服务器即可；跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。" }
+            "acceptedAnswer": { "@type": "Answer", "text": "是的，CopySync 不提供公共服务器。两台电脑在同一个局域网时，在其中一台 Mac 上运行服务器即可；跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。" }
           },
           {
             "@type": "Question",
-            "name": "CopySync 支持 Windows 和 iPhone 吗？",
-            "acceptedAnswer": { "@type": "Answer", "text": "Windows 版在计划中。iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到 Mac 上那样复制后立即同步。" }
+            "name": "CopySync 支持 Windows 吗？iPhone 呢？",
+            "acceptedAnswer": { "@type": "Answer", "text": "支持 Windows 10 与 Windows 11（x64），从 1.2 版起与 Mac 互通，粘贴文件得到的是真实文件。iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到复制后立即同步。" }
           },
           {
             "@type": "Question",
-            "name": "为什么第一次打开 CopySync 提示无法验证开发者？",
-            "acceptedAnswer": { "@type": "Answer", "text": "CopySync 还没有经过 Apple 公证，公证需要付费的开发者账号。到系统设置的隐私与安全性页面，点击「仍要打开」即可，只需要操作一次。" }
+            "name": "为什么第一次打开 CopySync 时系统会拦一下？",
+            "acceptedAnswer": { "@type": "Answer", "text": "CopySync 还没有经过 Apple 公证，Windows 版也还没有代码签名，两者都需要付费的证书。Mac 上到系统设置的隐私与安全性页面点击「仍要打开」；Windows 上在「Windows 已保护你的电脑」提示里点「更多信息」再点「仍要运行」。只需要操作一次。" }
           },
           {
             "@type": "Question",
             "name": "CopySync 怎么处理大文件？",
-            "acceptedAnswer": { "@type": "Answer", "text": "默认 50 MB 以内的内容在复制时直接推送到另一台 Mac；更大的文件只同步一条记录，需要时在复制记录里点「拉取到本机」。上限可以在设置里调整，范围 1 MB 到 1 GB。" }
+            "acceptedAnswer": { "@type": "Answer", "text": "默认 50 MB 以内的内容在复制时直接推送到另一台电脑；更大的文件只同步一条记录，需要时在复制记录里点「拉取到本机」。上限可以在设置里调整，范围 1 MB 到 1 GB。" }
           },
           {
             "@type": "Question",
@@ -132,27 +132,31 @@
   <main id="main">
     <section class="hero">
       <div class="wrap">
-        <h1>在这台 Mac 复制，<br>到那台 Mac 粘贴。</h1>
-        <p class="lede">文本、图片、文件、整个文件夹都可以。不要求同一个 Apple&nbsp;ID，也不要求在同一个网络。数据在你的设备之间直接传输，经过你自己的服务器时也是加密的。</p>
+        <h1>在这台电脑复制，<br>到那台电脑粘贴。</h1>
+        <p class="lede">Mac 与 Windows 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号，也不要求在同一个网络。数据在你的设备之间直接传输，经过你自己的服务器时也是加密的。</p>
         <div class="cta">
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
-            下载 macOS 版
+            下载 Mac 版
           </a>
-          <span class="note">版本 1.1.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用。</span>
+          <a class="button button-alt" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>
+            下载 Windows 版
+          </a>
+          <span class="note">版本 1.2.0，免费开源。macOS 13 及以上（Intel 与 Apple 芯片通用）；Windows 10、11。</span>
         </div>
 
-        <div class="demo" role="img" aria-label="演示：在 MacBook Pro 上选中文件并按下 Command C，文件经直连传到 MacBook Air，在那里按下 Command V 粘贴出来">
+        <div class="demo" role="img" aria-label="演示：在 MacBook 上选中文件并按下 Command C，文件经直连传到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来">
           <figure class="mac mac-a">
             <div class="mac-screen">
               <div class="file">
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h6.5L15.5 6.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z"/><path d="M11.5 2.5v4h4"/></svg>
-                <span>季度汇报-终版.key <small>38.2 MB</small></span>
+                <span>季度汇报-终版.pptx <small>38.2 MB</small></span>
               </div>
               <div class="keys"><kbd>⌘</kbd><kbd>C</kbd></div>
             </div>
             <div class="mac-base"></div>
-            <figcaption>MacBook Pro</figcaption>
+            <figcaption>MacBook</figcaption>
           </figure>
           <div class="link" aria-hidden="true">
             <span class="packet"></span>
@@ -162,12 +166,12 @@
             <div class="mac-screen">
               <div class="file">
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h6.5L15.5 6.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z"/><path d="M11.5 2.5v4h4"/></svg>
-                <span>季度汇报-终版.key <small>38.2 MB</small></span>
+                <span>季度汇报-终版.pptx <small>38.2 MB</small></span>
               </div>
-              <div class="keys"><kbd>⌘</kbd><kbd>V</kbd></div>
+              <div class="keys"><kbd>Ctrl</kbd><kbd>V</kbd></div>
             </div>
             <div class="mac-base"></div>
-            <figcaption>MacBook Air</figcaption>
+            <figcaption>Windows 笔记本</figcaption>
           </figure>
         </div>
         <button class="replay" type="button">再演示一次</button>
@@ -191,11 +195,12 @@
       <div class="wrap">
         <h2 id="why-title">为什么不用现有的办法</h2>
         <div class="prose">
-          <p>手边有两台 Mac 的人，每天都要把东西从这台挪到那台：一段文字、一张截图、一个文件。现有的办法都差一点：</p>
+          <p>手边有两台电脑的人，每天都要把东西从这台挪到那台：一段文字、一张截图、一个文件。现有的办法都差一点：</p>
           <ul>
             <li><strong>通用剪贴板</strong>要求两台设备登录同一个 Apple ID、离得足够近、蓝牙和 Wi‑Fi 都开着。公司的电脑和自己的电脑很少是同一个 Apple ID，大文件也经常复制到一半就没了。</li>
             <li><strong>隔空投送</strong>每次都要选设备、在另一台上点接收，而且只传文件，不管剪贴板。</li>
             <li><strong>用聊天软件发给自己</strong>要手动下载，图片会被压缩，文件还会留在别人的服务器上。</li>
+            <li><strong>一台 Mac、一台 Windows</strong> 时，系统自带的办法一个都用不了。</li>
           </ul>
         </div>
         <div class="table-scroll">
@@ -206,6 +211,7 @@
             </thead>
             <tbody>
               <tr><th scope="row">不同 Apple ID 之间</th><td class="yes">可以</td><td class="no">不行</td><td class="partial">要对方接收</td><td class="yes">可以</td></tr>
+              <tr><th scope="row">Mac 与 Windows 之间</th><td class="yes">可以</td><td class="no">不行</td><td class="no">不行</td><td class="yes">可以</td></tr>
               <tr><th scope="row">不在同一个网络（家里和公司）</th><td class="yes">可以</td><td class="no">不行</td><td class="no">不行</td><td class="yes">可以</td></tr>
               <tr><th scope="row">复制后直接粘贴，不用点接收</th><td class="yes">可以</td><td class="yes">可以</td><td class="no">不行</td><td class="no">不行</td></tr>
               <tr><th scope="row">文件与整个文件夹</th><td class="yes">可以</td><td class="partial">不稳定</td><td class="yes">可以</td><td class="partial">要先打包</td></tr>
@@ -220,12 +226,12 @@
     <section class="section section-band" id="how" aria-labelledby="how-title">
       <div class="wrap">
         <h2 id="how-title">工作原理</h2>
-        <p class="intro">两台 Mac 之间直接建立加密连接。你的服务器只负责让它们找到彼此，打不通直连的时候再帮忙转发。</p>
+        <p class="intro">两台电脑之间直接建立加密连接。你的服务器只负责让它们找到彼此，打不通直连的时候再帮忙转发。</p>
 
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">CopySync 的连接方式</title>
-            <desc id="diagram-desc">Mac A 与 Mac B 之间是 WebRTC 直连；两台 Mac 都通过信令连接到你的服务器；直连失败时，数据经服务器的 TURN 中转。</desc>
+            <desc id="diagram-desc">电脑 A 与电脑 B（Mac 或 Windows）之间是 WebRTC 直连；两台电脑都通过信令连接到你的服务器；直连失败时，数据经服务器的 TURN 中转。</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
             <text class="d-title" x="480" y="64" text-anchor="middle">你的服务器</text>
             <text class="d-sub" x="480" y="92" text-anchor="middle">信令、STUN、TURN 中转</text>
@@ -238,15 +244,15 @@
             <text class="d-note" x="210" y="128">中转：仅在打不通直连时</text>
 
             <rect class="d-box" x="40" y="210" width="240" height="120" rx="14"/>
-            <text class="d-title" x="160" y="262" text-anchor="middle">Mac A</text>
+            <text class="d-title" x="160" y="262" text-anchor="middle">Mac</text>
             <text class="d-sub" x="160" y="290" text-anchor="middle">在这里复制</text>
             <rect class="d-box" x="680" y="210" width="240" height="120" rx="14"/>
-            <text class="d-title" x="800" y="262" text-anchor="middle">Mac B</text>
+            <text class="d-title" x="800" y="262" text-anchor="middle">Mac 或 Windows</text>
             <text class="d-sub" x="800" y="290" text-anchor="middle">在这里粘贴</text>
 
             <path class="d-direct" d="M280 270H680"/>
             <text class="d-label" x="480" y="256" text-anchor="middle">WebRTC 直连，DTLS 加密</text>
-            <text class="d-note" x="480" y="298" text-anchor="middle">数据只在两台 Mac 之间传输</text>
+            <text class="d-note" x="480" y="298" text-anchor="middle">数据只在两台电脑之间传输</text>
 
             <g class="d-legend" transform="translate(40 372)">
               <path class="d-direct" d="M0 0H28"/><text x="38" y="5">数据（直连）</text>
@@ -260,7 +266,7 @@
         <ol class="steps">
           <li>
             <h3>感知</h3>
-            <p>后台服务每隔一小段时间检查剪贴板的变更计数。只看计数和类型不需要授权，也不会弹出系统提示。</p>
+            <p>Mac 上，后台服务每隔一小段时间检查剪贴板的变更计数，只看计数和类型不需要授权，也不会弹出系统提示；Windows 上，复制的那一刻系统就会通知它。</p>
           </li>
           <li>
             <h3>传输</h3>
@@ -268,7 +274,7 @@
           </li>
           <li>
             <h3>粘贴</h3>
-            <p>另一台 Mac 先把内容存到本地，再写入剪贴板。按下 ⌘V 粘贴出来的，就是本地的真实文件。</p>
+            <p>另一台电脑先把内容存到本地，再写入剪贴板。按下 ⌘V 或 Ctrl+V 粘贴出来的，就是本地的真实文件。</p>
           </li>
         </ol>
       </div>
@@ -354,7 +360,7 @@
         <h2 id="fallback-title">出问题的时候会发生什么</h2>
         <p class="intro">每个人的网络环境都不一样。下面这些情况都考虑过，也都有对应的测试。</p>
         <dl class="fallbacks">
-          <dt>两台 Mac 打不通直连</dt>
+          <dt>两台电脑打不通直连</dt>
           <dd>常见于对称 NAT 和公司防火墙。自动改走你服务器上的 TURN 中转，内容依然加密，设备列表里显示「中转」。</dd>
           <dt>公共 STUN 服务器连不上</dt>
           <dd>国内访问公共 STUN 时通时断。服务器自带 STUN，客户端优先用它。</dd>
@@ -370,10 +376,14 @@
           <dd>超过上限的只同步一条记录，需要时再拉取。拉取时源文件已经被删，会明确告诉你，而不是不明不白地失败。</dd>
           <dt>粘贴到只认纯文本的地方</dt>
           <dd>从网页复制的带格式文字会同时写入 HTML 和纯文本两份，粘贴到哪里都不会冒出标签。</dd>
+          <dt>文件名在 Windows 上不合法</dt>
+          <dd>Mac 上可以用的冒号、问号等字符，Windows 不允许出现在文件名里。收到时换成对应的全角字符，名字照样看得懂；只差大小写的两个文件也不会互相覆盖。</dd>
+          <dt>复制的是密码</dt>
+          <dd>Windows 上，密码管理器复制的内容会带一个「不要记录」的标记，CopySync 看到就跳过：不同步，也不进复制记录。</dd>
           <dt>还没授权读取剪贴板</dt>
           <dd>不去读内容，否则后台进程会卡在一个看不见的系统弹窗上。App 里会提示你去授权，并给出直达按钮。</dd>
           <dt>后台服务崩溃</dt>
-          <dd>由 macOS 的 launchd 自动拉起，10 秒节流，不会疯狂重启。</dd>
+          <dd>Mac 上由系统的 launchd、Windows 上由 CopySync 自带的守护进程自动拉起，10 秒节流，不会疯狂重启。</dd>
           <dt>更新了 App，或者把它挪了位置</dt>
           <dd>打开 App 时会自动校正登录项，并把后台服务重启到新版本。</dd>
         </dl>
@@ -383,10 +393,10 @@
     <section class="section section-band" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">安装</h2>
-        <p class="intro">每台 Mac 装一个 App，再准备一台两边都能访问到的服务器。两台 Mac 在同一个局域网的话，服务器直接跑在其中一台上就行。</p>
+        <p class="intro">每台电脑装一个 App，再准备一台两边都能访问到的服务器。两台电脑在同一个局域网的话，服务器直接跑在其中一台 Mac 上就行。</p>
         <div class="two-col">
           <div>
-            <h3>在每台 Mac 上</h3>
+            <h3>在 Mac 上</h3>
             <ol class="install-steps">
               <li>下载 <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">CopySync.dmg</a>，打开后把 CopySync 拖进「应用程序」。</li>
               <li>从「应用程序」里打开。
@@ -394,8 +404,16 @@
               <li>点「启用后台同步」。</li>
               <li>在「设置」里填入服务器地址 <code>ws://服务器地址:8787/signal</code>，按回车。</li>
               <li>系统询问是否允许读取剪贴板时，选择允许。</li>
-              <li>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。</li>
             </ol>
+            <h3>在 Windows 上</h3>
+            <ol class="install-steps">
+              <li>下载 <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe">CopySync-Setup.exe</a> 并运行。装在当前用户目录下，不需要管理员权限。
+                <span class="aside">CopySync 还没有代码签名，Windows 会提示「Windows 已保护你的电脑」：点「更多信息」，再点「仍要运行」。不想运行安装程序的话，可以下载<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">便携版</a>。</span></li>
+              <li>打开 CopySync，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。</li>
+              <li>在「设置」里填入服务器地址，按回车。防火墙询问时选择允许。</li>
+            </ol>
+            <h3>配对</h3>
+            <p class="aside-p">一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。Mac 与 Windows 之间、两台 Windows 之间都一样。</p>
           </div>
           <div>
             <h3>在服务器上</h3>
@@ -428,8 +446,9 @@ sudo ./install.sh 你的公网IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-              <tr><th scope="row">版本</th><td>1.1.2，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布</td></tr>
+              <tr><th scope="row">版本</th><td>1.2.0，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布</td></tr>
               <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包 45 MB</td></tr>
+              <tr><th scope="row">Windows 客户端</th><td>Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 21 MB</td></tr>
               <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存</td></tr>
               <tr><th scope="row">同步的内容</th><td>纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭</td></tr>
               <tr><th scope="row">传输</th><td>WebRTC 数据通道，直连优先，打不通时经 TURN 中转；多出口网络逐个探测每个出口；文件以 tar + zstd 流式打包</td></tr>
@@ -438,7 +457,7 @@ sudo ./install.sh 你的公网IP</code></pre>
               <tr><th scope="row">自动同步上限</th><td>默认 50 MB，可在 1 MB 到 1 GB 之间调整</td></tr>
               <tr><th scope="row">记录保留</th><td>默认 3 天，可在 1 小时到 30 天之间调整，到期自动清理</td></tr>
               <tr><th scope="row">实测速度</th><td>局域网直连传输 20 MB 文件约 330 毫秒，校验和一致</td></tr>
-              <tr><th scope="row">技术栈</th><td>后台服务与服务器用 Go，界面用 Flutter，消息定义用 Protocol Buffers</td></tr>
+              <tr><th scope="row">技术栈</th><td>后台服务与服务器用 Go（Windows 上纯 Go 调用 Win32），界面用 Flutter（Mac 与 Windows 共用一套代码），消息定义用 Protocol Buffers</td></tr>
               <tr><th scope="row">许可</th><td>MIT 开源</td></tr>
             </tbody>
           </table>
@@ -453,7 +472,7 @@ sudo ./install.sh 你的公网IP</code></pre>
           <details>
             <summary>和 macOS 自带的「通用剪贴板」有什么区别？</summary>
             <div class="answer">
-              <p>通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近。CopySync 只要求两台 Mac 都能连上你部署的服务器：不同 Apple ID、一台在家一台在公司，都可以。另外它有复制记录，大文件也可以按需拉取。</p>
+              <p>通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。CopySync 只要求两台电脑都能连上你部署的服务器：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。</p>
               <p>如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。</p>
             </div>
           </details>
@@ -472,25 +491,27 @@ sudo ./install.sh 你的公网IP</code></pre>
           <details>
             <summary>必须自己准备服务器吗？</summary>
             <div class="answer">
-              <p>是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台 Mac 在同一个局域网时，在其中一台上运行服务器即可；跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。</p>
+              <p>是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台电脑在同一个局域网时，在其中一台 Mac 上运行服务器即可；跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。</p>
             </div>
           </details>
           <details>
-            <summary>支持 Windows 和 iPhone 吗？</summary>
+            <summary>支持 Windows 吗？iPhone 呢？</summary>
             <div class="answer">
-              <p>Windows 版在计划中。iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到 Mac 上那种复制后立即同步的体验。</p>
+              <p>支持 Windows 10 与 Windows 11（x64），从 1.2 版起与 Mac 互通。复制的文件在 Windows 上粘贴出来就是真实文件，能直接粘进资源管理器、微信、Office。</p>
+              <p>iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到复制后立即同步的体验。</p>
             </div>
           </details>
           <details>
-            <summary>为什么第一次打开提示「无法验证开发者」？</summary>
+            <summary>为什么第一次打开时系统会拦一下？</summary>
             <div class="answer">
-              <p>CopySync 还没有经过 Apple 公证，公证需要每年付费的开发者账号。到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」即可，只需要这一次。也可以从源码自己构建。</p>
+              <p>CopySync 还没有经过 Apple 公证，Windows 版也还没有代码签名，两者都需要每年付费的证书。</p>
+              <p>Mac 上到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」；Windows 上在「Windows 已保护你的电脑」提示里点「更多信息」，再点「仍要运行」。都只需要这一次。也可以从源码自己构建。</p>
             </div>
           </details>
           <details>
             <summary>大文件怎么处理？</summary>
             <div class="answer">
-              <p>默认 50 MB 以内的内容在你复制时就推送到另一台 Mac，那边可以直接粘贴；更大的文件只同步一条记录，需要时在复制记录里点「拉取到本机」再传。上限可以在设置里调整。</p>
+              <p>默认 50 MB 以内的内容在你复制时就推送到另一台电脑，那边可以直接粘贴；更大的文件只同步一条记录，需要时在复制记录里点「拉取到本机」再传。上限可以在设置里调整。</p>
             </div>
           </details>
           <details>
@@ -505,9 +526,10 @@ sudo ./install.sh 你的公网IP</code></pre>
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 id="closing-title">两台 Mac，一个剪贴板。</h2>
+        <h2 id="closing-title">两台电脑，一个剪贴板。</h2>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">下载 macOS 版</a>
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg">下载 Mac 版</a>
+          <a class="button button-alt" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe">下载 Windows 版</a>
           <a href="https://github.com/baiyuze/copysync">在 GitHub 上查看源码</a>
         </div>
       </div>

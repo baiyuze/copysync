@@ -2,8 +2,7 @@ name: CI
 
 on:
   push:
-    # windows：Windows 客户端开发中，合进 main 之前也要在 Windows 构建机上验证
-    branches: [main, windows]
+    branches: [main]
   pull_request:
   # 手动运行：开发中的分支（比如 windows）不必合进 main 也能跑一遍
   workflow_dispatch:

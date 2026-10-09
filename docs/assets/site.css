@@ -232,6 +232,18 @@ td code {
   height: 18px;
 }
 
+/* 第二个下载按钮：描边，与主按钮并排时不抢主次 */
+.button-alt {
+  background: transparent;
+  color: var(--blue);
+  box-shadow: inset 0 0 0 1.5px var(--blue);
+}
+
+.button-alt:hover {
+  background: var(--blue);
+  color: #fff;
+}
+
 .cta .note {
   font-size: 0.875rem;
   color: var(--dim);
@@ -739,6 +751,11 @@ tbody th {
 .install-steps {
   margin: 1.5rem 0 0;
   padding-left: 1.3rem;
+}
+
+/* 同一栏里接着的下一段（Mac 之后的 Windows、配对），与上一段拉开距离 */
+.install-steps + h3 {
+  margin-top: 2rem;
 }
 
 .install-steps li {

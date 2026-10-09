@@ -6,6 +6,9 @@
 #   copysync-server-linux-arm64.tar.gz
 #   copysync-server-macos.tar.gz          把服务器放在其中一台 Mac 上时用
 #
+# Windows 的安装程序与便携版（CopySync-Setup.exe、CopySync-windows-x64.zip）只能在 Windows 上
+# 构建：由 CI 的 Windows 任务运行 scripts/build-windows.ps1 产出，发布时从构建产物里取。
+#
 # 文件名不带版本号：网站与 README 用 releases/latest/download/<文件名> 直链下载，
 # 带版本号的话每发一版这些链接都会失效。版本号见 Release 标题与 copysync-server -version。
 #   SHA256SUMS
@@ -15,7 +18,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-export VERSION=${VERSION:-1.1.2}
+export VERSION=${VERSION:-1.2.0}
 OUT=release
 
 ./scripts/build.sh
