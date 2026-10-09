@@ -38,8 +38,8 @@
         "description": "Mac と Windows のコンピューター間でクリップボードとファイルを同期するオープンソースのアプリ。テキスト、画像、ファイル、フォルダを一台でコピーし、もう一台で貼り付けられる。デバイス間は WebRTC で直接つながり DTLS でエンドツーエンド暗号化、つながらないときはユーザーが用意したサーバーの TURN で中継する。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 以降（Intel と Apple シリコン）、Windows 10、Windows 11（x64）",
-        "softwareVersion": "1.3.1",
-        "datePublished": "2026-10-09",
+        "softwareVersion": "1.3.2",
+        "datePublished": "2026-10-10",
         "inLanguage": "ja",
         "license": "https://www.gnu.org/licenses/agpl-3.0.html",
         "isAccessibleForFree": true,
@@ -70,6 +70,14 @@
       {
         "@type": "FAQPage",
         "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "UU Remote の使用中に .uuremote_ ファイルが増え続けるのはなぜですか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UU Remote は一時的なプレースホルダーファイルをシステムのクリップボードに書き込みます。旧版の CopySync はそれを通常のファイルとして記録・転送していました。1.3.2 では確認済みの命名パターンを送受信時に除外し、起動時にプレースホルダーだけの履歴を削除します。通常の空ファイル、隠しファイル、大容量ファイルは対象外です。50 MB は自動転送のしきい値であり、UU の UDP P2P 設定とは関係ありません。両端を更新してください。他のクリップボード同期ツールによる通常コンテンツの重複は起こり得ます。"
+            }
+          },
           {
             "@type": "Question",
             "name": "macOS のユニバーサルクリップボードとの違いは？",
@@ -166,7 +174,7 @@
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
         </div>
-        <p class="note">バージョン 1.3.1、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <p class="note">バージョン 1.3.2、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
         <div class="stage" data-play role="img" aria-label="デモ：MacBook で Command C を押すと、ファイルが一枚の紙になって直接接続で Windows ノートへ飛び、そこで Ctrl V を押して貼り付けます">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -417,7 +425,7 @@ sudo ./install.sh グローバルIP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-            <tr><th scope="row">バージョン</th><td>1.3.1（<time datetime="2026-10-09">2026 年 10 月 9 日</time>公開）</td></tr>
+            <tr><th scope="row">バージョン</th><td>1.3.2（<time datetime="2026-10-10">2026 年 10 月 10 日</time>公開）</td></tr>
             <tr><th scope="row">Mac アプリ</th><td>macOS 13 Ventura 以降。Intel と Apple シリコンのユニバーサルバイナリで Rosetta 不要。ダウンロードは約 47 MB</td></tr>
             <tr><th scope="row">Windows アプリ</th><td>Windows 10（21H2 以降）と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB</td></tr>
             <tr><th scope="row">サーバー</th><td>Linux（x86_64 または ARM64、systemd または Docker）、macOS でも動作。メモリは約 15 MB</td></tr>
@@ -441,6 +449,10 @@ sudo ./install.sh グローバルIP</code></pre>
       <div class="wrap">
         <h2 id="faq-title">よくある質問</h2>
         <div class="faq">
+          <details>
+            <summary>UU Remote の使用中に .uuremote_ ファイルが増え続けるのはなぜですか？</summary>
+            <div class="answer"><p>UU Remote は一時的なプレースホルダーファイルをシステムのクリップボードに書き込みます。旧版の CopySync はそれを通常のファイルとして記録・転送していました。1.3.2 では確認済みの命名パターンを送受信時に除外し、起動時にプレースホルダーだけの履歴を削除します。通常の空ファイル、隠しファイル、大容量ファイルは対象外です。50 MB は自動転送のしきい値であり、UU の UDP P2P 設定とは関係ありません。両端を更新してください。他のクリップボード同期ツールによる通常コンテンツの重複は起こり得ます。</p></div>
+          </details>
           <details>
             <summary>macOS のユニバーサルクリップボードとの違いは？</summary>
             <div class="answer"><p>ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync に必要なのは、両方のコンピューターがあなたのサーバーにつながることだけです。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。</p><p>2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。</p></div>
@@ -484,7 +496,7 @@ sudo ./install.sh グローバルIP</code></pre>
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
         </div>
-        <p class="note">バージョン 1.3.1、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <p class="note">バージョン 1.3.2、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
         <a class="source" href="https://github.com/baiyuze/copysync">GitHub でソースコードを見る</a>
       </div>
     </section>

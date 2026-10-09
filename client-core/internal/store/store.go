@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/baiyuze/copysync/client-core/internal/clipfilter"
+
 	_ "modernc.org/sqlite"
 )
 
@@ -87,7 +89,47 @@ func Open(path string) (*Store, error) {
 		db.Close()
 		return nil, err
 	}
+	if err := s.removeRemotePlaceholders(); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("清理远程剪贴板占位记录: %w", err)
+	}
 	return s, nil
+}
+
+// Only remove records whose every file item is a known transport placeholder.
+// Mixed selections and real empty files remain intact. Never remove source
+// files belonging to UU Remote; orphaned CopySync caches are handled by GC.
+func (s *Store) removeRemotePlaceholders() error {
+	rows, err := s.db.Query(`SELECT i.clip_id, i.name FROM clip_items i
+		JOIN clips c ON c.id=i.clip_id WHERE c.kind=?`, KindFile)
+	if err != nil {
+		return err
+	}
+	onlyPlaceholders := make(map[string]bool)
+	for rows.Next() {
+		var id, name string
+		if err := rows.Scan(&id, &name); err != nil {
+			rows.Close()
+			return err
+		}
+		previous, exists := onlyPlaceholders[id]
+		onlyPlaceholders[id] = (!exists || previous) && clipfilter.RemotePlaceholder(name)
+	}
+	err = rows.Err()
+	rows.Close() // Release the single DB connection before deleting.
+	if err != nil {
+		return err
+	}
+	var ids []string
+	for id, remove := range onlyPlaceholders {
+		if remove {
+			ids = append(ids, id)
+		}
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	return s.DeleteClips(ids)
 }
 
 func (s *Store) Close() error { return s.db.Close() }

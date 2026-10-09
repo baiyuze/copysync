@@ -23,7 +23,7 @@ C = {
             "数据在你的设备之间直接传输，经过你自己的服务器时也是加密的。",
     "dl_mac": "下载 Mac 版",
     "dl_win": "下载 Windows 版",
-    "dl_note": "版本 1.3.1，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
+    "dl_note": "版本 1.3.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
     "stage_label": "演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来",
     "stage_file": "季度汇报-终版.pptx",
     "stage_win": "Windows 笔记本",
@@ -166,7 +166,7 @@ C = {
 
     "specs_h2": "技术规格",
     "specs": [
-        ("版本", '1.3.1，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布'),
+        ("版本", '1.3.2，<time datetime="2026-10-10">2026 年 10 月 10 日</time>发布'),
         ("Mac 客户端", "macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB"),
         ("Windows 客户端", "Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
         ("服务器", "Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存"),
@@ -184,6 +184,9 @@ C = {
 
     "faq_h2": "常见问题",
     "faq": [
+        ("UU 远程开启时，为什么不断出现 .uuremote_ 文件？", [
+            "UU 远程会在系统剪贴板里写入临时占位文件，旧版 CopySync 把它们当成普通文件反复记录和转发。1.3.2 在发送和接收时过滤已确认的占位命名，启动时清理纯占位记录。正常空文件、隐藏文件和大文件不受此规则影响。50 MB 只决定是否自动传输，与 UU 的 UDP P2P 设置无关。建议两端都升级；其他软件如果也同步剪贴板，仍可能产生普通内容的重复记录。",
+        ]),
         ("和 macOS 自带的「通用剪贴板」有什么区别？", [
             "通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。"
             "CopySync 只要求两台电脑都能连上你部署的服务器：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。"

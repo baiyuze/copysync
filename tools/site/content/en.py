@@ -25,7 +25,7 @@ C = {
             "Data moves directly between your devices, and stays encrypted even when it passes through your own server.",
     "dl_mac": "Download for Mac",
     "dl_win": "Download for Windows",
-    "dl_note": "Version 1.3.1, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.",
+    "dl_note": "Version 1.3.2, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.",
     "stage_label": "Demo: Command C on a MacBook turns a file into a sheet that flies over a direct connection to a Windows "
                    "laptop, where Ctrl V pastes it",
     "stage_file": "Q3 review - final.pptx",
@@ -181,7 +181,7 @@ C = {
 
     "specs_h2": "Specifications",
     "specs": [
-        ("Version", '1.3.1, released <time datetime="2026-10-09">October 9, 2026</time>'),
+        ("Version", '1.3.2, released <time datetime="2026-10-10">October 10, 2026</time>'),
         ("Mac app", "macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 47 MB download"),
         ("Windows app", "Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
         ("Server", "Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM"),
@@ -199,6 +199,9 @@ C = {
 
     "faq_h2": "Questions",
     "faq": [
+        ("Why do .uuremote_ files keep appearing while UU Remote is running?", [
+            "UU Remote writes temporary placeholder files to the system clipboard. Older CopySync clients recorded and forwarded them as ordinary files. Version 1.3.2 filters the confirmed placeholder naming pattern on send and receive, and removes placeholder-only history on startup. Ordinary empty, hidden and large files are unaffected. The 50 MB threshold only controls automatic transfer; UU’s UDP P2P setting is unrelated. Upgrade both clients. Other clipboard sync tools may still duplicate ordinary content.",
+        ]),
         ("How is this different from Universal Clipboard?", [
             "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and "
             "works only between Apple devices. CopySync only needs both computers to reach your server, so different Apple IDs "

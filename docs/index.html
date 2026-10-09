@@ -58,8 +58,8 @@
         "description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）",
-        "softwareVersion": "1.3.1",
-        "datePublished": "2026-10-09",
+        "softwareVersion": "1.3.2",
+        "datePublished": "2026-10-10",
         "inLanguage": "zh-CN",
         "license": "https://www.gnu.org/licenses/agpl-3.0.html",
         "isAccessibleForFree": true,
@@ -90,6 +90,14 @@
       {
         "@type": "FAQPage",
         "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "UU 远程开启时，为什么不断出现 .uuremote_ 文件？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UU 远程会在系统剪贴板里写入临时占位文件，旧版 CopySync 把它们当成普通文件反复记录和转发。1.3.2 在发送和接收时过滤已确认的占位命名，启动时清理纯占位记录。正常空文件、隐藏文件和大文件不受此规则影响。50 MB 只决定是否自动传输，与 UU 的 UDP P2P 设置无关。建议两端都升级；其他软件如果也同步剪贴板，仍可能产生普通内容的重复记录。"
+            }
+          },
           {
             "@type": "Question",
             "name": "和 macOS 自带的「通用剪贴板」有什么区别？",
@@ -186,7 +194,7 @@
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
         </div>
-        <p class="note">版本 1.3.1，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
+        <p class="note">版本 1.3.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
         <div class="stage" data-play role="img" aria-label="演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -437,7 +445,7 @@ sudo ./install.sh 你的公网IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-            <tr><th scope="row">版本</th><td>1.3.1，<time datetime="2026-10-09">2026 年 10 月 9 日</time>发布</td></tr>
+            <tr><th scope="row">版本</th><td>1.3.2，<time datetime="2026-10-10">2026 年 10 月 10 日</time>发布</td></tr>
             <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB</td></tr>
             <tr><th scope="row">Windows 客户端</th><td>Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB</td></tr>
             <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存</td></tr>
@@ -461,6 +469,10 @@ sudo ./install.sh 你的公网IP</code></pre>
       <div class="wrap">
         <h2 id="faq-title">常见问题</h2>
         <div class="faq">
+          <details>
+            <summary>UU 远程开启时，为什么不断出现 .uuremote_ 文件？</summary>
+            <div class="answer"><p>UU 远程会在系统剪贴板里写入临时占位文件，旧版 CopySync 把它们当成普通文件反复记录和转发。1.3.2 在发送和接收时过滤已确认的占位命名，启动时清理纯占位记录。正常空文件、隐藏文件和大文件不受此规则影响。50 MB 只决定是否自动传输，与 UU 的 UDP P2P 设置无关。建议两端都升级；其他软件如果也同步剪贴板，仍可能产生普通内容的重复记录。</p></div>
+          </details>
           <details>
             <summary>和 macOS 自带的「通用剪贴板」有什么区别？</summary>
             <div class="answer"><p>通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。CopySync 只要求两台电脑都能连上你部署的服务器：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。</p><p>如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。</p></div>
@@ -504,7 +516,7 @@ sudo ./install.sh 你的公网IP</code></pre>
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
         </div>
-        <p class="note">版本 1.3.1，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
+        <p class="note">版本 1.3.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
         <a class="source" href="https://github.com/baiyuze/copysync">在 GitHub 上查看源码</a>
       </div>
     </section>

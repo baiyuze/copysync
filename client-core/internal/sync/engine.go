@@ -29,6 +29,7 @@ import (
 
 	"github.com/baiyuze/copysync/client-core/internal/cache"
 	"github.com/baiyuze/copysync/client-core/internal/clipboard"
+	"github.com/baiyuze/copysync/client-core/internal/clipfilter"
 	"github.com/baiyuze/copysync/client-core/internal/config"
 	"github.com/baiyuze/copysync/client-core/internal/imagepreview"
 	"github.com/baiyuze/copysync/client-core/internal/pack"
@@ -155,6 +156,10 @@ func (e *Engine) HandleClipboardChange(ctx context.Context, snap clipboard.Snaps
 		"HTML长度", len(content.HTML), "图片字节", len(content.Image), "文件", content.Files)
 
 	clip, err := e.recordOutgoing(content, cfg)
+	if errors.Is(err, errRemotePlaceholder) {
+		e.log.Debug("跳过远程软件的剪贴板占位文件")
+		return
+	}
 	if err != nil {
 		e.log.Warn("记录本机复制失败", "err", err)
 		return
@@ -165,7 +170,15 @@ func (e *Engine) HandleClipboardChange(ctx context.Context, snap clipboard.Snaps
 }
 
 // recordOutgoing 把本机复制的内容落库。
+var errRemotePlaceholder = errors.New("剪贴板仅包含远程软件占位文件")
+
 func (e *Engine) recordOutgoing(c clipboard.Content, cfg config.Config) (store.Clip, error) {
+	if c.Kind == clipboard.KindFile && len(c.Files) > 0 {
+		c.Files = clipfilter.UserFiles(c.Files)
+		if len(c.Files) == 0 {
+			return store.Clip{}, errRemotePlaceholder
+		}
+	}
 	now := time.Now()
 	clip := store.Clip{
 		ID:               newID(),
@@ -302,6 +315,21 @@ func (e *Engine) HandlePeerMessage(ctx context.Context, from string, msg *pb.Pee
 }
 
 func (e *Engine) handleOffer(ctx context.Context, from string, offer *pb.ClipOffer) {
+	// Older clients can still announce UU placeholders. Ignore an all-placeholder
+	// offer before it reaches history or the local clipboard. Mixed offers are
+	// kept intact because their subsequent archive contains real user files too.
+	if offer.GetKind() == pb.ClipKind(store.KindFile) && len(offer.GetItems()) > 0 {
+		onlyPlaceholders := true
+		for _, item := range offer.GetItems() {
+			if !clipfilter.RemotePlaceholder(item.GetName()) {
+				onlyPlaceholders = false
+				break
+			}
+		}
+		if onlyPlaceholders {
+			return
+		}
+	}
 	cfg := e.loadConfig()
 	now := time.Now()
 
@@ -525,6 +553,11 @@ type receiver struct {
 }
 
 func (e *Engine) handleHeader(from string, h *pb.TransferHeader) {
+	// A rejected/ignored offer must not allocate a receiver or write files. This
+	// also handles a legacy sender that pushes immediately after its offer.
+	if _, err := e.store.GetClip(h.GetClipId()); err != nil {
+		return
+	}
 	rel, abs, err := e.cache.Dir(h.GetClipId())
 	if err != nil {
 		e.log.Warn("准备缓存目录失败", "err", err)

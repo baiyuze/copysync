@@ -326,6 +326,9 @@ tools/installer/ Windows installer (Inno Setup)
 
 ## Troubleshooting
 
+**`.uuremote_…` file records keep appearing while UU Remote is running**
+Upgrade both clients to 1.3.2. UU Remote puts temporary placeholder files on the system clipboard; older CopySync clients recorded and forwarded them as ordinary files. The new version filters the confirmed `.uuremote_aeawv` followed by digits before scanning, recording or sending, keeps ordinary files in mixed selections, ignores placeholder-only incoming offers, and removes placeholder-only history on startup without deleting UU's source files. Ordinary empty, hidden and large files are unaffected. The 50 MB threshold controls automatic transfer; there is no need to disable UU's UDP P2P. Other clipboard sync tools can still duplicate ordinary content; use one clipboard sync provider if needed. See the [investigation and validation notes](design/uu-remote-clipboard.md).
+
 **Nothing comes off the clipboard, and `pbpaste` is empty too**
 The system pasteboard service may be stuck: an app declared clipboard content and then crashed, leaving types without data. Run `killall pboard` and copy again.
 

@@ -1,5 +1,14 @@
 # 更新记录 / Changelog
 
+## 1.3.2 — 2026-10-10
+
+- 修复与 UU 远程同时使用时，`.uuremote_aeawv…` 临时占位文件不断进入复制记录并被转发的问题。发送前过滤占位文件，混合选择保留真实文件；接收端忽略旧版发来的纯占位记录与后续传输头。
+  Fixed repeated UU Remote placeholder file records and forwarding. Filter placeholders before sending; preserve ordinary files in mixed selections and ignore placeholder-only offers from older clients.
+- 启动时清理历史中仅包含已确认占位文件的记录，不删除 UU 源文件，不清空正常记录。普通空文件、隐藏文件与大文件保持原行为。
+  Remove placeholder-only history on startup without deleting UU source files or ordinary history. Normal empty, hidden and large files retain their behavior.
+- 50 MB 自动传输阈值和 UDP P2P 设置无需改动。建议两端都升级，服务器不需要升级，设备间协议不变。
+  No change to the 50 MB auto-transfer threshold, UDP P2P settings or wire protocol. Upgrade both clients; no server upgrade required.
+
 ## 1.3.1 — 2026-10-09
 
 - **点一下记录就能预览图片，去掉了单独的「预览」按钮**（它和悬停才出现的按钮挤在一起，位置看起来是错的）。
