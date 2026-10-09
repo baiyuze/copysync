@@ -20,8 +20,8 @@ Key facts:
 
 ## Docs
 
-- [README (中文)](https://github.com/baiyuze/copysync/blob/main/README.md): features, installation, architecture, security model, fallbacks
-- [README (English)](https://github.com/baiyuze/copysync/blob/main/README.en.md): the same in English
+- [README (English)](https://github.com/baiyuze/copysync/blob/main/README.md): features, installation, architecture, security model, fallbacks
+- [README (中文)](https://github.com/baiyuze/copysync/blob/main/README.zh-CN.md): the same in Simplified Chinese
 - [Server deployment](https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md): systemd, Docker and manual setup
 - [Windows client design (中文)](https://github.com/baiyuze/copysync/blob/main/design/windows-client.md): clipboard formats, file-name compatibility, background process, installer
 - [NAT traversal design (中文)](https://github.com/baiyuze/copysync/blob/main/design/nat-traversal.md): multi-uplink probing, relay-to-direct upgrade, measurements and the NAT lab
