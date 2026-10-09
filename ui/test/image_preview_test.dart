@@ -4,6 +4,7 @@ import 'package:copysync_ui/app_state.dart';
 import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
 import 'package:copysync_ui/main.dart';
 import 'package:copysync_ui/widgets/image_preview_dialog.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -207,4 +208,45 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets('预览框按窗口比例定大小，小图按原始大小显示、不放大', (tester) async {
+    tester.view.physicalSize = const Size(1000, 700);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final state = PreviewState(
+      File('test/fixtures/image-preview.png').absolute.path,
+    );
+    addTearDown(state.dispose);
+    await openPreview(tester, state);
+    final box = tester.getSize(
+      find.descendant(of: find.byType(Dialog), matching: find.byType(SizedBox)).first,
+    );
+    expect(box.width, closeTo(800, 0.5));
+    expect(box.height, closeTo(560, 0.5));
+    final image = await decodedImage(tester);
+    expect(image.fit, BoxFit.scaleDown);
+  });
+
+  testWidgets('鼠标移到记录上时，「预览」按钮不挪位置', (tester) async {
+    tester.view.physicalSize = const Size(1000, 700);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final state = PreviewState(
+      File('test/fixtures/image-preview.png').absolute.path,
+    );
+    addTearDown(state.dispose);
+    await tester.pumpWidget(CopySyncApp(state: state));
+    await tester.pump();
+    final before = tester.getCenter(find.text('预览'));
+    expect(find.text('放入剪贴板').hitTestable(), findsNothing);
+
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(find.text('测试图片')));
+    await tester.pump();
+
+    expect(find.text('放入剪贴板').hitTestable(), findsOneWidget);
+    expect(tester.getCenter(find.text('预览')), before);
+  });
 }

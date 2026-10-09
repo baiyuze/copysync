@@ -57,11 +57,13 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
     final record = state.records
         .where((r) => r.id == widget.clipId)
         .firstOrNull;
+    // 预览框按应用窗口的比例定大小：窗口小，预览也小，不会一打开就把整个窗口盖满
+    final window = MediaQuery.sizeOf(context);
     return Dialog(
-      insetPadding: const EdgeInsets.all(Insets.xl),
+      insetPadding: EdgeInsets.zero,
       child: SizedBox(
-        width: 920,
-        height: 640,
+        width: (window.width * 0.8).clamp(280.0, 1400.0),
+        height: (window.height * 0.8).clamp(240.0, 1000.0),
         child: Column(
           children: [
             Padding(
@@ -179,7 +181,8 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
                 height: 2048,
                 policy: ResizeImagePolicy.fit,
               ),
-              fit: BoxFit.contain,
+              // 比预览框小的图片按原始大小显示，大的才缩小到放得下：小图标不会被放大成一整屏
+              fit: BoxFit.scaleDown,
               semanticLabel: '复制记录中的图片',
               frameBuilder: (_, child, frame, synchronous) =>
                   frame != null || synchronous

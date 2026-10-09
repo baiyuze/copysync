@@ -272,25 +272,30 @@ class _RecordRowState extends State<_RecordRow> {
       case ClipStatus.CLIP_STATUS_EXPIRED:
         return Text('已过期', style: context.text.bodySmall?.copyWith(color: p.textFaint));
       default:
-        // 悬停时才显示操作，静态时列表保持干净
-        if (!_hovered && r.kind != ClipKind.CLIP_KIND_IMAGE) return const SizedBox(height: 28);
+        // 悬停时才显示「放入剪贴板」与删除，静态时列表保持干净。
+        // 不悬停时它们只是看不见，位置照样留着：鼠标移上来时「预览」不会被挤开，不容易点错
+        Widget hoverOnly(Widget child) => Visibility(
+              visible: _hovered,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: child,
+            );
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (r.kind == ClipKind.CLIP_KIND_IMAGE)
               TextButton(onPressed: () => _preview(r), child: const Text('预览')),
-            if (_hovered) ...[
-              TextButton(
-                onPressed: () =>
-                    _run(() => AppScope.read(context).applyToClipboard(r.id), '已放入剪贴板'),
-                child: const Text('放入剪贴板'),
-              ),
-              IconAction(
-                icon: AppIcons.trash,
-                tooltip: '删除这条记录',
-                onTap: () => _run(() => AppScope.read(context).deleteRecords(ids: [r.id]), '已删除'),
-              ),
-            ],
+            hoverOnly(TextButton(
+              onPressed: () =>
+                  _run(() => AppScope.read(context).applyToClipboard(r.id), '已放入剪贴板'),
+              child: const Text('放入剪贴板'),
+            )),
+            hoverOnly(IconAction(
+              icon: AppIcons.trash,
+              tooltip: '删除这条记录',
+              onTap: () => _run(() => AppScope.read(context).deleteRecords(ids: [r.id]), '已删除'),
+            )),
           ],
         );
     }
