@@ -15,3 +15,7 @@ ui/tool/screenshots/out/
 
 # 本地工具配置
 .claude/
+
+# Python site generator cache
+__pycache__/
+*.pyc
