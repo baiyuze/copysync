@@ -1,6 +1,6 @@
 # Windows 客户端技术方案
 
-> 状态：已实现，随 1.2.0 发布（2026-10-09）。实机验证记录见 [windows-validation-2026-10-09.md](windows-validation-2026-10-09.md)
+> 状态：已实现，随 1.2.0 发布（2026-10-09）。实机验证记录见 [windows-validation-2026-10-09.md](windows-validation-2026-10-09.md)（安装、同步、生命周期）与 [windows-features-validation-2026-10-09.md](windows-features-validation-2026-10-09.md)（托盘、配对弹窗、图片预览）
 > 目标版本：1.2.0（Mac 与 Windows 同时发布）
 > 相关：[多出口网络的 NAT 打洞](nat-traversal.md)
 
