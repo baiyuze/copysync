@@ -1,0 +1,381 @@
+{
+  "@@locale": "en",
+  "navHistory": "History",
+  "navDevices": "Devices",
+  "navSettings": "Settings",
+  "linkConnecting": "Connecting…",
+  "linkServiceNotRunning": "Service not running",
+  "linkNoServer": "No server connection",
+  "linkOnlinePeers": "{count, plural, =1{1 device online} other{{count} devices online}}",
+  "@linkOnlinePeers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "linkServerConnected": "Connected to the server",
+  "linkConnectionLost": "Connection lost: {detail}",
+  "@linkConnectionLost": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "linkServiceDisconnected": "Service disconnected",
+  "linkServiceDisabled": "Background sync is off",
+  "errServiceNotConnected": "Not connected to the background service",
+  "errUnimplemented": "This isn't available yet",
+  "errUnavailable": "Can't reach the background service",
+  "errServiceStart": "Couldn't start the background service: {detail}",
+  "@errServiceStart": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "errServiceRestart": "Couldn't restart the background service: {detail}",
+  "@errServiceRestart": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "errAutostart": "Couldn't set CopySync to start at login: {detail}",
+  "@errAutostart": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "thisMacTitle": "This Mac",
+  "thisPcTitle": "This computer",
+  "thisMacInText": "this Mac",
+  "thisPcInText": "this computer",
+  "bothMacs": "both Macs",
+  "bothDevices": "both devices",
+  "thisDeviceShort": "This device",
+  "fromDevice": "From {name}",
+  "@fromDevice": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "close": "Close",
+  "save": "Save",
+  "retry": "Try again",
+  "continueAction": "Continue",
+  "justNow": "Just now",
+  "secondsAgo": "{n}s ago",
+  "@secondsAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAgo": "{n, plural, =1{1 minute ago} other{{n} minutes ago}}",
+  "@minutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{n, plural, =1{1 hour ago} other{{n} hours ago}}",
+  "@hoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{n, plural, =1{Yesterday} other{{n} days ago}}",
+  "@daysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "monthDay": "{month}/{day}",
+  "@monthDay": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{n, plural, =1{1 hour} other{{n} hours}}",
+  "@durationHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "durationDays": "{n, plural, =1{1 day} other{{n} days}}",
+  "@durationDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyEmptySubtitle": "Copy on any of your devices and it shows up here",
+  "historyCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@historyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyCountKept": "{count, plural, =1{1 item} other{{count} items}}, kept for {ttl}",
+  "@historyCountKept": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "ttl": {
+        "type": "String"
+      }
+    }
+  },
+  "filterAll": "All",
+  "filterText": "Text",
+  "filterImage": "Images",
+  "filterFile": "Files",
+  "historyClearTooltip": "Clear history",
+  "historyEmptyTitle": "Nothing here yet",
+  "historyEmptyFilteredTitle": "Nothing of this kind",
+  "historyEmptyBody": "Copy text, an image or a file on any paired device and it appears here.",
+  "clearConfirmTitle": "Clear the whole history?",
+  "clearConfirmBody": "Everything synced from your devices, and the cached files, will be removed from {device}. The original files aren't affected.",
+  "@clearConfirmBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "clear": "Clear",
+  "historyCleared": "History cleared",
+  "permDeniedTitle": "CopySync can't read the clipboard",
+  "permAskTitle": "Allow CopySync to read the clipboard",
+  "permDeniedBody": "What you copy on this Mac won't be synced. In System Settings, set CopySync Daemon to Allow.",
+  "permAskBody": "Otherwise macOS asks every time. In System Settings, set CopySync Daemon to Allow.",
+  "openSystemSettings": "Open System Settings",
+  "fetch": "Pull to this device",
+  "fetchStarted": "Pulling…",
+  "transferFailed": "Transfer failed",
+  "expired": "Expired",
+  "preview": "Preview",
+  "putOnClipboard": "Copy to clipboard",
+  "putOnClipboardDone": "On the clipboard",
+  "deleteRecord": "Delete this item",
+  "deleted": "Deleted",
+  "emptyRecord": "(empty)",
+  "imageRecord": "Image",
+  "itemsSummary": "{name} and {others, plural, =1{1 more} other{{others} more}}",
+  "@itemsSummary": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "others": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imagePreviewTitle": "Image preview",
+  "closePreview": "Close preview",
+  "previewHint": "Scroll or pinch to zoom, drag to move around",
+  "fitWindow": "Fit to window",
+  "previewDeleted": "This image has been deleted from the history",
+  "previewExpired": "This image has expired and can't be previewed",
+  "previewDownloading": "Downloading the image…",
+  "previewDownloadFailed": "The download failed. Try again.",
+  "previewNotDownloaded": "This image isn't on this computer yet",
+  "downloadAndPreview": "Download and preview",
+  "previewUnavailable": "This image can't be previewed right now",
+  "imageSemantic": "Image from the history",
+  "previewUnreadable": "Can't read the image. The file may have been cleaned up or damaged.",
+  "devicesSubtitleEmpty": "Once paired, your devices share one clipboard",
+  "devicesSubtitle": "{paired} paired, {online} online",
+  "@devicesSubtitle": {
+    "placeholders": {
+      "paired": {
+        "type": "int"
+      },
+      "online": {
+        "type": "int"
+      }
+    }
+  },
+  "addDevice": "Add device",
+  "thisDeviceFootnote": "When pairing, {both} show the same two lines of security fingerprints, one for each device. Confirm only if they match character for character.",
+  "@thisDeviceFootnote": {
+    "placeholders": {
+      "both": {
+        "type": "String"
+      }
+    }
+  },
+  "noDevicesTitle": "No paired devices yet",
+  "noDevicesBody": "Open CopySync on your other computer and link the two with a 6-character pairing code.",
+  "noDevicesNeedServer": "Connect to a signaling server in Settings before pairing.",
+  "pairedDevices": "Paired devices",
+  "pairedFootnote": "Direct: data goes straight between the two devices. Relay: when the network blocks a direct path, data goes through your server and stays end-to-end encrypted.",
+  "offline": "Offline",
+  "direct": "Direct",
+  "relay": "Relay",
+  "online": "Online",
+  "moreActions": "More",
+  "copyFingerprint": "Copy fingerprint",
+  "unpairEllipsis": "Unpair…",
+  "fingerprintCopied": "Fingerprint copied",
+  "unpairTitle": "Unpair “{name}”?",
+  "@unpairTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unpairBody": "The two devices will stop syncing. To sync again, you'll need to pair them and check the fingerprints again.",
+  "unpair": "Unpair",
+  "unpaired": "Unpaired",
+  "generateCode": "Show a code",
+  "enterCode": "Enter a code",
+  "codeFailedTitle": "Couldn't create a pairing code",
+  "enterOnOther": "Enter this code on your other device",
+  "codeCopied": "Code copied",
+  "codeHint": "Click to copy. Valid for 5 minutes.",
+  "afterEnterFootnote": "Once it's entered, {both} show the same two lines of security fingerprints. Confirm only if they match.",
+  "@afterEnterFootnote": {
+    "placeholders": {
+      "both": {
+        "type": "String"
+      }
+    }
+  },
+  "codeInvalid": "A pairing code is 6 letters or digits",
+  "enterCodeShown": "Enter the code shown on your other device",
+  "pairingDone": "Paired",
+  "pairingRejected": "Pairing declined",
+  "verifyTitle": "Check the security fingerprints",
+  "pairingWith": "Pairing with “{name}”",
+  "@pairingWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyBody": "The two lines on {both} must be identical. If even one character differs, someone may be tampering with the connection, so decline.",
+  "@verifyBody": {
+    "placeholders": {
+      "both": {
+        "type": "String"
+      }
+    }
+  },
+  "rejectMismatch": "Mismatch, decline",
+  "confirmMatch": "They match, pair",
+  "server": "Server",
+  "serverFootnote": "The server only helps devices find each other and set up a direct connection. It can't see what they send.",
+  "signalingUrl": "Signaling server",
+  "signalingUrlDesc": "Press Return to save; it reconnects right away",
+  "signalingUrlPlaceholder": "ws://server-address:8787/signal",
+  "publicStun": "Probe with public servers",
+  "publicStunDesc": "On networks with several uplinks, such as offices with two ISPs, this finds more direct paths. Public servers only see your public IP.",
+  "connectionStatus": "Connection",
+  "connectedDesc": "Connected to the signaling server",
+  "disconnectedDesc": "Can't reach the server. Check the address and that the server is running.",
+  "connected": "Connected",
+  "notConnected": "Not connected",
+  "deviceName": "Device name",
+  "deviceNameDesc": "Shown in the list on your other devices",
+  "language": "Language",
+  "languageSystem": "System",
+  "sync": "Sync",
+  "syncFootnote": "Items under the limit are pushed to your other devices as you copy. Larger ones sync as a record; pull them from History when you need them, so big files don't waste bandwidth or disk space.",
+  "autoSyncLimit": "Auto-sync limit",
+  "autoSyncLimitDesc": "Larger files are pulled by hand",
+  "autoApply": "Put received items on the clipboard",
+  "autoApplyDesc": "When off, put them on the clipboard from History yourself",
+  "whatToSync": "What to sync",
+  "syncFiles": "Files and folders",
+  "syncText": "Plain text",
+  "syncRich": "Rich text",
+  "syncImages": "Images and screenshots",
+  "storage": "Storage",
+  "storageFootnote": "Expired items and cached files are cleaned up automatically.",
+  "keepHistory": "Keep history for",
+  "keepCache": "Keep cached files for",
+  "keepCacheDesc": "Never longer than the history",
+  "cacheUsage": "Cache size",
+  "backgroundSync": "Background sync",
+  "backgroundFootnote": "When off, nothing syncs and CopySync doesn't start at login. History and pairings are kept; open the app to turn it back on.",
+  "backgroundService": "Background service",
+  "backgroundServiceDesc": "Starts at login and keeps syncing with the window closed",
+  "restart": "Restart",
+  "restarted": "Background service restarted",
+  "disableEllipsis": "Turn off…",
+  "about": "About",
+  "aboutDesc": "Open source, MIT License",
+  "homepage": "Website",
+  "feedback": "Report a problem",
+  "disableTitle": "Turn off background sync?",
+  "disableBody": "CopySync on {device} will stop syncing and won't start at login. History and pairings are kept.",
+  "@disableBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "disable": "Turn off",
+  "disabled": "Background sync is off",
+  "urlMustBeWs": "The address must start with ws:// or wss://",
+  "serverUpdated": "Server updated. Reconnecting…",
+  "deviceNameUpdated": "Device name updated",
+  "svcExtractTitle": "Install or extract CopySync first",
+  "svcExtractBody": "CopySync is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.",
+  "svcMoveTitle": "Move CopySync to Applications first",
+  "svcMoveBody": "CopySync is running straight from the disk image. Drag it into Applications, eject the disk image, and open it from Applications to turn on background sync.",
+  "svcStartTitle": "Get started with CopySync",
+  "svcStartBody": "CopySync runs a small background process that notices clipboard changes and stays connected to your other devices. Once on, it starts at login and keeps syncing even with this window closed.",
+  "svcEnable": "Turn on background sync",
+  "svcStaleTitle": "Turn background sync on again",
+  "svcStaleBodyWin": "CopySync has moved, but starting at login still points to the old place. Turn it on again so the background process uses this copy. History and pairings are kept.",
+  "svcStaleBodyMac": "CopySync has moved, or was installed with an old script. Turn it on again so the background process uses this app. History and pairings are kept.",
+  "svcReenable": "Turn on again",
+  "svcStoppedTitle": "The background service isn't running",
+  "svcStoppedBody": "It may have just quit; the system usually restarts it within seconds. If you stay on this page, restart it with the button below.",
+  "svcDevBodyWin": "This is a development build with no copysyncd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.",
+  "svcDevBodyMac": "This is a development build without the background service. Run ./scripts/install-macos.sh in the source folder to install it.",
+  "svcLogPath": "Log: {path}",
+  "@svcLogPath": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "svcCanDisable": "You can turn background sync off anytime in Settings."
+}

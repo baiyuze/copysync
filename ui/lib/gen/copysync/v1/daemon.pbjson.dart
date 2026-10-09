@@ -543,6 +543,7 @@ const Config$json = {
     {'1': 'device_name', '3': 10, '4': 1, '5': 9, '10': 'deviceName'},
     {'1': 'signaling_url', '3': 11, '4': 1, '5': 9, '10': 'signalingUrl'},
     {'1': 'only_own_stun', '3': 12, '4': 1, '5': 8, '10': 'onlyOwnStun'},
+    {'1': 'language', '3': 13, '4': 1, '5': 9, '10': 'language'},
   ],
 };
 
@@ -556,7 +557,8 @@ final $typed_data.Uint8List configDescriptor = $convert.base64Decode(
     'I1ChdhdXRvX2FwcGx5X3RvX2NsaXBib2FyZBgIIAEoCFIUYXV0b0FwcGx5VG9DbGlwYm9hcmQS'
     'JgoPbGF1bmNoX2F0X2xvZ2luGAkgASgIUg1sYXVuY2hBdExvZ2luEh8KC2RldmljZV9uYW1lGA'
     'ogASgJUgpkZXZpY2VOYW1lEiMKDXNpZ25hbGluZ191cmwYCyABKAlSDHNpZ25hbGluZ1VybBIi'
-    'Cg1vbmx5X293bl9zdHVuGAwgASgIUgtvbmx5T3duU3R1bg==');
+    'Cg1vbmx5X293bl9zdHVuGAwgASgIUgtvbmx5T3duU3R1bhIaCghsYW5ndWFnZRgNIAEoCVIIbG'
+    'FuZ3VhZ2U=');
 
 @$core.Deprecated('Use networkInfoDescriptor instead')
 const NetworkInfo$json = {

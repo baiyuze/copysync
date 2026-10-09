@@ -5,6 +5,7 @@ import 'package:grpc/grpc.dart';
 
 import 'background_service.dart';
 import 'daemon_client.dart';
+import 'i18n.dart';
 import 'gen/copysync/v1/daemon.pb.dart';
 import 'gen/copysync/v1/daemon.pbgrpc.dart' show DaemonServiceClient;
 
@@ -94,8 +95,8 @@ class AppState extends ChangeNotifier {
 
       _events = conn.client.subscribe(SubscribeRequest()).listen(
             _onEvent,
-            onError: (Object e) => _scheduleRetry('连接中断：${_describe(e)}'),
-            onDone: () => _scheduleRetry('后台服务已断开'),
+            onError: (Object e) => _scheduleRetry(appL10n.linkConnectionLost(_describe(e))),
+            onDone: () => _scheduleRetry(appL10n.linkServiceDisconnected),
           );
 
       _serviceState = null;
@@ -103,7 +104,7 @@ class AppState extends ChangeNotifier {
       _ensureServiceCurrent();
     } on DaemonNotRunning {
       await _refreshServiceState();
-      _scheduleRetry('后台服务未运行');
+      _scheduleRetry(appL10n.linkServiceNotRunning);
     } catch (e) {
       await _refreshServiceState();
       _scheduleRetry(_describe(e));
@@ -187,7 +188,7 @@ class AppState extends ChangeNotifier {
     _retry?.cancel();
     await service.uninstall();
     await _refreshServiceState();
-    _scheduleRetry('后台服务已停用');
+    _scheduleRetry(appL10n.linkServiceDisabled);
   }
 
   Future<void> _loadDevices() async {
@@ -302,7 +303,7 @@ class AppState extends ChangeNotifier {
 
   DaemonServiceClient get _client {
     final c = _conn;
-    if (c == null) throw StateError('后台服务未连接');
+    if (c == null) throw StateError(appL10n.errServiceNotConnected);
     return c.client;
   }
 
@@ -389,11 +390,11 @@ class AppState extends ChangeNotifier {
   /// 把 gRPC 异常翻译成用户能看懂的话，而不是抛一串堆栈。
   static String _describe(Object e) {
     if (e is GrpcError) {
-      if (e.code == StatusCode.unimplemented) return '该功能尚未接入';
-      if (e.code == StatusCode.unavailable) return '无法连接后台服务';
+      if (e.code == StatusCode.unimplemented) return appL10n.errUnimplemented;
+      if (e.code == StatusCode.unavailable) return appL10n.errUnavailable;
       return e.message ?? e.codeName;
     }
-    if (e is DaemonNotRunning) return '后台服务未运行';
+    if (e is DaemonNotRunning) return appL10n.linkServiceNotRunning;
     if (e is StateError) return e.message;
     return e.toString();
   }

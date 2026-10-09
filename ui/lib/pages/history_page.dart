@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../gen/copysync/v1/daemon.pb.dart';
+import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -35,30 +36,34 @@ class _HistoryPageState extends State<HistoryPage> {
     final state = AppScope.of(context);
     final records = state.records.where(_matches).toList();
     final ttl = state.config?.historyTtlSeconds.toInt();
+    final l = context.l10n;
+    final count = state.records.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         PageHeader(
-          title: '复制记录',
+          title: l.navHistory,
           subtitle: state.records.isEmpty
-              ? '在任意一台设备上复制，内容会出现在这里'
-              : '共 ${state.records.length} 条${ttl == null ? '' : '，保留 ${_ttlLabel(ttl)}'}',
+              ? l.historyEmptySubtitle
+              : ttl == null
+                  ? l.historyCount(count)
+                  : l.historyCountKept(count, durationLabel(l, ttl)),
           actions: [
             if (state.records.isNotEmpty) ...[
               Segmented<_Filter>(
                 value: _filter,
-                segments: const [
-                  (_Filter.all, '全部'),
-                  (_Filter.text, '文本'),
-                  (_Filter.image, '图片'),
-                  (_Filter.file, '文件'),
+                segments: [
+                  (_Filter.all, l.filterAll),
+                  (_Filter.text, l.filterText),
+                  (_Filter.image, l.filterImage),
+                  (_Filter.file, l.filterFile),
                 ],
                 onChanged: (f) => setState(() => _filter = f),
               ),
               IconAction(
                 icon: AppIcons.trash,
-                tooltip: '清空记录',
+                tooltip: l.historyClearTooltip,
                 onTap: () => _confirmClear(context, state),
               ),
             ],
@@ -75,9 +80,9 @@ class _HistoryPageState extends State<HistoryPage> {
                   icon: _filter == _Filter.all
                       ? AppIcons.docOnClipboard
                       : AppIcons.filter,
-                  title: _filter == _Filter.all ? '还没有记录' : '没有这一类的记录',
+                  title: _filter == _Filter.all ? l.historyEmptyTitle : l.historyEmptyFilteredTitle,
                   description: _filter == _Filter.all
-                      ? '在任意一台已配对的设备上复制文本、图片或文件，记录会出现在这里。'
+                      ? l.historyEmptyBody
                       : null,
                 )
               : CustomScrollView(
@@ -112,21 +117,19 @@ class _HistoryPageState extends State<HistoryPage> {
       p == ClipboardPermission.CLIPBOARD_PERMISSION_ASK ||
       p == ClipboardPermission.CLIPBOARD_PERMISSION_ALWAYS_DENY;
 
-  static String _ttlLabel(int seconds) =>
-      seconds % 86400 == 0 ? '${seconds ~/ 86400} 天' : '${(seconds / 3600).round()} 小时';
-
   Future<void> _confirmClear(BuildContext context, AppState state) async {
+    final l = context.l10n;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('清空全部记录？'),
-        content: Text('所有设备上同步来的记录和已缓存的文件都会从${Wording.thisDeviceInText}上删除。原始文件不受影响。'),
+        title: Text(l.clearConfirmTitle),
+        content: Text(l.clearConfirmBody(Wording.thisDeviceInText)),
         actions: [
-          OutlinedButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+          OutlinedButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: FilledButton.styleFrom(backgroundColor: ctx.palette.danger),
-            child: const Text('清空'),
+            child: Text(l.clear),
           ),
         ],
       ),
@@ -134,7 +137,7 @@ class _HistoryPageState extends State<HistoryPage> {
     if (ok != true || !context.mounted) return;
     try {
       await state.deleteRecords(all: true);
-      if (context.mounted) showToast(context, '记录已清空');
+      if (context.mounted) showToast(context, l.historyCleared);
     } catch (e) {
       if (context.mounted) showToast(context, AppState.describeError(e), error: true);
     }
@@ -150,11 +153,10 @@ class _PermissionNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final denied = permission == ClipboardPermission.CLIPBOARD_PERMISSION_ALWAYS_DENY;
+    final l = context.l10n;
     return Notice(
-      title: denied ? '已禁止 CopySync 读取剪贴板' : '允许 CopySync 读取剪贴板',
-      message: denied
-          ? '在这台 Mac 上复制的内容不会同步出去。到系统设置里把 CopySync Daemon 改为「允许」。'
-          : '否则 macOS 每次都会弹窗询问。到系统设置里把 CopySync Daemon 改为「允许」。',
+      title: denied ? l.permDeniedTitle : l.permAskTitle,
+      message: denied ? l.permDeniedBody : l.permAskBody,
       action: OutlinedButton(
         onPressed: () async {
           try {
@@ -163,7 +165,7 @@ class _PermissionNotice extends StatelessWidget {
             if (context.mounted) showToast(context, AppState.describeError(e), error: true);
           }
         },
-        child: const Text('打开系统设置'),
+        child: Text(l.openSystemSettings),
       ),
     );
   }
@@ -219,7 +221,7 @@ class _RecordRowState extends State<_RecordRow> {
                     const SizedBox(height: 2),
                     Text(
                       [
-                        r.outgoing ? '本机' : '来自 ${r.originDeviceName}',
+                        r.outgoing ? context.l10n.thisDeviceShort : context.l10n.fromDevice(r.originDeviceName),
                         if (r.totalSize > 0) humanBytes(r.totalSize.toInt()),
                         relativeTime(DateTime.fromMillisecondsSinceEpoch(r.createdAtUnix.toInt() * 1000)),
                       ].join(' · '),
@@ -241,6 +243,7 @@ class _RecordRowState extends State<_RecordRow> {
 
   Widget _trailing(BuildContext context, ClipRecord r) {
     final p = context.palette;
+    final l = context.l10n;
     if (_busy) {
       return const SizedBox(
         width: 16,
@@ -252,8 +255,8 @@ class _RecordRowState extends State<_RecordRow> {
       case ClipStatus.CLIP_STATUS_REMOTE_ONLY:
         // 超过自动同步阈值的大文件：只有元数据，需要时再拉
         return OutlinedButton(
-          onPressed: () => _run(() => AppScope.read(context).fetch(r.id), '开始拉取'),
-          child: const Text('拉取到本机'),
+          onPressed: () => _run(() => AppScope.read(context).fetch(r.id), l.fetchStarted),
+          child: Text(l.fetch),
         );
       case ClipStatus.CLIP_STATUS_FETCHING:
         // 知道总量时显示真实进度，否则显示不确定进度
@@ -266,11 +269,11 @@ class _RecordRowState extends State<_RecordRow> {
         );
       case ClipStatus.CLIP_STATUS_FAILED:
         return Tooltip(
-          message: r.error.isEmpty ? '传输失败' : r.error,
-          child: Text('传输失败', style: context.text.bodySmall?.copyWith(color: p.danger)),
+          message: r.error.isEmpty ? l.transferFailed : r.error,
+          child: Text(l.transferFailed, style: context.text.bodySmall?.copyWith(color: p.danger)),
         );
       case ClipStatus.CLIP_STATUS_EXPIRED:
-        return Text('已过期', style: context.text.bodySmall?.copyWith(color: p.textFaint));
+        return Text(l.expired, style: context.text.bodySmall?.copyWith(color: p.textFaint));
       default:
         // 悬停时才显示「放入剪贴板」与删除，静态时列表保持干净。
         // 不悬停时它们只是看不见，位置照样留着：鼠标移上来时「预览」不会被挤开，不容易点错
@@ -285,16 +288,16 @@ class _RecordRowState extends State<_RecordRow> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (r.kind == ClipKind.CLIP_KIND_IMAGE)
-              TextButton(onPressed: () => _preview(r), child: const Text('预览')),
+              TextButton(onPressed: () => _preview(r), child: Text(l.preview)),
             hoverOnly(TextButton(
               onPressed: () =>
-                  _run(() => AppScope.read(context).applyToClipboard(r.id), '已放入剪贴板'),
-              child: const Text('放入剪贴板'),
+                  _run(() => AppScope.read(context).applyToClipboard(r.id), l.putOnClipboardDone),
+              child: Text(l.putOnClipboard),
             )),
             hoverOnly(IconAction(
               icon: AppIcons.trash,
-              tooltip: '删除这条记录',
-              onTap: () => _run(() => AppScope.read(context).deleteRecords(ids: [r.id]), '已删除'),
+              tooltip: l.deleteRecord,
+              onTap: () => _run(() => AppScope.read(context).deleteRecords(ids: [r.id]), l.deleted),
             )),
           ],
         );
@@ -329,8 +332,12 @@ IconData kindIcon(ClipRecord r) => switch (r.kind) {
     };
 
 String recordTitle(ClipRecord r) {
-  if (r.textPreview.isNotEmpty) return r.textPreview.replaceAll('\n', ' ').trim();
-  if (r.items.isEmpty) return '（空）';
+  // 图片和文件的标题按当前界面语言拼：后台服务存下的摘要是写入时的中文，不会跟着换语言
+  if (r.kind == ClipKind.CLIP_KIND_IMAGE) return appL10n.imageRecord;
+  if (r.kind != ClipKind.CLIP_KIND_FILE && r.textPreview.isNotEmpty) {
+    return r.textPreview.replaceAll('\n', ' ').trim();
+  }
+  if (r.items.isEmpty) return appL10n.emptyRecord;
   if (r.items.length == 1) return r.items.first.name;
-  return '${r.items.first.name} 等 ${r.items.length} 项';
+  return appL10n.itemsSummary(r.items.first.name, r.items.length - 1, r.items.length);
 }

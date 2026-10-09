@@ -222,8 +222,9 @@ func (t *windowsTray) showMenu() {
 		return
 	}
 	defer trayDestroyMenu.Call(menu)
-	open, _ := windows.UTF16PtrFromString("打开 CopySync")
-	exit, _ := windows.UTF16PtrFromString("退出 CopySync")
+	openLabel, quitLabel := trayLabels(trayLanguage())
+	open, _ := windows.UTF16PtrFromString(openLabel)
+	exit, _ := windows.UTF16PtrFromString(quitLabel)
 	trayAppendMenu.Call(menu, 0, trayOpenCommand, uintptr(unsafe.Pointer(open)))
 	trayAppendMenu.Call(menu, 0x800, 0, 0) // MF_SEPARATOR
 	trayAppendMenu.Call(menu, 0, trayQuitCommand, uintptr(unsafe.Pointer(exit)))

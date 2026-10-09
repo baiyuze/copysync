@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../gen/copysync/v1/daemon.pb.dart';
+import '../i18n.dart';
 import '../icons.dart';
 import '../main.dart';
 import '../theme.dart';
@@ -76,10 +77,10 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text('图片预览', style: context.text.titleMedium),
+                    child: Text(context.l10n.imagePreviewTitle, style: context.text.titleMedium),
                   ),
                   IconButton(
-                    tooltip: '关闭预览',
+                    tooltip: context.l10n.closePreview,
                     onPressed: () => Navigator.pop(context),
                     icon: Icon(AppIcons.xmark),
                   ),
@@ -101,11 +102,11 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text('滚轮或触控板缩放，拖动查看', style: context.text.bodySmall),
+                    child: Text(context.l10n.previewHint, style: context.text.bodySmall),
                   ),
                   TextButton(
                     onPressed: () => _transform.value = Matrix4.identity(),
-                    child: const Text('适应窗口'),
+                    child: Text(context.l10n.fitWindow),
                   ),
                 ],
               ),
@@ -117,9 +118,9 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
   }
 
   Widget _content(AppState state, ClipRecord? record) {
-    if (record == null) return _message('这条图片记录已被删除');
+    if (record == null) return _message(context.l10n.previewDeleted);
     if (record.status == ClipStatus.CLIP_STATUS_EXPIRED) {
-      return _message('图片已过期，无法预览');
+      return _message(context.l10n.previewExpired);
     }
     if (_requesting || record.status == ClipStatus.CLIP_STATUS_FETCHING) {
       return Center(
@@ -131,7 +132,7 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
               strokeWidth: 2,
             ),
             const SizedBox(height: Insets.lg),
-            const Text('正在下载图片…'),
+            Text(context.l10n.previewDownloading),
           ],
         ),
       );
@@ -141,13 +142,13 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
       return _message(
         _downloadError ??
             (record.status == ClipStatus.CLIP_STATUS_FAILED
-                ? '图片下载失败，请重试'
-                : '图片尚未下载到这台电脑'),
-        action: FilledButton(onPressed: _download, child: const Text('下载并预览')),
+                ? context.l10n.previewDownloadFailed
+                : context.l10n.previewNotDownloaded),
+        action: FilledButton(onPressed: _download, child: Text(context.l10n.downloadAndPreview)),
       );
     }
     if (record.status != ClipStatus.CLIP_STATUS_READY) {
-      return _message('图片暂时无法预览');
+      return _message(context.l10n.previewUnavailable);
     }
 
     _preview ??= state.imagePreviewPath(record.id);
@@ -159,7 +160,7 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
             AppState.describeError(snapshot.error!),
             action: OutlinedButton(
               onPressed: () => setState(() => _preview = null),
-              child: const Text('重试'),
+              child: Text(context.l10n.retry),
             ),
           );
         }
@@ -183,14 +184,14 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
               ),
               // 比预览框小的图片按原始大小显示，大的才缩小到放得下：小图标不会被放大成一整屏
               fit: BoxFit.scaleDown,
-              semanticLabel: '复制记录中的图片',
+              semanticLabel: context.l10n.imageSemantic,
               frameBuilder: (_, child, frame, synchronous) =>
                   frame != null || synchronous
                   ? child
                   : const Center(
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
-              errorBuilder: (_, _, _) => _message('无法读取图片，文件可能已被清理或损坏'),
+              errorBuilder: (_, _, _) => _message(context.l10n.previewUnreadable),
             ),
           ),
         );

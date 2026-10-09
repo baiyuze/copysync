@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../gen/copysync/v1/daemon.pb.dart';
+import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -17,20 +18,21 @@ class DevicesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
     final canPair = state.isOnline && (state.status?.signalingConnected ?? false);
+    final l = context.l10n;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         PageHeader(
-          title: '设备',
+          title: l.navDevices,
           subtitle: state.peers.isEmpty
-              ? '配对之后，设备之间就会同步剪贴板'
-              : '已配对 ${state.peers.length} 台，${state.onlinePeerCount} 台在线',
+              ? l.devicesSubtitleEmpty
+              : l.devicesSubtitle(state.peers.length, state.onlinePeerCount),
           actions: [
             FilledButton.icon(
               onPressed: canPair ? () => _startPairing(context) : null,
               icon: Icon(AppIcons.plus, size: 14),
-              label: const Text('添加设备'),
+              label: Text(l.addDevice),
             ),
           ],
         ),
@@ -41,7 +43,7 @@ class DevicesPage extends StatelessWidget {
               if (state.self != null)
                 GroupSection(
                   title: Wording.thisDevice,
-                  footnote: '配对时，${Wording.bothDevicesInText}会显示同样的两行安全指纹：这台的和对方的。逐字核对一致才能确认。',
+                  footnote: l.thisDeviceFootnote(Wording.bothDevicesInText),
                   child: GroupBox(children: [_DeviceRow(device: state.self!, isSelf: true)]),
                 ),
               if (state.peers.isEmpty)
@@ -49,23 +51,20 @@ class DevicesPage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: Insets.xl),
                   child: EmptyState(
                     icon: AppIcons.deviceLaptop,
-                    title: '还没有配对的设备',
-                    description: canPair
-                        ? '在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。'
-                        : '先在「设置」里连接信令服务器，才能配对设备。',
+                    title: l.noDevicesTitle,
+                    description: canPair ? l.noDevicesBody : l.noDevicesNeedServer,
                     action: canPair
                         ? FilledButton(
                             onPressed: () => _startPairing(context),
-                            child: const Text('添加设备'),
+                            child: Text(l.addDevice),
                           )
                         : null,
                   ),
                 )
               else
                 GroupSection(
-                  title: '已配对的设备',
-                  footnote: '直连：数据在两台设备之间直接传输。'
-                      '中转：网络环境打不通直连时，经你的服务器转发，内容依然是端到端加密的。',
+                  title: l.pairedDevices,
+                  footnote: l.pairedFootnote,
                   child: GroupBox(
                     dividerIndent: 52,
                     children: [for (final d in state.peers) _DeviceRow(device: d)],
@@ -113,12 +112,12 @@ class _DeviceRow extends StatelessWidget {
           if (isSelf)
             Padding(
               padding: const EdgeInsets.only(right: Insets.sm),
-              child: Text('本机', style: context.text.bodySmall),
+              child: Text(context.l10n.thisDeviceShort, style: context.text.bodySmall),
             )
           else ...[
             StatusDot(
               color: device.online ? p.online : p.textFaint,
-              label: device.online ? connectionLabel(device) : '离线',
+              label: device.online ? connectionLabel(device) : context.l10n.offline,
             ),
             const SizedBox(width: Insets.sm),
             _DeviceMenu(device: device),
@@ -130,9 +129,9 @@ class _DeviceRow extends StatelessWidget {
 }
 
 String connectionLabel(Device d) => switch (d.connection) {
-      ConnectionKind.CONNECTION_KIND_DIRECT => '直连',
-      ConnectionKind.CONNECTION_KIND_RELAY => '中转',
-      _ => '在线',
+      ConnectionKind.CONNECTION_KIND_DIRECT => appL10n.direct,
+      ConnectionKind.CONNECTION_KIND_RELAY => appL10n.relay,
+      _ => appL10n.online,
     };
 
 IconData platformIcon(String platform) => switch (platform) {
@@ -147,16 +146,17 @@ class _DeviceMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return PopupMenuButton<String>(
-      tooltip: '更多操作',
+      tooltip: l.moreActions,
       padding: EdgeInsets.zero,
       position: PopupMenuPosition.under,
       itemBuilder: (ctx) => [
-        const PopupMenuItem(value: 'copy', height: 34, child: Text('拷贝安全指纹')),
+        PopupMenuItem(value: 'copy', height: 34, child: Text(l.copyFingerprint)),
         PopupMenuItem(
           value: 'unpair',
           height: 34,
-          child: Text('解除配对…', style: TextStyle(color: ctx.palette.danger)),
+          child: Text(l.unpairEllipsis, style: TextStyle(color: ctx.palette.danger)),
         ),
       ],
       onSelected: (v) => v == 'copy' ? _copy(context) : _unpair(context),
@@ -168,22 +168,23 @@ class _DeviceMenu extends StatelessWidget {
 
   Future<void> _copy(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: device.publicKeyFingerprint));
-    if (context.mounted) showToast(context, '安全指纹已拷贝');
+    if (context.mounted) showToast(context, context.l10n.fingerprintCopied);
   }
 
   Future<void> _unpair(BuildContext context) async {
     final state = AppScope.read(context);
+    final l = context.l10n;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('解除与「${device.name}」的配对？'),
-        content: const Text('两台设备将不再同步。以后想恢复，需要重新配对并核对指纹。'),
+        title: Text(l.unpairTitle(device.name)),
+        content: Text(l.unpairBody),
         actions: [
-          OutlinedButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+          OutlinedButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: FilledButton.styleFrom(backgroundColor: ctx.palette.danger),
-            child: const Text('解除配对'),
+            child: Text(l.unpair),
           ),
         ],
       ),
@@ -191,7 +192,7 @@ class _DeviceMenu extends StatelessWidget {
     if (ok != true) return;
     try {
       await state.unpair(device.id);
-      if (context.mounted) showToast(context, '已解除配对');
+      if (context.mounted) showToast(context, l.unpaired);
     } catch (e) {
       if (context.mounted) showToast(context, AppState.describeError(e), error: true);
     }

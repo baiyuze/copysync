@@ -35,6 +35,10 @@ type Config struct {
 	// （与任何 WebRTC 应用一样，看不到内容），介意的用户可以关掉；代价是多出口网络里
 	// 可能探测不全，直连机会变小。
 	OnlyOwnSTUN bool `json:"only_own_stun"`
+
+	// Language 是界面语言：空字符串跟随系统，否则为 "zh-Hans"、"en"、"ja" 之一。
+	// 托盘菜单（Windows）也按它显示
+	Language string `json:"language,omitempty"`
 }
 
 func Default() Config {
@@ -79,6 +83,12 @@ func (c *Config) Validate() {
 	// 缓存活得比历史记录久没有意义：记录没了就找不到那些文件了
 	if c.CacheTTL > c.HistoryTTL {
 		c.CacheTTL = c.HistoryTTL
+	}
+	// 不认识的语言（比如更新版本的界面写进来的）当作跟随系统
+	switch c.Language {
+	case "", "zh-Hans", "en", "ja":
+	default:
+		c.Language = ""
 	}
 }
 

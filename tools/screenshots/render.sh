@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# 重新生成 README 与网站用的界面截图，输出到 docs/assets/screenshots/。
+# 重新生成 README 与网站用的界面截图：中文界面输出到 docs/assets/screenshots/，
+# 英文界面输出到 docs/assets/screenshots/en/。
 #
 #   ./tools/screenshots/render.sh
 #
@@ -15,9 +16,15 @@ trap 'rm -rf "$FONTS"' EXIT
 echo "▶ 准备字体"
 python3 tools/screenshots/prepare_fonts.py "$FONTS"
 
-echo "▶ 渲染界面"
-rm -rf ui/tool/screenshots/out
-(cd ui && SCREENSHOT_FONTS="$FONTS" flutter test tool/screenshots/screenshots_test.dart 2>&1 | tail -1)
+for lang in zh en; do
+  out=docs/assets/screenshots
+  [ "$lang" = zh ] || out="$out/$lang"
 
-echo "▶ 加窗口外框"
-swift tools/screenshots/frame.swift ui/tool/screenshots/out docs/assets/screenshots
+  echo "▶ 渲染界面（$lang）"
+  rm -rf ui/tool/screenshots/out
+  (cd ui && SCREENSHOT_FONTS="$FONTS" SCREENSHOT_LANG="$lang" flutter test tool/screenshots/screenshots_test.dart 2>&1 | tail -1)
+
+  echo "▶ 加窗口外框（$lang）"
+  mkdir -p "$out"
+  swift tools/screenshots/frame.swift ui/tool/screenshots/out "$out"
+done

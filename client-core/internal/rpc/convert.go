@@ -52,6 +52,7 @@ func configToProto(c config.Config) *pb.Config {
 		DeviceName:             c.DeviceName,
 		SignalingUrl:           c.SignalingURL,
 		OnlyOwnStun:            c.OnlyOwnSTUN,
+		Language:               c.Language,
 	}
 }
 
@@ -85,6 +86,8 @@ func configFromProto(in *pb.Config, base config.Config) config.Config {
 	c.AutoApplyToClipboard = in.GetAutoApplyToClipboard()
 	c.LaunchAtLogin = in.GetLaunchAtLogin()
 	c.OnlyOwnSTUN = in.GetOnlyOwnStun()
+	// 空字符串就是「跟随系统」，与「没设置」同义，直接覆盖
+	c.Language = in.GetLanguage()
 	return c
 }
 

@@ -28,7 +28,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/screenshots/history.png" alt="CopySync's history view: files, images and text arriving from other Macs">
+  <img src="docs/assets/screenshots/en/history.png" alt="CopySync's history view: files, images and text arriving from other Macs">
 </p>
 
 > The app's interface is in Simplified Chinese for now. The screenshots below are annotated in the alt text.
@@ -69,12 +69,12 @@ With CopySync you pair two computers once. After that, copy on one and paste on 
 
 <table>
   <tr>
-    <td><img src="docs/assets/screenshots/devices.png" alt="Devices: paired Macs and whether each is connected directly or through the relay"></td>
-    <td><img src="docs/assets/screenshots/verify.png" alt="Pairing: compare the fingerprint shown on both Macs before confirming"></td>
+    <td><img src="docs/assets/screenshots/en/devices.png" alt="Devices: paired Macs and whether each is connected directly or through the relay"></td>
+    <td><img src="docs/assets/screenshots/en/verify.png" alt="Pairing: compare the fingerprint shown on both Macs before confirming"></td>
   </tr>
   <tr>
-    <td><img src="docs/assets/screenshots/settings.png" alt="Settings: server address, auto-sync size limit, content types"></td>
-    <td><img src="docs/assets/screenshots/history-dark.png" alt="History in dark appearance"></td>
+    <td><img src="docs/assets/screenshots/en/settings.png" alt="Settings: server address, auto-sync size limit, content types"></td>
+    <td><img src="docs/assets/screenshots/en/history-dark.png" alt="History in dark appearance"></td>
   </tr>
 </table>
 

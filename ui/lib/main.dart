@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'app_state.dart';
 import 'background_service.dart';
+import 'i18n.dart';
 import 'pages/devices_page.dart';
 import 'pages/history_page.dart';
 import 'pages/service_page.dart';
@@ -27,6 +28,8 @@ class CopySyncApp extends StatefulWidget {
 
 class _CopySyncAppState extends State<CopySyncApp> {
   late final AppState _state;
+  final _light = buildTheme(Brightness.light);
+  final _dark = buildTheme(Brightness.dark);
 
   @override
   void initState() {
@@ -46,12 +49,24 @@ class _CopySyncAppState extends State<CopySyncApp> {
     // 与 home 是兄弟而非后代，放在 home 里的话对话框里就取不到 AppState。
     return AppScope(
       state: _state,
-      child: MaterialApp(
-        title: 'CopySync',
-        debugShowCheckedModeBanner: false,
-        theme: buildTheme(Brightness.light),
-        darkTheme: buildTheme(Brightness.dark),
-        home: const Shell(),
+      // 语言设置存在后台服务的配置里，配置变了要重建 MaterialApp 才会换语言
+      child: ListenableBuilder(
+        listenable: _state,
+        builder: (context, _) => MaterialApp(
+          title: 'CopySync',
+          debugShowCheckedModeBanner: false,
+          theme: _light,
+          darkTheme: _dark,
+          locale: localeFromSetting(_state.config?.language ?? ''),
+          supportedLocales: supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localeListResolutionCallback: (preferred, _) => resolveLocale(preferred),
+          builder: (context, child) {
+            appL10n = context.l10n;
+            return child!;
+          },
+          home: const Shell(),
+        ),
       ),
     );
   }
@@ -143,6 +158,7 @@ class _Sidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
     final p = context.palette;
+    final l = context.l10n;
 
     return Container(
       width: 200,
@@ -168,20 +184,20 @@ class _Sidebar extends StatelessWidget {
           ),
           _NavItem(
             icon: AppIcons.clock,
-            label: '复制记录',
+            label: l.navHistory,
             selected: current == Section.history,
             trailing: state.records.isEmpty ? null : '${state.records.length}',
             onTap: () => onSelect(Section.history),
           ),
           _NavItem(
             icon: AppIcons.deviceLaptop,
-            label: '设备',
+            label: l.navDevices,
             selected: current == Section.devices,
             onTap: () => onSelect(Section.devices),
           ),
           _NavItem(
             icon: AppIcons.gear,
-            label: '设置',
+            label: l.navSettings,
             selected: current == Section.settings,
             onTap: () => onSelect(Section.settings),
           ),
@@ -268,13 +284,14 @@ class _ConnectionFooter extends StatelessWidget {
     final p = context.palette;
     final signaling = state.status?.signalingConnected ?? false;
     final online = state.onlinePeerCount;
+    final l = context.l10n;
 
     final (color, label) = switch (state.link) {
-      LinkState.connecting => (p.textFaint, '正在连接…'),
-      LinkState.offline => (p.danger, state.error ?? '后台服务未运行'),
-      LinkState.online when !signaling => (p.warning, '未连接服务器'),
-      LinkState.online when online > 0 => (p.online, '$online 台设备在线'),
-      LinkState.online => (p.online, '已连接服务器'),
+      LinkState.connecting => (p.textFaint, l.linkConnecting),
+      LinkState.offline => (p.danger, state.error ?? l.linkServiceNotRunning),
+      LinkState.online when !signaling => (p.warning, l.linkNoServer),
+      LinkState.online when online > 0 => (p.online, l.linkOnlinePeers(online)),
+      LinkState.online => (p.online, l.linkServerConnected),
     };
 
     return Container(

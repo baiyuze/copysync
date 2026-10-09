@@ -1431,7 +1431,10 @@ type Config struct {
 	SignalingUrl         string `protobuf:"bytes,11,opt,name=signaling_url,json=signalingUrl,proto3" json:"signaling_url,omitempty"`
 	// 只用自己的服务器探测网络出口，不用公共 STUN 服务器。
 	// 默认 false（即允许公共服务器）：旧版界面不发这个字段时，不会被误关掉。
-	OnlyOwnStun   bool `protobuf:"varint,12,opt,name=only_own_stun,json=onlyOwnStun,proto3" json:"only_own_stun,omitempty"`
+	OnlyOwnStun bool `protobuf:"varint,12,opt,name=only_own_stun,json=onlyOwnStun,proto3" json:"only_own_stun,omitempty"`
+	// 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"en"、"ja" 之一。
+	// 存在后台服务这里而不是界面里：Windows 的托盘菜单由后台服务画，也要跟着变。
+	Language      string `protobuf:"bytes,13,opt,name=language,proto3" json:"language,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1548,6 +1551,13 @@ func (x *Config) GetOnlyOwnStun() bool {
 		return x.OnlyOwnStun
 	}
 	return false
+}
+
+func (x *Config) GetLanguage() string {
+	if x != nil {
+		return x.Language
+	}
+	return ""
 }
 
 // 最近一轮网络出口探测的结果。
@@ -1962,7 +1972,7 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x0fpairing_session\x18\x01 \x01(\tR\x0epairingSession\x12\x16\n" +
 	"\x06accept\x18\x02 \x01(\bR\x06accept\",\n" +
 	"\rUnpairRequest\x12\x1b\n" +
-	"\tdevice_id\x18\x01 \x01(\tR\bdeviceId\"\xde\x03\n" +
+	"\tdevice_id\x18\x01 \x01(\tR\bdeviceId\"\xfa\x03\n" +
 	"\x06Config\x129\n" +
 	"\x19auto_sync_threshold_bytes\x18\x01 \x01(\x03R\x16autoSyncThresholdBytes\x12.\n" +
 	"\x13history_ttl_seconds\x18\x02 \x01(\x03R\x11historyTtlSeconds\x12*\n" +
@@ -1978,7 +1988,8 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	" \x01(\tR\n" +
 	"deviceName\x12#\n" +
 	"\rsignaling_url\x18\v \x01(\tR\fsignalingUrl\x12\"\n" +
-	"\ronly_own_stun\x18\f \x01(\bR\vonlyOwnStun\"\xbe\x01\n" +
+	"\ronly_own_stun\x18\f \x01(\bR\vonlyOwnStun\x12\x1a\n" +
+	"\blanguage\x18\r \x01(\tR\blanguage\"\xbe\x01\n" +
 	"\vNetworkInfo\x12\x1d\n" +
 	"\n" +
 	"local_port\x18\x01 \x01(\x05R\tlocalPort\x126\n" +

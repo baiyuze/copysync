@@ -63,7 +63,7 @@ Future<void> openPreview(
 }) async {
   await tester.pumpWidget(CopySyncApp(state: state));
   await tester.pump();
-  await tester.tap(find.text(button ? '预览' : '测试图片'));
+  await tester.tap(button ? find.text('预览') : find.textContaining('来自 测试电脑'));
   await tester.pump(const Duration(milliseconds: 250));
   expect(find.byType(ImagePreviewDialog), findsOneWidget);
 }
@@ -243,7 +243,7 @@ void main() {
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     addTearDown(mouse.removePointer);
     await mouse.addPointer(location: Offset.zero);
-    await mouse.moveTo(tester.getCenter(find.text('测试图片')));
+    await mouse.moveTo(tester.getCenter(find.textContaining('来自 测试电脑')));
     await tester.pump();
 
     expect(find.text('放入剪贴板').hitTestable(), findsOneWidget);

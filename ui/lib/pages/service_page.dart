@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../background_service.dart';
+import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -41,49 +42,18 @@ class _ServicePageState extends State<ServicePage> {
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
     final windows = Platform.isWindows;
+    final l = context.l10n;
     final (title, body, button) = switch (state.serviceState) {
-      ServiceState.mustMove when windows => (
-          '先解压或安装 CopySync',
-          'CopySync 现在是直接从压缩包里打开的，关掉之后它所在的临时文件夹就会被删除。'
-              '运行安装程序，或者把整个文件夹解压出来再打开，就可以启用后台同步。',
-          null,
-        ),
-      ServiceState.mustMove => (
-          '先把 CopySync 移到「应用程序」',
-          'CopySync 现在是直接从安装盘里打开的。把它拖进「应用程序」文件夹，'
-              '推出安装盘，再从「应用程序」里打开，就可以启用后台同步。',
-          null,
-        ),
-      ServiceState.notInstalled => (
-          '开始使用 CopySync',
-          'CopySync 会在后台运行一个小进程，用来感知剪贴板的变化，并与你的其他设备保持连接。'
-              '启用后它随系统登录自动启动，关掉这个窗口也会照常同步。',
-          '启用后台同步',
-        ),
+      ServiceState.mustMove when windows => (l.svcExtractTitle, l.svcExtractBody, null),
+      ServiceState.mustMove => (l.svcMoveTitle, l.svcMoveBody, null),
+      ServiceState.notInstalled => (l.svcStartTitle, l.svcStartBody, l.svcEnable),
       ServiceState.stale => (
-          '重新启用后台同步',
-          windows
-              ? 'CopySync 换了位置，开机自启还指向原来的地方。重新启用一次，'
-                  '让后台进程指向当前这份 CopySync。历史记录与配对关系都会保留。'
-              : 'CopySync 换了位置，或者之前用旧版安装脚本装过。重新启用一次，'
-                  '让后台进程指向当前这个 App。历史记录与配对关系都会保留。',
-          '重新启用',
+          l.svcStaleTitle,
+          windows ? l.svcStaleBodyWin : l.svcStaleBodyMac,
+          l.svcReenable,
         ),
-      ServiceState.stopped => (
-          '后台服务没有运行',
-          '它可能刚刚退出，系统通常会在几秒内把它重新拉起。'
-              '如果一直停在这一页，点下面的按钮重新启动。',
-          '重新启动',
-        ),
-      _ => (
-          '后台服务没有运行',
-          windows
-              ? '这是开发构建，旁边没有 copysyncd.exe。'
-                  '在源码目录运行 scripts\\build-windows.ps1 构建完整的版本。'
-              : '这是开发构建，App 里没有内置后台服务。'
-                  '在源码目录运行 ./scripts/install-macos.sh 安装它。',
-          null,
-        ),
+      ServiceState.stopped => (l.svcStoppedTitle, l.svcStoppedBody, l.restart),
+      _ => (l.svcStoppedTitle, windows ? l.svcDevBodyWin : l.svcDevBodyMac, null),
     };
 
     return Center(
@@ -118,8 +88,8 @@ class _ServicePageState extends State<ServicePage> {
             const SizedBox(height: Insets.xl),
             Text(
               state.serviceState == ServiceState.stopped
-                  ? '运行日志：${state.service.displayLogPath}'
-                  : '随时可以在「设置」中停用后台同步。',
+                  ? l.svcLogPath(state.service.displayLogPath)
+                  : l.svcCanDisable,
               style: context.text.bodySmall,
             ),
           ],

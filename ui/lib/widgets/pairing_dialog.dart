@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../gen/copysync/v1/daemon.pb.dart';
+import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';
 import 'common.dart';
@@ -43,6 +44,7 @@ class _PairingDialogState extends State<PairingDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return Dialog(
       child: SizedBox(
         width: 420,
@@ -53,10 +55,10 @@ class _PairingDialogState extends State<PairingDialog> {
               padding: const EdgeInsets.fromLTRB(Insets.xl, Insets.lg, Insets.md, 0),
               child: Row(
                 children: [
-                  Expanded(child: Text('添加设备', style: context.text.titleMedium)),
+                  Expanded(child: Text(l.addDevice, style: context.text.titleMedium)),
                   IconAction(
                     icon: AppIcons.xmark,
-                    tooltip: '关闭',
+                    tooltip: l.close,
                     onTap: () => Navigator.pop(context),
                   ),
                 ],
@@ -65,7 +67,7 @@ class _PairingDialogState extends State<PairingDialog> {
             const SizedBox(height: Insets.md),
             Segmented<int>(
               value: _tab,
-              segments: const [(0, '生成配对码'), (1, '输入配对码')],
+              segments: [(0, l.generateCode), (1, l.enterCode)],
               onChanged: (t) => setState(() => _tab = t),
             ),
             SizedBox(
@@ -119,6 +121,7 @@ class _GenerateTabState extends State<_GenerateTab> {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final l = context.l10n;
     if (_loading) {
       return const Center(child: CircularProgressIndicator(strokeWidth: 2));
     }
@@ -127,65 +130,67 @@ class _GenerateTabState extends State<_GenerateTab> {
         padding: const EdgeInsets.all(Insets.xl),
         child: EmptyState(
           icon: AppIcons.exclamationmarkCircle,
-          title: '没能生成配对码',
+          title: l.codeFailedTitle,
           description: _error,
-          action: OutlinedButton(onPressed: _generate, child: const Text('重试')),
+          action: OutlinedButton(onPressed: _generate, child: Text(l.retry)),
         ),
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(Insets.xl),
-      child: Column(
-        children: [
-          Text('在另一台设备上输入这个配对码', style: context.text.bodySmall),
-          const SizedBox(height: Insets.lg),
-          // 配对码是本页的主角：放大、等宽、字距拉开，方便照着念
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () async {
-                await Clipboard.setData(ClipboardData(text: _code ?? ''));
-                if (context.mounted) showToast(context, '配对码已拷贝');
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: Insets.lg),
-                decoration: BoxDecoration(
-                  color: p.fill,
-                  borderRadius: BorderRadius.circular(Radii.md),
-                ),
-                child: Text(
-                  _code ?? '',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: monoFamily,
-                    letterSpacing: 10,
-                    color: p.text,
+    return _FillOrScroll(
+      child: Padding(
+        padding: const EdgeInsets.all(Insets.xl),
+        child: Column(
+          children: [
+            Text(l.enterOnOther, style: context.text.bodySmall),
+            const SizedBox(height: Insets.lg),
+            // 配对码是本页的主角：放大、等宽、字距拉开，方便照着念
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () async {
+                  await Clipboard.setData(ClipboardData(text: _code ?? ''));
+                  if (context.mounted) showToast(context, l.codeCopied);
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: Insets.lg),
+                  decoration: BoxDecoration(
+                    color: p.fill,
+                    borderRadius: BorderRadius.circular(Radii.md),
+                  ),
+                  child: Text(
+                    _code ?? '',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: monoFamily,
+                      letterSpacing: 10,
+                      color: p.text,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: Insets.sm),
-          Text('点击可拷贝，5 分钟内有效', style: context.text.labelSmall),
-          const Spacer(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(AppIcons.lockShield, size: 15, color: p.textDim),
-              const SizedBox(width: Insets.sm),
-              Expanded(
-                child: Text(
-                  '对方输入后，${Wording.bothDevicesInText}会显示同样的两行安全指纹，核对一致再确认。',
-                  style: context.text.bodySmall,
+            const SizedBox(height: Insets.sm),
+            Text(l.codeHint, style: context.text.labelSmall),
+            const Spacer(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(AppIcons.lockShield, size: 15, color: p.textDim),
+                const SizedBox(width: Insets.sm),
+                Expanded(
+                  child: Text(
+                    l.afterEnterFootnote(Wording.bothDevicesInText),
+                    style: context.text.bodySmall,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -213,7 +218,7 @@ class _JoinTabState extends State<_JoinTab> {
     if (_busy) return;
     final code = _controller.text.trim();
     if (code.length != 6) {
-      setState(() => _error = '配对码是 6 位字母或数字');
+      setState(() => _error = context.l10n.codeInvalid);
       return;
     }
     setState(() {
@@ -234,63 +239,83 @@ class _JoinTabState extends State<_JoinTab> {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    return Padding(
-      padding: const EdgeInsets.all(Insets.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('输入另一台设备上显示的配对码',
-              style: context.text.bodySmall, textAlign: TextAlign.center),
-          const SizedBox(height: Insets.lg),
-          TextField(
-            controller: _controller,
-            maxLength: 6,
-            textCapitalization: TextCapitalization.characters,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w600,
-              fontFamily: monoFamily,
-              letterSpacing: 10,
+    final l = context.l10n;
+    return _FillOrScroll(
+      child: Padding(
+        padding: const EdgeInsets.all(Insets.xl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l.enterCodeShown, style: context.text.bodySmall, textAlign: TextAlign.center),
+            const SizedBox(height: Insets.lg),
+            TextField(
+              controller: _controller,
+              maxLength: 6,
+              textCapitalization: TextCapitalization.characters,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w600,
+                fontFamily: monoFamily,
+                letterSpacing: 10,
+              ),
+              inputFormatters: [
+                // 配对码字符集不含易混字符，这里统一转大写并过滤
+                FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
+                TextInputFormatter.withFunction(
+                  (_, next) => next.copyWith(text: next.text.toUpperCase()),
+                ),
+              ],
+              decoration: InputDecoration(
+                counterText: '',
+                hintText: '······',
+                hintStyle: TextStyle(letterSpacing: 10, fontSize: 28, color: p.textFaint),
+                contentPadding: const EdgeInsets.symmetric(vertical: Insets.md),
+              ),
+              onSubmitted: (_) => _submit(),
             ),
-            inputFormatters: [
-              // 配对码字符集不含易混字符，这里统一转大写并过滤
-              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
-              TextInputFormatter.withFunction(
-                (_, next) => next.copyWith(text: next.text.toUpperCase()),
+            if (_error != null) ...[
+              const SizedBox(height: Insets.sm),
+              Text(
+                _error!,
+                style: context.text.bodySmall?.copyWith(color: p.danger),
+                textAlign: TextAlign.center,
               ),
             ],
-            decoration: InputDecoration(
-              counterText: '',
-              hintText: '······',
-              hintStyle: TextStyle(letterSpacing: 10, fontSize: 28, color: p.textFaint),
-              contentPadding: const EdgeInsets.symmetric(vertical: Insets.md),
-            ),
-            onSubmitted: (_) => _submit(),
-          ),
-          if (_error != null) ...[
-            const SizedBox(height: Insets.sm),
-            Text(
-              _error!,
-              style: context.text.bodySmall?.copyWith(color: p.danger),
-              textAlign: TextAlign.center,
+            const Spacer(),
+            FilledButton(
+              onPressed: _busy ? null : _submit,
+              child: _busy
+                  ? const SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                  : Text(l.continueAction),
             ),
           ],
-          const Spacer(),
-          FilledButton(
-            onPressed: _busy ? null : _submit,
-            child: _busy
-                ? const SizedBox(
-                    width: 14,
-                    height: 14,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                  )
-                : const Text('继续'),
-          ),
-        ],
+        ),
       ),
     );
   }
+}
+
+/// 内容放得下时铺满页签的高度，Spacer 照样把脚注推到底部；
+/// 放不下时（换成更长的语言、或系统字号调大）改为滚动，而不是溢出。
+class _FillOrScroll extends StatelessWidget {
+  const _FillOrScroll({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, box) => SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: box.maxHeight),
+            child: IntrinsicHeight(child: child),
+          ),
+        ),
+      );
 }
 
 /// 指纹核对对话框。
@@ -332,7 +357,7 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
       await state.confirmPairing(widget.peer.pairingSession, accept);
       if (!mounted) return;
       Navigator.pop(context);
-      showToast(context, accept ? '配对完成' : '已拒绝配对');
+      showToast(context, accept ? context.l10n.pairingDone : context.l10n.pairingRejected);
     } catch (e) {
       state.dismissPendingPairing(widget.peer.pairingSession);
       if (!mounted) return;
@@ -344,6 +369,7 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final l = context.l10n;
     final peer = widget.peer;
     final self = AppScope.of(context).self;
     final rows = pairingFingerprintRows(self, peer);
@@ -356,9 +382,9 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('核对安全指纹', style: context.text.titleMedium),
+              Text(l.verifyTitle, style: context.text.titleMedium),
               const SizedBox(height: 2),
-              Text('正在与「${peer.name}」配对', style: context.text.bodySmall),
+              Text(l.pairingWith(peer.name), style: context.text.bodySmall),
               const SizedBox(height: Insets.xl),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: Insets.lg, vertical: Insets.md),
@@ -400,18 +426,14 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
                 ),
               ),
               const SizedBox(height: Insets.lg),
-              Text(
-                '${Wording.bothDevicesInText}上显示的这两行应当完全相同。'
-                '有任何一个字符不同，说明连接可能被第三方篡改，请拒绝。',
-                style: context.text.bodySmall,
-              ),
+              Text(l.verifyBody(Wording.bothDevicesInText), style: context.text.bodySmall),
               const SizedBox(height: Insets.xl),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
                       onPressed: _busy ? null : () => _respond(false),
-                      child: const Text('不一致，拒绝'),
+                      child: Text(l.rejectMismatch),
                     ),
                   ),
                   const SizedBox(width: Insets.md),
@@ -424,7 +446,7 @@ class _PairingConfirmDialogState extends State<PairingConfirmDialog> {
                               height: 14,
                               child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                             )
-                          : const Text('一致，确认配对'),
+                          : Text(l.confirmMatch),
                     ),
                   ),
                 ],

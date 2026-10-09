@@ -386,6 +386,7 @@ func run(dataDir string) error {
 
 	// 托盘属于后台服务：关掉界面后仍能打开它。独立数据目录用于测试，
 	// 不创建托盘，避免与用户正在运行的实例混在一起。
+	trayLanguage = func() string { return loadCfg().Language }
 	stopTray := startTray(ctx, cancel, dataDir == "")
 	defer stopTray()
 

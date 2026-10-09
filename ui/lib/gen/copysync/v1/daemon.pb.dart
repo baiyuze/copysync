@@ -1559,6 +1559,7 @@ class Config extends $pb.GeneratedMessage {
     $core.String? deviceName,
     $core.String? signalingUrl,
     $core.bool? onlyOwnStun,
+    $core.String? language,
   }) {
     final result = Config._();
     if (autoSyncThresholdBytes != null)
@@ -1575,6 +1576,7 @@ class Config extends $pb.GeneratedMessage {
     if (deviceName != null) result.deviceName = deviceName;
     if (signalingUrl != null) result.signalingUrl = signalingUrl;
     if (onlyOwnStun != null) result.onlyOwnStun = onlyOwnStun;
+    if (language != null) result.language = language;
     return result;
   }
 
@@ -1603,6 +1605,7 @@ class Config extends $pb.GeneratedMessage {
     ..aOS(10, _omitFieldNames ? '' : 'deviceName')
     ..aOS(11, _omitFieldNames ? '' : 'signalingUrl')
     ..aOB(12, _omitFieldNames ? '' : 'onlyOwnStun')
+    ..aOS(13, _omitFieldNames ? '' : 'language')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1736,6 +1739,17 @@ class Config extends $pb.GeneratedMessage {
   $core.bool hasOnlyOwnStun() => $_has(11);
   @$pb.TagNumber(12)
   void clearOnlyOwnStun() => $_clearField(12);
+
+  /// 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"en"、"ja" 之一。
+  /// 存在后台服务这里而不是界面里：Windows 的托盘菜单由后台服务画，也要跟着变。
+  @$pb.TagNumber(13)
+  $core.String get language => $_getSZ(12);
+  @$pb.TagNumber(13)
+  set language($core.String value) => $_setString(12, value);
+  @$pb.TagNumber(13)
+  $core.bool hasLanguage() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearLanguage() => $_clearField(13);
 }
 
 /// 最近一轮网络出口探测的结果。

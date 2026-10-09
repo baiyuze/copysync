@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'background_service_windows.dart';
+import 'i18n.dart';
 
 /// 构建时注入的版本号（build.sh 传 --dart-define=APP_VERSION）。
 /// 用来判断后台服务是不是跟界面同一个版本。
@@ -118,7 +119,7 @@ class MacBackgroundService implements BackgroundService {
 
     final r = await Process.run('launchctl', ['bootstrap', await _domain(), plistPath]);
     if (r.exitCode != 0) {
-      throw ServiceException('启动后台服务失败：${'${r.stderr}'.trim()}');
+      throw ServiceException(appL10n.errServiceStart('${r.stderr}'.trim()));
     }
   }
 
@@ -127,7 +128,7 @@ class MacBackgroundService implements BackgroundService {
   Future<void> restart() async {
     final r = await Process.run('launchctl', ['kickstart', '-k', await _target()]);
     if (r.exitCode != 0) {
-      throw ServiceException('重启后台服务失败：${'${r.stderr}'.trim()}');
+      throw ServiceException(appL10n.errServiceRestart('${r.stderr}'.trim()));
     }
   }
 

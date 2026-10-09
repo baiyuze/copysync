@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:copysync_ui/app_state.dart';
 import 'package:copysync_ui/daemon_client.dart';
 import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
+import 'package:copysync_ui/i18n.dart';
 import 'package:copysync_ui/main.dart';
 import 'package:copysync_ui/theme.dart';
 import 'package:copysync_ui/widgets/common.dart';
@@ -78,6 +79,9 @@ void main() {
         state: state,
         child: MaterialApp(
           theme: buildTheme(Brightness.light),
+          locale: const Locale('zh'),
+          supportedLocales: supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           home: Scaffold(body: PairingConfirmDialog(peer: b)),
         ),
       ));

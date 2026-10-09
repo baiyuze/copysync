@@ -1,0 +1,7 @@
+# 界面文案的多语言。英文为模板，中文、日文各一份。
+# flutter pub get 或 flutter gen-l10n 时生成 lib/l10n/app_localizations*.dart。
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false

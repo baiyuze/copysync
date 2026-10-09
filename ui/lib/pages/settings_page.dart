@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../gen/copysync/v1/daemon.pb.dart';
+import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -56,33 +57,34 @@ class _SettingsPageState extends State<SettingsPage> {
     _syncControllers(cfg);
 
     final p = context.palette;
+    final l = context.l10n;
     final connected = state.status?.signalingConnected == true;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const PageHeader(title: '设置'),
+        PageHeader(title: l.navSettings),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(Insets.xl, 0, Insets.xl, Insets.xxl),
             children: [
               GroupSection(
-                title: '服务器',
-                footnote: '服务器只负责让设备找到彼此、协商直连。设备之间传输的内容它看不到。',
+                title: l.server,
+                footnote: l.serverFootnote,
                 child: GroupBox(children: [
                   SettingRow(
-                    title: '信令服务器地址',
-                    description: '按回车保存，保存后立即重新连接',
+                    title: l.signalingUrl,
+                    description: l.signalingUrlDesc,
                     child: SizedBox(
                       width: 290,
                       child: TextField(
                         controller: _serverController,
                         style: context.text.bodyMedium?.copyWith(fontFamily: monoFamily, fontSize: 12),
                         decoration: InputDecoration(
-                          hintText: 'ws://服务器地址:8787/signal',
+                          hintText: l.signalingUrlPlaceholder,
                           suffixIcon: _serverDirty
                               ? IconButton(
-                                  tooltip: '保存',
+                                  tooltip: l.save,
                                   icon: Icon(AppIcons.checkmark, size: 14, color: p.accent),
                                   onPressed: () => _saveServer(state, cfg),
                                 )
@@ -94,19 +96,19 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   SettingRow(
-                    title: '用公共服务器探测网络出口',
-                    description: '公司双线这类多出口网络里，能找到更多可以直连的路径。公共服务器只会看到你的公网 IP',
+                    title: l.publicStun,
+                    description: l.publicStunDesc,
                     child: SmallSwitch(
                       value: !cfg.onlyOwnStun,
                       onChanged: (v) => _update(state, cfg..onlyOwnStun = !v),
                     ),
                   ),
                   SettingRow(
-                    title: '连接状态',
-                    description: connected ? '已连接到信令服务器' : '连不上服务器。检查地址是否正确、服务器是否在运行。',
+                    title: l.connectionStatus,
+                    description: connected ? l.connectedDesc : l.disconnectedDesc,
                     child: StatusDot(
                       color: connected ? p.online : p.danger,
-                      label: connected ? '已连接' : '未连接',
+                      label: connected ? l.connected : l.notConnected,
                     ),
                   ),
                 ]),
@@ -115,8 +117,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Wording.thisDevice,
                 child: GroupBox(children: [
                   SettingRow(
-                    title: '设备名称',
-                    description: '显示在其他设备的列表里',
+                    title: l.deviceName,
+                    description: l.deviceNameDesc,
                     child: SizedBox(
                       width: 220,
                       child: TextField(
@@ -124,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         decoration: InputDecoration(
                           suffixIcon: _nameDirty
                               ? IconButton(
-                                  tooltip: '保存',
+                                  tooltip: l.save,
                                   icon: Icon(AppIcons.checkmark, size: 14, color: p.accent),
                                   onPressed: () => _saveName(state, cfg),
                                 )
@@ -135,24 +137,37 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
+                  SettingRow(
+                    title: l.language,
+                    child: _Dropdown<String>(
+                      value: cfg.language,
+                      // 语言名用各自的写法，选错了语言的人也认得出自己的
+                      items: [
+                        MapEntry('', l.languageSystem),
+                        const MapEntry('zh-Hans', '简体中文'),
+                        const MapEntry('en', 'English'),
+                        const MapEntry('ja', '日本語'),
+                      ],
+                      onChanged: (v) => _update(state, cfg..language = v),
+                    ),
+                  ),
                 ]),
               ),
               GroupSection(
-                title: '同步',
-                footnote: '小于阈值的内容在复制时直接推送到其他设备；超过阈值的只同步一条记录，'
-                    '需要时在「复制记录」里点「拉取到本机」，避免大文件无谓地占用带宽和磁盘。',
+                title: l.sync,
+                footnote: l.syncFootnote,
                 child: GroupBox(children: [
                   SettingRow(
-                    title: '自动同步上限',
-                    description: '超过这个大小的文件改为手动拉取',
+                    title: l.autoSyncLimit,
+                    description: l.autoSyncLimitDesc,
                     child: _ThresholdSelector(
                       value: cfg.autoSyncThresholdBytes.toInt(),
                       onChanged: (v) => _update(state, cfg..autoSyncThresholdBytes = Int64(v)),
                     ),
                   ),
                   SettingRow(
-                    title: '收到后直接写入剪贴板',
-                    description: '关闭后，需要在「复制记录」里手动放入剪贴板',
+                    title: l.autoApply,
+                    description: l.autoApplyDesc,
                     child: SmallSwitch(
                       value: cfg.autoApplyToClipboard,
                       onChanged: (v) => _update(state, cfg..autoApplyToClipboard = v),
@@ -161,51 +176,51 @@ class _SettingsPageState extends State<SettingsPage> {
                 ]),
               ),
               GroupSection(
-                title: '同步哪些内容',
+                title: l.whatToSync,
                 child: GroupBox(children: [
                   _ToggleRow(
-                    title: '文件与文件夹',
+                    title: l.syncFiles,
                     value: cfg.syncFile,
                     onChanged: (v) => _update(state, cfg..syncFile = v),
                   ),
                   _ToggleRow(
-                    title: '纯文本',
+                    title: l.syncText,
                     value: cfg.syncText,
                     onChanged: (v) => _update(state, cfg..syncText = v),
                   ),
                   _ToggleRow(
-                    title: '带格式的文本',
+                    title: l.syncRich,
                     value: cfg.syncHtml,
                     onChanged: (v) => _update(state, cfg..syncHtml = v),
                   ),
                   _ToggleRow(
-                    title: '图片与截图',
+                    title: l.syncImages,
                     value: cfg.syncImage,
                     onChanged: (v) => _update(state, cfg..syncImage = v),
                   ),
                 ]),
               ),
               GroupSection(
-                title: '存储',
-                footnote: '到期的记录与缓存文件会被自动清理。',
+                title: l.storage,
+                footnote: l.storageFootnote,
                 child: GroupBox(children: [
                   SettingRow(
-                    title: '记录保留',
+                    title: l.keepHistory,
                     child: _DurationSelector(
                       seconds: cfg.historyTtlSeconds.toInt(),
                       onChanged: (v) => _update(state, cfg..historyTtlSeconds = Int64(v)),
                     ),
                   ),
                   SettingRow(
-                    title: '缓存文件保留',
-                    description: '不会超过记录的保留时长',
+                    title: l.keepCache,
+                    description: l.keepCacheDesc,
                     child: _DurationSelector(
                       seconds: cfg.cacheTtlSeconds.toInt(),
                       onChanged: (v) => _update(state, cfg..cacheTtlSeconds = Int64(v)),
                     ),
                   ),
                   SettingRow(
-                    title: '缓存占用',
+                    title: l.cacheUsage,
                     child: Text(
                       humanBytes(state.status?.cacheBytesUsed.toInt() ?? 0),
                       style: context.text.bodyMedium?.copyWith(color: p.textDim),
@@ -215,23 +230,23 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               if (state.service.available)
                 GroupSection(
-                  title: '后台同步',
-                  footnote: '停用后不再同步，也不会开机启动。历史记录与配对关系会保留，重新打开 App 即可再次启用。',
+                  title: l.backgroundSync,
+                  footnote: l.backgroundFootnote,
                   child: GroupBox(children: [
                     SettingRow(
-                      title: '后台服务',
-                      description: '随系统登录自动启动，关掉窗口也照常同步',
+                      title: l.backgroundService,
+                      description: l.backgroundServiceDesc,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           OutlinedButton(
-                            onPressed: () => _serviceAction(state.restartService, '后台服务已重新启动'),
-                            child: const Text('重新启动'),
+                            onPressed: () => _serviceAction(state.restartService, l.restarted),
+                            child: Text(l.restart),
                           ),
                           const SizedBox(width: Insets.sm),
                           OutlinedButton(
                             onPressed: () => _confirmDisable(state),
-                            child: const Text('停用…'),
+                            child: Text(l.disableEllipsis),
                           ),
                         ],
                       ),
@@ -239,21 +254,21 @@ class _SettingsPageState extends State<SettingsPage> {
                   ]),
                 ),
               GroupSection(
-                title: '关于',
+                title: l.about,
                 child: GroupBox(children: [
                   SettingRow(
                     title: 'CopySync ${state.status?.version ?? ''}',
-                    description: '开源软件，MIT 许可',
+                    description: l.aboutDesc,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         TextButton(
                           onPressed: () => _open('https://baiyuze.github.io/copysync/'),
-                          child: const Text('项目主页'),
+                          child: Text(l.homepage),
                         ),
                         TextButton(
                           onPressed: () => _open('https://github.com/baiyuze/copysync/issues'),
-                          child: const Text('反馈问题'),
+                          child: Text(l.feedback),
                         ),
                       ],
                     ),
@@ -279,29 +294,30 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _confirmDisable(AppState state) async {
+    final l = context.l10n;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('停用后台同步？'),
-        content: Text('${Wording.thisDeviceInText}将停止同步，也不再开机启动。历史记录和配对关系会保留。'),
+        title: Text(l.disableTitle),
+        content: Text(l.disableBody(Wording.thisDeviceInText)),
         actions: [
-          OutlinedButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('停用')),
+          OutlinedButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l.disable)),
         ],
       ),
     );
-    if (ok == true) await _serviceAction(state.disableService, '后台同步已停用');
+    if (ok == true) await _serviceAction(state.disableService, l.disabled);
   }
 
   Future<void> _saveServer(AppState state, Config cfg) async {
     final url = _serverController.text.trim();
     if (!url.startsWith('ws://') && !url.startsWith('wss://')) {
-      showToast(context, '地址需以 ws:// 或 wss:// 开头', error: true);
+      showToast(context, context.l10n.urlMustBeWs, error: true);
       return;
     }
     setState(() => _serverDirty = false);
     _lastLoadedServer = url;
-    await _update(state, cfg..signalingUrl = url, message: '服务器地址已更新，正在重连');
+    await _update(state, cfg..signalingUrl = url, message: context.l10n.serverUpdated);
   }
 
   Future<void> _saveName(AppState state, Config cfg) async {
@@ -309,7 +325,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (name.isEmpty) return;
     setState(() => _nameDirty = false);
     _lastLoadedName = name;
-    await _update(state, cfg..deviceName = name, message: '设备名称已更新');
+    await _update(state, cfg..deviceName = name, message: context.l10n.deviceNameUpdated);
   }
 
   Future<void> _update(AppState state, Config next, {String? message}) async {
@@ -376,18 +392,13 @@ class _DurationSelector extends StatelessWidget {
   final int seconds;
   final ValueChanged<int> onChanged;
 
-  static const _options = <int, String>{
-    3600: '1 小时',
-    86400: '1 天',
-    3 * 86400: '3 天',
-    7 * 86400: '7 天',
-    30 * 86400: '30 天',
-  };
+  static const _options = [3600, 86400, 3 * 86400, 7 * 86400, 30 * 86400];
 
   @override
   Widget build(BuildContext context) {
-    final options = Map<int, String>.from(_options);
-    options.putIfAbsent(seconds, () => '${(seconds / 3600).round()} 小时');
+    final l = context.l10n;
+    final options = {for (final s in _options) s: durationLabel(l, s)};
+    options.putIfAbsent(seconds, () => durationLabel(l, seconds));
 
     return _Dropdown<int>(
       value: seconds,

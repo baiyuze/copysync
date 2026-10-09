@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'background_service.dart';
+import 'i18n.dart';
 
 /// Windows：后台服务 `copysyncd.exe` 与 `CopySync.exe` 放在同一个目录。
 ///
@@ -60,7 +61,7 @@ class WindowsBackgroundService implements BackgroundService {
       'add', _runKey, '/v', _valueName, '/t', 'REG_SZ', '/d', _command, '/f', //
     ]);
     if (r.exitCode != 0) {
-      throw ServiceException('登记开机自启失败：${_output(r)}');
+      throw ServiceException(appL10n.errAutostart(_output(r)));
     }
     await restart();
   }

@@ -11,6 +11,7 @@ import 'dart:ui' show ImageByteFormat;
 import 'package:copysync_ui/app_state.dart';
 import 'package:copysync_ui/background_service.dart';
 import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
+import 'package:copysync_ui/i18n.dart';
 import 'package:copysync_ui/main.dart';
 import 'package:copysync_ui/theme.dart';
 import 'package:copysync_ui/widgets/pairing_dialog.dart';
@@ -21,6 +22,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+/// 截图的界面语言：zh 或 en，由 render.sh 设置。演示数据里的文件名、文字也跟着换。
+final _lang = Platform.environment['SCREENSHOT_LANG'] ?? 'zh';
+final _locale = Locale(_lang);
+String _t(String zh, String en) => _lang == 'en' ? en : zh;
 
 /// 生成配对码不走后台服务，直接给一个固定值。
 class _DemoState extends AppState {
@@ -76,6 +82,7 @@ ClipRecord _clip(
     );
 
 const _mb = 1024 * 1024;
+final _quarterly = _t('季度汇报-终版.key', 'Q3 review - final.key');
 
 AppState _demo({LinkState link = LinkState.online,
     ServiceState? service, Device? pending, bool empty = false}) {
@@ -85,7 +92,7 @@ AppState _demo({LinkState link = LinkState.online,
     serviceState: service,
     pendingPairing: pending,
     status: Status(
-      version: '1.0.0',
+      version: '1.3.0',
       deviceName: 'MacBook Pro',
       signalingConnected: link == LinkState.online,
       clipboardPermission: ClipboardPermission.CLIPBOARD_PERMISSION_ALWAYS_ALLOW,
@@ -129,17 +136,18 @@ AppState _demo({LinkState link = LinkState.online,
           preview: 'git push origin release/1.0 && gh release create v1.0.0',
           outgoing: true, size: 54, ago: const Duration(seconds: 4)),
       _clip('2', ClipKind.CLIP_KIND_IMAGE,
-          preview: '图片 2.4 MB', size: (2.4 * _mb).round(), ago: const Duration(minutes: 2),
+          preview: _t('图片 2.4 MB', 'Image 2.4 MB'), size: (2.4 * _mb).round(), ago: const Duration(minutes: 2),
           items: [ClipItem(name: 'image.png', size: Int64((2.4 * _mb).round()))]),
       _clip('3', ClipKind.CLIP_KIND_FILE,
           size: (38.2 * _mb).round(), ago: const Duration(minutes: 9),
-          items: [ClipItem(name: '季度汇报-终版.key', size: Int64((38.2 * _mb).round()))]),
+          items: [ClipItem(name: _quarterly, size: Int64((38.2 * _mb).round()))]),
       _clip('4', ClipKind.CLIP_KIND_FILE,
           size: (1.3 * 1024 * _mb).round(), ago: const Duration(minutes: 14),
           from: 'Mac mini', status: ClipStatus.CLIP_STATUS_REMOTE_ONLY,
-          items: [ClipItem(name: '发布演示录屏.mov', size: Int64((1.3 * 1024 * _mb).round()))]),
+          items: [ClipItem(name: _t('发布演示录屏.mov', 'launch-demo.mov'), size: Int64((1.3 * 1024 * _mb).round()))]),
       _clip('5', ClipKind.CLIP_KIND_HTML,
-          preview: '会议结论：周二灰度 10%，观察两天没问题周四全量；回滚预案见文档第 3 节',
+          preview: _t('会议结论：周二灰度 10%，观察两天没问题周四全量；回滚预案见文档第 3 节',
+              'Decision: ship to 10% on Tuesday, everyone on Thursday if two days look clean. Rollback plan in section 3'),
           from: 'Mac mini', size: 2310, ago: const Duration(minutes: 26)),
       _clip('6', ClipKind.CLIP_KIND_FILE,
           outgoing: true, size: 126 * _mb, ago: const Duration(minutes: 41),
@@ -147,7 +155,7 @@ AppState _demo({LinkState link = LinkState.online,
       _clip('7', ClipKind.CLIP_KIND_FILE,
           size: (18.6 * _mb).round(), ago: const Duration(hours: 1),
           status: ClipStatus.CLIP_STATUS_FETCHING,
-          items: [ClipItem(name: '合同扫描件.pdf', size: Int64((18.6 * _mb).round()))]),
+          items: [ClipItem(name: _t('合同扫描件.pdf', 'signed-contract.pdf'), size: Int64((18.6 * _mb).round()))]),
       _clip('8', ClipKind.CLIP_KIND_TEXT,
           preview: 'https://github.com/baiyuze/copysync/releases', outgoing: true, size: 44,
           ago: const Duration(hours: 3)),
@@ -159,7 +167,7 @@ AppState _demo({LinkState link = LinkState.online,
             ClipItem(name: 'IMG_2043.HEIC', size: Int64((1.4 * _mb).round())),
           ]),
       _clip('10', ClipKind.CLIP_KIND_IMAGE,
-          preview: '图片 864 KB', outgoing: true, size: 864 * 1024, ago: const Duration(days: 1),
+          preview: _t('图片 864 KB', 'Image 864 KB'), outgoing: true, size: 864 * 1024, ago: const Duration(days: 1),
           items: [ClipItem(name: 'image.png', size: Int64(864 * 1024))]),
     ],
   );
@@ -212,6 +220,9 @@ Future<void> _render(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: theme,
+        locale: _locale,
+        supportedLocales: supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         home: Shell(initialSection: section),
       ),
     ),
@@ -245,6 +256,7 @@ Future<void> _capture(WidgetTester tester, String name) async {
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
+    appL10n = lookupAppLocalizations(_locale);
     await _loadFonts();
   });
 
@@ -254,7 +266,7 @@ void main() {
       final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await mouse.addPointer(location: Offset.zero);
       addTearDown(mouse.removePointer);
-      await mouse.moveTo(tester.getCenter(find.text('季度汇报-终版.key')));
+      await mouse.moveTo(tester.getCenter(find.text(_quarterly)));
       await tester.pump();
     });
   });
@@ -313,6 +325,9 @@ void main() {
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: buildTheme(brightness, fontFamily: 'SF', fontFamilyFallback: const ['PingFang']),
+              locale: _locale,
+              supportedLocales: supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
               home: Scaffold(
                 backgroundColor: Colors.transparent,
                 body: Center(

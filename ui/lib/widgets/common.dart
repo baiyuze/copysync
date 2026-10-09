@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
+import '../i18n.dart';
 import '../icons.dart';
 
 /// 页面统一的标题区。保证各页视觉节奏一致。
@@ -404,15 +405,21 @@ String humanBytes(int n) {
   return '${v.toStringAsFixed(v >= 100 ? 0 : 1)} ${units[i]}';
 }
 
+/// 时长：整天的按天说，否则按小时。
+String durationLabel(AppLocalizations l, int seconds) => seconds % 86400 == 0
+    ? l.durationDays(seconds ~/ 86400)
+    : l.durationHours((seconds / 3600).round());
+
 /// 相对时间。刚刚发生的事用"刚刚"比"14:03:22"更符合直觉。
 String relativeTime(DateTime t, {DateTime? now}) {
   final d = (now ?? DateTime.now()).difference(t);
-  if (d.inSeconds < 10) return '刚刚';
-  if (d.inMinutes < 1) return '${d.inSeconds} 秒前';
-  if (d.inHours < 1) return '${d.inMinutes} 分钟前';
-  if (d.inDays < 1) return '${d.inHours} 小时前';
-  if (d.inDays < 7) return '${d.inDays} 天前';
-  return '${t.month}月${t.day}日';
+  final l = appL10n;
+  if (d.inSeconds < 10) return l.justNow;
+  if (d.inMinutes < 1) return l.secondsAgo(d.inSeconds);
+  if (d.inHours < 1) return l.minutesAgo(d.inMinutes);
+  if (d.inDays < 1) return l.hoursAgo(d.inHours);
+  if (d.inDays < 7) return l.daysAgo(d.inDays);
+  return l.monthDay(t.month, t.day);
 }
 
 void showToast(BuildContext context, String message, {bool error = false}) {
