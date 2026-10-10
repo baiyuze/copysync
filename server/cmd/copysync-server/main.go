@@ -13,6 +13,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -38,6 +39,9 @@ func main() {
 		turnPort   = flag.Int("turn-port", 3478, "TURN 监听端口")
 		turnSecret = flag.String("turn-secret", "",
 			"TURN 凭证派生密钥。留空自动生成（重启后已签发的凭证失效）")
+		logPath = flag.String("log", "",
+			"日志写到这个文件，超过 10 MB 换新。默认输出到标准错误；作为 Windows 服务运行时默认写到 "+
+				`%ProgramData%\CopySync Server\server.log`)
 		verbose     = flag.Bool("v", false, "输出调试日志")
 		showVersion = flag.Bool("version", false, "打印版本号后退出")
 	)
@@ -48,11 +52,27 @@ func main() {
 		return
 	}
 
+	// 由 Windows 服务管理器启动时没有控制台，日志只能写文件
+	service := isService()
+	if *logPath == "" && service {
+		*logPath = defaultServiceLog()
+	}
+	var out io.Writer = os.Stderr
+	if *logPath != "" {
+		f, err := openLog(*logPath)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "打开日志文件:", err)
+			os.Exit(1)
+		}
+		defer f.Close()
+		out = f
+	}
+
 	level := slog.LevelInfo
 	if *verbose {
 		level = slog.LevelDebug
 	}
-	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: level}))
+	log := slog.New(slog.NewTextHandler(out, &slog.HandlerOptions{Level: level}))
 	slog.SetDefault(log)
 
 	cfg := serverConfig{
@@ -62,7 +82,15 @@ func main() {
 		turnPort:   *turnPort,
 		turnSecret: *turnSecret,
 	}
-	if err := run(cfg, log); err != nil {
+	var err error
+	if service {
+		err = runService(cfg, log)
+	} else {
+		ctx, stop := ossignal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+		err = run(ctx, cfg, log)
+		stop()
+	}
+	if err != nil {
 		log.Error("服务器退出", "err", err)
 		os.Exit(1)
 	}
@@ -76,10 +104,8 @@ type serverConfig struct {
 	turnSecret string
 }
 
-func run(cfg serverConfig, log *slog.Logger) error {
-	ctx, stop := ossignal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
-
+// run 运行服务器，直到 ctx 取消。
+func run(ctx context.Context, cfg serverConfig, log *slog.Logger) error {
 	stun := splitNonEmpty(cfg.stunURLs)
 
 	// TURN 中转：P2P 打洞失败时兜底。它只转发 UDP 包，看不到 DTLS 内层明文。

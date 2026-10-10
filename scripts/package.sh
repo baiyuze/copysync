@@ -4,7 +4,8 @@
 #   CopySync.dmg                          macOS 客户端，Intel 与 Apple 芯片通用
 #   copysync-server-linux-amd64.tar.gz    信令服务器 + systemd / Docker 部署文件
 #   copysync-server-linux-arm64.tar.gz
-#   copysync-server-macos.tar.gz          把服务器放在其中一台 Mac 上时用
+#   copysync-server-macos.tar.gz          把服务器放在其中一台 Mac 上时用（LaunchAgent 安装脚本）
+#   copysync-server-windows-amd64.zip     把服务器放在 Windows 电脑上时用（注册为系统服务）
 #
 # Windows 的安装程序与便携版（CopySync-Setup.exe、CopySync-windows-x64.zip）只能在 Windows 上
 # 构建：由 CI 的 Windows 任务运行 scripts/build-windows.ps1 产出，发布时从构建产物里取。
@@ -18,7 +19,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-export VERSION=${VERSION:-1.3.2}
+export VERSION=${VERSION:-1.3.3}
 OUT=release
 
 ./scripts/build.sh
@@ -111,8 +112,21 @@ done
 name="copysync-server-macos"
 mkdir -p "$STAGE/$name"
 cp dist/copysync-server server/deploy/README.md "$STAGE/$name/"
+cp server/deploy/install-macos.sh "$STAGE/$name/install.sh"
 tar -C "$STAGE" -czf "$OUT/$name.tar.gz" "$name"
 echo "  ✓ $name.tar.gz"
+
+# Windows 用 zip：系统自带解压。install.ps1 与 .cmd 必须保持带 BOM 的 UTF-8 与 CRLF，原样拷贝
+name="copysync-server-windows-amd64"
+d="$STAGE/$name"
+mkdir -p "$d"
+(cd server && CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath \
+    -ldflags "-s -w -X main.version=$VERSION" \
+    -o "$d/copysync-server.exe" ./cmd/copysync-server)
+cp server/deploy/{install.ps1,install.cmd,uninstall.cmd,README.md} "$d/"
+zip_out="$PWD/$OUT/$name.zip"
+(cd "$STAGE" && zip -qr -X "$zip_out" "$name")
+echo "  ✓ $name.zip"
 
 (cd "$OUT" && shasum -a 256 -- * > SHA256SUMS)
 

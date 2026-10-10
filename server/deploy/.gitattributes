@@ -1,0 +1,4 @@
+# Windows 脚本按原样提交，不做换行转换：install.ps1 要保持带 BOM 的 UTF-8 与 CRLF，
+# 否则 Windows PowerShell 5.1 会把中文读成乱码
+*.ps1 -text
+*.cmd -text
