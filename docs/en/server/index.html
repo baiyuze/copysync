@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Run a CopySync server on your LAN: Windows, Mac and Linux</title>
+  <meta name="description" content="When your computers share a network you don&#x27;t need a cloud server. Run CopySync&#x27;s signaling and TURN server on any always-on Windows, Mac or Linux machine with one script; it starts on boot. Includes app setup and troubleshooting.">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/en/server/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/server/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/server/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="Run a CopySync server on your LAN: Windows, Mac and Linux">
+  <meta property="og:description" content="When your computers share a network you don&#x27;t need a cloud server. Run CopySync&#x27;s signaling and TURN server on any always-on Windows, Mac or Linux machine with one script; it starts on boot. Includes app setup and troubleshooting.">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/en/server/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../en/" aria-label="CopySync home"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="Page">
+        <a class="wide" href="../../en/#how">How it works</a>
+        <a class="wide" href="../../en/#install">Install</a>
+        <a href="./" aria-current="page">Self-host</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../ja/server/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../en/">CopySync</a> / Self-host</p>
+        <h1 class="display">Run the server on your LAN</h1>
+        <p class="lede">If your computers are on the same home or office network, you don't need a cloud server. Pick a computer that stays on, download and run one script, then enter the address it prints into CopySync on each computer.</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">Before you start</a></li>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#check">Check</a></li>
+          <li><a href="#clients">Set up the apps</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">The server only introduces devices</h2>
+        <p class="intro">Each computer stays connected to the server, which is how they find each other and exchange connection details. Once connected, what you copy goes straight between the two computers. Only when that fails does it pass through the server, still encrypted.</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 440" role="img" aria-labelledby="lan-title lan-desc">
+            <title id="lan-title">CopySync on a LAN</title>
+            <desc id="lan-desc">On one LAN, a Mac and a Windows PC connect to the server at 192.168.1.20 for signaling. Copied content travels directly between the two computers, and through the server's TURN relay only if a direct connection fails.</desc>
+            <rect class="d-lan" x="8" y="8" width="944" height="384" rx="22"/>
+            <text class="d-lan-label" x="32" y="42">Your LAN: the same Wi‑Fi or wired network</text>
+            <rect class="d-box" x="340" y="64" width="280" height="104" rx="14"/>
+            <text class="d-title" x="480" y="106" text-anchor="middle">Server</text>
+            <text class="d-ip" x="480" y="138" text-anchor="middle">192.168.1.20</text>
+            <path class="d-sig" d="M150 250V96H340"/>
+            <path class="d-sig" d="M810 250V96H620"/>
+            <path class="d-relay" d="M206 250V140H340"/>
+            <path class="d-relay" d="M754 250V140H620"/>
+            <text class="d-note" x="164" y="86">Signaling, TCP 8787</text>
+            <text class="d-note" x="220" y="200">Relay, UDP 3478, if direct fails</text>
+            <rect class="d-box" x="40" y="250" width="240" height="112" rx="14"/>
+            <text class="d-title" x="160" y="300" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="328" text-anchor="middle">Running CopySync</text>
+            <rect class="d-box" x="680" y="250" width="240" height="112" rx="14"/>
+            <text class="d-title" x="800" y="300" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="328" text-anchor="middle">Running CopySync</text>
+            <path class="d-direct" d="M280 306H680"/>
+            <text class="d-label" x="480" y="292" text-anchor="middle">Direct, end-to-end encrypted</text>
+            <text class="d-note" x="480" y="336" text-anchor="middle">Content stays between the two computers</text>
+            <g class="d-legend" transform="translate(40 424)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">Data (direct)</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">Data (relay, fallback)</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">Signaling</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>Signaling, TCP 8787.</strong> Every computer stays connected to it to find the others, pair and exchange connection details.</li>
+          <li><strong>Direct.</strong> On a LAN, content almost always goes straight between the two computers, at the speed of your network.</li>
+          <li><strong>Relay, UDP 3478.</strong> Only used when devices can't reach each other: guest networks, Wi‑Fi with client isolation, separate subnets.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">Before you start</h2>
+        <dl class="fallbacks">
+          <div><dt>A computer that stays on</dt><dd>Windows 10 or 11, macOS 13 or later, or any Linux, including one of the two computers you sync. Sync pauses while it's off or asleep and resumes when it wakes. A NAS, home router or Mac mini is ideal; the server uses about 15 MB of RAM.</dd></div>
+          <div><dt>A fixed address</dt><dd>Reserve an address for it in your router's DHCP settings (often called DHCP reservation or static lease). Otherwise, when the router hands out a new address, every computer has to be updated.</dd></div>
+          <div><dt>The same network</dt><dd>Devices just need to be on the same Wi‑Fi or wired network. Guest networks and Wi‑Fi with client (AP) isolation block devices from reaching each other; use another network or turn isolation off.</dd></div>
+          <div><dt>No sync away from it</dt><dd>The server is only reachable on your LAN, so a laptop taken elsewhere catches up when it's back. To sync from anywhere you need a server with a public IP; see Install on the home page.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <h2 id="install-title">Install the server</h2>
+        <p class="intro">Choose the system of the computer that will run the server. The script finds the computer's LAN address, sets the server to start automatically, and prints the address to enter in the apps.</p>
+        <div class="os-tabs" data-tabs>
+          <div class="tablist" role="tablist" aria-label="System of the server computer" hidden>
+            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
+            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
+            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+          </div>
+
+          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                <li>Download <a href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> and choose Extract All.</li>
+                <li>Open the extracted folder and double-click <code>install.cmd</code>.<span class="aside">If you see "Windows protected your PC", click More info, then Run anyway; when User Account Control asks, click Yes. The server isn't code-signed yet, which is why Windows asks once.</span></li>
+                <li>Installation continues in a new window. The <code>ws://…/signal</code> address at the end is what you enter in the apps.</li>
+                </ol>
+                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download the Windows server</a>
+                <ul class="points">
+                <li><strong>Runs as a Windows service:</strong> starts with Windows, no sign-in needed, no window. It appears as CopySync Server in Services.</li>
+                <li><strong>Firewall already allowed:</strong> the script adds an inbound rule for copysync-server.exe only, so there are no ports to open.</li>
+                <li><strong>Wrong address picked</strong> (several network adapters, say from a VM or VPN): type <code>cmd</code> in the address bar of the extracted folder, press Enter and run <code>install.cmd 192.168.1.20</code> with your address.</li>
+                <li>Windows 10 and 11, x64.</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="explorer" role="img" aria-label="The extracted folder holds copysync-server.exe, install.cmd, install.ps1, README.md and uninstall.cmd; double-click install.cmd">
+                  <div class="t-bar win"><span class="t-tab folder">copysync-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                  <ul class="files">
+                  <li><span class="f-icon exe" aria-hidden="true"></span><span class="f-name">copysync-server.exe</span></li>
+                  <li class="hl"><span class="f-icon cmd" aria-hidden="true"></span><span class="f-name">install.cmd</span><em>Double-click</em></li>
+                  <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">install.ps1</span></li>
+                  <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">README.md</span></li>
+                  <li><span class="f-icon cmd" aria-hidden="true"></span><span class="f-name">uninstall.cmd</span></li>
+                  </ul>
+                </figure>
+                <figure class="term" role="img" aria-label="The window after install.cmd finishes: it stops the old version, installs, registers the service, allows it through the firewall and starts it, then prints the address ws://192.168.1.20:8787/signal">
+                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>Administrator: Windows PowerShell</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<pre class="t-body"><span class="t-step">&gt; Stopping the running version</span>
+<span class="t-step">&gt; Installing to C:\Program Files\CopySync Server</span>
+<span class="t-step">&gt; Registering the service CopySyncServer (relay address 192.168.1.20)</span>
+<span class="t-step">&gt; Allowing it through Windows Firewall</span>
+<span class="t-step">&gt; Starting</span>
+  √ Running
+
+Installed: copysync-server 1.3.3. It runs as a Windows service and starts with Windows.
+In CopySync on each computer, set Settings &gt; Signaling server to:
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  Program    C:\Program Files\CopySync Server
+  Logs       C:\ProgramData\CopySync Server\server.log
+  Restart    Restart-Service CopySyncServer (in an administrator PowerShell)
+  Uninstall  double-click uninstall.cmd</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>For later</caption>
+                  <tbody>
+                  <tr><th scope="row">Status</th><td><code>Get-Service CopySyncServer</code> in an administrator PowerShell, or find CopySync Server in Services</td></tr>
+                  <tr><th scope="row">Logs</th><td><code>C:\ProgramData\CopySync Server\server.log</code></td></tr>
+                  <tr><th scope="row">Restart</th><td><code>Restart-Service CopySyncServer</code> in an administrator PowerShell</td></tr>
+                  <tr><th scope="row">Upgrade</th><td>Download the new version, extract it and double-click <code>install.cmd</code> again; your settings are kept</td></tr>
+                  <tr><th scope="row">Uninstall</th><td>Double-click <code>uninstall.cmd</code>; it removes the service, the firewall rule and the files</td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+
+          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>macOS</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>Open Terminal and run these lines:
+                <div class="code">
+                  <button class="copy" type="button" data-done="Copied">Copy</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
+tar xzf copysync-server-macos.tar.gz
+cd copysync-server-macos
+./install.sh</code></pre>
+                </div></li>
+                <li>The <code>ws://…/signal</code> address at the end is what you enter in the apps.</li>
+                </ol>
+                <ul class="points">
+                <li><strong>No administrator rights needed.</strong> It runs in the background whenever you're logged in, and macOS restarts it if it exits.</li>
+                <li><strong>Keep this Mac awake:</strong> in System Settings → Energy (Battery → Options on a laptop), turn on the option that prevents automatic sleep.</li>
+                <li><strong>If the macOS firewall is on,</strong> the script ends with the command to allow copysync-server.</li>
+                <li>Intel and Apple silicon, macOS 13 or later.</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="Output of ./install.sh in Terminal: it installs, writes the LaunchAgent and starts the server, then prints the address ws://192.168.1.20:8787/signal">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">copysync-server-macos — zsh</span></div>
+<pre class="t-body"><span class="t-prompt">%</span> ./install.sh
+<span class="t-step">▶ Stopping the running version</span>
+<span class="t-step">▶ Installing to /Users/me/Library/Application Support/CopySync Server</span>
+<span class="t-step">▶ Writing the LaunchAgent (relay address 192.168.1.20)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3. It starts whenever you log in to this Mac.
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  Logs       /Users/me/Library/Logs/CopySync/server.log
+  Restart    launchctl kickstart -k gui/501/com.copysync.server
+  Uninstall  ./install.sh uninstall</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>For later</caption>
+                  <tbody>
+                  <tr><th scope="row">Logs</th><td><code>~/Library/Logs/CopySync/server.log</code></td></tr>
+                  <tr><th scope="row">Restart</th><td><code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code></td></tr>
+                  <tr><th scope="row">Upgrade</th><td>Download the new version, extract it and run <code>./install.sh</code> again; your settings are kept</td></tr>
+                  <tr><th scope="row">Uninstall</th><td><code>./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+
+          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Linux</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>On the machine itself, or over ssh, run these lines:<span class="aside">On ARM, such as a Raspberry Pi with a 64-bit OS, replace <code>amd64</code> with <code>arm64</code>.</span>
+                <div class="code">
+                  <button class="copy" type="button" data-done="Copied">Copy</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh</code></pre>
+                </div></li>
+                <li>The <code>ws://…/signal</code> address at the end is what you enter in the apps.</li>
+                </ol>
+                <ul class="points">
+                <li><strong>Registers a systemd service</strong> that starts on boot. Needs root.</li>
+                <li><strong>If ufw or firewalld is active,</strong> the script ends with the commands to open the ports.</li>
+                <li><strong>Docker works too:</strong> copy <code>env.example</code> to <code>.env</code>, set <code>TURN_IP</code> to the machine's LAN address and run <code>docker compose up -d</code>. It needs host networking, so Linux only.</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="Output of sudo ./install.sh: it installs, writes the systemd unit and config and starts the server, then prints the address ws://192.168.1.20:8787/signal">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh 192.168.1.20</span></div>
+<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh
+<span class="t-step">▶ Installing the binary to /usr/local/bin</span>
+<span class="t-step">▶ Writing the systemd unit</span>
+<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 192.168.1.20)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  Config     /etc/copysync/server.env
+  Logs       journalctl -u copysync-server -f
+  Restart    systemctl restart copysync-server
+  Uninstall  sudo ./install.sh uninstall
+
+Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>For later</caption>
+                  <tbody>
+                  <tr><th scope="row">Status</th><td><code>systemctl status copysync-server</code></td></tr>
+                  <tr><th scope="row">Logs</th><td><code>journalctl -u copysync-server -f</code></td></tr>
+                  <tr><th scope="row">Restart</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
+                  <tr><th scope="row">Config</th><td><code>/etc/copysync/server.env</code>; restart the service after editing</td></tr>
+                  <tr><th scope="row">Upgrade</th><td>Download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept</td></tr>
+                  <tr><th scope="row">Uninstall</th><td><code>sudo ./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <h2 id="check-title">Check that other computers can reach it</h2>
+        <p class="intro">On another computer, open <code>http://192.168.1.20:8787/healthz</code> in a browser (with your address). If you see this line, the network path works.</p>
+        <figure class="browser" role="img" aria-label="A browser showing http://192.168.1.20:8787/healthz, with the server&#x27;s status ok and its version">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://192.168.1.20:8787/healthz</span></div>
+          <pre class="b-body">{"status":"ok","version":"1.3.3"}</pre>
+        </figure>
+        <p class="note">If it doesn't load, see the <a href="#faq">questions</a> below.</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <h2 id="clients-title">Enter the address on each computer</h2>
+        <ol class="flow">
+          <li><h3>Open Settings</h3><p>Open CopySync on each computer, including the one running the server, and go to Settings.</p></li>
+          <li><h3>Enter the address</h3><p>Under Signaling server, enter <code>ws://192.168.1.20:8787/signal</code> with your address and press Return or Enter.</p></li>
+          <li><h3>Check the status</h3><p>When Connection shows a green Connected, you're set. Pair your devices under Devices and copying starts syncing.</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../../assets/screenshots/en/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync Settings: the signaling server is ws://192.168.1.20:8787/signal and the connection status shows Connected">
+        </figure>
+        <p class="note">Haven't installed the app yet? See <a href="../../en/#install">Install</a> on the home page.</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">Questions</h2>
+        <div class="faq">
+          <details>
+            <summary>The status stays at Not connected</summary>
+            <div class="answer"><p>Check the address first: it starts with <code>ws://</code>, uses port 8787, ends in <code>/signal</code>, and you pressed Return after typing it.</p><p>Then open <code>http://server-address:8787/healthz</code> in a browser on that computer. If it doesn't load, the network path is broken: the server isn't running, its computer is asleep, a firewall blocks it, or its address changed.</p><p>The Windows script already allows the server through the firewall. On a Mac with the firewall on, run the command the script printed at the end; the same goes for ufw and firewalld on Linux.</p></div>
+          </details>
+          <details>
+            <summary>Devices show Relay instead of Direct</summary>
+            <div class="answer"><p>On a LAN connections are almost always direct. Relay means UDP can't get between the two computers, usually because of a guest network, Wi‑Fi client isolation, or separate subnets with a firewall in between. Relayed content is still encrypted; it's just limited by the server computer's network.</p></div>
+          </details>
+          <details>
+            <summary>The server's address changed</summary>
+            <div class="answer"><p>Run the script again with the new address: <code>install.cmd new-address</code> on Windows, <code>./install.sh new-address</code> on a Mac. On Linux, edit <code>-turn-ip</code> in <code>/etc/copysync/server.env</code> and restart the service. Then update the address on each computer.</p><p>Reserving the address in your router avoids this.</p></div>
+          </details>
+          <details>
+            <summary>Does it sync away from the LAN?</summary>
+            <div class="answer"><p>No, the server is only reachable on your LAN. To sync from anywhere, deploy the server on a machine with a public IP (steps under Install on the home page), or join your devices with a mesh VPN such as Tailscale or ZeroTier and enter the server's address on that network.</p></div>
+          </details>
+          <details>
+            <summary>A cloud server in mainland China works by IP but not by domain</summary>
+            <div class="answer"><p>Cloud providers in mainland China intercept plain HTTP requests for domains without an ICP filing and answer with a redirect to a block page; in our tests that included non-standard ports such as 8787. The WebSocket handshake is an HTTP request too, so it is intercepted and the app shows Not connected.</p><p>Enter the server's IP instead, as in <code>ws://server-ip:8787/signal</code>, or file the domain.</p></div>
+          </details>
+          <details>
+            <summary>The server computer also runs CopySync. Which address?</summary>
+            <div class="answer"><p>The same LAN address works, and so does <code>ws://127.0.0.1:8787/signal</code>. The server and the app don't interfere.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">One computer that stays on is enough.</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
+        </div>
+        <p class="note">Version 1.3.3, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">Full server guide, including public servers and Docker</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync is open source under the GNU AGPL-3.0, with commercial licenses available.</p>
+      <nav aria-label="Footer">
+        <a href="https://github.com/baiyuze/copysync/releases">All releases</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">Commercial license</a>
+        <a href="https://github.com/baiyuze/copysync/issues">Report an issue</a>
+      </nav>
+      <nav aria-label="Language">
+        <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/server/" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a>
+        <a href="../../ja/server/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+</body>
+</html>

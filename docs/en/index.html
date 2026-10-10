@@ -38,8 +38,8 @@
         "description": "Open-source app that syncs the clipboard and files between Mac and Windows computers. Copy text, images, files or folders on one computer and paste on the other. Devices connect directly over WebRTC with end-to-end DTLS encryption, falling back to a TURN relay on a server the user hosts.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 or later (Intel and Apple silicon); Windows 10, Windows 11 (x64)",
-        "softwareVersion": "1.3.2",
-        "datePublished": "2026-10-10",
+        "softwareVersion": "1.3.3",
+        "datePublished": "2026-10-11",
         "inLanguage": "en",
         "license": "https://www.gnu.org/licenses/agpl-3.0.html",
         "isAccessibleForFree": true,
@@ -107,7 +107,7 @@
             "name": "Do I need my own server?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. There is no public server, so nobody's data passes through anyone else's machine. On a LAN, run the server on one of your Macs. Across networks you need a machine with a public IP; the smallest cloud VM is enough."
+              "text": "Yes. There is no public server, so nobody's data passes through anyone else's machine. On a LAN, run the server on any always-on Windows, Mac or Linux computer; see the LAN guide. Across networks you need a machine with a public IP; the smallest cloud VM is enough."
             }
           },
           {
@@ -158,7 +158,8 @@
         <a class="wide" href="#how">How it works</a>
         <a class="wide" href="#install">Install</a>
         <a class="wide" href="#faq">FAQ</a>
-        <a href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="server/">Self-host</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
       </nav>
@@ -174,7 +175,7 @@
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
         </div>
-        <p class="note">Version 1.3.2, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <p class="note">Version 1.3.3, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
         <div class="stage" data-play role="img" aria-label="Demo: Command C on a MacBook turns a file into a sheet that flies over a direct connection to a Windows laptop, where Ctrl V pastes it">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -372,7 +373,7 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">Install</h2>
-        <p class="intro">Install the app on each computer, and set up a server both of them can reach. If both share a LAN, the server can run on one of your Macs.</p>
+        <p class="intro">Install the app on each computer, and set up a server both of them can reach. If both share a LAN, the server can run on one of your Windows, Mac or Linux computers; see the <a href="server/">LAN guide</a>.</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
@@ -395,7 +396,7 @@
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Server</h3>
-            <p class="small">Any Linux, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.</p>
+            <p class="small">To use it across networks: a Linux server with a public IP, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.</p>
             <div class="code">
               <button class="copy" type="button" data-done="Copied">Copy</button>
 <pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
@@ -413,6 +414,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
               </tbody>
             </table>
             <p class="small">Docker works too; see the <a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">server deployment guide</a>.</p>
+            <a class="button quiet" href="server/">LAN setup guide</a>
           </div>
         </div>
         <p class="pairing"><strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints. Mac with Windows, or two Windows PCs, works the same way.</p>
@@ -425,10 +427,10 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-            <tr><th scope="row">Version</th><td>1.3.2, released <time datetime="2026-10-10">October 10, 2026</time></td></tr>
+            <tr><th scope="row">Version</th><td>1.3.3, released <time datetime="2026-10-11">October 11, 2026</time></td></tr>
             <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 47 MB download</td></tr>
             <tr><th scope="row">Windows app</th><td>Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download</td></tr>
-            <tr><th scope="row">Server</th><td>Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM</td></tr>
+            <tr><th scope="row">Server</th><td>Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM</td></tr>
             <tr><th scope="row">Languages</th><td>English, Simplified Chinese and Japanese; follows the system by default, switchable in Settings</td></tr>
             <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>
             <tr><th scope="row">Transport</th><td>WebRTC data channels, direct first with TURN relay fallback; every uplink probed on multi-uplink networks; files streamed as tar + zstd</td></tr>
@@ -467,7 +469,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
           </details>
           <details>
             <summary>Do I need my own server?</summary>
-            <div class="answer"><p>Yes. There is no public server, so nobody's data passes through anyone else's machine. On a LAN, run the server on one of your Macs. Across networks you need a machine with a public IP; the smallest cloud VM is enough.</p></div>
+            <div class="answer"><p>Yes. There is no public server, so nobody's data passes through anyone else's machine. On a LAN, run the server on any always-on Windows, Mac or Linux computer; see the <a href="server/">LAN guide</a>. Across networks you need a machine with a public IP; the smallest cloud VM is enough.</p></div>
           </details>
           <details>
             <summary>Windows? iPhone?</summary>
@@ -496,7 +498,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
         </div>
-        <p class="note">Version 1.3.2, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <p class="note">Version 1.3.3, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
         <a class="source" href="https://github.com/baiyuze/copysync">View the source on GitHub</a>
       </div>
     </section>

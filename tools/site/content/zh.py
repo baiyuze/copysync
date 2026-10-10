@@ -16,6 +16,7 @@ C = {
     "nav_how": "工作原理",
     "nav_install": "安装",
     "nav_faq": "常见问题",
+    "nav_server": "部署服务器",
     "lang_label": "语言",
 
     "h1": "在这台电脑复制，<br>到那台电脑粘贴。",
@@ -23,7 +24,7 @@ C = {
             "数据在你的设备之间直接传输，经过你自己的服务器时也是加密的。",
     "dl_mac": "下载 Mac 版",
     "dl_win": "下载 Windows 版",
-    "dl_note": "版本 1.3.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
+    "dl_note": "版本 1.3.3，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
     "stage_label": "演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来",
     "stage_file": "季度汇报-终版.pptx",
     "stage_win": "Windows 笔记本",
@@ -137,7 +138,7 @@ C = {
     ],
 
     "install_h2": "安装",
-    "install_intro": "每台电脑装一个 App，再准备一台两边都能访问到的服务器。两台电脑在同一个局域网的话，服务器直接跑在其中一台 Mac 上就行。",
+    "install_intro": "每台电脑装一个 App，再准备一台两边都能访问到的服务器。两台电脑在同一个局域网的话，服务器放在其中一台 Windows、Mac 或 Linux 电脑上就行，见<a href=\"server/\">局域网部署教程</a>。",
     "mac_steps": [
         "下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。",
         "从「应用程序」里打开。<span class=\"aside\">第一次会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证。"
@@ -153,7 +154,7 @@ C = {
         "在「设置」里填入服务器地址，按回车。防火墙询问时选择允许。",
     ],
     "server_h3": "服务器",
-    "server_intro": "任意 Linux，需要 root。ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。",
+    "server_intro": "跨公网使用时，一台有公网 IP 的 Linux 服务器，需要 root。ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。",
     "copy": "复制",
     "copied": "已复制",
     "public_ip": "你的公网IP",
@@ -161,15 +162,16 @@ C = {
     "ports_cols": ["端口", "用途"],
     "ports": [("8787/tcp", "信令"), ("3478/udp", "STUN 与 TURN"), ("32768–60999/udp", "中转端口")],
     "server_docker": f'也可以用 Docker 部署，见<a href="{REPO}/blob/main/server/deploy/README.md">服务器部署说明</a>。',
+    "server_guide": "局域网部署教程",
     "pairing": "<strong>配对：</strong>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。"
                "Mac 与 Windows 之间、两台 Windows 之间都一样。",
 
     "specs_h2": "技术规格",
     "specs": [
-        ("版本", '1.3.2，<time datetime="2026-10-10">2026 年 10 月 10 日</time>发布'),
+        ("版本", '1.3.3，<time datetime="2026-10-11">2026 年 10 月 11 日</time>发布'),
         ("Mac 客户端", "macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB"),
         ("Windows 客户端", "Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
-        ("服务器", "Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存"),
+        ("服务器", "Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 与 Apple 芯片）、Windows 10 与 11 x64（系统服务）；约 15 MB 内存"),
         ("界面语言", "简体中文、English、日本語，默认跟随系统，可在设置里切换"),
         ("同步的内容", "纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭"),
         ("传输", "WebRTC 数据通道，直连优先，打不通时经 TURN 中转；多出口网络逐个探测每个出口；文件以 tar + zstd 流式打包"),
@@ -201,7 +203,7 @@ C = {
             "实测公司 4 个出口与家用宽带之间可以直连。对端是端口随机分配的 NAT 时仍会走中转。",
         ]),
         ("必须自己准备服务器吗？", [
-            "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台电脑在同一个局域网时，在其中一台 Mac 上运行服务器即可；"
+            "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台电脑在同一个局域网时，在其中一台常开的 Windows、Mac 或 Linux 电脑上运行服务器即可，见<a href=\"server/\">局域网部署教程</a>；"
             "跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。",
         ]),
         ("支持 Windows 吗？iPhone 呢？", [
@@ -232,6 +234,174 @@ C = {
         ("商业授权", f"{REPO}/blob/main/LICENSING.md"),
         ("反馈问题", f"{REPO}/issues"),
     ],
+
+    # ── 「在局域网里部署服务器」教程（server/ 页面） ──
+    "guide": {
+        "title": "在局域网里部署 CopySync 服务器：Windows、Mac、Linux 教程",
+        "description": "两台电脑在同一个网络里时，不需要云服务器：在一台常开的 Windows、Mac 或 Linux 电脑上运行 CopySync 的信令与 TURN 服务器，"
+                       "下载后运行一个脚本即可，开机自动运行。附客户端设置与排错。",
+        "h1": "在局域网里部署服务器",
+        "lede": "家里或办公室的电脑在同一个网络里，就不需要云服务器。找一台常开的电脑，下载、运行一个脚本，"
+                "再把它显示的地址填进每台电脑的 CopySync 里。",
+        "toc": [("prepare", "准备"), ("install", "安装服务器"), ("check", "检查"), ("clients", "填地址"), ("faq", "常见问题")],
+
+        "overview_h2": "服务器只负责牵线",
+        "overview_intro": "每台电脑一直连着服务器，靠它找到对方、交换连接信息。连上之后，复制的内容在两台电脑之间直接传输；"
+                          "只有直连打不通时，才经过它中转，内容依然加密。",
+        "diagram": {
+            "title": "局域网里的 CopySync",
+            "desc": "同一个局域网里，Mac 与 Windows 电脑通过信令连接到地址为 192.168.1.20 的服务器，复制的内容在两台电脑之间直连传输；"
+                    "直连不通时经服务器的 TURN 中转。",
+            "lan": "局域网：同一个 Wi‑Fi 或有线网络",
+            "server": "服务器",
+            "sig_note": "信令 TCP 8787",
+            "relay_note": "中转 UDP 3478，直连不通时",
+            "client": "装着 CopySync",
+            "direct": "直连，端到端加密",
+            "direct_note": "复制的内容只在两台电脑之间传输",
+            "legend_direct": "数据（直连）",
+            "legend_relay": "数据（中转，备用）",
+            "legend_sig": "信令",
+        },
+        "overview_points": [
+            "<strong>信令，TCP 8787。</strong>每台电脑一直连着它，用来发现对方、配对、交换连接信息。",
+            "<strong>直连。</strong>在同一个局域网里，内容几乎总是在两台电脑之间直接传输，速度就是局域网的速度。",
+            "<strong>中转，UDP 3478。</strong>访客网络、开了 AP 隔离的 Wi‑Fi、不同网段之间互相访问不到时才会用到。",
+        ],
+
+        "prep_h2": "开始之前",
+        "prep": [
+            ("一台常开的电脑", "Windows 10、11，macOS 13 及以上，或者任意 Linux 都行，两台电脑中的一台也可以。"
+                             "它关机或睡眠时同步会暂停，醒来后自动恢复。NAS、软路由、Mac mini 这类一直开着的设备最合适，内存只占约 15 MB。"),
+            ("一个固定的地址", "在路由器的「DHCP 静态分配」（也叫「地址保留」「IP 与 MAC 绑定」）里给这台电脑固定一个地址。"
+                             "不然路由器换了地址，每台电脑都要重新填。"),
+            ("在同一个网络里", "设备连同一个 Wi‑Fi 或有线网络就行。访客网络、开了「AP 隔离」的 Wi‑Fi 不让设备互相访问，需要换个网络或关掉隔离。"),
+            ("离开这个网络就不同步", "服务器只在局域网里访问得到，笔记本带出门后，回来才会继续同步。想在任何地方都能同步，"
+                                   "需要一台有公网 IP 的服务器，见首页的「安装」。"),
+        ],
+
+        "install_h2": "安装服务器",
+        "install_intro": "选服务器所在电脑的系统。安装脚本会自动找到本机的局域网地址，把服务器设成开机自动运行，最后显示客户端要填的地址。",
+        "os_label": "服务器所在电脑的系统",
+        "manage_caption": "以后会用到的",
+        "win": {
+            "steps": [
+                f'下载 <a href="{REPO}/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a>，'
+                "右键选「全部解压缩」。",
+                "打开解压出的文件夹，双击 <code>install.cmd</code>。"
+                "<span class=\"aside\">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」；弹出用户账户控制时点「是」。"
+                "服务器还没有代码签名，所以会这样问一次。</span>",
+                "安装在新打开的窗口里进行。最后显示的 <code>ws://…/signal</code> 就是客户端要填的地址。",
+            ],
+            "download": "下载 Windows 版服务器",
+            "notes": [
+                "<strong>作为 Windows 服务运行：</strong>开机就启动，不用登录，也没有窗口。在「服务」里叫 CopySync Server。",
+                "<strong>防火墙已经放行：</strong>脚本添加了一条只针对 copysync-server.exe 的入站规则，不用自己开端口。",
+                "<strong>地址认错了</strong>（比如装了虚拟机或 VPN，有好几块网卡）：在解压出的文件夹的地址栏里输入 <code>cmd</code> 回车，"
+                "运行 <code>install.cmd 192.168.1.20</code>，换成你的地址。",
+                "支持 Windows 10、11，x64。",
+            ],
+            "double_click": "双击",
+            "explorer_label": "解压出的文件夹里有 copysync-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd，双击其中的 install.cmd",
+            "term_title": "管理员: Windows PowerShell",
+            "term_label": "install.cmd 运行完的窗口：依次停止旧版本、安装、注册服务、放行防火墙、启动，最后显示客户端要填的地址 ws://192.168.1.20:8787/signal",
+            "manage": [
+                ("状态", "管理员 PowerShell 里运行 <code>Get-Service CopySyncServer</code>，或者在「服务」里找 CopySync Server"),
+                ("日志", "<code>C:\\ProgramData\\CopySync Server\\server.log</code>"),
+                ("重启", "管理员 PowerShell 里运行 <code>Restart-Service CopySyncServer</code>"),
+                ("升级", "下载新版本，解压后再双击 <code>install.cmd</code>，原来的设置保留"),
+                ("卸载", "双击 <code>uninstall.cmd</code>，服务、防火墙规则和文件一并删除"),
+            ],
+        },
+        "mac": {
+            "steps": [
+                "打开「终端」，逐行运行：",
+                "最后显示的 <code>ws://…/signal</code> 就是客户端要填的地址。",
+            ],
+            "notes": [
+                "<strong>不需要管理员权限。</strong>登录这台 Mac 后自动在后台运行，意外退出会被系统重新拉起。",
+                "<strong>这台 Mac 不能睡眠：</strong>在「系统设置 → 能耗」（笔记本在「电池 → 选项」）里打开防止自动进入睡眠的选项。",
+                "<strong>开着系统防火墙的话，</strong>脚本最后会给出放行 copysync-server 的命令。",
+                "Intel 与 Apple 芯片通用，macOS 13 及以上。",
+            ],
+            "term_label": "在终端里运行 ./install.sh 的输出：安装、写入 LaunchAgent、启动，最后显示客户端要填的地址 ws://192.168.1.20:8787/signal",
+            "manage": [
+                ("日志", "<code>~/Library/Logs/CopySync/server.log</code>"),
+                ("重启", "<code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code>"),
+                ("升级", "下载新版本，解压后再运行 <code>./install.sh</code>，原来的设置保留"),
+                ("卸载", "<code>./install.sh uninstall</code>"),
+            ],
+        },
+        "linux": {
+            "steps": [
+                "在这台机器上（或者 ssh 登录后）逐行运行：<span class=\"aside\">ARM 设备，比如装了 64 位系统的树莓派，把 <code>amd64</code> 换成 <code>arm64</code>。</span>",
+                "最后显示的 <code>ws://…/signal</code> 就是客户端要填的地址。",
+            ],
+            "notes": [
+                "<strong>注册为 systemd 服务，</strong>开机自动运行。需要 root。",
+                "<strong>开着 ufw 或 firewalld 的话，</strong>脚本最后会给出放行端口的命令。",
+                "<strong>也可以用 Docker：</strong>把 <code>env.example</code> 复制为 <code>.env</code>，<code>TURN_IP</code> 填这台机器的局域网地址，"
+                "再运行 <code>docker compose up -d</code>。必须用 host 网络，所以只适用于 Linux。",
+            ],
+            "term_label": "运行 sudo ./install.sh 的输出：安装、写入 systemd 单元、生成配置、启动，最后显示客户端要填的地址 ws://192.168.1.20:8787/signal",
+            "manage": [
+                ("状态", "<code>systemctl status copysync-server</code>"),
+                ("日志", "<code>journalctl -u copysync-server -f</code>"),
+                ("重启", "<code>sudo systemctl restart copysync-server</code>"),
+                ("配置", "<code>/etc/copysync/server.env</code>，改完重启服务"),
+                ("升级", "下载新版本，解压后再运行 <code>sudo ./install.sh</code>，原来的配置保留"),
+                ("卸载", "<code>sudo ./install.sh uninstall</code>"),
+            ],
+        },
+
+        "check_h2": "检查其他电脑能不能访问到它",
+        "check_intro": "在另一台电脑的浏览器里打开 <code>http://192.168.1.20:8787/healthz</code>（换成你的地址），看到下面这一行，网络就是通的。",
+        "check_label": "浏览器打开 http://192.168.1.20:8787/healthz，页面显示服务器的状态 ok 与版本号",
+        "check_after": "打不开的话，看下面的<a href=\"#faq\">常见问题</a>。",
+
+        "clients_h2": "在每台电脑上填地址",
+        "clients_steps": [
+            ("打开设置", "在每台电脑上打开 CopySync，进入「设置」。服务器所在的那台电脑也一样。"),
+            ("填入地址", "在「信令服务器地址」里填 <code>ws://192.168.1.20:8787/signal</code>（换成你的地址），按回车保存。"),
+            ("看连接状态", "「连接状态」变成绿色的「已连接」就好了。接着在「设备」里配对，之后复制就会同步。"),
+        ],
+        "clients_alt": "CopySync 的设置页：信令服务器地址填着 ws://192.168.1.20:8787/signal，连接状态显示已连接",
+        "clients_after": '还没装 App？见首页的<a href="{home}#install">安装</a>。',
+
+        "faq_h2": "常见问题",
+        "faq": [
+            ("连接状态一直是「未连接」？", [
+                "先核对地址：以 <code>ws://</code> 开头，端口是 8787，以 <code>/signal</code> 结尾，填完按过回车。",
+                "再在这台电脑的浏览器里打开 <code>http://服务器地址:8787/healthz</code>。打不开，说明到服务器的网络不通："
+                "服务器没在运行、那台电脑睡眠了、被防火墙拦住了，或者它的地址变了。",
+                "Windows 的安装脚本已经放行了防火墙；Mac 开着系统防火墙时，运行安装脚本最后给出的放行命令；Linux 上的 ufw、firewalld 也一样。",
+            ]),
+            ("设备之间显示「中转」，不是「直连」？", [
+                "同一个局域网里一般都是直连。显示中转，说明两台电脑之间的 UDP 不通，常见于访客网络、开了 AP 隔离的 Wi‑Fi，"
+                "或者两台电脑在不同网段、中间有防火墙。中转经过服务器，内容同样加密，只是速度受那台电脑的网络限制。",
+            ]),
+            ("服务器的地址变了怎么办？", [
+                "带上新地址再运行一次安装脚本：Windows 上是 <code>install.cmd 新地址</code>，Mac 上是 <code>./install.sh 新地址</code>；"
+                "Linux 上编辑 <code>/etc/copysync/server.env</code> 里的 <code>-turn-ip</code>，再重启服务。然后在每台电脑上改掉服务器地址。",
+                "在路由器里给它固定一个地址，就不会再遇到这件事。",
+            ]),
+            ("离开局域网以后还能同步吗？", [
+                "不能，服务器只在局域网里访问得到。要在外面也能用，可以把服务器部署到有公网 IP 的机器上（首页的「安装」里有步骤），"
+                "或者用 Tailscale、ZeroTier 这类组网工具把设备连进同一个虚拟局域网，服务器地址填它在虚拟网里的地址。",
+            ]),
+            ("用国内的云服务器，填域名连不上、填 IP 却能连？", [
+                "域名没有备案时，国内的云厂商会拦截访问它的明文 HTTP 请求，返回一个跳转到拦截页的响应，实测 8787 这样的非常用端口也一样。"
+                "WebSocket 握手也是一个 HTTP 请求，所以同样被拦，客户端就显示未连接。",
+                "服务器地址里直接填 IP 就行，比如 <code>ws://服务器IP:8787/signal</code>；或者给域名备案。",
+            ]),
+            ("服务器所在的那台电脑也要用 CopySync，地址填什么？", [
+                "填同样的局域网地址就行，填 <code>ws://127.0.0.1:8787/signal</code> 也可以。服务器和 App 互不影响。",
+            ]),
+        ],
+
+        "closing": "一台常开的电脑，就够了。",
+        "source": "服务器的完整部署说明（含公网与 Docker）",
+    },
 
     "ld_description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。"
                       "设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",

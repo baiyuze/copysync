@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LAN に CopySync サーバーを置く：Windows・Mac・Linux の手順</title>
+  <meta name="description" content="コンピューターが同じネットワークにあれば、クラウドサーバーは要りません。常に電源が入っている Windows・Mac・Linux のコンピューターで、CopySync のシグナリング兼 TURN サーバーをスクリプトひとつで動かせます。起動時に自動で立ち上がります。アプリの設定とトラブル対処つき。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/server/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/server/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/server/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="LAN に CopySync サーバーを置く：Windows・Mac・Linux の手順">
+  <meta property="og:description" content="コンピューターが同じネットワークにあれば、クラウドサーバーは要りません。常に電源が入っている Windows・Mac・Linux のコンピューターで、CopySync のシグナリング兼 TURN サーバーをスクリプトひとつで動かせます。起動時に自動で立ち上がります。アプリの設定とトラブル対処つき。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/server/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../ja/" aria-label="CopySync ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="ページ内の移動">
+        <a class="wide" href="../../ja/#how">しくみ</a>
+        <a class="wide" href="../../ja/#install">インストール</a>
+        <a href="./" aria-current="page">サーバーの設置</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/server/" hreflang="en" lang="en" data-lang="en">English</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../ja/">CopySync</a> / サーバーの設置</p>
+        <h1 class="display">LAN にサーバーを置く</h1>
+        <p class="lede">家や会社のコンピューターが同じネットワークにあるなら、クラウドサーバーは要りません。電源を入れたままのコンピューターを 1 台選び、スクリプトをダウンロードして実行し、表示されたアドレスを各コンピューターの CopySync に入力します。</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">準備</a></li>
+          <li><a href="#install">インストール</a></li>
+          <li><a href="#check">確認</a></li>
+          <li><a href="#clients">アドレスの入力</a></li>
+          <li><a href="#faq">よくある質問</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">サーバーは引き合わせるだけ</h2>
+        <p class="intro">各コンピューターはサーバーにつながったままで、それを通じて相手を見つけ、接続情報を交換します。つながったあと、コピーした内容は 2 台のあいだを直接流れます。直接つながらないときだけサーバーを中継し、その場合も暗号化されたままです。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 440" role="img" aria-labelledby="lan-title lan-desc">
+            <title id="lan-title">LAN での CopySync</title>
+            <desc id="lan-desc">同じ LAN の Mac と Windows PC が、アドレス 192.168.1.20 のサーバーにシグナリングで接続します。コピーした内容は 2 台のあいだを直接流れ、直接つながらないときだけサーバーの TURN 中継を通ります。</desc>
+            <rect class="d-lan" x="8" y="8" width="944" height="384" rx="22"/>
+            <text class="d-lan-label" x="32" y="42">LAN：同じ Wi‑Fi または有線ネットワーク</text>
+            <rect class="d-box" x="340" y="64" width="280" height="104" rx="14"/>
+            <text class="d-title" x="480" y="106" text-anchor="middle">サーバー</text>
+            <text class="d-ip" x="480" y="138" text-anchor="middle">192.168.1.20</text>
+            <path class="d-sig" d="M150 250V96H340"/>
+            <path class="d-sig" d="M810 250V96H620"/>
+            <path class="d-relay" d="M206 250V140H340"/>
+            <path class="d-relay" d="M754 250V140H620"/>
+            <text class="d-note" x="164" y="86">シグナリング TCP 8787</text>
+            <text class="d-note" x="220" y="200">中継 UDP 3478（直接不可のとき）</text>
+            <rect class="d-box" x="40" y="250" width="240" height="112" rx="14"/>
+            <text class="d-title" x="160" y="300" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="328" text-anchor="middle">CopySync を使用</text>
+            <rect class="d-box" x="680" y="250" width="240" height="112" rx="14"/>
+            <text class="d-title" x="800" y="300" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="328" text-anchor="middle">CopySync を使用</text>
+            <path class="d-direct" d="M280 306H680"/>
+            <text class="d-label" x="480" y="292" text-anchor="middle">直接接続、エンドツーエンド暗号化</text>
+            <text class="d-note" x="480" y="336" text-anchor="middle">内容は 2 台のあいだだけを流れる</text>
+            <g class="d-legend" transform="translate(40 424)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">データ（直接）</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">データ（中継、予備）</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">シグナリング</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>シグナリング、TCP 8787。</strong>各コンピューターが常に接続し、相手の発見、ペアリング、接続情報の交換に使います。</li>
+          <li><strong>直接接続。</strong>LAN 内ではほぼ必ず 2 台のあいだで直接やりとりし、速度は LAN の速度そのままです。</li>
+          <li><strong>中継、UDP 3478。</strong>ゲストネットワーク、AP アイソレーションが有効な Wi‑Fi、別のサブネットなど、互いに届かないときだけ使います。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">始める前に</h2>
+        <dl class="fallbacks">
+          <div><dt>電源を入れたままのコンピューター</dt><dd>Windows 10・11、macOS 13 以降、または Linux なら何でも可。同期する 2 台のうちの 1 台でもかまいません。電源が切れたりスリープしたりすると同期は止まり、復帰すると再開します。NAS、ルーター、Mac mini などが最適で、メモリは約 15 MB です。</dd></div>
+          <div><dt>固定のアドレス</dt><dd>ルーターの DHCP 設定（「固定割り当て」「アドレス予約」など）で、このコンピューターのアドレスを固定します。そうしないと、アドレスが変わるたびに全部のコンピューターで入れ直すことになります。</dd></div>
+          <div><dt>同じネットワークに</dt><dd>同じ Wi‑Fi か有線ネットワークにつながっていれば十分です。ゲストネットワークや AP アイソレーションが有効な Wi‑Fi ではデバイスどうしが通信できないので、別のネットワークを使うか、アイソレーションをオフにしてください。</dd></div>
+          <div><dt>ネットワークの外では同期しない</dt><dd>サーバーには LAN の中からしか届きません。持ち出したノートパソコンは、戻ってきてから同期を再開します。どこからでも同期したい場合は、グローバル IP を持つサーバーが必要です（トップページの「インストール」）。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <h2 id="install-title">サーバーをインストール</h2>
+        <p class="intro">サーバーを動かすコンピューターの OS を選んでください。スクリプトが LAN のアドレスを見つけ、サーバーを自動起動に設定し、最後にアプリへ入力するアドレスを表示します。</p>
+        <div class="os-tabs" data-tabs>
+          <div class="tablist" role="tablist" aria-label="サーバーを動かすコンピューターの OS" hidden>
+            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
+            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
+            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+          </div>
+
+          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                <li><a href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> をダウンロードし、右クリックで「すべて展開」します。</li>
+                <li>展開したフォルダーを開き、<code>install.cmd</code> をダブルクリックします。<span class="aside">「Windows によって PC が保護されました」と出たら「詳細情報」から「実行」を、ユーザーアカウント制御が出たら「はい」を押します。サーバーはまだコード署名していないため、一度だけ確認されます。</span></li>
+                <li>インストールは新しく開くウィンドウで進みます。最後に表示される <code>ws://…/signal</code> がアプリに入力するアドレスです。</li>
+                </ol>
+                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版サーバーをダウンロード</a>
+                <ul class="points">
+                <li><strong>Windows サービスとして動作：</strong>Windows の起動とともに立ち上がり、サインイン不要で、ウィンドウも出ません。「サービス」では CopySync Server と表示されます。</li>
+                <li><strong>ファイアウォールは設定済み：</strong>copysync-server.exe だけを対象にした受信規則をスクリプトが追加するので、ポートを開ける必要はありません。</li>
+                <li><strong>アドレスが違うものになった</strong>（仮想マシンや VPN でネットワークアダプターが複数あるなど）：展開したフォルダーのアドレスバーに <code>cmd</code> と入力して Enter を押し、<code>install.cmd 192.168.1.20</code> のようにアドレスを指定して実行します。</li>
+                <li>Windows 10・11、x64 に対応。</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="explorer" role="img" aria-label="展開したフォルダーには copysync-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd があり、install.cmd をダブルクリックする">
+                  <div class="t-bar win"><span class="t-tab folder">copysync-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                  <ul class="files">
+                  <li><span class="f-icon exe" aria-hidden="true"></span><span class="f-name">copysync-server.exe</span></li>
+                  <li class="hl"><span class="f-icon cmd" aria-hidden="true"></span><span class="f-name">install.cmd</span><em>ダブルクリック</em></li>
+                  <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">install.ps1</span></li>
+                  <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">README.md</span></li>
+                  <li><span class="f-icon cmd" aria-hidden="true"></span><span class="f-name">uninstall.cmd</span></li>
+                  </ul>
+                </figure>
+                <figure class="term" role="img" aria-label="install.cmd の実行後のウィンドウ：旧バージョンの停止、インストール、サービス登録、ファイアウォール許可、起動のあと、アドレス ws://192.168.1.20:8787/signal を表示">
+                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>管理者: Windows PowerShell</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<pre class="t-body"><span class="t-step">&gt; Stopping the running version</span>
+<span class="t-step">&gt; Installing to C:\Program Files\CopySync Server</span>
+<span class="t-step">&gt; Registering the service CopySyncServer (relay address 192.168.1.20)</span>
+<span class="t-step">&gt; Allowing it through Windows Firewall</span>
+<span class="t-step">&gt; Starting</span>
+  √ Running
+
+Installed: copysync-server 1.3.3. It runs as a Windows service and starts with Windows.
+In CopySync on each computer, set Settings &gt; Signaling server to:
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  Program    C:\Program Files\CopySync Server
+  Logs       C:\ProgramData\CopySync Server\server.log
+  Restart    Restart-Service CopySyncServer (in an administrator PowerShell)
+  Uninstall  double-click uninstall.cmd</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>あとで使うもの</caption>
+                  <tbody>
+                  <tr><th scope="row">状態</th><td>管理者の PowerShell で <code>Get-Service CopySyncServer</code>、または「サービス」で CopySync Server を確認</td></tr>
+                  <tr><th scope="row">ログ</th><td><code>C:\ProgramData\CopySync Server\server.log</code></td></tr>
+                  <tr><th scope="row">再起動</th><td>管理者の PowerShell で <code>Restart-Service CopySyncServer</code></td></tr>
+                  <tr><th scope="row">更新</th><td>新しいバージョンをダウンロードして展開し、もう一度 <code>install.cmd</code> をダブルクリック。設定は引き継がれます</td></tr>
+                  <tr><th scope="row">アンインストール</th><td><code>uninstall.cmd</code> をダブルクリック。サービス、ファイアウォール規則、ファイルをすべて削除します</td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+
+          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>macOS</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>「ターミナル」を開き、次の行を順に実行します：
+                <div class="code">
+                  <button class="copy" type="button" data-done="コピーしました">コピー</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
+tar xzf copysync-server-macos.tar.gz
+cd copysync-server-macos
+./install.sh</code></pre>
+                </div></li>
+                <li>最後に表示される <code>ws://…/signal</code> がアプリに入力するアドレスです。</li>
+                </ol>
+                <ul class="points">
+                <li><strong>管理者権限は不要です。</strong>ログインしているあいだバックグラウンドで動き、終了しても macOS が再起動します。</li>
+                <li><strong>この Mac はスリープさせないでください：</strong>「システム設定 → エネルギー」（ノートは「バッテリー → オプション」）で自動スリープを防ぐ項目をオンにします。</li>
+                <li><strong>macOS のファイアウォールがオンなら、</strong>スクリプトの最後に copysync-server を許可するコマンドが表示されます。</li>
+                <li>Intel と Apple シリコンの両方に対応、macOS 13 以降。</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="ターミナルで ./install.sh を実行した出力：インストール、LaunchAgent の作成、起動のあと、アドレス ws://192.168.1.20:8787/signal を表示">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">copysync-server-macos — zsh</span></div>
+<pre class="t-body"><span class="t-prompt">%</span> ./install.sh
+<span class="t-step">▶ Stopping the running version</span>
+<span class="t-step">▶ Installing to /Users/me/Library/Application Support/CopySync Server</span>
+<span class="t-step">▶ Writing the LaunchAgent (relay address 192.168.1.20)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3. It starts whenever you log in to this Mac.
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  Logs       /Users/me/Library/Logs/CopySync/server.log
+  Restart    launchctl kickstart -k gui/501/com.copysync.server
+  Uninstall  ./install.sh uninstall</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>あとで使うもの</caption>
+                  <tbody>
+                  <tr><th scope="row">ログ</th><td><code>~/Library/Logs/CopySync/server.log</code></td></tr>
+                  <tr><th scope="row">再起動</th><td><code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code></td></tr>
+                  <tr><th scope="row">更新</th><td>新しいバージョンをダウンロードして展開し、もう一度 <code>./install.sh</code> を実行。設定は引き継がれます</td></tr>
+                  <tr><th scope="row">アンインストール</th><td><code>./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+
+          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Linux</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>そのマシン上で（または ssh でログインして）次の行を順に実行します：<span class="aside">ARM（64 ビット OS の Raspberry Pi など）では <code>amd64</code> を <code>arm64</code> に置き換えます。</span>
+                <div class="code">
+                  <button class="copy" type="button" data-done="コピーしました">コピー</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh</code></pre>
+                </div></li>
+                <li>最後に表示される <code>ws://…/signal</code> がアプリに入力するアドレスです。</li>
+                </ol>
+                <ul class="points">
+                <li><strong>systemd サービスとして登録</strong>され、起動時に立ち上がります。root 権限が必要です。</li>
+                <li><strong>ufw や firewalld が有効なら、</strong>スクリプトの最後にポートを開けるコマンドが表示されます。</li>
+                <li><strong>Docker でも動かせます：</strong><code>env.example</code> を <code>.env</code> にコピーし、<code>TURN_IP</code> にこのマシンの LAN アドレスを入れて <code>docker compose up -d</code> を実行します。ホストネットワークが必要なので Linux 専用です。</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="sudo ./install.sh の出力：インストール、systemd ユニットと設定の作成、起動のあと、アドレス ws://192.168.1.20:8787/signal を表示">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh 192.168.1.20</span></div>
+<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh
+<span class="t-step">▶ Installing the binary to /usr/local/bin</span>
+<span class="t-step">▶ Writing the systemd unit</span>
+<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 192.168.1.20)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  Config     /etc/copysync/server.env
+  Logs       journalctl -u copysync-server -f
+  Restart    systemctl restart copysync-server
+  Uninstall  sudo ./install.sh uninstall
+
+Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>あとで使うもの</caption>
+                  <tbody>
+                  <tr><th scope="row">状態</th><td><code>systemctl status copysync-server</code></td></tr>
+                  <tr><th scope="row">ログ</th><td><code>journalctl -u copysync-server -f</code></td></tr>
+                  <tr><th scope="row">再起動</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
+                  <tr><th scope="row">設定</th><td><code>/etc/copysync/server.env</code>。編集したらサービスを再起動</td></tr>
+                  <tr><th scope="row">更新</th><td>新しいバージョンをダウンロードして展開し、もう一度 <code>sudo ./install.sh</code> を実行。設定は引き継がれます</td></tr>
+                  <tr><th scope="row">アンインストール</th><td><code>sudo ./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <h2 id="check-title">ほかのコンピューターから届くか確認</h2>
+        <p class="intro">別のコンピューターのブラウザーで <code>http://192.168.1.20:8787/healthz</code>（あなたのアドレスに置き換え）を開きます。次の 1 行が表示されれば、ネットワークはつながっています。</p>
+        <figure class="browser" role="img" aria-label="ブラウザーで http://192.168.1.20:8787/healthz を開くと、サーバーの状態 ok とバージョンが表示される">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://192.168.1.20:8787/healthz</span></div>
+          <pre class="b-body">{"status":"ok","version":"1.3.3"}</pre>
+        </figure>
+        <p class="note">開けない場合は、下の<a href="#faq">よくある質問</a>をご覧ください。</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <h2 id="clients-title">各コンピューターにアドレスを入力</h2>
+        <ol class="flow">
+          <li><h3>設定を開く</h3><p>各コンピューターで CopySync を開き、「設定」に進みます。サーバーを動かしているコンピューターも同じです。</p></li>
+          <li><h3>アドレスを入力</h3><p>「シグナリングサーバー」に <code>ws://192.168.1.20:8787/signal</code>（あなたのアドレス）を入力し、Return か Enter を押します。</p></li>
+          <li><h3>状態を確認</h3><p>「接続状態」が緑の「接続済み」になれば完了です。「デバイス」でペアリングすれば、コピーが同期されるようになります。</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../../assets/screenshots/ja/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync の設定画面：シグナリングサーバーは ws://192.168.1.20:8787/signal、接続状態は接続済み">
+        </figure>
+        <p class="note">アプリがまだなら、トップページの<a href="../../ja/#install">インストール</a>をご覧ください。</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">よくある質問</h2>
+        <div class="faq">
+          <details>
+            <summary>接続状態が「未接続」のまま</summary>
+            <div class="answer"><p>まずアドレスを確認します。<code>ws://</code> で始まり、ポートは 8787、末尾は <code>/signal</code>、入力後に Return を押しているか。</p><p>次に、そのコンピューターのブラウザーで <code>http://サーバーのアドレス:8787/healthz</code> を開きます。開けなければネットワークの経路の問題です。サーバーが動いていない、そのコンピューターがスリープしている、ファイアウォールに止められている、アドレスが変わった、のいずれかです。</p><p>Windows のスクリプトはファイアウォールを設定済みです。Mac でファイアウォールがオンなら、スクリプトの最後に表示されたコマンドを実行してください。Linux の ufw、firewalld も同様です。</p></div>
+          </details>
+          <details>
+            <summary>デバイスが「直接」ではなく「中継」になる</summary>
+            <div class="answer"><p>LAN 内ではほとんどの場合直接つながります。中継になるのは 2 台のあいだで UDP が通らないからで、ゲストネットワーク、Wi‑Fi の AP アイソレーション、ファイアウォールを挟んだ別のサブネットなどが原因です。中継でも内容は暗号化されたままで、速度がサーバー側のネットワークに左右されるだけです。</p></div>
+          </details>
+          <details>
+            <summary>サーバーのアドレスが変わった</summary>
+            <div class="answer"><p>新しいアドレスを付けてスクリプトをもう一度実行します。Windows は <code>install.cmd 新しいアドレス</code>、Mac は <code>./install.sh 新しいアドレス</code>。Linux では <code>/etc/copysync/server.env</code> の <code>-turn-ip</code> を書き換えてサービスを再起動します。そのあと各コンピューターのアドレスも変更してください。</p><p>ルーターでアドレスを固定しておけば、こうしたことは起きません。</p></div>
+          </details>
+          <details>
+            <summary>LAN の外でも同期できますか？</summary>
+            <div class="answer"><p>できません。サーバーには LAN の中からしか届かないためです。どこでも使いたい場合は、グローバル IP を持つマシンにサーバーを置くか（トップページの「インストール」）、Tailscale や ZeroTier などでデバイスを同じ仮想ネットワークに参加させ、その中でのサーバーのアドレスを入力します。</p></div>
+          </details>
+          <details>
+            <summary>中国本土のクラウドサーバーで、ドメインではつながらず IP ならつながる</summary>
+            <div class="answer"><p>ICP 登録（备案）のないドメインへの平文 HTTP リクエストは、中国本土のクラウド事業者に横取りされ、ブロックページへのリダイレクトが返されます。テストでは 8787 のような一般的でないポートでも同じでした。WebSocket のハンドシェイクも HTTP リクエストなので同じく止められ、アプリは未接続になります。</p><p>アドレスには <code>ws://サーバーのIP:8787/signal</code> のように IP を直接入力するか、ドメインを登録してください。</p></div>
+          </details>
+          <details>
+            <summary>サーバーを動かすコンピューターでも CopySync を使う場合のアドレスは？</summary>
+            <div class="answer"><p>同じ LAN のアドレスで大丈夫です。<code>ws://127.0.0.1:8787/signal</code> でもかまいません。サーバーとアプリは互いに影響しません。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">電源を入れたままの<br>コンピューターが 1 台あれば十分。</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+        </div>
+        <p class="note">バージョン 1.3.3、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">サーバーの詳しい構築手順（グローバル IP、Docker を含む、英語・中国語）</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync は GNU AGPL-3.0 のオープンソースです。商用ライセンスもあります。</p>
+      <nav aria-label="フッターのリンク">
+        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>
+        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+      </nav>
+      <nav aria-label="言語">
+        <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/server/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/server/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+</body>
+</html>

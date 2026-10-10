@@ -18,8 +18,8 @@ DOCS = ROOT / "docs"
 SITE = "https://baiyuze.github.io/copysync/"
 REPO = "https://github.com/baiyuze/copysync"
 DL = REPO + "/releases/latest/download/"
-VERSION = "1.3.2"
-DATE = "2026-10-10"
+VERSION = "1.3.3"
+DATE = "2026-10-11"
 
 # 语言代码 → (页面目录, html 的 lang, og:locale, 语言名)
 LANGS = {
@@ -27,6 +27,9 @@ LANGS = {
     "en": ("en/", "en", "en_US", "English"),
     "ja": ("ja/", "ja", "ja_JP", "日本語"),
 }
+
+# 「在局域网里部署服务器」教程，每种语言目录下一份
+GUIDE = "server/"
 
 # 放到网站上的技术方案：文件名 → 网页名。其他 design/*.md 链接到 GitHub
 DESIGN_DOCS = {"nat-traversal.md": "nat-traversal", "windows-client.md": "windows-client"}
@@ -89,21 +92,21 @@ def load(code: str) -> dict:
 # ─────────────────────────── 首页 ───────────────────────────
 
 
-def lang_links(code: str, up: str) -> str:
-    """除当前语言外的其他语言链接。up 是当前页面到网站根目录的相对路径。"""
+def lang_links(code: str, up: str, sub: str = "") -> str:
+    """除当前语言外的其他语言链接。up 是当前页面到网站根目录的相对路径，sub 是子页面（如 server/）。"""
     out = []
     for other, (path, hl, _, name) in LANGS.items():
         if other == code:
             continue
-        out.append(f'<a href="{up}{path or "./"}" hreflang="{hl}" lang="{hl}" data-lang="{other}">{name}</a>')
+        out.append(f'<a href="{up}{path + sub or "./"}" hreflang="{hl}" lang="{hl}" data-lang="{other}">{name}</a>')
     return "\n        ".join(out)
 
 
-def footer(c: dict, code: str, up: str) -> str:
+def footer(c: dict, code: str, up: str, sub: str = "") -> str:
     langs = []
     for other, (path, hl, _, name) in LANGS.items():
         cur = ' aria-current="page"' if other == code else ""
-        langs.append(f'<a href="{up}{path or "./"}" hreflang="{hl}" lang="{hl}" data-lang="{other}"{cur}>{name}</a>')
+        langs.append(f'<a href="{up}{path + sub or "./"}" hreflang="{hl}" lang="{hl}" data-lang="{other}"{cur}>{name}</a>')
     links = "".join(f'\n        <a href="{href}">{label}</a>' for label, href in c["footer_links"])
     return f"""  <footer class="footer">
     <div class="wrap">
@@ -236,7 +239,8 @@ def home(code: str) -> str:
         <a class="wide" href="#how">{c["nav_how"]}</a>
         <a class="wide" href="#install">{c["nav_install"]}</a>
         <a class="wide" href="#faq">{c["nav_faq"]}</a>
-        <a href="{REPO}">GitHub</a>
+        <a href="{GUIDE}">{c["nav_server"]}</a>
+        <a class="wide" href="{REPO}">GitHub</a>
         {lang_links(code, up)}
       </nav>
     </div>
@@ -441,6 +445,7 @@ sudo ./install.sh {c["public_ip"]}</code></pre>
               </tbody>
             </table>
             <p class="small">{c["server_docker"]}</p>
+            <a class="button quiet" href="{GUIDE}">{c["server_guide"]}</a>
           </div>
         </div>
         <p class="pairing">{c["pairing"]}</p>
@@ -478,6 +483,434 @@ sudo ./install.sh {c["public_ip"]}</code></pre>
   </main>
 
 {footer(c, code, up)}
+
+  <script src="{a}site.js" defer></script>
+</body>
+</html>
+"""
+
+
+# ─────────────────────────── 在局域网里部署服务器 ───────────────────────────
+
+# 教程里的示例地址。页面上的终端输出照安装脚本的真实输出抄写，只把地址换成它
+LAN_IP = "192.168.1.20"
+
+# 安装脚本在中文系统上输出中文，其他系统输出英文；日文页面也是英文输出。
+# 改了 server/deploy/ 下脚本的输出，这里跟着改。
+TRANSCRIPTS = {
+    "zh": {
+        "win": f"""> 停止旧版本
+> 安装到 C:\\Program Files\\CopySync Server
+> 注册服务 CopySyncServer（中转地址 {LAN_IP}）
+> 在 Windows 防火墙里放行
+> 启动
+  √ 已启动
+
+安装完成：copysync-server {VERSION}，作为 Windows 服务开机自动运行
+在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+
+    ws://{LAN_IP}:8787/signal
+
+  程序   C:\\Program Files\\CopySync Server
+  日志   C:\\ProgramData\\CopySync Server\\server.log
+  重启   Restart-Service CopySyncServer（管理员 PowerShell）
+  卸载   双击 uninstall.cmd""",
+        "mac": f"""▶ 停止旧版本
+▶ 安装到 /Users/me/Library/Application Support/CopySync Server
+▶ 写入 LaunchAgent（中转地址 {LAN_IP}）
+▶ 启动
+  ✓ 已启动
+
+安装完成：copysync-server {VERSION}，登录这台 Mac 后自动运行
+在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+
+    ws://{LAN_IP}:8787/signal
+
+  日志   /Users/me/Library/Logs/CopySync/server.log
+  重启   launchctl kickstart -k gui/501/com.copysync.server
+  卸载   ./install.sh uninstall""",
+        "linux": f"""▶ 安装二进制到 /usr/local/bin
+▶ 写入 systemd 单元
+▶ 生成配置 /etc/copysync/server.env（中转地址 {LAN_IP}）
+▶ 启动
+  ✓ 已启动
+
+安装完成：copysync-server {VERSION}
+在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+
+    ws://{LAN_IP}:8787/signal
+
+  配置   /etc/copysync/server.env
+  日志   journalctl -u copysync-server -f
+  重启   systemctl restart copysync-server
+  卸载   sudo ./install.sh uninstall
+
+防火墙需放行：TCP 8787（信令）、UDP 3478（STUN 与 TURN）、UDP 32768-60999（中转端口，系统随机分配）""",
+    },
+    "en": {
+        "win": f"""> Stopping the running version
+> Installing to C:\\Program Files\\CopySync Server
+> Registering the service CopySyncServer (relay address {LAN_IP})
+> Allowing it through Windows Firewall
+> Starting
+  √ Running
+
+Installed: copysync-server {VERSION}. It runs as a Windows service and starts with Windows.
+In CopySync on each computer, set Settings > Signaling server to:
+
+    ws://{LAN_IP}:8787/signal
+
+  Program    C:\\Program Files\\CopySync Server
+  Logs       C:\\ProgramData\\CopySync Server\\server.log
+  Restart    Restart-Service CopySyncServer (in an administrator PowerShell)
+  Uninstall  double-click uninstall.cmd""",
+        "mac": f"""▶ Stopping the running version
+▶ Installing to /Users/me/Library/Application Support/CopySync Server
+▶ Writing the LaunchAgent (relay address {LAN_IP})
+▶ Starting
+  ✓ Running
+
+Installed: copysync-server {VERSION}. It starts whenever you log in to this Mac.
+In CopySync on each computer, set Settings → Signaling server to:
+
+    ws://{LAN_IP}:8787/signal
+
+  Logs       /Users/me/Library/Logs/CopySync/server.log
+  Restart    launchctl kickstart -k gui/501/com.copysync.server
+  Uninstall  ./install.sh uninstall""",
+        "linux": f"""▶ Installing the binary to /usr/local/bin
+▶ Writing the systemd unit
+▶ Writing /etc/copysync/server.env (relay address {LAN_IP})
+▶ Starting
+  ✓ Running
+
+Installed: copysync-server {VERSION}
+In CopySync on each computer, set Settings → Signaling server to:
+
+    ws://{LAN_IP}:8787/signal
+
+  Config     /etc/copysync/server.env
+  Logs       journalctl -u copysync-server -f
+  Restart    systemctl restart copysync-server
+  Uninstall  sudo ./install.sh uninstall
+
+Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)""",
+    },
+}
+
+WINDOWS_LOGO = ('<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+                '<path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>')
+
+
+def transcript(text: str, prompt: str, command: str) -> str:
+    """终端窗口里的内容：先是输入的命令，再是脚本的输出，客户端要填的地址用蓝色标出来。"""
+    out = html.escape(text, quote=False)
+    url = f"ws://{LAN_IP}:8787/signal"
+    out = out.replace(url, f'<span class="t-url">{url}</span>')
+    # 脚本每一步的提示行（Mac 与 Linux 是 ▶，Windows 是 >，转义后是 &gt;）
+    out = re.sub(r"^((?:▶|&gt;) .*)$", r'<span class="t-step">\1</span>', out, flags=re.M)
+    head = f'<span class="t-prompt">{html.escape(prompt)}</span> {html.escape(command)}\n' if command else ""
+    return head + out
+
+
+def term(kind: str, title: str, body: str, label: str) -> str:
+    """一个终端窗口的示意图。kind 是 mac（红绿灯在左）或 win（窗口按钮在右）。"""
+    if kind == "win":
+        bar = (f'<div class="t-bar win"><span class="t-tab">{WINDOWS_LOGO}{title}</span>'
+               '<span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>')
+    else:
+        bar = f'<div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">{title}</span></div>'
+    return f"""<figure class="term" role="img" aria-label="{esc(label)}">
+                {bar}
+<pre class="t-body">{body}</pre>
+              </figure>"""
+
+
+def code_block(c: dict, code: str) -> str:
+    return f"""<div class="code">
+                  <button class="copy" type="button" data-done="{c["copied"]}">{c["copy"]}</button>
+<pre><code>{html.escape(code, quote=False)}</code></pre>
+                </div>"""
+
+
+def server_page(code: str) -> str:
+    c = load(code)
+    g = c["guide"]
+    path, hl, locale, _ = LANGS[code]
+    up = "../" * (path + GUIDE).count("/")
+    home_href = up + (path or "./")
+    a = up + "assets/"
+    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    t = TRANSCRIPTS["zh" if code == "zh" else "en"]
+    url = f"ws://{LAN_IP}:8787/signal"
+    alternates = "\n".join(
+        f'  <link rel="alternate" hreflang="{h}" href="{SITE}{p}{GUIDE}">' for p, h, _, _ in LANGS.values())
+
+    def items(lst: list[str], indent: str = "                ") -> str:
+        return "\n".join(f"{indent}<li>{x}</li>" for x in lst)
+
+    def manage(rows: list[tuple[str, str]]) -> str:
+        body = "\n".join(f'                  <tr><th scope="row">{k}</th><td>{v}</td></tr>' for k, v in rows)
+        return f"""<div class="table-scroll">
+                <table class="manage">
+                  <caption>{g["manage_caption"]}</caption>
+                  <tbody>
+{body}
+                  </tbody>
+                </table>
+              </div>"""
+
+    linux_dl = f"""curl -LO {DL}copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh"""
+    mac_dl = f"""curl -LO {DL}copysync-server-macos.tar.gz
+tar xzf copysync-server-macos.tar.gz
+cd copysync-server-macos
+./install.sh"""
+
+    w, m, l = g["win"], g["mac"], g["linux"]
+    explorer = []
+    for name, kind in [("copysync-server.exe", "exe"), ("install.cmd", "cmd"), ("install.ps1", "doc"),
+                       ("README.md", "doc"), ("uninstall.cmd", "cmd")]:
+        # 要双击的那个文件标出来
+        mark = f'<em>{w["double_click"]}</em>' if name == "install.cmd" else ""
+        cls = ' class="hl"' if mark else ""
+        explorer.append(f'                  <li{cls}><span class="f-icon {kind}" aria-hidden="true"></span>'
+                        f'<span class="f-name">{name}</span>{mark}</li>')
+    explorer = "\n".join(explorer)
+    prep = "\n".join(f"          <div><dt>{h}</dt><dd>{p}</dd></div>" for h, p in g["prep"])
+    faq = "\n".join(
+        f"""          <details>
+            <summary>{q}</summary>
+            <div class="answer">{"".join(f"<p>{p}</p>" for p in answer)}</div>
+          </details>""" for q, answer in g["faq"])
+    d = g["diagram"]
+    toc = "\n".join(f'          <li><a href="#{anchor}">{label}</a></li>' for anchor, label in g["toc"])
+
+    return f"""<!doctype html>
+<html lang="{hl}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{g["title"]}</title>
+  <meta name="description" content="{esc(g["description"])}">
+  <link rel="canonical" href="{SITE}{path}{GUIDE}">
+{alternates}
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="{esc(g["title"])}">
+  <meta property="og:description" content="{esc(g["description"])}">
+  <meta property="og:url" content="{SITE}{path}{GUIDE}">
+  <meta property="og:image" content="{SITE}assets/{c["og_image"]}">
+  <meta property="og:locale" content="{locale}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="{a}favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="{a}favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="{a}apple-touch-icon.png">
+  <link rel="stylesheet" href="{a}site.css">
+</head>
+<body>
+  <a class="skip" href="#main">{c["skip"]}</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="{home_href}" aria-label="{c["home_label"]}"><img src="{a}icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="{c["nav_label"]}">
+        <a class="wide" href="{home_href}#how">{c["nav_how"]}</a>
+        <a class="wide" href="{home_href}#install">{c["nav_install"]}</a>
+        <a href="./" aria-current="page">{c["nav_server"]}</a>
+        <a class="wide" href="{REPO}">GitHub</a>
+        {lang_links(code, up, GUIDE)}
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="{home_href}">CopySync</a> / {c["nav_server"]}</p>
+        <h1 class="display">{g["h1"]}</h1>
+        <p class="lede">{g["lede"]}</p>
+        <ol class="guide-toc">
+{toc}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">{g["overview_h2"]}</h2>
+        <p class="intro">{g["overview_intro"]}</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 440" role="img" aria-labelledby="lan-title lan-desc">
+            <title id="lan-title">{d["title"]}</title>
+            <desc id="lan-desc">{d["desc"]}</desc>
+            <rect class="d-lan" x="8" y="8" width="944" height="384" rx="22"/>
+            <text class="d-lan-label" x="32" y="42">{d["lan"]}</text>
+            <rect class="d-box" x="340" y="64" width="280" height="104" rx="14"/>
+            <text class="d-title" x="480" y="106" text-anchor="middle">{d["server"]}</text>
+            <text class="d-ip" x="480" y="138" text-anchor="middle">{LAN_IP}</text>
+            <path class="d-sig" d="M150 250V96H340"/>
+            <path class="d-sig" d="M810 250V96H620"/>
+            <path class="d-relay" d="M206 250V140H340"/>
+            <path class="d-relay" d="M754 250V140H620"/>
+            <text class="d-note" x="164" y="86">{d["sig_note"]}</text>
+            <text class="d-note" x="220" y="200">{d["relay_note"]}</text>
+            <rect class="d-box" x="40" y="250" width="240" height="112" rx="14"/>
+            <text class="d-title" x="160" y="300" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="328" text-anchor="middle">{d["client"]}</text>
+            <rect class="d-box" x="680" y="250" width="240" height="112" rx="14"/>
+            <text class="d-title" x="800" y="300" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="328" text-anchor="middle">{d["client"]}</text>
+            <path class="d-direct" d="M280 306H680"/>
+            <text class="d-label" x="480" y="292" text-anchor="middle">{d["direct"]}</text>
+            <text class="d-note" x="480" y="336" text-anchor="middle">{d["direct_note"]}</text>
+            <g class="d-legend" transform="translate(40 424)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">{d["legend_direct"]}</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">{d["legend_relay"]}</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">{d["legend_sig"]}</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+{items(g["overview_points"], "          ")}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">{g["prep_h2"]}</h2>
+        <dl class="fallbacks">
+{prep}
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <h2 id="install-title">{g["install_h2"]}</h2>
+        <p class="intro">{g["install_intro"]}</p>
+        <div class="os-tabs" data-tabs>
+          <div class="tablist" role="tablist" aria-label="{g["os_label"]}" hidden>
+            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
+            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
+            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+          </div>
+
+          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
+            <h3 class="os-title">{DESKTOP}Windows</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+{items(w["steps"])}
+                </ol>
+                <a class="button" href="{DL}copysync-server-windows-amd64.zip">{DOWN}{w["download"]}</a>
+                <ul class="points">
+{items(w["notes"])}
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="explorer" role="img" aria-label="{esc(w["explorer_label"])}">
+                  <div class="t-bar win"><span class="t-tab folder">copysync-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                  <ul class="files">
+{explorer}
+                  </ul>
+                </figure>
+                {term("win", w["term_title"], transcript(t["win"], "", ""), w["term_label"])}
+              </div>
+            </div>
+            {manage(w["manage"])}
+          </section>
+
+          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
+            <h3 class="os-title">{LAPTOP}macOS</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>{m["steps"][0]}
+                {code_block(c, mac_dl)}</li>
+{items(m["steps"][1:])}
+                </ol>
+                <ul class="points">
+{items(m["notes"])}
+                </ul>
+              </div>
+              <div class="os-figures">
+                {term("mac", "copysync-server-macos — zsh", transcript(t["mac"], "%", "./install.sh"), m["term_label"])}
+              </div>
+            </div>
+            {manage(m["manage"])}
+          </section>
+
+          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
+            <h3 class="os-title">{SERVER}Linux</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>{l["steps"][0]}
+                {code_block(c, linux_dl)}</li>
+{items(l["steps"][1:])}
+                </ol>
+                <ul class="points">
+{items(l["notes"])}
+                </ul>
+              </div>
+              <div class="os-figures">
+                {term("mac", f"ssh {LAN_IP}", transcript(t["linux"], "$", "sudo ./install.sh"), l["term_label"])}
+              </div>
+            </div>
+            {manage(l["manage"])}
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <h2 id="check-title">{g["check_h2"]}</h2>
+        <p class="intro">{g["check_intro"]}</p>
+        <figure class="browser" role="img" aria-label="{esc(g["check_label"])}">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://{LAN_IP}:8787/healthz</span></div>
+          <pre class="b-body">{{"status":"ok","version":"{VERSION}"}}</pre>
+        </figure>
+        <p class="note">{g["check_after"]}</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <h2 id="clients-title">{g["clients_h2"]}</h2>
+        <ol class="flow">
+{chr(10).join(f"          <li><h3>{h}</h3><p>{p}</p></li>" for h, p in g["clients_steps"])}
+        </ol>
+        <figure class="shot">
+          <img src="{shots}settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(g["clients_alt"])}">
+        </figure>
+        <p class="note">{g["clients_after"].format(home=home_href)}</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">{g["faq_h2"]}</h2>
+        <div class="faq">
+{faq}
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">{g["closing"]}</h2>{cta(c)}
+        <a class="source" href="{REPO}/blob/main/server/deploy/README.md">{g["source"]}</a>
+      </div>
+    </section>
+  </main>
+
+{footer(c, code, up, GUIDE)}
 
   <script src="{a}site.js" defer></script>
 </body>
@@ -678,8 +1111,9 @@ def design_page(md_name: str, page: str) -> str:
     <div class="wrap">
       <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
       <nav aria-label="页面导航">
-        <a href="{REPO}/blob/main/design/{md_name}">在 GitHub 上查看</a>
-        <a href="{REPO}">GitHub</a>
+        <a href="../{GUIDE}">{zh["nav_server"]}</a>
+        <a class="wide" href="{REPO}/blob/main/design/{md_name}">在 GitHub 上查看</a>
+        <a class="wide" href="{REPO}">GitHub</a>
       </nav>
     </div>
   </header>
@@ -735,6 +1169,10 @@ def sitemap() -> str:
     alts += f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{SITE}"/>'
     urls = [f"  <url>\n    <loc>{SITE}{p}</loc>\n    <lastmod>{DATE}</lastmod>{alts}\n  </url>"
             for p, _, _, _ in LANGS.values()]
+    server_alts = "".join(
+        f'\n    <xhtml:link rel="alternate" hreflang="{h}" href="{SITE}{p}{GUIDE}"/>' for p, h, _, _ in LANGS.values())
+    urls += [f"  <url>\n    <loc>{SITE}{p}{GUIDE}</loc>\n    <lastmod>{DATE}</lastmod>{server_alts}\n  </url>"
+             for p, _, _, _ in LANGS.values()]
     urls += [f"  <url>\n    <loc>{SITE}design/{page}.html</loc>\n    <lastmod>{DATE}</lastmod>\n  </url>"
              for page in DESIGN_DOCS.values()]
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -751,6 +1189,7 @@ def write(path: Path, text: str) -> None:
 def main() -> None:
     for code, (path, _, _, _) in LANGS.items():
         write(DOCS / path / "index.html", home(code))
+        write(DOCS / path / GUIDE / "index.html", server_page(code))
     for md_name, page in DESIGN_DOCS.items():
         write(DOCS / "design" / f"{page}.html", design_page(md_name, page))
     write(DOCS / "404.html", not_found())

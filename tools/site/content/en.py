@@ -18,6 +18,7 @@ C = {
     "nav_how": "How it works",
     "nav_install": "Install",
     "nav_faq": "FAQ",
+    "nav_server": "Self-host",
     "lang_label": "Language",
 
     "h1": "Copy on this computer.<br>Paste on that one.",
@@ -25,7 +26,7 @@ C = {
             "Data moves directly between your devices, and stays encrypted even when it passes through your own server.",
     "dl_mac": "Download for Mac",
     "dl_win": "Download for Windows",
-    "dl_note": "Version 1.3.2, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.",
+    "dl_note": "Version 1.3.3, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.",
     "stage_label": "Demo: Command C on a MacBook turns a file into a sheet that flies over a direct connection to a Windows "
                    "laptop, where Ctrl V pastes it",
     "stage_file": "Q3 review - final.pptx",
@@ -149,7 +150,7 @@ C = {
 
     "install_h2": "Install",
     "install_intro": "Install the app on each computer, and set up a server both of them can reach. If both share a LAN, the "
-                     "server can run on one of your Macs.",
+                     "server can run on one of your Windows, Mac or Linux computers; see the <a href=\"server/\">LAN guide</a>.",
     "mac_steps": [
         "Download CopySync.dmg, open it and drag CopySync into Applications.",
         "Open it from Applications.<span class=\"aside\">The first time, macOS says it can't verify the developer: CopySync "
@@ -166,7 +167,7 @@ C = {
         "In Settings, enter your server address and press Enter. Allow it if Windows Firewall asks.",
     ],
     "server_h3": "Server",
-    "server_intro": "Any Linux, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.",
+    "server_intro": "To use it across networks: a Linux server with a public IP, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.",
     "copy": "Copy",
     "copied": "Copied",
     "public_ip": "YOUR_PUBLIC_IP",
@@ -175,16 +176,17 @@ C = {
     "ports_cols": ["Port", "Purpose"],
     "ports": [("8787/tcp", "Signaling"), ("3478/udp", "STUN and TURN"), ("32768–60999/udp", "Relay ports")],
     "server_docker": f'Docker works too; see the <a href="{REPO}/blob/main/server/deploy/README.md">server deployment guide</a>.',
+    "server_guide": "LAN setup guide",
     "pairing": "<strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on "
                "the other, and confirm once both screens show the same two fingerprints. Mac with Windows, or two Windows PCs, "
                "works the same way.",
 
     "specs_h2": "Specifications",
     "specs": [
-        ("Version", '1.3.2, released <time datetime="2026-10-10">October 10, 2026</time>'),
+        ("Version", '1.3.3, released <time datetime="2026-10-11">October 11, 2026</time>'),
         ("Mac app", "macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 47 MB download"),
         ("Windows app", "Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
-        ("Server", "Linux on x86_64 or ARM64 (systemd or Docker), or macOS; about 15 MB of RAM"),
+        ("Server", "Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM"),
         ("Languages", "English, Simplified Chinese and Japanese; follows the system by default, switchable in Settings"),
         ("Content", "Plain text, rich text, images and screenshots, files, folders; each type can be turned off"),
         ("Transport", "WebRTC data channels, direct first with TURN relay fallback; every uplink probed on multi-uplink networks; files streamed as tar + zstd"),
@@ -221,7 +223,8 @@ C = {
         ]),
         ("Do I need my own server?", [
             "Yes. There is no public server, so nobody's data passes through anyone else's machine. On a LAN, run the server on "
-            "one of your Macs. Across networks you need a machine with a public IP; the smallest cloud VM is enough.",
+            "any always-on Windows, Mac or Linux computer; see the <a href=\"server/\">LAN guide</a>. Across networks you need a "
+            "machine with a public IP; the smallest cloud VM is enough.",
         ]),
         ("Windows? iPhone?", [
             "Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you "
@@ -257,6 +260,184 @@ C = {
         ("Commercial license", f"{REPO}/blob/main/LICENSING.md"),
         ("Report an issue", f"{REPO}/issues"),
     ],
+
+    # ── Tutorial: run the server on your LAN (server/ page) ──
+    "guide": {
+        "title": "Run a CopySync server on your LAN: Windows, Mac and Linux",
+        "description": "When your computers share a network you don't need a cloud server. Run CopySync's signaling and TURN server "
+                       "on any always-on Windows, Mac or Linux machine with one script; it starts on boot. Includes app setup and troubleshooting.",
+        "h1": "Run the server on your LAN",
+        "lede": "If your computers are on the same home or office network, you don't need a cloud server. Pick a computer that stays on, "
+                "download and run one script, then enter the address it prints into CopySync on each computer.",
+        "toc": [("prepare", "Before you start"), ("install", "Install"), ("check", "Check"), ("clients", "Set up the apps"), ("faq", "Questions")],
+
+        "overview_h2": "The server only introduces devices",
+        "overview_intro": "Each computer stays connected to the server, which is how they find each other and exchange connection details. "
+                          "Once connected, what you copy goes straight between the two computers. Only when that fails does it pass "
+                          "through the server, still encrypted.",
+        "diagram": {
+            "title": "CopySync on a LAN",
+            "desc": "On one LAN, a Mac and a Windows PC connect to the server at 192.168.1.20 for signaling. Copied content travels "
+                    "directly between the two computers, and through the server's TURN relay only if a direct connection fails.",
+            "lan": "Your LAN: the same Wi‑Fi or wired network",
+            "server": "Server",
+            "sig_note": "Signaling, TCP 8787",
+            "relay_note": "Relay, UDP 3478, if direct fails",
+            "client": "Running CopySync",
+            "direct": "Direct, end-to-end encrypted",
+            "direct_note": "Content stays between the two computers",
+            "legend_direct": "Data (direct)",
+            "legend_relay": "Data (relay, fallback)",
+            "legend_sig": "Signaling",
+        },
+        "overview_points": [
+            "<strong>Signaling, TCP 8787.</strong> Every computer stays connected to it to find the others, pair and exchange connection details.",
+            "<strong>Direct.</strong> On a LAN, content almost always goes straight between the two computers, at the speed of your network.",
+            "<strong>Relay, UDP 3478.</strong> Only used when devices can't reach each other: guest networks, Wi‑Fi with client isolation, separate subnets.",
+        ],
+
+        "prep_h2": "Before you start",
+        "prep": [
+            ("A computer that stays on", "Windows 10 or 11, macOS 13 or later, or any Linux, including one of the two computers you sync. "
+                                        "Sync pauses while it's off or asleep and resumes when it wakes. A NAS, home router or Mac mini "
+                                        "is ideal; the server uses about 15 MB of RAM."),
+            ("A fixed address", "Reserve an address for it in your router's DHCP settings (often called DHCP reservation or static lease). "
+                                "Otherwise, when the router hands out a new address, every computer has to be updated."),
+            ("The same network", "Devices just need to be on the same Wi‑Fi or wired network. Guest networks and Wi‑Fi with client "
+                                 "(AP) isolation block devices from reaching each other; use another network or turn isolation off."),
+            ("No sync away from it", "The server is only reachable on your LAN, so a laptop taken elsewhere catches up when it's back. "
+                                     "To sync from anywhere you need a server with a public IP; see Install on the home page."),
+        ],
+
+        "install_h2": "Install the server",
+        "install_intro": "Choose the system of the computer that will run the server. The script finds the computer's LAN address, "
+                         "sets the server to start automatically, and prints the address to enter in the apps.",
+        "os_label": "System of the server computer",
+        "manage_caption": "For later",
+        "win": {
+            "steps": [
+                f'Download <a href="{REPO}/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> '
+                "and choose Extract All.",
+                "Open the extracted folder and double-click <code>install.cmd</code>."
+                "<span class=\"aside\">If you see \"Windows protected your PC\", click More info, then Run anyway; when User Account "
+                "Control asks, click Yes. The server isn't code-signed yet, which is why Windows asks once.</span>",
+                "Installation continues in a new window. The <code>ws://…/signal</code> address at the end is what you enter in the apps.",
+            ],
+            "download": "Download the Windows server",
+            "notes": [
+                "<strong>Runs as a Windows service:</strong> starts with Windows, no sign-in needed, no window. It appears as CopySync Server in Services.",
+                "<strong>Firewall already allowed:</strong> the script adds an inbound rule for copysync-server.exe only, so there are no ports to open.",
+                "<strong>Wrong address picked</strong> (several network adapters, say from a VM or VPN): type <code>cmd</code> in the "
+                "address bar of the extracted folder, press Enter and run <code>install.cmd 192.168.1.20</code> with your address.",
+                "Windows 10 and 11, x64.",
+            ],
+            "double_click": "Double-click",
+            "explorer_label": "The extracted folder holds copysync-server.exe, install.cmd, install.ps1, README.md and uninstall.cmd; double-click install.cmd",
+            "term_title": "Administrator: Windows PowerShell",
+            "term_label": "The window after install.cmd finishes: it stops the old version, installs, registers the service, allows it through the firewall and starts it, then prints the address ws://192.168.1.20:8787/signal",
+            "manage": [
+                ("Status", "<code>Get-Service CopySyncServer</code> in an administrator PowerShell, or find CopySync Server in Services"),
+                ("Logs", "<code>C:\\ProgramData\\CopySync Server\\server.log</code>"),
+                ("Restart", "<code>Restart-Service CopySyncServer</code> in an administrator PowerShell"),
+                ("Upgrade", "Download the new version, extract it and double-click <code>install.cmd</code> again; your settings are kept"),
+                ("Uninstall", "Double-click <code>uninstall.cmd</code>; it removes the service, the firewall rule and the files"),
+            ],
+        },
+        "mac": {
+            "steps": [
+                "Open Terminal and run these lines:",
+                "The <code>ws://…/signal</code> address at the end is what you enter in the apps.",
+            ],
+            "notes": [
+                "<strong>No administrator rights needed.</strong> It runs in the background whenever you're logged in, and macOS restarts it if it exits.",
+                "<strong>Keep this Mac awake:</strong> in System Settings → Energy (Battery → Options on a laptop), turn on the option that prevents automatic sleep.",
+                "<strong>If the macOS firewall is on,</strong> the script ends with the command to allow copysync-server.",
+                "Intel and Apple silicon, macOS 13 or later.",
+            ],
+            "term_label": "Output of ./install.sh in Terminal: it installs, writes the LaunchAgent and starts the server, then prints the address ws://192.168.1.20:8787/signal",
+            "manage": [
+                ("Logs", "<code>~/Library/Logs/CopySync/server.log</code>"),
+                ("Restart", "<code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code>"),
+                ("Upgrade", "Download the new version, extract it and run <code>./install.sh</code> again; your settings are kept"),
+                ("Uninstall", "<code>./install.sh uninstall</code>"),
+            ],
+        },
+        "linux": {
+            "steps": [
+                "On the machine itself, or over ssh, run these lines:<span class=\"aside\">On ARM, such as a Raspberry Pi with a 64-bit OS, replace <code>amd64</code> with <code>arm64</code>.</span>",
+                "The <code>ws://…/signal</code> address at the end is what you enter in the apps.",
+            ],
+            "notes": [
+                "<strong>Registers a systemd service</strong> that starts on boot. Needs root.",
+                "<strong>If ufw or firewalld is active,</strong> the script ends with the commands to open the ports.",
+                "<strong>Docker works too:</strong> copy <code>env.example</code> to <code>.env</code>, set <code>TURN_IP</code> to the "
+                "machine's LAN address and run <code>docker compose up -d</code>. It needs host networking, so Linux only.",
+            ],
+            "term_label": "Output of sudo ./install.sh: it installs, writes the systemd unit and config and starts the server, then prints the address ws://192.168.1.20:8787/signal",
+            "manage": [
+                ("Status", "<code>systemctl status copysync-server</code>"),
+                ("Logs", "<code>journalctl -u copysync-server -f</code>"),
+                ("Restart", "<code>sudo systemctl restart copysync-server</code>"),
+                ("Config", "<code>/etc/copysync/server.env</code>; restart the service after editing"),
+                ("Upgrade", "Download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept"),
+                ("Uninstall", "<code>sudo ./install.sh uninstall</code>"),
+            ],
+        },
+
+        "check_h2": "Check that other computers can reach it",
+        "check_intro": "On another computer, open <code>http://192.168.1.20:8787/healthz</code> in a browser (with your address). "
+                       "If you see this line, the network path works.",
+        "check_label": "A browser showing http://192.168.1.20:8787/healthz, with the server's status ok and its version",
+        "check_after": "If it doesn't load, see the <a href=\"#faq\">questions</a> below.",
+
+        "clients_h2": "Enter the address on each computer",
+        "clients_steps": [
+            ("Open Settings", "Open CopySync on each computer, including the one running the server, and go to Settings."),
+            ("Enter the address", "Under Signaling server, enter <code>ws://192.168.1.20:8787/signal</code> with your address and press Return or Enter."),
+            ("Check the status", "When Connection shows a green Connected, you're set. Pair your devices under Devices and copying starts syncing."),
+        ],
+        "clients_alt": "CopySync Settings: the signaling server is ws://192.168.1.20:8787/signal and the connection status shows Connected",
+        "clients_after": 'Haven\'t installed the app yet? See <a href="{home}#install">Install</a> on the home page.',
+
+        "faq_h2": "Questions",
+        "faq": [
+            ("The status stays at Not connected", [
+                "Check the address first: it starts with <code>ws://</code>, uses port 8787, ends in <code>/signal</code>, and you pressed Return after typing it.",
+                "Then open <code>http://server-address:8787/healthz</code> in a browser on that computer. If it doesn't load, the network "
+                "path is broken: the server isn't running, its computer is asleep, a firewall blocks it, or its address changed.",
+                "The Windows script already allows the server through the firewall. On a Mac with the firewall on, run the command the "
+                "script printed at the end; the same goes for ufw and firewalld on Linux.",
+            ]),
+            ("Devices show Relay instead of Direct", [
+                "On a LAN connections are almost always direct. Relay means UDP can't get between the two computers, usually because of "
+                "a guest network, Wi‑Fi client isolation, or separate subnets with a firewall in between. Relayed content is still "
+                "encrypted; it's just limited by the server computer's network.",
+            ]),
+            ("The server's address changed", [
+                "Run the script again with the new address: <code>install.cmd new-address</code> on Windows, <code>./install.sh new-address</code> "
+                "on a Mac. On Linux, edit <code>-turn-ip</code> in <code>/etc/copysync/server.env</code> and restart the service. Then update "
+                "the address on each computer.",
+                "Reserving the address in your router avoids this.",
+            ]),
+            ("Does it sync away from the LAN?", [
+                "No, the server is only reachable on your LAN. To sync from anywhere, deploy the server on a machine with a public IP "
+                "(steps under Install on the home page), or join your devices with a mesh VPN such as Tailscale or ZeroTier and enter "
+                "the server's address on that network.",
+            ]),
+            ("A cloud server in mainland China works by IP but not by domain", [
+                "Cloud providers in mainland China intercept plain HTTP requests for domains without an ICP filing and answer with a "
+                "redirect to a block page; in our tests that included non-standard ports such as 8787. The WebSocket handshake is an "
+                "HTTP request too, so it is intercepted and the app shows Not connected.",
+                "Enter the server's IP instead, as in <code>ws://server-ip:8787/signal</code>, or file the domain.",
+            ]),
+            ("The server computer also runs CopySync. Which address?", [
+                "The same LAN address works, and so does <code>ws://127.0.0.1:8787/signal</code>. The server and the app don't interfere.",
+            ]),
+        ],
+
+        "closing": "One computer that stays on is enough.",
+        "source": "Full server guide, including public servers and Docker",
+    },
 
     "ld_description": "Open-source app that syncs the clipboard and files between Mac and Windows computers. Copy text, "
                       "images, files or folders on one computer and paste on the other. Devices connect directly over "

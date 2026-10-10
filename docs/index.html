@@ -58,8 +58,8 @@
         "description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）",
-        "softwareVersion": "1.3.2",
-        "datePublished": "2026-10-10",
+        "softwareVersion": "1.3.3",
+        "datePublished": "2026-10-11",
         "inLanguage": "zh-CN",
         "license": "https://www.gnu.org/licenses/agpl-3.0.html",
         "isAccessibleForFree": true,
@@ -127,7 +127,7 @@
             "name": "必须自己准备服务器吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台电脑在同一个局域网时，在其中一台 Mac 上运行服务器即可；跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。"
+              "text": "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台电脑在同一个局域网时，在其中一台常开的 Windows、Mac 或 Linux 电脑上运行服务器即可，见局域网部署教程；跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。"
             }
           },
           {
@@ -178,7 +178,8 @@
         <a class="wide" href="#how">工作原理</a>
         <a class="wide" href="#install">安装</a>
         <a class="wide" href="#faq">常见问题</a>
-        <a href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="server/">部署服务器</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="en/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
       </nav>
@@ -194,7 +195,7 @@
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
         </div>
-        <p class="note">版本 1.3.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
+        <p class="note">版本 1.3.3，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
         <div class="stage" data-play role="img" aria-label="演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -392,7 +393,7 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">安装</h2>
-        <p class="intro">每台电脑装一个 App，再准备一台两边都能访问到的服务器。两台电脑在同一个局域网的话，服务器直接跑在其中一台 Mac 上就行。</p>
+        <p class="intro">每台电脑装一个 App，再准备一台两边都能访问到的服务器。两台电脑在同一个局域网的话，服务器放在其中一台 Windows、Mac 或 Linux 电脑上就行，见<a href="server/">局域网部署教程</a>。</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
@@ -415,7 +416,7 @@
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>服务器</h3>
-            <p class="small">任意 Linux，需要 root。ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。</p>
+            <p class="small">跨公网使用时，一台有公网 IP 的 Linux 服务器，需要 root。ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。</p>
             <div class="code">
               <button class="copy" type="button" data-done="已复制">复制</button>
 <pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
@@ -433,6 +434,7 @@ sudo ./install.sh 你的公网IP</code></pre>
               </tbody>
             </table>
             <p class="small">也可以用 Docker 部署，见<a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">服务器部署说明</a>。</p>
+            <a class="button quiet" href="server/">局域网部署教程</a>
           </div>
         </div>
         <p class="pairing"><strong>配对：</strong>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。Mac 与 Windows 之间、两台 Windows 之间都一样。</p>
@@ -445,10 +447,10 @@ sudo ./install.sh 你的公网IP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-            <tr><th scope="row">版本</th><td>1.3.2，<time datetime="2026-10-10">2026 年 10 月 10 日</time>发布</td></tr>
+            <tr><th scope="row">版本</th><td>1.3.3，<time datetime="2026-10-11">2026 年 10 月 11 日</time>发布</td></tr>
             <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB</td></tr>
             <tr><th scope="row">Windows 客户端</th><td>Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB</td></tr>
-            <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker），也可以运行在 macOS 上；约 15 MB 内存</td></tr>
+            <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 与 Apple 芯片）、Windows 10 与 11 x64（系统服务）；约 15 MB 内存</td></tr>
             <tr><th scope="row">界面语言</th><td>简体中文、English、日本語，默认跟随系统，可在设置里切换</td></tr>
             <tr><th scope="row">同步的内容</th><td>纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭</td></tr>
             <tr><th scope="row">传输</th><td>WebRTC 数据通道，直连优先，打不通时经 TURN 中转；多出口网络逐个探测每个出口；文件以 tar + zstd 流式打包</td></tr>
@@ -487,7 +489,7 @@ sudo ./install.sh 你的公网IP</code></pre>
           </details>
           <details>
             <summary>必须自己准备服务器吗？</summary>
-            <div class="answer"><p>是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台电脑在同一个局域网时，在其中一台 Mac 上运行服务器即可；跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。</p></div>
+            <div class="answer"><p>是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台电脑在同一个局域网时，在其中一台常开的 Windows、Mac 或 Linux 电脑上运行服务器即可，见<a href="server/">局域网部署教程</a>；跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。</p></div>
           </details>
           <details>
             <summary>支持 Windows 吗？iPhone 呢？</summary>
@@ -516,7 +518,7 @@ sudo ./install.sh 你的公网IP</code></pre>
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
         </div>
-        <p class="note">版本 1.3.2，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
+        <p class="note">版本 1.3.3，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
         <a class="source" href="https://github.com/baiyuze/copysync">在 GitHub 上查看源码</a>
       </div>
     </section>

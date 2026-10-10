@@ -89,7 +89,8 @@ const _mb = 1024 * 1024;
 final _quarterly = _t('季度汇报-终版.key', 'Q3 review - final.key', '四半期報告_最終版.key');
 
 AppState _demo({LinkState link = LinkState.online,
-    ServiceState? service, Device? pending, bool empty = false}) {
+    ServiceState? service, Device? pending, bool empty = false,
+    String server = 'wss://sync.example.com/signal'}) {
   final state = _DemoState();
   state.debugSeed(
     link: link,
@@ -104,7 +105,7 @@ AppState _demo({LinkState link = LinkState.online,
       peersOnline: 2,
     ),
     config: Config(
-      signalingUrl: 'wss://sync.example.com/signal',
+      signalingUrl: server,
       deviceName: 'MacBook Pro',
       autoSyncThresholdBytes: Int64(50 * _mb),
       historyTtlSeconds: Int64(3 * 86400),
@@ -310,6 +311,13 @@ void main() {
 
   testWidgets('settings', (tester) async {
     await _shoot(tester, 'settings', state: _demo(), section: Section.settings);
+  });
+
+  // 网站「在局域网里部署服务器」：服务器地址填局域网 IP，已连接
+  testWidgets('settings-lan-dark', (tester) async {
+    await _shoot(tester, 'settings-lan-dark',
+        state: _demo(server: 'ws://192.168.1.20:8787/signal'),
+        section: Section.settings, brightness: Brightness.dark);
   });
 
   // 网站上与文字并排展示的对话框：单独渲染，透明背景，保留对话框自己的圆角与阴影

@@ -38,8 +38,8 @@
         "description": "Mac と Windows のコンピューター間でクリップボードとファイルを同期するオープンソースのアプリ。テキスト、画像、ファイル、フォルダを一台でコピーし、もう一台で貼り付けられる。デバイス間は WebRTC で直接つながり DTLS でエンドツーエンド暗号化、つながらないときはユーザーが用意したサーバーの TURN で中継する。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 以降（Intel と Apple シリコン）、Windows 10、Windows 11（x64）",
-        "softwareVersion": "1.3.2",
-        "datePublished": "2026-10-10",
+        "softwareVersion": "1.3.3",
+        "datePublished": "2026-10-11",
         "inLanguage": "ja",
         "license": "https://www.gnu.org/licenses/agpl-3.0.html",
         "isAccessibleForFree": true,
@@ -107,7 +107,7 @@
             "name": "サーバーは自分で用意する必要がありますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。2 台が同じ LAN にあるならどちらかの Mac でサーバーを動かせば十分で、ネットワークをまたぐ場合はグローバル IP を持つサーバーが 1 台必要です。最小構成のクラウドサーバーで足ります。"
+              "text": "はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。2 台が同じ LAN にあるなら、電源を入れたままの Windows・Mac・Linux のどれか 1 台でサーバーを動かせば十分で（LAN での設置手順）、ネットワークをまたぐ場合はグローバル IP を持つサーバーが 1 台必要です。最小構成のクラウドサーバーで足ります。"
             }
           },
           {
@@ -158,7 +158,8 @@
         <a class="wide" href="#how">しくみ</a>
         <a class="wide" href="#install">インストール</a>
         <a class="wide" href="#faq">よくある質問</a>
-        <a href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="server/">サーバーの設置</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
       </nav>
@@ -174,7 +175,7 @@
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
         </div>
-        <p class="note">バージョン 1.3.2、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <p class="note">バージョン 1.3.3、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
         <div class="stage" data-play role="img" aria-label="デモ：MacBook で Command C を押すと、ファイルが一枚の紙になって直接接続で Windows ノートへ飛び、そこで Ctrl V を押して貼り付けます">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -372,7 +373,7 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">インストール</h2>
-        <p class="intro">それぞれのコンピューターにアプリを入れ、両方からアクセスできるサーバーを 1 台用意します。2 台が同じ LAN にあるなら、サーバーはどちらかの Mac で動かせば十分です。</p>
+        <p class="intro">それぞれのコンピューターにアプリを入れ、両方からアクセスできるサーバーを 1 台用意します。2 台が同じ LAN にあるなら、サーバーはどれか 1 台の Windows・Mac・Linux で動かせば十分です。<a href="server/">LAN での設置手順</a>をご覧ください。</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
@@ -395,7 +396,7 @@
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>サーバー</h3>
-            <p class="small">Linux なら何でも可、root 権限が必要です。ARM の場合は <code>amd64</code> を <code>arm64</code> に置き換えます。</p>
+            <p class="small">ネットワークをまたいで使う場合：グローバル IP を持つ Linux サーバー、root 権限が必要です。ARM の場合は <code>amd64</code> を <code>arm64</code> に置き換えます。</p>
             <div class="code">
               <button class="copy" type="button" data-done="コピーしました">コピー</button>
 <pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
@@ -413,6 +414,7 @@ sudo ./install.sh グローバルIP</code></pre>
               </tbody>
             </table>
             <p class="small">Docker でも動かせます。<a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">サーバーの構築手順</a>（英語）をご覧ください。</p>
+            <a class="button quiet" href="server/">LAN での設置手順</a>
           </div>
         </div>
         <p class="pairing"><strong>ペアリング：</strong>一台で「デバイス → デバイスを追加」を開いて 6 桁のコードを表示し、もう一台で入力します。両方の画面に同じ 2 行の指紋が表示されたら確定します。Mac と Windows、Windows 同士でも同じ手順です。</p>
@@ -425,10 +427,10 @@ sudo ./install.sh グローバルIP</code></pre>
         <div class="table-scroll">
           <table class="specs">
             <tbody>
-            <tr><th scope="row">バージョン</th><td>1.3.2（<time datetime="2026-10-10">2026 年 10 月 10 日</time>公開）</td></tr>
+            <tr><th scope="row">バージョン</th><td>1.3.3（<time datetime="2026-10-11">2026 年 10 月 11 日</time>公開）</td></tr>
             <tr><th scope="row">Mac アプリ</th><td>macOS 13 Ventura 以降。Intel と Apple シリコンのユニバーサルバイナリで Rosetta 不要。ダウンロードは約 47 MB</td></tr>
             <tr><th scope="row">Windows アプリ</th><td>Windows 10（21H2 以降）と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB</td></tr>
-            <tr><th scope="row">サーバー</th><td>Linux（x86_64 または ARM64、systemd または Docker）、macOS でも動作。メモリは約 15 MB</td></tr>
+            <tr><th scope="row">サーバー</th><td>Linux（x86_64 または ARM64、systemd または Docker）、macOS（Intel と Apple シリコン）、Windows 10・11 x64（サービスとして動作）。メモリは約 15 MB</td></tr>
             <tr><th scope="row">表示言語</th><td>日本語、英語、簡体字中国語。初期設定はシステムに合わせ、「設定」で切り替え可能</td></tr>
             <tr><th scope="row">同期する内容</th><td>プレーンテキスト、書式付きテキスト、画像とスクリーンショット、ファイル、フォルダ。種類ごとにオフにできる</td></tr>
             <tr><th scope="row">転送</th><td>WebRTC データチャネル。直接接続を優先し、つながらなければ TURN で中継。複数の出口があるネットワークでは出口ごとに調査。ファイルは tar + zstd でストリーム転送</td></tr>
@@ -467,7 +469,7 @@ sudo ./install.sh グローバルIP</code></pre>
           </details>
           <details>
             <summary>サーバーは自分で用意する必要がありますか？</summary>
-            <div class="answer"><p>はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。2 台が同じ LAN にあるならどちらかの Mac でサーバーを動かせば十分で、ネットワークをまたぐ場合はグローバル IP を持つサーバーが 1 台必要です。最小構成のクラウドサーバーで足ります。</p></div>
+            <div class="answer"><p>はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。2 台が同じ LAN にあるなら、電源を入れたままの Windows・Mac・Linux のどれか 1 台でサーバーを動かせば十分で（<a href="server/">LAN での設置手順</a>）、ネットワークをまたぐ場合はグローバル IP を持つサーバーが 1 台必要です。最小構成のクラウドサーバーで足ります。</p></div>
           </details>
           <details>
             <summary>Windows に対応していますか？iPhone は？</summary>
@@ -496,7 +498,7 @@ sudo ./install.sh グローバルIP</code></pre>
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
         </div>
-        <p class="note">バージョン 1.3.2、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <p class="note">バージョン 1.3.3、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
         <a class="source" href="https://github.com/baiyuze/copysync">GitHub でソースコードを見る</a>
       </div>
     </section>

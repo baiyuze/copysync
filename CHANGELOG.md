@@ -1,5 +1,20 @@
 # 更新记录 / Changelog
 
+## 1.3.3 — 2026-10-11
+
+- **服务器可以装在 Windows 上了**：新增 `copysync-server-windows-amd64.zip`，解压后双击 `install.cmd`，注册为开机自启的 Windows 服务（低权限的 LOCAL SERVICE 账户），并在 Windows 防火墙里只为它放行；双击 `uninstall.cmd` 卸载。
+  **The server now runs on Windows.** Extract `copysync-server-windows-amd64.zip` and double-click `install.cmd`: it registers a Windows service under LOCAL SERVICE that starts with Windows, and adds a firewall rule for the server only. `uninstall.cmd` removes it.
+- **Mac 上一条命令装好服务器**：`copysync-server-macos.tar.gz` 里新增 `install.sh`，注册为 LaunchAgent，登录后自动运行，不需要管理员权限。
+  **One-command server install on a Mac**: the macOS package now includes `install.sh`, which registers a LaunchAgent; no administrator rights needed.
+- 三个平台的安装脚本默认用本机的局域网地址启用 TURN 中转，也可以指定地址；重复运行即为升级，设置保留；都支持 `uninstall`。Linux 的 `sudo ./install.sh` 不带参数时也改为使用局域网地址（此前不启用中转）。
+  All install scripts default to the machine's LAN address for the TURN relay, accept an explicit address, upgrade in place and can uninstall. On Linux, `sudo ./install.sh` without an address now uses the LAN address instead of disabling the relay.
+- 服务器新增 `-log <文件>` 参数，日志写入文件，超过 10 MB 自动换新。
+  New `-log <file>` server option; the log rotates at 10 MB.
+- 官网新增[在局域网里部署服务器](https://baiyuze.github.io/copysync/server/)图文教程（中文、英文、日文），顶部导航可以直达。README 精简，工作原理、排障、从源码构建移到 `guide/`。
+  New [LAN server guide](https://baiyuze.github.io/copysync/en/server/) on the website, linked from the top bar. The README is shorter; how it works, troubleshooting and building moved to `guide/`.
+- 客户端没有变化，不需要升级；设备间协议不变。
+  No client changes and no protocol changes; clients don't need to upgrade.
+
 ## 1.3.2 — 2026-10-10
 
 - 修复与 UU 远程同时使用时，`.uuremote_aeawv…` 临时占位文件不断进入复制记录并被转发的问题。发送前过滤占位文件，混合选择保留真实文件；接收端忽略旧版发来的纯占位记录与后续传输头。
