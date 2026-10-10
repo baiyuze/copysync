@@ -112,7 +112,7 @@ done
 name="copysync-server-macos"
 mkdir -p "$STAGE/$name"
 cp dist/copysync-server server/deploy/README.md "$STAGE/$name/"
-cp server/deploy/install-macos.sh "$STAGE/$name/install.sh"
+install -m 755 server/deploy/install-macos.sh "$STAGE/$name/install.sh"
 tar -C "$STAGE" -czf "$OUT/$name.tar.gz" "$name"
 echo "  ✓ $name.tar.gz"
 
