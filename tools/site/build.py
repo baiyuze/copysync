@@ -28,6 +28,12 @@ LANGS = {
     "ja": ("ja/", "ja", "ja_JP", "日本語"),
 }
 
+# Cloudflare Web Analytics：不用 Cookie，只统计浏览量、来源、国家与设备。
+# token 会出现在每个页面的源码里，本来就是公开的，只能用来上报，看不到统计数据。
+# 统计只认 baiyuze.github.io 这个主机名，本地预览时的访问不会计入。
+ANALYTICS = ("  <script type=\"module\" src=\"https://static.cloudflareinsights.com/beacon.min.js\" "
+             "data-cf-beacon='{\"token\": \"7ee226baf4a949a397c4bfd69a9e7461\"}'></script>\n")
+
 # 「在局域网里部署服务器」教程，每种语言目录下一份
 GUIDE = "server/"
 
@@ -485,7 +491,7 @@ sudo ./install.sh {c["public_ip"]}</code></pre>
 {footer(c, code, up)}
 
   <script src="{a}site.js" defer></script>
-</body>
+{ANALYTICS}</body>
 </html>
 """
 
@@ -913,7 +919,7 @@ cd copysync-server-macos
 {footer(c, code, up, GUIDE)}
 
   <script src="{a}site.js" defer></script>
-</body>
+{ANALYTICS}</body>
 </html>
 """
 
@@ -1126,7 +1132,7 @@ def design_page(md_name: str, page: str) -> str:
   </main>
 
 {footer(zh, "zh", "../")}
-</body>
+{ANALYTICS}</body>
 </html>
 """
 
@@ -1135,7 +1141,7 @@ def design_page(md_name: str, page: str) -> str:
 
 
 def not_found() -> str:
-    return """<!doctype html>
+    return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
@@ -1158,7 +1164,7 @@ def not_found() -> str:
       </div>
     </div>
   </main>
-</body>
+{ANALYTICS}</body>
 </html>
 """
 
