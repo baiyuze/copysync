@@ -5,20 +5,17 @@
 package pairing
 
 import (
-	"crypto/rand"
 	"errors"
-	"fmt"
-	"math/big"
 	"sync"
 	"time"
+
+	"github.com/baiyuze/copysync/proto/pairingcode"
 )
 
-// 配对码字符集刻意剔除易混字符（0/O、1/I/L），因为用户可能要口头转述。
-const codeAlphabet = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"
-
+// 配对码的格式与局域网里设备自己生成的一致，见 proto/pairingcode。
 const (
-	CodeLength = 6
-	CodeTTL    = 5 * time.Minute
+	CodeLength = pairingcode.Length
+	CodeTTL    = pairingcode.TTL
 )
 
 var (
@@ -66,7 +63,7 @@ func (b *Broker) Create(initiator Peer) (code string, expiresAt time.Time, ch <-
 
 	// 极小概率撞码，重试几次即可
 	for attempt := 0; attempt < 8; attempt++ {
-		c, genErr := generateCode()
+		c, genErr := pairingcode.Generate()
 		if genErr != nil {
 			return "", time.Time{}, nil, genErr
 		}
@@ -134,18 +131,4 @@ func (b *Broker) Len() int {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return len(b.codes)
-}
-
-func generateCode() (string, error) {
-	out := make([]byte, CodeLength)
-	max := big.NewInt(int64(len(codeAlphabet)))
-	for i := range out {
-		// 用密码学随机源：配对码在有效期内是唯一的准入凭证
-		n, err := rand.Int(rand.Reader, max)
-		if err != nil {
-			return "", fmt.Errorf("生成配对码: %w", err)
-		}
-		out[i] = codeAlphabet[n.Int64()]
-	}
-	return string(out), nil
 }

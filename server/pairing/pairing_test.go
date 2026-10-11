@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/baiyuze/copysync/proto/pairingcode"
 )
 
 func peerNamed(id string) Peer {
@@ -21,12 +23,12 @@ func TestCodeFormat(t *testing.T) {
 	}
 	// 字符集刻意剔除了易混字符，用户可能要口头转述配对码
 	for _, c := range code {
-		if !strings.ContainsRune(codeAlphabet, c) {
+		if !strings.ContainsRune(pairingcode.Alphabet, c) {
 			t.Errorf("配对码含字符集外的字符 %q（可能与 0/O、1/I 混淆）", c)
 		}
 	}
 	for _, bad := range []string{"0", "O", "1", "I", "L"} {
-		if strings.Contains(codeAlphabet, bad) {
+		if strings.Contains(pairingcode.Alphabet, bad) {
 			t.Errorf("字符集不该包含易混字符 %q", bad)
 		}
 	}
