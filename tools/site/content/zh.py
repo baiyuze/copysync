@@ -25,7 +25,7 @@ C = {
             "同一个网络里装好就能用，不需要服务器；跨网络也可以。数据在你的设备之间直接传输，端到端加密。",
     "dl_mac": "下载 Mac 版",
     "dl_win": "下载 Windows 版",
-    "dl_note": "版本 1.3.4，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
+    "dl_note": "版本 1.4.0，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
     "start_link": "第一次用？看快速开始，三步配好 →",
     "stage_label": "演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来",
     "stage_file": "季度汇报-终版.pptx",
@@ -239,7 +239,7 @@ C = {
 
     "specs_h2": "技术规格",
     "specs": [
-        ("版本", '1.3.4，<time datetime="2026-10-11">2026 年 10 月 11 日</time>发布'),
+        ("版本", '1.4.0，<time datetime="2026-10-11">2026 年 10 月 11 日</time>发布'),
         ("Mac 客户端", "macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB"),
         ("Windows 客户端", "Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
         ("服务器", "可选，只在跨网络时需要。Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 与 Apple 芯片）、Windows 10 与 11 x64（系统服务）；约 15 MB 内存"),

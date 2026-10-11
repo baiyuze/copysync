@@ -1,5 +1,30 @@
 # 更新记录 / Changelog
 
+## 1.4.0 — 2026-10-11
+
+Computers on the same network now pair and sync without a server. You only need a server to connect computers on different networks.
+
+### Changes
+
+- **No server on the same network**: computers on one network find each other and pair with the usual six-character code. There is nothing to deploy.
+- **Different subnets**: the pairing dialog shows this computer's address under the code. If the two computers are on different subnets, type that address on the other one. Addresses are remembered afterwards; if both change, use **Enter its address…** in the device's menu.
+- **Tailscale without a server**: pair by typing the other computer's Tailscale (100.x) address.
+- **The server is optional**: leave its address empty in Settings to sync on your network only. Devices paired on the network also sync through a server once you add one. With both, computers on the same network connect directly and keep syncing when the server is down.
+- **Settings → Local network**: turn local discovery on or off. On Windows, **Allow** adds a firewall rule for CopySync with one administrator prompt. On a Mac, CopySync tells you when macOS blocks local network access and links to the setting.
+- **Privacy on the network**: other people on the network see only an anonymous entry that changes daily, never the device name. Messages between devices are signed as before, and pairing still asks you to compare fingerprints.
+- **Website**: a new guide for computers on the same network. The Tailscale guide no longer needs a server, and the LAN server guide stays for networks that keep devices apart, such as guest Wi-Fi.
+
+### Fixes
+
+- Unpairing a device now closes its connection right away.
+- A device now accepts a signed message only when the message is addressed to it.
+
+### Upgrade notes
+
+- **Mac and Windows apps**: upgrade both computers to sync without a server; with a server, 1.4.0 still works with older versions. If you never changed the server address (the built-in `127.0.0.1` placeholder), it is cleared and the app runs without a server. On macOS 15, allow CopySync Daemon when macOS asks about finding devices on your local network; on Windows, allow CopySync when the firewall asks.
+- **Server**: no changes; upgrading is optional.
+- The device-to-device protocol is unchanged. Computers on the same network also exchange messages over UDP port 8788 and find each other over mDNS (`_copysync._udp`); older versions ignore both.
+
 ## 1.3.4 — 2026-10-11
 
 New step-by-step guides on the website for getting started and for choosing where to run the server. The apps and the server are unchanged apart from the version number.
