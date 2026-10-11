@@ -1,5 +1,21 @@
 # 更新记录 / Changelog
 
+## 1.3.4 — 2026-10-11
+
+New step-by-step guides on the website for getting started and for choosing where to run the server. The apps and the server are unchanged apart from the version number.
+
+### Changes
+
+- **Quick start**: a new [quick start](https://baiyuze.github.io/copysync/en/start/) walks through installing the apps, choosing where to run the server, entering its address and pairing.
+- **Three ways to run the server**, each with its own guide: a [public server](https://baiyuze.github.io/copysync/en/cloud/) reachable from any network, your [LAN](https://baiyuze.github.io/copysync/en/server/), or [LAN + Tailscale](https://baiyuze.github.io/copysync/en/tailscale/) to sync across networks without a public server.
+- The website, README and server deployment guide are reorganized around these three options, in English, Chinese and Japanese.
+
+### Upgrade notes
+
+- **Mac and Windows apps**: no functional changes; upgrading is optional.
+- **Server**: no changes; upgrading is optional.
+- The device-to-device protocol is unchanged.
+
 ## 1.3.3 — 2026-10-11
 
 - **服务器可以装在 Windows 上了**：新增 `copysync-server-windows-amd64.zip`，解压后双击 `install.cmd`，注册为开机自启的 Windows 服务（低权限的 LOCAL SERVICE 账户），并在 Windows 防火墙里只为它放行；双击 `uninstall.cmd` 卸载。
