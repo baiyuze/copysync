@@ -2,7 +2,7 @@
 
 [简体中文](how-it-works.zh-CN.md) · [Back to README](../README.md)
 
-Two computers connect directly and encrypt everything between them. Your server only helps them find each other, and relays encrypted packets when a direct connection can't be made.
+Two computers connect directly and encrypt everything between them. On the same network they find each other over mDNS, with no server. Across networks, your server helps them find each other, and relays encrypted packets when a direct connection can't be made.
 
 ## Architecture
 
@@ -20,13 +20,16 @@ flowchart LR
     DA <== "WebRTC direct (DTLS)" ==> DB
     DA <-. "Relayed via TURN when direct fails" .-> S
     S <-.-> DB
+    DA -. "Same network: mDNS + UDP 8788 signaling" .- DB
 ```
+
+The server is optional: on the same network, signaling goes directly over the LAN (see "No server on the same network" below).
 
 | Component | Role | Built with |
 |---|---|---|
 | Background service `copysyncd` | Watches the clipboard, connects to peers, sends, receives and stores | Go. The clipboard uses cgo and AppKit on Mac, and calls Win32 directly on Windows (pure Go, no C compiler) |
 | App `CopySync` | History, pairing, settings | Flutter, one codebase for Mac and Windows; talks to the service over local gRPC |
-| Server `copysync-server` | Device discovery, pairing codes, signaling, TURN relay | Go, a single static binary using about 15 MB of RAM |
+| Server `copysync-server` (optional) | Across networks: device discovery, pairing codes, signaling, TURN relay | Go, a single static binary using about 15 MB of RAM |
 | Protocol `proto/` | Messages shared by all three | Protocol Buffers |
 
 ## What happens when you copy
@@ -45,6 +48,17 @@ flowchart LR
 6. If the connection still lands on the relay, the side that started it runs an ICE restart while idle to punch again, and moves to the direct path if that works (first after 10 seconds, then at intervals growing to 15 minutes).
 
 Data flows over WebRTC data channels, encrypted with DTLS.
+
+## No server on the same network
+
+Since 1.4.0 signaling has two channels, the server and the LAN. Both run side by side: signals go out on every available channel and the receiver drops duplicates by nonce, and a device is online if either channel says so.
+
+- **Discovery**: each computer announces `_copysync._udp` over mDNS. The announcement carries no device name or ID, only a token that changes daily (a hash of the device ID and the date); paired devices compute it and recognize each other.
+- **Signaling**: devices exchange the same signed messages the server would forward, directly over UDP 8788. For each paired device that isn't connected yet, a hello goes to its likely addresses every 10 seconds and the receiver answers. Both sides send, so stateful firewalls treat the other side's packets as replies.
+- **Different subnets**: when mDNS can't reach the other computer, you enter the address shown under its pairing code. Both sides remember each other's address, so if one changes, the other still finds it. A Tailscale 100.x address works the same way.
+- **Pairing**: the code is open on the LAN and, when connected, on the server too; using it on one side closes it on the other, and 10 wrong attempts close it. Requests and replies are signed with the sender's key; the human fingerprint check is still what stops a man in the middle.
+
+Design, measurements and validation: [Local network mode](../design/lan-mode.md) (Chinese).
 
 ## Hole punching on networks with several uplinks
 
@@ -68,7 +82,7 @@ What 1.1 does:
 
 A Mac behind that 4-uplink office network now connects directly to a home connection, about 3 seconds after reaching the server. The full design, measurements and validation are in [NAT traversal on multi-uplink networks](../design/nat-traversal.md) (Chinese).
 
-The **NAT lab** (`tools/natlab`) builds real topologies with Linux network namespaces and iptables and runs CopySync's actual connection code through eleven scenarios on every commit:
+The **NAT lab** (`tools/natlab`) builds real topologies with Linux network namespaces and iptables and runs CopySync's actual connection code through sixteen scenarios on every commit:
 
 | Scenario | Result |
 |---|---|
@@ -82,12 +96,18 @@ The **NAT lab** (`tools/natlab`) builds real topologies with Linux network names
 | Blocked at first, network recovers later | Relay first, then direct |
 | Office router locks a port for unsolicited packets | Direct |
 | Home router locks a port for unsolicited packets | Relay, then direct after the first retry |
+| No server, same subnet, found over mDNS | Direct |
+| No server, two subnets, one side remembers the address | Direct |
+| No server, both hosts block inbound, both remember | Direct |
+| No server, both hosts block inbound, only one remembers | No connection (known limit) |
+| No server, subnets isolated from each other | No connection |
 
 ## Security model
 
 - **The server keeps no accounts.** A device's identity is an Ed25519 key, and its ID is derived from the public key, so the server can verify that an ID belongs to a key without a user table.
 - **Fingerprints are compared by a person when pairing.** Both Macs show the same two lines: the fingerprint of each side's public key (the first 60 bits of its SHA-256, like `R8NF-2WTC-QL5J`), in a fixed order. The server could swap keys in transit, but then the two screens would no longer match — this step is what stops a man in the middle. The fingerprints are shown separately rather than combined into one short code: an attacker controlling both forged keys could find a matching combined code with a birthday attack, while separate fingerprints need a preimage attack per key, roughly a billion times harder.
-- **Every signaling message after that is signed**, so the server cannot forge a device. The DTLS certificate fingerprint of the direct channel is also sent signed and checked against the actual certificate after the handshake; a mismatch drops the connection.
+- **Every signaling message after that is signed**, so the server cannot forge a device. The DTLS certificate fingerprint of the direct channel is also sent signed and checked against the actual certificate after the handshake; a mismatch drops the connection. Messages addressed to another device are rejected, because on a LAN anyone could forward a captured message to a third device.
+- **Same on the local network.** The broadcast carries only an anonymous token that changes daily, so others on the network can't tell whose computer it is; messages from unpaired devices are dropped, and pairing still means comparing fingerprints.
 - **The relay can't read anything either.** TURN only forwards encrypted UDP packets. Relay credentials are issued per device and expire after 12 hours.
 - **Public STUN servers see only your public IP.** To find every uplink on multi-uplink networks, CopySync probes a few public STUN servers by default. They see your public IP, as with any WebRTC app, never content. Turn off **Probe with public servers** in Settings to use only your own server.
 - **Device key.** On Mac it's stored readable only by you; on Windows it's additionally encrypted with DPAPI, so another user or another computer can't decrypt a copied file.
@@ -97,13 +117,16 @@ The **NAT lab** (`tools/natlab`) builds real topologies with Linux network names
 
 | Situation | What happens |
 |---|---|
+| The other computer can't be found on the network (different subnets, guest network, client isolation) | Enter the address shown under its pairing code; it's remembered afterwards, and if both change you use "Enter its address…" in the device menu |
+| Windows Firewall blocks inbound (Cancel was clicked) | Packets this computer sends first still get through; when the Windows PC is the one being reached, Settings → Local network → Allow removes the block rule and adds an allow rule with one UAC prompt |
+| macOS 15 hasn't allowed Local Network access | LAN packets are blocked by the system (`EHOSTUNREACH`); the app asks you to turn on CopySync Daemon in System Settings → Privacy & Security → Local Network |
 | No direct path (symmetric NAT, corporate firewall) | Switches to the TURN relay on your server, still encrypted; the app shows "relay" |
 | Public STUN servers unreliable (common in mainland China) | The server runs its own STUN and clients prefer it |
 | Multi-uplink networks that pick an uplink per destination (common in offices) | All connections share one local port; CopySync probes several servers from it to learn its address on every uplink and sends them all to the peer, filling gaps from history. See `copysync-cli nat` |
 | Landed on the relay although a direct path works (the peer just started, its addresses arrived a moment late) | While idle, the side that started the connection runs an ICE restart to punch again and switches to direct if it works; never during a transfer. The connection stays up and only pauses for a few seconds |
 | The other Mac sleeps, loses its network or restarts, and the connection dies silently | The dead connection is closed and reconnected right away; if the other side rebuilt its connection, this side follows |
 | The other Mac can't be reached when you copy | The latest 20 items are kept and sent once the connection is back. They only go into the history and never overwrite what's on the other Mac's clipboard now |
-| Signaling connection drops | Reconnects with exponential backoff (1 s up to 30 s, with jitter); status is shown live |
+| Signaling connection drops | Reconnects with exponential backoff (1 s up to 30 s, with jitter); status is shown live, and devices on the same network keep syncing |
 | Pairing confirmed on one side before the other | Early handshake messages are held and replayed once the other side confirms; the direct link is up within tens of milliseconds |
 | Large files | Above the limit only a record is synced; if the source file is gone when you pull, you get a clear message |
 | Apps that only accept plain text | Rich text is written as both HTML and plain text, so no markup leaks into the paste |
@@ -125,6 +148,7 @@ Each of these was found by testing and has a regression test. The full investiga
 - **Who sends first matters.** Some routers (the office one we measured) keep a connection entry for a packet that arrives before you've sent anything to its source, locking the port; your own packets then leave from a different port and punching fails. That's why restarting the office Mac always connected directly while restarting the home Mac fell back to the relay: a freshly started Mac probes its uplinks first, so its addresses went out late and it ended up sending first. A rule now decides who sends first, and retries alternate the order.
 - **A dead connection has to be cleaned up by hand.** When pion reports "failed" it doesn't close the connection; the control channel still looks open and whatever is written to it is lost, and the layer above thinks it's connected and never reconnects. In 1.1.0 this sent six files into a dead connection after the other Mac dropped off, and none arrived.
 - **Public STUN domains can be poisoned by DNS**, resolving to `192.0.2.42` in our tests. Reserved ranges and proxy fake-IP ranges are filtered before probing.
+- **macOS 15 blocks the background service's LAN traffic.** A launchd-started service sending to a LAN address gets `no route to host` until the user allows Local Network access; packets the other side sends first still arrive and can be answered. A Parallels VM hides this, because the VM's packets reach the Mac through NAT from the Mac's own IP.
 - **Simulated routers need a firewall.** When both sides punch at once, a packet let through to the router itself leaves a Linux conntrack entry, the outgoing flow then gets a new port, and punching fails. Real routers drop such packets, and the lab does too.
 
 Measured on a LAN with a direct connection: a 20 MB file transfers in about 330 ms with matching checksums.

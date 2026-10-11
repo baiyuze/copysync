@@ -4,11 +4,16 @@ The server only does two things: it lets your devices find each other (signaling
 
 CopySync 的服务器只做两件事：让你的设备找到彼此（信令），以及在设备之间打不通直连时转发加密后的数据（TURN 中转）。它不存账号，也看不到你复制的内容。
 
+**You may not need one.** Since 1.4.0, computers on the same network find each other and pair without a server, and computers on Tailscale pair by entering each other's Tailscale address. A server is for syncing across networks, or for subnets that can't reach each other.
+
+**你可能用不着服务器。**从 1.4.0 起，同一网络里的电脑不用服务器就能互相发现、配对；装了 Tailscale 的电脑，配对时输入对方的 Tailscale 地址即可。服务器只在跨网络同步、或两个网段互相访问不到时需要。
+
 Step-by-step guides with screenshots / 带截图的图文教程：
 
+- Same network, no server / 同一网络，不需要服务器：<https://baiyuze.github.io/copysync/lan/>
 - On a public server / 公网服务器：<https://baiyuze.github.io/copysync/cloud/>
-- On your LAN / 局域网：<https://baiyuze.github.io/copysync/server/>
-- LAN + Tailscale, across networks without a public server / 局域网 + Tailscale，跨网络但没有公网服务器：<https://baiyuze.github.io/copysync/tailscale/>
+- Tailscale, no server / Tailscale，不需要服务器：<https://baiyuze.github.io/copysync/tailscale/>
+- On your LAN, for subnets that can't reach each other / 在局域网里部署，网段之间互相访问不到时：<https://baiyuze.github.io/copysync/server/>
 
 ## Where to run it / 放在哪里
 
@@ -16,7 +21,7 @@ Step-by-step guides with screenshots / 带截图的图文教程：
 |---|---|
 | **Public server** 公网服务器 | A Linux machine with a public IP; the smallest VPS is enough. Reachable from any network. 一台有公网 IP 的 Linux 机器，最低配的云主机就够，任何网络都能连上。 |
 | **On your LAN** 局域网 | Any always-on Windows 10/11, macOS 13+ or Linux computer on the same network, one of your own computers included. Reserve its address in the router. 同一网络里任意一台常开的 Windows 10/11、macOS 13 以上或 Linux 电脑，自己的电脑也行；在路由器里给它固定地址。 |
-| **LAN + Tailscale** 局域网 + Tailscale | Across networks without a public server: an always-on computer at home, with [Tailscale](https://tailscale.com) on it and on every client; see [Tailscale](#tailscale) below. 跨网络但没有公网服务器：家里一台常开的电脑，它和每台客户端都装上 Tailscale，见下面的 [Tailscale](#tailscale)。 |
+| **LAN + Tailscale** 局域网 + Tailscale | Usually unnecessary now: computers on Tailscale pair by Tailscale address without a server. If you still want one, use an always-on computer at home with [Tailscale](https://tailscale.com); see [Tailscale](#tailscale) below. 现在一般用不着：装了 Tailscale 的电脑输入 Tailscale 地址就能配对，不需要服务器。仍想用服务器的话，放在家里一台常开、装了 Tailscale 的电脑上，见下面的 [Tailscale](#tailscale)。 |
 
 It uses about 15 MB of RAM. 内存占用约 15 MB。
 
@@ -101,6 +106,10 @@ docker compose up -d
 
 ## Tailscale
 
+Since 1.4.0 you don't need a server for this: join every computer to the same [Tailscale](https://tailscale.com) network and enter the other computer's Tailscale address when pairing ([guide](https://baiyuze.github.io/copysync/en/tailscale/)). The setup below still works if you prefer a server, for example so that the TURN relay is available.
+
+从 1.4.0 起这种情况不需要服务器：每台电脑加入同一个 Tailscale 网络，配对时输入对方的 Tailscale 地址即可（[教程](https://baiyuze.github.io/copysync/tailscale/)）。下面的做法仍然可用，比如你希望有 TURN 中转兜底。
+
 Without a public server you can still sync across networks: keep the server at home and join every computer, the server's included, to the same [Tailscale](https://tailscale.com) network. Each device gets a fixed `100.x.y.z` address that the others can reach from anywhere. Install the server on that address, so the TURN relay is reachable through Tailscale too, and enter it in every app.
 
 没有公网服务器也能跨网络使用：服务器照样放在家里，所有电脑（包括服务器所在的那台）加入同一个 [Tailscale](https://tailscale.com) 网络。每台设备会分到一个固定的 `100.x.y.z` 地址，在哪儿都能互相访问。服务器用这个地址安装（TURN 中转也就能通过 Tailscale 访问到），每台电脑也填这个地址。
@@ -132,7 +141,9 @@ On the server computer: turn on **Run unattended** in Tailscale on Windows (othe
 
 ## Client setup / 客户端设置
 
-On each computer (Mac or Windows), open CopySync → Settings → Signaling server and enter the address the script printed:
+The server field is empty by default, which means "this network only". On each computer (Mac or Windows), open CopySync → Settings → Signaling server and enter the address the script printed:
+
+「信令服务器地址」默认是空的，表示只在局域网里同步。
 
 在每台电脑（Mac 或 Windows）上打开 CopySync →「设置」→「信令服务器地址」，填入脚本打印的地址：
 
