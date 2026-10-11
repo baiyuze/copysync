@@ -99,17 +99,25 @@ func (t *Transport) Pair(ctx context.Context, code string, extra []netip.AddrPor
 	w := &pairWaiter{resp: make(chan pairResult, 1), rejects: make(map[string]bool)}
 	t.mu.Lock()
 	t.waiters[key] = w
+	t.seeking++
 	t.mu.Unlock()
+	t.updateAdvert() // 广播里带上 s=1，显示码的一方会先往本机发包，见 found
 	defer func() {
 		t.mu.Lock()
 		delete(t.waiters, key)
+		t.seeking--
 		t.mu.Unlock()
+		t.updateAdvert()
 	}()
 
 	tk := time.NewTicker(500 * time.Millisecond)
 	defer tk.Stop()
-	for {
-		for _, dst := range t.pairTargets(extra) {
+	for round := 0; ; round++ {
+		targets := t.pairTargets(extra)
+		if round%4 == 0 {
+			t.log.Debug("发送配对请求", "目标", targets)
+		}
+		for _, dst := range targets {
 			_ = t.write(dst, pkt)
 		}
 		select {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ed25519"
 	"errors"
+	netpkg "net"
 	"net/netip"
 	"path/filepath"
 	"sync"
@@ -329,6 +330,74 @@ func TestPresenceTokenRotatesDaily(t *testing.T) {
 	}
 	if a == presenceToken("other", day) {
 		t.Error("不同设备的令牌应当不同")
+	}
+}
+
+// 显示配对码的一方看到有人在找人配对（s=1），先往它发一个空包，好让本机的防火墙放行对方的请求。
+func TestShowerPokesSeekers(t *testing.T) {
+	net := NewMemoryNetwork()
+	shower := newNode(t, net)
+	shower.t.OpenPairing("K7MP2X", time.Now().Add(time.Minute))
+
+	seeker, err := netpkg.ListenUDP("udp4", &netpkg.UDPAddr{IP: netpkg.IPv4(127, 0, 0, 1)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer seeker.Close()
+	port := seeker.LocalAddr().(*netpkg.UDPAddr).Port
+	d := net.Discovery()
+	if err := d.Start(context.Background(), "seeker", port, map[string]string{"v": "1", "s": "1"}, func(Instance) {}); err != nil {
+		t.Fatal(err)
+	}
+	defer d.Stop()
+
+	_ = seeker.SetReadDeadline(time.Now().Add(3 * time.Second))
+	buf := make([]byte, 64)
+	n, _, err := seeker.ReadFromUDP(buf)
+	if err != nil {
+		t.Fatalf("没收到敲门的空包: %v", err)
+	}
+	if string(buf[:n]) != magic {
+		t.Fatalf("收到的不是空包: %q", buf[:n])
+	}
+}
+
+// 正在配对的一方在广播里带 s=1，配对结束后撤下。
+func TestJoinerAdvertisesSeeking(t *testing.T) {
+	net := NewMemoryNetwork()
+	joiner := newNode(t, net)
+	watcher := net.Discovery()
+	seen := make(chan map[string]string, 16)
+	if err := watcher.Start(context.Background(), "watcher", 1, map[string]string{"v": "1"}, func(i Instance) { seen <- i.Text }); err != nil {
+		t.Fatal(err)
+	}
+	defer watcher.Stop()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 700*time.Millisecond)
+	defer cancel()
+	done := make(chan struct{})
+	go func() { _, _ = joiner.t.Pair(ctx, "K7MP2X", nil); close(done) }()
+
+	sawSeeking := false
+	for !sawSeeking {
+		select {
+		case txt := <-seen:
+			sawSeeking = txt["s"] == "1"
+		case <-time.After(2 * time.Second):
+			t.Fatal("配对时广播里没有 s=1")
+		}
+	}
+	<-done
+	deadline := time.After(2 * time.Second)
+	for {
+		select {
+		case txt := <-seen:
+			if txt["s"] == "" {
+				return
+			}
+		case <-deadline:
+			t.Fatal("配对结束后 s=1 没有撤下")
+		}
 	}
 }
 

@@ -148,6 +148,10 @@ type Transport struct {
 	pairing   *pairingState
 	responses map[string]cachedResponse
 	waiters   map[string]*pairWaiter
+	// seeking 是正在进行的 Pair 调用数：大于零时广播里带 s=1，
+	// 显示配对码的一方据此先往本机发一个空包，见 found
+	seeking int
+	pokedAt map[string]time.Time
 
 	// reach 是各设备可达状态的副本，由叶子锁保护：peers 层会在持有自己的锁时查询它，
 	// 不能让它去等 t.mu（t.mu 持有期间可能回调 peers 层）
@@ -182,6 +186,7 @@ func New(opts Options) *Transport {
 		rate:      make(map[netip.Addr]int),
 		responses: make(map[string]cachedResponse),
 		waiters:   make(map[string]*pairWaiter),
+		pokedAt:   make(map[string]time.Time),
 		reach:     make(map[string]bool),
 	}
 }
@@ -632,6 +637,11 @@ func (t *Transport) tick() {
 			delete(t.responses, k)
 		}
 	}
+	for k, at := range t.pokedAt {
+		if now.Sub(at) > instanceTTL {
+			delete(t.pokedAt, k)
+		}
+	}
 	for k, si := range t.instances {
 		if now.Sub(si.seen) > instanceTTL {
 			delete(t.instances, k)
@@ -783,6 +793,9 @@ func (t *Transport) advertTextLocked() map[string]string {
 	if t.pairing != nil {
 		text["p"] = "1"
 	}
+	if t.seeking > 0 {
+		text["s"] = "1"
+	}
 	return text
 }
 
@@ -803,6 +816,19 @@ func (t *Transport) found(inst Instance) {
 	fresh := !had || prev.inst.Addr != inst.Addr || prev.inst.Text["t"] != inst.Text["t"] ||
 		now.Sub(prev.seen) > 30*time.Second
 
+	// 本机在显示配对码，对方在找人配对：先往它发一个空包。本机若是没放行防火墙的 Windows，
+	// 对方主动发来的配对请求会被挡住；本机先发过包，有状态的防火墙就会把它当回包放行
+	// 同一个实例可能有好几个地址（多块网卡），每个地址都要敲到
+	var poke netip.AddrPort
+	pokeKey := inst.Name + "|" + inst.Addr.String()
+	if t.pairing != nil && inst.Text["s"] == "1" && now.Sub(t.pokedAt[pokeKey]) > 2*time.Second {
+		t.pokedAt[pokeKey] = now
+		poke = inst.Addr
+	}
+	if fresh && (inst.Text["p"] == "1" || inst.Text["s"] == "1") {
+		t.log.Debug("发现正在配对的实例", "实例", inst.Name, "地址", inst.Addr, "开放配对码", inst.Text["p"] == "1", "在找人配对", inst.Text["s"] == "1")
+	}
+
 	var hello string
 	if id := t.tokens[inst.Text["t"]]; id != "" {
 		st := t.peerLocked(id)
@@ -819,6 +845,10 @@ func (t *Transport) found(inst Instance) {
 	}
 	t.mu.Unlock()
 
+	if poke.IsValid() {
+		t.log.Debug("向在找人配对的实例敲门", "地址", poke)
+		_ = t.write(poke, []byte(magic))
+	}
 	if hello != "" {
 		t.sendHello(hello, []netip.AddrPort{inst.Addr}, true, t.intervalFor(hello))
 	}
