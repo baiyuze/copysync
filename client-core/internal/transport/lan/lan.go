@@ -12,6 +12,7 @@
 package lan
 
 import (
+	"bytes"
 	"context"
 	cryptorand "crypto/rand"
 	"encoding/hex"
@@ -89,6 +90,8 @@ type Options struct {
 	OnSignal func(from string, msg *pb.SignalMessage)
 	// OnReachable 某台设备在局域网里变得可达或不可达
 	OnReachable func(deviceID string, reachable bool)
+	// OnRestarted 发现某台已配对设备重启过（hello 里的启动标识变了）时调用：旧连接已经失效
+	OnRestarted func(deviceID string)
 	// AcceptPair 在有人用正确的配对码发来请求时调用。返回 false 表示这个码已经在别处
 	// （服务器那边）用掉了，请求会被拒绝。
 	AcceptPair func(peer PeerInfo) bool
@@ -103,6 +106,7 @@ type peerState struct {
 	reachable bool
 
 	reported   []netip.AddrPort             // 对方 hello 里自报的地址
+	boot       []byte                       // 对方 hello 里的启动标识
 	discovered map[netip.AddrPort]time.Time // mDNS 发现的地址
 	book       []netip.AddrPort             // 地址簿里存的地址
 	bookLoaded bool
@@ -124,6 +128,7 @@ type Transport struct {
 	id        *identity.Identity
 	discovery Discovery
 	instance  string
+	boot      []byte // 本次启动的标识，随 hello 发给对方
 
 	mu        sync.Mutex
 	running   bool
@@ -161,6 +166,8 @@ func New(opts Options) *Transport {
 	}
 	suffix := make([]byte, 6)
 	_, _ = cryptorand.Read(suffix)
+	boot := make([]byte, 8)
+	_, _ = cryptorand.Read(boot)
 	return &Transport{
 		opts:      opts,
 		log:       log.With("模块", "局域网"),
@@ -168,6 +175,7 @@ func New(opts Options) *Transport {
 		discovery: d,
 		// 实例名每次启动随机，不带设备名：同一网络里的其他人看不出这是谁的电脑
 		instance:  "copysync-" + hex.EncodeToString(suffix),
+		boot:      boot,
 		peers:     make(map[string]*peerState),
 		instances: make(map[string]seenInstance),
 		tokens:    make(map[string]string),
@@ -516,9 +524,14 @@ func (t *Transport) sawPeer(id string, src netip.AddrPort, hello *pb.LanHello) {
 	}
 	st := t.peerLocked(id)
 	st.addr, st.lastSeen = src, now
+	restarted := false
 	if hello != nil {
 		st.ttl = ttlFor(hello.GetIntervalSeconds())
 		st.reported = parseAddrs(hello.GetAddresses())
+		if b := hello.GetBoot(); len(b) > 0 {
+			restarted = len(st.boot) > 0 && !bytes.Equal(st.boot, b)
+			st.boot = append(st.boot[:0], b...)
+		}
 	} else if st.ttl == 0 {
 		st.ttl = ttlFor(0)
 	}
@@ -537,6 +550,12 @@ func (t *Transport) sawPeer(id string, src netip.AddrPort, hello *pb.LanHello) {
 	if became {
 		t.log.Info("局域网里找到了设备", "device", id, "地址", src)
 		t.reachable(id, true)
+	}
+	if restarted {
+		t.log.Info("局域网里的设备重启过", "device", id)
+		if t.opts.OnRestarted != nil {
+			t.opts.OnRestarted(id)
+		}
 	}
 }
 
@@ -716,6 +735,7 @@ func (t *Transport) sendHello(to string, targets []netip.AddrPort, replyWanted b
 		Addresses:       addrs,
 		ReplyWanted:     replyWanted,
 		IntervalSeconds: uint32(interval / time.Second),
+		Boot:            t.boot,
 	}}})
 	if err != nil {
 		return
@@ -790,7 +810,10 @@ func (t *Transport) found(inst Instance) {
 			st.discovered = make(map[netip.AddrPort]time.Time)
 		}
 		st.discovered[inst.Addr] = now
-		if fresh && !st.reachable {
+		// 实例名或地址变了，说明对方重启过或换了网络：即使还当它可达，也马上打招呼。
+		// 对方若是没放行防火墙的 Windows，它收不到本机主动发去的包，得靠本机先回应它
+		restarted := !had || prev.inst.Addr != inst.Addr
+		if fresh && (!st.reachable || restarted) {
 			hello = id
 		}
 	}

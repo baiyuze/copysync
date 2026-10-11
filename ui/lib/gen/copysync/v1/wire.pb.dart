@@ -1951,11 +1951,13 @@ class LanHello extends $pb.GeneratedMessage {
     $core.Iterable<$core.String>? addresses,
     $core.bool? replyWanted,
     $core.int? intervalSeconds,
+    $core.List<$core.int>? boot,
   }) {
     final result = LanHello._();
     if (addresses != null) result.addresses.addAll(addresses);
     if (replyWanted != null) result.replyWanted = replyWanted;
     if (intervalSeconds != null) result.intervalSeconds = intervalSeconds;
+    if (boot != null) result.boot = boot;
     return result;
   }
 
@@ -1976,6 +1978,8 @@ class LanHello extends $pb.GeneratedMessage {
     ..aOB(2, _omitFieldNames ? '' : 'replyWanted')
     ..aI(3, _omitFieldNames ? '' : 'intervalSeconds',
         fieldType: $pb.PbFieldType.OU3)
+    ..a<$core.List<$core.int>>(
+        4, _omitFieldNames ? '' : 'boot', $pb.PbFieldType.OY)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2018,6 +2022,17 @@ class LanHello extends $pb.GeneratedMessage {
   $core.bool hasIntervalSeconds() => $_has(2);
   @$pb.TagNumber(3)
   void clearIntervalSeconds() => $_clearField(3);
+
+  /// 发送方每次启动时随机生成。变了说明对方重启过，旧的 P2P 连接已经失效，
+  /// 要立即重建，而不是等连接超时（用服务器时，这件事由上下线通知完成）
+  @$pb.TagNumber(4)
+  $core.List<$core.int> get boot => $_getN(3);
+  @$pb.TagNumber(4)
+  set boot($core.List<$core.int> value) => $_setBytes(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasBoot() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearBoot() => $_clearField(4);
 }
 
 /// payload 是序列化后的 LanPairInfo，signature 用 LanPairInfo.public_key 签名。

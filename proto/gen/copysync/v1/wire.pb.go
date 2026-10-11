@@ -1650,8 +1650,11 @@ type LanHello struct {
 	Addresses       []string               `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`                                     // 发送方本机的局域网地址，ip:port
 	ReplyWanted     bool                   `protobuf:"varint,2,opt,name=reply_wanted,json=replyWanted,proto3" json:"reply_wanted,omitempty"`             // 收到后回一条，让发送方也知道本端可达
 	IntervalSeconds uint32                 `protobuf:"varint,3,opt,name=interval_seconds,json=intervalSeconds,proto3" json:"interval_seconds,omitempty"` // 发送方多久发一次；超过三倍没收到即视为不可达
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// 发送方每次启动时随机生成。变了说明对方重启过，旧的 P2P 连接已经失效，
+	// 要立即重建，而不是等连接超时（用服务器时，这件事由上下线通知完成）
+	Boot          []byte `protobuf:"bytes,4,opt,name=boot,proto3" json:"boot,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *LanHello) Reset() {
@@ -1703,6 +1706,13 @@ func (x *LanHello) GetIntervalSeconds() uint32 {
 		return x.IntervalSeconds
 	}
 	return 0
+}
+
+func (x *LanHello) GetBoot() []byte {
+	if x != nil {
+		return x.Boot
+	}
+	return nil
 }
 
 // payload 是序列化后的 LanPairInfo，signature 用 LanPairInfo.public_key 签名。
@@ -2589,11 +2599,12 @@ const file_copysync_v1_wire_proto_rawDesc = "" +
 	"\rpair_response\x18\x03 \x01(\v2\x1a.copysync.v1.LanPairSignedH\x00R\fpairResponse\x12=\n" +
 	"\vpair_reject\x18\x04 \x01(\v2\x1a.copysync.v1.LanPairRejectH\x00R\n" +
 	"pairRejectB\t\n" +
-	"\apayload\"v\n" +
+	"\apayload\"\x8a\x01\n" +
 	"\bLanHello\x12\x1c\n" +
 	"\taddresses\x18\x01 \x03(\tR\taddresses\x12!\n" +
 	"\freply_wanted\x18\x02 \x01(\bR\vreplyWanted\x12)\n" +
-	"\x10interval_seconds\x18\x03 \x01(\rR\x0fintervalSeconds\"G\n" +
+	"\x10interval_seconds\x18\x03 \x01(\rR\x0fintervalSeconds\x12\x12\n" +
+	"\x04boot\x18\x04 \x01(\fR\x04boot\"G\n" +
 	"\rLanPairSigned\x12\x18\n" +
 	"\apayload\x18\x01 \x01(\fR\apayload\x12\x1c\n" +
 	"\tsignature\x18\x02 \x01(\fR\tsignature\"\x9a\x02\n" +

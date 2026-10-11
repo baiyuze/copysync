@@ -185,6 +185,7 @@ func NewManager(opts Options) (*Manager, error) {
 		},
 		OnSignal:    m.handleSignal,
 		OnReachable: m.handleLANReachable,
+		OnRestarted: m.handlePeerRestarted,
 		AcceptPair:  m.acceptLANPair,
 		OnChange:    m.notifyStatus,
 	})
@@ -371,6 +372,16 @@ func (m *Manager) handleLANReachable(deviceID string, reachable bool) {
 		m.notify(d)
 	}
 	m.notifyStatus()
+}
+
+// handlePeerRestarted：局域网里的某台设备重启过，本端的 P2P 连接已经失效，只是还没察觉。
+// 立即丢掉重建；否则要等握手超时，对方又可能是应答方，只能干等本端来连。
+func (m *Manager) handlePeerRestarted(deviceID string) {
+	m.p2p.Disconnect(deviceID)
+	m.mu.Lock()
+	delete(m.conn, deviceID)
+	m.mu.Unlock()
+	m.connectIfOffline(deviceID)
 }
 
 // connectIfOffline 在对端上线时建立 P2P 通道，这样真正要传数据时已经就绪。

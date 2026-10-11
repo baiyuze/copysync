@@ -584,6 +584,7 @@ const LanHello$json = {
     {'1': 'addresses', '3': 1, '4': 3, '5': 9, '10': 'addresses'},
     {'1': 'reply_wanted', '3': 2, '4': 1, '5': 8, '10': 'replyWanted'},
     {'1': 'interval_seconds', '3': 3, '4': 1, '5': 13, '10': 'intervalSeconds'},
+    {'1': 'boot', '3': 4, '4': 1, '5': 12, '10': 'boot'},
   ],
 };
 
@@ -591,7 +592,7 @@ const LanHello$json = {
 final $typed_data.Uint8List lanHelloDescriptor = $convert.base64Decode(
     'CghMYW5IZWxsbxIcCglhZGRyZXNzZXMYASADKAlSCWFkZHJlc3NlcxIhCgxyZXBseV93YW50ZW'
     'QYAiABKAhSC3JlcGx5V2FudGVkEikKEGludGVydmFsX3NlY29uZHMYAyABKA1SD2ludGVydmFs'
-    'U2Vjb25kcw==');
+    'U2Vjb25kcxISCgRib290GAQgASgMUgRib290');
 
 @$core.Deprecated('Use lanPairSignedDescriptor instead')
 const LanPairSigned$json = {

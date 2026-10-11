@@ -20,12 +20,13 @@ type node struct {
 	id *identity.Identity
 	t  *Transport
 
-	mu       sync.Mutex
-	known    map[string]ed25519.PublicKey
-	book     map[string][]string
-	accepted []PeerInfo
-	signals  chan *pb.SignalMessage
-	reach    chan string
+	mu        sync.Mutex
+	known     map[string]ed25519.PublicKey
+	book      map[string][]string
+	accepted  []PeerInfo
+	signals   chan *pb.SignalMessage
+	reach     chan string
+	restarted chan string
 }
 
 func newNode(t *testing.T, net *MemoryNetwork) *node {
@@ -35,11 +36,12 @@ func newNode(t *testing.T, net *MemoryNetwork) *node {
 		t.Fatal(err)
 	}
 	n := &node{
-		id:      id,
-		known:   map[string]ed25519.PublicKey{},
-		book:    map[string][]string{},
-		signals: make(chan *pb.SignalMessage, 16),
-		reach:   make(chan string, 16),
+		id:        id,
+		known:     map[string]ed25519.PublicKey{},
+		book:      map[string][]string{},
+		signals:   make(chan *pb.SignalMessage, 16),
+		reach:     make(chan string, 16),
+		restarted: make(chan string, 16),
 	}
 	var d Discovery
 	if net != nil {
@@ -61,6 +63,7 @@ func newNode(t *testing.T, net *MemoryNetwork) *node {
 				n.reach <- id
 			}
 		},
+		OnRestarted: func(id string) { n.restarted <- id },
 		AcceptPair: func(p PeerInfo) bool {
 			n.mu.Lock()
 			defer n.mu.Unlock()
@@ -326,5 +329,38 @@ func TestPresenceTokenRotatesDaily(t *testing.T) {
 	}
 	if a == presenceToken("other", day) {
 		t.Error("不同设备的令牌应当不同")
+	}
+}
+
+// 对方重启后带着新的启动标识打招呼：本端要知道旧连接已经失效。
+func TestPeerRestartIsNoticed(t *testing.T) {
+	net := NewMemoryNetwork()
+	a, b := newNode(t, net), newNode(t, net)
+	pair(a, b)
+	waitReachable(t, a, b.id.DeviceID)
+
+	// b 用同一个身份重新启动：新的 Transport 有新的启动标识
+	b.t.Stop()
+	b.t = New(Options{
+		Identity:   b.id,
+		Port:       -1,
+		Discovery:  net.Discovery(),
+		Verifier:   signed.NewVerifier(b.id.DeviceID, b.keyOf),
+		Book:       b,
+		Peers:      b.peers,
+		DeviceInfo: func() (string, string) { return "b", "test" },
+	})
+	if err := b.t.Start(); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(b.t.Stop)
+
+	select {
+	case id := <-a.restarted:
+		if id != b.id.DeviceID {
+			t.Fatalf("报告重启的设备不对: %s", id)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("对方重启后没有察觉")
 	}
 }

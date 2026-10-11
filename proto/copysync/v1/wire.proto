@@ -187,6 +187,9 @@ message LanHello {
   repeated string addresses = 1;    // 发送方本机的局域网地址，ip:port
   bool reply_wanted = 2;            // 收到后回一条，让发送方也知道本端可达
   uint32 interval_seconds = 3;      // 发送方多久发一次；超过三倍没收到即视为不可达
+  // 发送方每次启动时随机生成。变了说明对方重启过，旧的 P2P 连接已经失效，
+  // 要立即重建，而不是等连接超时（用服务器时，这件事由上下线通知完成）
+  bytes boot = 4;
 }
 
 // payload 是序列化后的 LanPairInfo，signature 用 LanPairInfo.public_key 签名。
