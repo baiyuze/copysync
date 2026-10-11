@@ -51,7 +51,8 @@ const (
 	blockGrace    = 30 * time.Second
 	instanceTTL   = 5 * time.Minute
 	saveAddrEvery = 10 * time.Minute
-	// 本地网络权限的探测间隔（只有 macOS 探测）：被拦着时勤一些，用户一允许就能很快撤掉提示
+	// 本地网络权限的探测间隔（只有 macOS 探测）：被拦着时勤一些，用户一允许就能很快撤掉提示。
+	// 刚被拦的宽限期里每一轮都探测：新程序启动时的拦截一解除就要重启 mDNS，见 rediscover
 	probeEvery        = 10 * time.Minute
 	probeEveryBlocked = 20 * time.Second
 	discardPort       = 9
@@ -163,8 +164,13 @@ type Transport struct {
 	// 显示配对码的一方据此先往本机发一个空包，见 found
 	seeking int
 	pokedAt map[string]time.Time
-	// nextProbe 是下一次探测本地网络权限的时间，见 probeTarget
+	// nextProbe 是下一次探测本地网络权限的时间，probeAddr 是探测的地址，见 probeTarget
 	nextProbe time.Time
+	probeAddr netip.Addr
+	// rediscover：被系统拦过之后又发成功了，下一轮 tick 要重启 mDNS。
+	// pion/mdns 启动时在哪块网卡上加入组播失败，就再也不用那块网卡；
+	// 被拦期间启动的 mDNS 会漏掉局域网网卡，拦截解除后也不会自己恢复
+	rediscover bool
 
 	// reach 是各设备可达状态的副本，由叶子锁保护：peers 层会在持有自己的锁时查询它，
 	// 不能让它去等 t.mu（t.mu 持有期间可能回调 peers 层）
@@ -225,6 +231,9 @@ func (t *Transport) Start() error {
 	t.rebuildTokensLocked(time.Now(), peers)
 	t.mu.Unlock()
 
+	// 启动 mDNS 之前先探测一次：新程序刚启动的几秒里系统会拦着发往局域网的包，
+	// 这时启动的 mDNS 用不了局域网网卡。先记下被拦，拦截一解除 tick 就重启 mDNS
+	t.probe()
 	t.startDiscovery(ctx)
 	go t.readLoop(conn)
 	go t.tickLoop(ctx)
@@ -646,13 +655,8 @@ func (t *Transport) tick() {
 		t.rebuildTokensLocked(now, peers)
 	}
 	probe := !now.Before(t.nextProbe)
-	if probe {
-		if t.deniedSince.IsZero() {
-			t.nextProbe = now.Add(probeEvery)
-		} else {
-			t.nextProbe = now.Add(probeEveryBlocked)
-		}
-	}
+	rediscover := t.rediscover
+	t.rediscover = false
 	blocked := t.blockedLocked(now)
 	blockedChanged := blocked != t.reportedBlocked
 	t.reportedBlocked = blocked
@@ -719,21 +723,37 @@ func (t *Transport) tick() {
 		}
 		t.changed()
 	}
-	if netChanged {
+	switch {
+	case netChanged:
 		// 网卡变了：mDNS 要在新网卡上重新加入组播
 		t.log.Info("网络已变化，重新开始局域网发现")
 		t.discovery.Stop()
 		t.startDiscovery(ctx)
-	} else if dayChanged || pairingExpired {
+	case rediscover:
+		t.log.Info("系统放行了发往局域网的包，重新开始局域网发现")
+		t.discovery.Stop()
+		t.startDiscovery(ctx)
+	case dayChanged || pairingExpired:
 		t.updateAdvert()
 	}
 	for _, h := range hellos {
 		t.sendHello(h.id, h.targets, true, h.interval)
 	}
 	if probe {
-		if gw, ok := probeTarget(); ok {
-			_ = t.write(netip.AddrPortFrom(gw, discardPort), []byte(magic))
-		}
+		t.probe()
+	}
+}
+
+// probe 往本网段里的一个地址发几个字节，看系统是否拦着（只有 macOS 有目标地址），
+// 并排好下一次探测：被拦时 write 会把它提前。
+func (t *Transport) probe() {
+	ip, ok := probeTarget()
+	t.mu.Lock()
+	t.nextProbe = time.Now().Add(probeEvery)
+	t.probeAddr = ip // 没有可探测的地址时是零值
+	t.mu.Unlock()
+	if ok {
+		_ = t.send(netip.AddrPortFrom(ip, discardPort), []byte(magic), true)
 	}
 }
 
@@ -954,7 +974,13 @@ func (t *Transport) refreshSelfLocked() {
 }
 
 // write 发一个包。macOS 拒绝本地网络访问时记下来，界面据此提示用户去授权。
-func (t *Transport) write(dst netip.AddrPort, pkt []byte) error {
+func (t *Transport) write(dst netip.AddrPort, pkt []byte) error { return t.send(dst, pkt, false) }
+
+// send 发一个包，probe 表示这是权限探测包。
+//
+// 判断拦截解除只信探测包：被拦着时，发给先联系过本机的设备照样能成功（算作回包），
+// 拿它当证据会让提示时有时无、mDNS 反复重启。找不到探测地址时才退回认任何一次成功。
+func (t *Transport) send(dst netip.AddrPort, pkt []byte, probe bool) error {
 	t.mu.Lock()
 	conn := t.conn
 	running := t.running
@@ -963,23 +989,35 @@ func (t *Transport) write(dst netip.AddrPort, pkt []byte) error {
 		return ErrDisabled
 	}
 	_, err := conn.WriteToUDPAddrPort(pkt, dst)
-
-	// 只记下来，是否算「被拦着」由 tick 按宽限期判断并通知上层
 	if onLink(dst.Addr()) {
-		now := time.Now()
-		t.mu.Lock()
-		switch {
-		case err != nil && deniedByOS(err):
-			if t.deniedSince.IsZero() {
-				t.deniedSince = now
-			}
-			t.lastDenied = now
-		case err == nil:
-			t.deniedSince = time.Time{}
-		}
-		t.mu.Unlock()
+		t.noteSend(err, probe, time.Now())
 	}
 	return err
+}
+
+// noteSend 记下一次发往直连网段的结果。只记下来，是否算「被拦着」由 tick 按宽限期判断并通知上层。
+func (t *Transport) noteSend(err error, probe bool, now time.Time) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	switch {
+	case err != nil && deniedByOS(err):
+		if t.deniedSince.IsZero() {
+			t.deniedSince = now
+		}
+		t.lastDenied = now
+		next := now.Add(probeEveryBlocked)
+		if now.Sub(t.deniedSince) < blockGrace {
+			next = now // 下一轮 tick 就再探测
+		}
+		if t.nextProbe.After(next) {
+			t.nextProbe = next
+		}
+	case err == nil && (probe || !t.probeAddr.IsValid()):
+		if !t.deniedSince.IsZero() {
+			t.rediscover = true
+		}
+		t.deniedSince = time.Time{}
+	}
 }
 
 func (t *Transport) reachable(id string, ok bool) {

@@ -8,6 +8,7 @@ import (
 	"net/netip"
 	"path/filepath"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -32,6 +33,17 @@ type node struct {
 
 func newNode(t *testing.T, net *MemoryNetwork) *node {
 	t.Helper()
+	var d Discovery
+	if net != nil {
+		d = net.Discovery()
+	} else {
+		d = NewMemoryNetwork().Discovery() // 自成一个网络：谁也发现不了它
+	}
+	return newNodeWith(t, d)
+}
+
+func newNodeWith(t *testing.T, d Discovery) *node {
+	t.Helper()
 	id, err := identity.LoadOrCreate(filepath.Join(t.TempDir(), "identity.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -43,12 +55,6 @@ func newNode(t *testing.T, net *MemoryNetwork) *node {
 		signals:   make(chan *pb.SignalMessage, 16),
 		reach:     make(chan string, 16),
 		restarted: make(chan string, 16),
-	}
-	var d Discovery
-	if net != nil {
-		d = net.Discovery()
-	} else {
-		d = NewMemoryNetwork().Discovery() // 自成一个网络：谁也发现不了它
 	}
 	n.t = New(Options{
 		Identity:   id,
@@ -431,5 +437,36 @@ func TestPeerRestartIsNoticed(t *testing.T) {
 		}
 	case <-time.After(5 * time.Second):
 		t.Fatal("对方重启后没有察觉")
+	}
+}
+
+// countingDiscovery 记下 Start 被调用了几次。
+type countingDiscovery struct {
+	Discovery
+	starts atomic.Int32
+}
+
+func (c *countingDiscovery) Start(ctx context.Context, name string, port int, text map[string]string, found func(Instance)) error {
+	c.starts.Add(1)
+	return c.Discovery.Start(ctx, name, port, text, found)
+}
+
+// 被系统拦过之后又发成功了：下一轮重启 mDNS，被拦期间启动的 mDNS 用不了局域网网卡。
+func TestRediscoverAfterUnblock(t *testing.T) {
+	d := &countingDiscovery{Discovery: NewMemoryNetwork().Discovery()}
+	n := newNodeWith(t, d)
+	if got := d.starts.Load(); got != 1 {
+		t.Fatalf("启动时应当启动一次发现，实际 %d 次", got)
+	}
+	n.t.tick()
+	if got := d.starts.Load(); got != 1 {
+		t.Fatalf("没有拦截解除时不该重启发现，实际启动了 %d 次", got)
+	}
+	n.t.mu.Lock()
+	n.t.rediscover = true
+	n.t.mu.Unlock()
+	n.t.tick()
+	if got := d.starts.Load(); got != 2 {
+		t.Fatalf("拦截解除后应当重启发现，实际启动了 %d 次", got)
 	}
 }
