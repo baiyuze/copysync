@@ -114,6 +114,8 @@ func (t *Transport) Pair(ctx context.Context, code string, extra []netip.AddrPor
 		}
 		select {
 		case r := <-w.resp:
+			// 回复带着对方的签名：它此刻就在这个地址，确认配对后的第一次连接不必再等打招呼
+			t.sawPeer(r.info.GetDeviceId(), r.src, nil)
 			return PeerInfo{
 				ID:        r.info.GetDeviceId(),
 				Name:      r.info.GetDeviceName(),
@@ -232,6 +234,7 @@ func (t *Transport) handlePairRequest(ps *pb.LanPairSigned, src netip.AddrPort) 
 	t.responses[key] = cachedResponse{pkt: pkt, at: now}
 	t.mu.Unlock()
 	t.log.Info("局域网配对请求已接受，等待用户核对指纹", "peer", peer.Name, "src", src)
+	t.sawPeer(peer.ID, src, nil)
 	_ = t.write(src, pkt)
 	time.AfterFunc(resendDelay, func() { _ = t.write(src, pkt) })
 }

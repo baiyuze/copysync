@@ -286,6 +286,9 @@ func (p *Peer) Connect(ctx context.Context) error {
 	p.armConnectTimeout()
 
 	if err := p.sendSignal(ctx, offerMessage(offer, false)); err != nil {
+		// offer 根本没发出去（信令无路可走），对方不可能应答：立即复位。
+		// 通道一恢复上层就能重试，不必等握手超时
+		p.Close()
 		return err
 	}
 	// 初次握手由发起方等：应答方先公布出口地址，发起方先往那边发包
