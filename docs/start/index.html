@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>快速开始：三步用上 CopySync</title>
+  <meta name="description" content="第一次用 CopySync？在每台电脑上安装 App，选一种方式部署服务器（局域网、Tailscale 或云服务器），填好地址再配对，就能在 Mac 与 Windows 之间复制粘贴。不需要公网 IP。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/start/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/start/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/start/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/start/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="快速开始：三步用上 CopySync">
+  <meta property="og:description" content="第一次用 CopySync？在每台电脑上安装 App，选一种方式部署服务器（局域网、Tailscale 或云服务器），填好地址再配对，就能在 Mac 与 Windows 之间复制粘贴。不需要公网 IP。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/start/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href=".././" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="页面导航">
+        <a href="./" aria-current="page">快速开始</a>
+        <a class="wide" href=".././#how">工作原理</a>
+        <a class="wide" href=".././#faq">常见问题</a>
+        <a href="../server/">部署服务器</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../en/start/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/start/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href=".././">CopySync</a> / 快速开始</p>
+        <h1 class="display">快速开始</h1>
+        <p class="lede">装好 App，准备一台服务器，再把两台电脑配对。第一次大约十分钟，之后复制就会自动同步。</p>
+        <ol class="guide-toc">
+          <li><a href="#app">安装 App</a></li>
+          <li><a href="#server">准备服务器</a></li>
+          <li><a href="#connect">填服务器地址</a></li>
+          <li><a href="#pair">配对</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="app" aria-labelledby="app-title">
+      <div class="wrap">
+        <p class="eyebrow">第 1 步</p>
+        <h2 id="app-title">在每台电脑上安装 App</h2>
+        <p class="intro">要同步的每台电脑都装一个，Mac 与 Windows 可以混用。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <div class="qs-app">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
+              <ol class="steps">
+                <li>下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。</li>
+                <li>从「应用程序」里打开。<span class="aside">第一次会提示「无法验证开发者」：到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」。</span></li>
+                <li>点「启用后台同步」。系统询问是否允许读取剪贴板时，选择允许。</li>
+              </ol>
+              <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
+            </div>
+            <div class="qs-app">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+              <ol class="steps">
+                <li>运行 CopySync-Setup.exe，不需要管理员权限。<span class="aside">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span></li>
+                <li>打开 CopySync，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。</li>
+              </ol>
+              <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
+            </div>
+          </div>
+          <figure class="shot">
+            <img src="../assets/screenshots/welcome-dark.png" width="2112" height="1472" alt="第一次打开 CopySync：提示启用后台同步">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="server" aria-labelledby="server-title">
+      <div class="wrap">
+        <p class="eyebrow">第 2 步</p>
+        <h2 id="server-title">准备一台服务器</h2>
+        <p class="intro">两台电脑靠它找到彼此，复制的内容不会存在上面。CopySync 不提供公共服务器，按你的情况选一种：</p>
+        <div class="paths">
+          <a class="path" href="../server/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
+            <span class="path-tag">不需要公网 IP</span>
+            <span class="path-when">两台电脑在同一个网络里</span>
+            <h3>局域网部署</h3>
+            <p>家里或办公室，连着同一个 Wi‑Fi 或有线网络。服务器装在其中一台常开的 Windows、Mac 或 Linux 电脑上，运行一个脚本就好。</p>
+            <span class="path-go">局域网部署教程 →</span>
+          </a>
+          <a class="path" href="../tailscale/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
+            <span class="path-tag">不需要公网 IP</span>
+            <span class="path-when">一台在家，一台在公司</span>
+            <h3>局域网部署 + Tailscale</h3>
+            <p>服务器照样放在家里。每台电脑装上 Tailscale，就像在同一个局域网里：笔记本带到哪儿，复制都能同步。</p>
+            <span class="path-go">Tailscale 教程 →</span>
+          </a>
+          <a class="path" href=".././#cloud">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-tag">需要公网 IP</span>
+            <span class="path-when">有一台公网服务器</span>
+            <h3>云服务器部署</h3>
+            <p>一台有公网 IP 的 Linux 云主机，最低配置就够。所有电脑直接连它，不用另装组网工具。</p>
+            <span class="path-go">部署步骤 →</span>
+          </a>
+        </div>
+        <p class="note">装好后，安装脚本最后会显示一个地址，形如 <code>ws://192.168.1.20:8787/signal</code>，下一步要用。</p>
+      </div>
+    </section>
+
+    <section class="section" id="connect" aria-labelledby="connect-title">
+      <div class="wrap">
+        <p class="eyebrow">第 3 步</p>
+        <h2 id="connect-title">在每台电脑上填服务器地址</h2>
+        <ol class="flow">
+          <li><h3>打开设置</h3><p>在每台电脑上打开 CopySync，进入「设置」。服务器所在的那台电脑也一样。</p></li>
+          <li><h3>填入地址</h3><p>在「信令服务器地址」里填上一步显示的地址，按回车保存。</p></li>
+          <li><h3>看连接状态</h3><p>「连接状态」变成绿色的「已连接」，这台电脑就准备好了。</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../assets/screenshots/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的设置页：信令服务器地址填着 ws://192.168.1.20:8787/signal，连接状态显示已连接">
+        </figure>
+        <p class="note">一直是「未连接」？看<a href="../server/#faq">常见问题</a>。</p>
+      </div>
+    </section>
+
+    <section class="section" id="pair" aria-labelledby="pair-title">
+      <div class="wrap">
+        <p class="eyebrow">第 4 步</p>
+        <h2 id="pair-title">把两台电脑配对</h2>
+        <p class="intro">每两台电脑之间配对一次，之后就不用再管了。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>在一台电脑上打开「设备」，点「添加设备」，会显示一个 6 位配对码，5 分钟内有效。</li>
+              <li>在另一台电脑上同样点「添加设备」，切到「输入配对码」，输入它。</li>
+              <li>两块屏幕会显示同样的两行安全指纹。逐字核对一致后，再点确认。<span class="aside">这一步防止有人在中间冒充你的设备，不要跳过。</span></li>
+            </ol>
+            <figure class="figure-card qs-verify">
+              <img src="../assets/screenshots/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配对时的「核对安全指纹」对话框，显示 R8NF-2WTC-QL5J，要求与另一台电脑上显示的完全一致">
+            </figure>
+          </div>
+          <figure class="shot">
+            <img src="../assets/screenshots/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="添加设备：显示配对码 K7MP2X，在另一台设备上输入它">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">复制试试。</h2>
+        <p class="lede">在一台电脑上复制文字、图片或文件，到另一台按 ⌘V 或 Ctrl+V。两边复制过的内容都在「复制记录」里。</p>
+        <p class="note">遇到问题：<a href="../server/#faq">局域网部署的常见问题</a> · <a href="../tailscale/#faq">Tailscale 的常见问题</a> · <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync 以 GNU AGPL-3.0 开源，另提供商业授权。</p>
+      <nav aria-label="页脚链接">
+        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商业授权</a>
+        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+      </nav>
+      <nav aria-label="语言">
+        <a href="../start/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>
+        <a href="../en/start/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/start/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

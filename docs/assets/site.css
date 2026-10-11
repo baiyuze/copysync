@@ -183,9 +183,16 @@ caption.skip {
   text-decoration: none;
 }
 
-/* 窄屏只留 GitHub 与语言切换，免得挤成两行 */
+/* 窄屏只留快速开始、部署服务器与语言切换，免得挤成两行 */
 @media (max-width: 46rem) {
   .bar nav .wide {
+    display: none;
+  }
+}
+
+/* 手机上语言切换也收起来，页脚里还有 */
+@media (max-width: 30rem) {
+  .bar nav a[data-lang] {
     display: none;
   }
 }
@@ -342,6 +349,14 @@ code {
   text-align: center;
   font-size: 0.875rem;
   color: var(--dim);
+}
+
+/* 下载按钮下面通往快速开始的一行 */
+.start-link {
+  display: inline-block;
+  margin-top: 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 /* 手机上两个下载按钮各占一行、等宽，拇指好点 */
@@ -1097,6 +1112,34 @@ td {
 
 .install .button {
   margin-top: 1.5rem;
+}
+
+/* 服务器一栏：先是不需要公网 IP 的两种做法，再是云服务器 */
+.install .stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.install .stack .button {
+  margin-top: 0;
+  min-height: 2.6rem;
+  padding: 0 1.1rem;
+  font-size: 0.92rem;
+}
+
+.install h4 {
+  margin: 2rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 1rem;
+  font-weight: 650;
+  scroll-margin-top: 5rem;
+}
+
+.install h4 + .small {
+  margin-top: 0.4rem;
 }
 
 .install table {
@@ -1928,6 +1971,354 @@ td {
   }
 
   .os-steps > .button {
+    margin-left: 0;
+  }
+}
+
+/* ── 三种部署方式的卡片：首页与快速开始共用 ── */
+
+.paths {
+  display: grid;
+  gap: 1rem;
+  margin: clamp(2.5rem, 6vw, 4rem) auto 0;
+  max-width: 70rem;
+}
+
+@media (min-width: 60rem) {
+  .paths {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+.path {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.5rem 1.4rem;
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  color: var(--ink);
+  transition: box-shadow 0.15s, background-color 0.15s;
+}
+
+.path:hover {
+  text-decoration: none;
+  background: #202024;
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
+}
+
+.path svg {
+  display: block;
+  width: 100%;
+  max-width: 15rem;
+  height: auto;
+  margin: 0 auto 1.4rem;
+  overflow: visible;
+}
+
+.path-tag {
+  align-self: flex-start;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: var(--blue-wash);
+  color: var(--blue-hi);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* 需要公网 IP 的那一种不用蓝色，免得三个看起来一样推荐 */
+.path:last-child .path-tag {
+  background: var(--surface-2);
+  color: var(--dim);
+}
+
+.path-when {
+  margin-top: 0.9rem;
+  color: var(--dim);
+  font-size: 0.85rem;
+}
+
+.path h3 {
+  margin-top: 0.15rem;
+  font-size: 1.2rem;
+}
+
+.path p {
+  flex: 1;
+  margin: 0.55rem 0 0;
+  color: var(--dim);
+  font-size: 0.93rem;
+  text-wrap: pretty;
+}
+
+.path-go {
+  margin-top: 1.1rem;
+  color: var(--blue-hi);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+/* 卡片插图：设备轮廓、网络边界、信令的点线、内容走的蓝线 */
+.p-dev {
+  fill: var(--surface-2);
+  stroke: var(--dim);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.p-net {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+
+.p-ts {
+  fill: var(--blue-wash);
+  stroke: var(--blue);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 5;
+  opacity: 0.85;
+}
+
+.p-sig {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 1.5;
+  stroke-dasharray: 1.5 4;
+  stroke-linecap: round;
+}
+
+.p-data {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+/* ── 教程页面 ── */
+
+/* 步骤的序号，放在标题上面 */
+.eyebrow {
+  margin: 0 0 0.9rem;
+  text-align: center;
+  color: var(--blue-hi);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* 首屏引言下面的一句提示 */
+.hero-aside {
+  margin: 1.1rem auto 0;
+  max-width: var(--text);
+  color: var(--ink-2);
+  font-size: 0.98rem;
+}
+
+.qs-grid {
+  margin: clamp(2.5rem, 6vw, 4rem) auto 0;
+  max-width: 70rem;
+}
+
+.qs-grid > .shot,
+.os-figures .shot {
+  margin: 0;
+}
+
+/* 宽屏上截图跟着步骤走，读到下面也看得见 */
+@media (min-width: 62rem) {
+  .qs-grid > .shot {
+    position: sticky;
+    top: 4.5rem;
+    margin-top: -1.5rem;
+  }
+}
+
+.qs-app h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.1rem;
+  font-size: 1.15rem;
+}
+
+.qs-app h3 svg {
+  width: 22px;
+  height: 22px;
+  color: var(--dim);
+}
+
+.qs-app + .qs-app {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.qs-app .button,
+.qs-grid .os-steps > .button {
+  margin: 1.4rem 0 0 2.6rem;
+}
+
+.qs-verify {
+  margin-top: 2rem;
+}
+
+.qs-verify img {
+  max-width: 26rem;
+  margin: 0;
+}
+
+/* 局域网教程末尾：离开家也想同步，引到 Tailscale 教程 */
+.callout {
+  display: grid;
+  gap: 1.75rem;
+  align-items: center;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.callout svg {
+  display: block;
+  width: 100%;
+  max-width: 16rem;
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.callout h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.callout p {
+  margin: 0.75rem 0 0;
+  color: var(--dim);
+  text-wrap: pretty;
+}
+
+.callout .button {
+  margin-top: 1.4rem;
+}
+
+@media (min-width: 52rem) {
+  .callout {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 2.75rem;
+  }
+}
+
+/* Tailscale 示意图里的虚拟局域网边界 */
+.d-ts {
+  fill: rgba(61, 139, 234, 0.05);
+  stroke: var(--blue);
+  stroke-width: 1.5;
+  stroke-dasharray: 8 7;
+  opacity: 0.8;
+}
+
+.d-ts-label {
+  fill: var(--blue-hi);
+  font: 14px var(--sans);
+}
+
+/* Tailscale 管理后台设备列表的示意 */
+.browser.machines {
+  max-width: none;
+  margin: 0;
+}
+
+.machines table {
+  font-size: 0.85rem;
+}
+
+.machines th,
+.machines td {
+  padding: 0.7rem 1rem;
+  border-bottom-color: #222226;
+}
+
+.machines tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.machines td:nth-child(2) {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+.machines tr.hl td {
+  background: var(--blue-wash);
+  color: var(--ink);
+}
+
+.machines tr.hl td:nth-child(2) {
+  color: var(--blue-hi);
+  font-weight: 600;
+}
+
+.machines em {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(61, 139, 234, 0.55);
+  color: var(--blue-hi);
+  font-style: normal;
+  font-size: 0.72rem;
+}
+
+.server-notes {
+  max-width: 70rem;
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.server-notes h3 {
+  margin-bottom: 1.1rem;
+}
+
+@media (min-width: 62rem) {
+  .server-notes .points {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}
+
+.address-term {
+  max-width: 30rem;
+  margin: clamp(2rem, 5vw, 3rem) auto 0;
+}
+
+/* Linux 上已经装过的，改配置里的地址 */
+.switch {
+  margin-top: 2.25rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+  color: var(--dim);
+  font-size: 0.95rem;
+}
+
+.switch p {
+  margin: 0 0 0.5rem;
+}
+
+.switch strong {
+  color: var(--ink);
+}
+
+@media (max-width: 34rem) {
+  .qs-app .button,
+  .qs-grid .os-steps > .button {
     margin-left: 0;
   }
 }

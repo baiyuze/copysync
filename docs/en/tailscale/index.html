@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Use CopySync across networks with Tailscale: sync home and office without a public IP</title>
+  <meta name="description" content="Run the server on an always-on computer at home and install Tailscale on each computer: they act as if they shared a LAN, so the clipboard syncs from the office or anywhere else. No public IP, no router settings. Step-by-step for Windows, Mac and Linux.">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/en/tailscale/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="Use CopySync across networks with Tailscale: sync home and office without a public IP">
+  <meta property="og:description" content="Run the server on an always-on computer at home and install Tailscale on each computer: they act as if they shared a LAN, so the clipboard syncs from the office or anywhere else. No public IP, no router settings. Step-by-step for Windows, Mac and Linux.">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/en/tailscale/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../en/" aria-label="CopySync home"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="Page">
+        <a href="../../en/start/">Quick start</a>
+        <a class="wide" href="../../en/#how">How it works</a>
+        <a class="wide" href="../../en/#faq">FAQ</a>
+        <a href="../../en/server/">Self-host</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../ja/tailscale/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/server/">Self-host</a> / Tailscale</p>
+        <h1 class="display">Across networks with Tailscale</h1>
+        <p class="lede">Sync between home and the office without a public IP. The server stays at home; with Tailscale on each computer, they act as if they shared a LAN. No router settings, no cloud server.</p>
+        <ol class="guide-toc">
+          <li><a href="#join">Install Tailscale</a></li>
+          <li><a href="#address">Find the address</a></li>
+          <li><a href="#install">Install the server</a></li>
+          <li><a href="#check">Check</a></li>
+          <li><a href="#clients">Set up the apps</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">As if on one LAN</h2>
+        <p class="intro">Tailscale connects your devices into a private network: every device signed in to the same account gets a fixed address starting with 100, reachable from the others wherever they are. Install the CopySync server on that address and enter it in the apps; everything else works as on a LAN.</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 460" role="img" aria-labelledby="ts-title ts-desc">
+            <title id="ts-title">CopySync over Tailscale</title>
+            <desc id="ts-desc">The server and a Windows PC are at home, a Mac is at the office. All three run Tailscale and each has an address starting with 100 on the same private network. Both computers connect to the server at 100.101.102.103 for signaling; copied content goes directly between them, and through the server's relay only if that fails.</desc>
+            <rect class="d-ts" x="8" y="8" width="944" height="404" rx="22"/>
+            <text class="d-ts-label" x="32" y="42">Tailscale network: every device has a 100.x address</text>
+            <rect class="d-box" x="340" y="64" width="280" height="122" rx="14"/>
+            <text class="d-title" x="480" y="102" text-anchor="middle">Server</text>
+            <text class="d-sub" x="480" y="130" text-anchor="middle">At home, always on</text>
+            <text class="d-ip" x="480" y="164" text-anchor="middle">100.101.102.103</text>
+            <path class="d-sig" d="M150 266V96H340"/>
+            <path class="d-sig" d="M810 266V96H620"/>
+            <path class="d-relay" d="M206 266V154H340"/>
+            <path class="d-relay" d="M754 266V154H620"/>
+            <text class="d-note" x="164" y="86">Signaling, TCP 8787</text>
+            <text class="d-note" x="220" y="214">Relay, UDP 3478, if direct fails</text>
+            <rect class="d-box" x="40" y="266" width="240" height="126" rx="14"/>
+            <text class="d-title" x="160" y="306" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="334" text-anchor="middle">At the office</text>
+            <text class="d-ip" x="160" y="368" text-anchor="middle">100.88.20.5</text>
+            <rect class="d-box" x="680" y="266" width="240" height="126" rx="14"/>
+            <text class="d-title" x="800" y="306" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="334" text-anchor="middle">At home</text>
+            <text class="d-ip" x="800" y="368" text-anchor="middle">100.92.41.17</text>
+            <path class="d-direct" d="M280 330H680"/>
+            <text class="d-label" x="480" y="316" text-anchor="middle">Direct, encrypted twice</text>
+            <text class="d-note" x="480" y="358" text-anchor="middle">Content stays between the two computers</text>
+            <g class="d-legend" transform="translate(40 444)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">Data (direct)</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">Data (relay, fallback)</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">Signaling</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>The server stays at home</strong> on any always-on Windows, Mac or Linux computer, just like on a LAN.</li>
+          <li><strong>Every computer runs Tailscale,</strong> signed in to the same account, including the server computer.</li>
+          <li><strong>Encrypted twice.</strong> Inside Tailscale's WireGuard tunnel runs CopySync's own end-to-end encrypted connection. Neither Tailscale nor your server can see the content.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">Before you start</h2>
+        <dl class="fallbacks">
+          <div><dt>A computer that stays on</dt><dd>It runs the server, with the same requirements as <a href="../../en/server/#prepare">on a LAN</a>; sync pauses while it's off or asleep. Its Tailscale address doesn't change, so there's nothing to reserve in the router.</dd></div>
+          <div><dt>A Tailscale account</dt><dd>Free for personal use; sign in with Google, Microsoft, GitHub or Apple. Use the same account on every device.</dd></div>
+          <div><dt>Tailscale on every computer</dt><dd>There are clients for Windows, macOS and Linux. Every computer that runs CopySync needs it, including one that never leaves home.</dd></div>
+          <div><dt>ZeroTier works too</dt><dd>So does any tool that gives each device a fixed virtual address: install the server on that address and enter it in the apps. This guide uses Tailscale.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="join" aria-labelledby="join-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 1</p>
+        <h2 id="join-title">Install Tailscale on each computer</h2>
+        <p class="intro">On the server computer and every computer you sync, install it and sign in to the same account.</p>
+        <div class="os-grid qs-grid">
+          <div class="os-steps">
+            <ol class="steps">
+              <li>Download the client for your system from the Tailscale website and install it.<span class="aside">On Linux, run <code>curl -fsSL https://tailscale.com/install.sh | sh</code>, then <code>sudo tailscale up</code>, and open the link it prints to sign in.</span></li>
+              <li>Open Tailscale and sign in, using the same account on every computer.</li>
+              <li>The Tailscale admin console then lists all your devices, each with an address starting with 100.</li>
+            </ol>
+            <a class="button" href="https://tailscale.com/download"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download Tailscale</a>
+          </div>
+          <div class="os-figures">
+            <figure class="browser machines" role="img" aria-label="The machine list in the Tailscale admin console (illustration): mac-mini is the server at 100.101.102.103, macbook-pro is 100.88.20.5 and home-pc is 100.92.41.17">
+              <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">login.tailscale.com/admin/machines</span></div>
+              <table>
+                <thead><tr><th scope="col">Machine</th><th scope="col">Tailscale address</th><th scope="col">OS</th></tr></thead>
+                <tbody>
+                <tr class="hl"><td>mac-mini <em>Server</em></td><td>100.101.102.103</td><td>macOS</td></tr>
+                <tr><td>macbook-pro</td><td>100.88.20.5</td><td>macOS</td></tr>
+                <tr><td>home-pc</td><td>100.92.41.17</td><td>Windows</td></tr>
+                </tbody>
+              </table>
+            </figure>
+          </div>
+        </div>
+        <div class="server-notes">
+          <h3>One more thing on the server computer</h3>
+          <ul class="points">
+            <li><strong>Windows:</strong> right-click the Tailscale icon in the notification area and turn on Run unattended under Preferences. Otherwise Tailscale disconnects when you sign out, and computers elsewhere lose the server.</li>
+            <li><strong>Mac:</strong> stay logged in, keep it awake, and make sure Tailscale opens at login. The CopySync server also only runs while you're logged in.</li>
+            <li><strong>Turn off key expiry:</strong> by default Tailscale asks devices to sign in again every 180 days. On the Machines page of the admin console, open the menu at the end of the server's row and choose Disable key expiry.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="address" aria-labelledby="address-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 2</p>
+        <h2 id="address-title">Find the server's Tailscale address</h2>
+        <p class="intro">On the server computer, click the Tailscale icon in the menu bar (the notification area on Windows); the menu shows this device's address. Or run <code>tailscale ip -4</code> in a terminal.</p>
+        <div class="address-term">
+          <figure class="term" role="img" aria-label="tailscale ip -4 in a terminal prints this device&#x27;s Tailscale address, 100.101.102.103">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">mac-mini — zsh</span></div>
+<pre class="t-body"><span class="t-prompt">%</span> tailscale ip -4
+<span class="t-url">100.101.102.103</span></pre>
+              </figure>
+        </div>
+        <p class="note">The steps below use <code>100.101.102.103</code>; use your own address.</p>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 3</p>
+        <h2 id="install-title">Install the server on that address</h2>
+        <p class="intro">The install scripts use the LAN address by default. Pass the Tailscale address instead so computers elsewhere can use the server's relay. Already installed it with the <a href="../../en/server/">LAN guide</a>? Run the script again with the address; your settings are kept.</p>
+        <div class="os-tabs" data-tabs>
+          <div class="tablist" role="tablist" aria-label="System of the server computer" hidden>
+            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
+            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
+            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+          </div>
+
+          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                <li>Download copysync-server-windows-amd64.zip and choose Extract All. If it's already installed, use the folder you extracted before.</li>
+                <li>Open the extracted folder, type <code>cmd</code> in the address bar at the top and press Enter to open a Command Prompt.</li>
+                <li>Run <code>install.cmd 100.101.102.103</code> with your address, and click Yes when User Account Control asks.</li>
+                <li>Installation continues in a new window. The address at the end should be <code>ws://100.101.102.103:8787/signal</code>.</li>
+                </ol>
+                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download the Windows server</a>
+                <ul class="points">
+                <li><strong>Firewall already allowed:</strong> the script's inbound rule applies to every network, Tailscale's adapter included.</li>
+                <li>If you see "Windows protected your PC", click More info, then Run anyway.</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="A Command Prompt opened in the extracted folder runs install.cmd 100.101.102.103">
+                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>Command Prompt</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<pre class="t-body"><span class="t-prompt">C:\Users\me\Downloads\copysync-server-windows-amd64&gt;</span>install.cmd 100.101.102.103</pre>
+              </figure>
+                <figure class="term" role="img" aria-label="The window after install.cmd finishes, ending with the address ws://100.101.102.103:8787/signal">
+                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>Administrator: Windows PowerShell</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<pre class="t-body"><span class="t-step">&gt; Stopping the running version</span>
+<span class="t-step">&gt; Installing to C:\Program Files\CopySync Server</span>
+<span class="t-step">&gt; Registering the service CopySyncServer (relay address 100.101.102.103)</span>
+<span class="t-step">&gt; Allowing it through Windows Firewall</span>
+<span class="t-step">&gt; Starting</span>
+  √ Running
+
+Installed: copysync-server 1.3.3. It runs as a Windows service and starts with Windows.
+In CopySync on each computer, set Settings &gt; Signaling server to:
+
+    <span class="t-url">ws://100.101.102.103:8787/signal</span>
+
+  Program    C:\Program Files\CopySync Server
+  Logs       C:\ProgramData\CopySync Server\server.log
+  Restart    Restart-Service CopySyncServer (in an administrator PowerShell)
+  Uninstall  double-click uninstall.cmd</pre>
+              </figure>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>macOS</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>Open Terminal and run these lines, with your address on the last one:
+                <div class="code">
+                  <button class="copy" type="button" data-done="Copied">Copy</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
+tar xzf copysync-server-macos.tar.gz
+cd copysync-server-macos
+./install.sh 100.101.102.103</code></pre>
+                </div></li>
+                <li>The address at the end should be <code>ws://100.101.102.103:8787/signal</code>.</li>
+                </ol>
+                <ul class="points">
+                <li>Already installed? Run <code>./install.sh 100.101.102.103</code> in the same folder; your settings are kept.</li>
+                <li><strong>If the macOS firewall is on,</strong> the script ends with the command to allow copysync-server.</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="Output of ./install.sh 100.101.102.103 in Terminal, ending with the address ws://100.101.102.103:8787/signal">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">copysync-server-macos — zsh</span></div>
+<pre class="t-body"><span class="t-prompt">%</span> ./install.sh 100.101.102.103
+<span class="t-step">▶ Stopping the running version</span>
+<span class="t-step">▶ Installing to /Users/me/Library/Application Support/CopySync Server</span>
+<span class="t-step">▶ Writing the LaunchAgent (relay address 100.101.102.103)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3. It starts whenever you log in to this Mac.
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://100.101.102.103:8787/signal</span>
+
+  Logs       /Users/me/Library/Logs/CopySync/server.log
+  Restart    launchctl kickstart -k gui/501/com.copysync.server
+  Uninstall  ./install.sh uninstall</pre>
+              </figure>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Linux</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>Run these lines, with your address on the last one:<span class="aside">On ARM, replace <code>amd64</code> with <code>arm64</code>.</span>
+                <div class="code">
+                  <button class="copy" type="button" data-done="Copied">Copy</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh 100.101.102.103</code></pre>
+                </div></li>
+                <li>The address at the end should be <code>ws://100.101.102.103:8787/signal</code>.</li>
+                </ol>
+                <div class="switch">
+                  <p><strong>Already installed?</strong> The Linux script leaves an existing config alone. Replace the old address in it with the Tailscale address (put your old address in place of <code>192.168.1.20</code>) and restart the service:</p>
+                  <div class="code">
+                  <button class="copy" type="button" data-done="Copied">Copy</button>
+<pre><code>sudo sed -i 's/192.168.1.20/100.101.102.103/g' /etc/copysync/server.env
+sudo systemctl restart copysync-server</code></pre>
+                </div>
+                </div>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="Output of sudo ./install.sh 100.101.102.103, ending with the address ws://100.101.102.103:8787/signal">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh 100.101.102.103</span></div>
+<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 100.101.102.103
+<span class="t-step">▶ Installing the binary to /usr/local/bin</span>
+<span class="t-step">▶ Writing the systemd unit</span>
+<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 100.101.102.103)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://100.101.102.103:8787/signal</span>
+
+  Config     /etc/copysync/server.env
+  Logs       journalctl -u copysync-server -f
+  Restart    systemctl restart copysync-server
+  Uninstall  sudo ./install.sh uninstall
+
+Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
+              </figure>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 4</p>
+        <h2 id="check-title">Check from outside</h2>
+        <p class="intro">On a computer outside your home network, or a laptop on your phone's hotspot, make sure Tailscale is connected and open <code>http://100.101.102.103:8787/healthz</code> in a browser. If you see this line, the server is reachable from outside.</p>
+        <figure class="browser" role="img" aria-label="A browser showing http://100.101.102.103:8787/healthz, with the server&#x27;s status ok and its version">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://100.101.102.103:8787/healthz</span></div>
+          <pre class="b-body">{"status":"ok","version":"1.3.3"}</pre>
+        </figure>
+        <p class="note">If it doesn't load, see the <a href="#faq">questions</a> below.</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 5</p>
+        <h2 id="clients-title">Enter the address on each computer</h2>
+        <ol class="flow">
+          <li><h3>Open Settings</h3><p>Open CopySync on each computer, including the one running the server, and go to Settings.</p></li>
+          <li><h3>Enter the Tailscale address</h3><p>Under Signaling server, enter <code>ws://100.101.102.103:8787/signal</code> with your address and press Return or Enter.</p></li>
+          <li><h3>Check the status</h3><p>When Connection shows a green Connected, you're set. If you haven't paired yet, pair under Devices.</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../../assets/screenshots/en/settings-tailscale-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync Settings: the signaling server is ws://100.101.102.103:8787/signal and the connection status shows Connected">
+        </figure>
+        <p class="note">Use the Tailscale address on your home computers too, not the LAN address, so nothing changes when a computer leaves the house. When they're all at home, the data still stays on your home network.</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">Questions</h2>
+        <div class="faq">
+          <details>
+            <summary>Devices show Direct, but it's slow</summary>
+            <div class="answer"><p>Direct in CopySync means the two computers connect directly on the Tailscale network. When Tailscale can't connect them peer to peer, it relays through its DERP servers, which can be far away.</p><p>Run <code>tailscale ping other-address</code> in a terminal: via DERP means Tailscale is relaying; via an IP and port means it's peer to peer. Office and campus networks relay more often; you can run your own DERP server or try another mesh VPN.</p></div>
+          </details>
+          <details>
+            <summary>The status stays at Not connected</summary>
+            <div class="answer"><p>First make sure Tailscale is connected on that computer, then open <code>http://server-tailscale-address:8787/healthz</code> in a browser.</p><p>If it doesn't load, check whether the server computer is asleep, whether Tailscale is online there (Run unattended on Windows, staying logged in on a Mac), whether the server still uses its LAN address, and whether a firewall on a Mac or Linux server blocks it.</p></div>
+          </details>
+          <details>
+            <summary>Does every computer need Tailscale?</summary>
+            <div class="answer"><p>Yes. A computer without it can't reach the 100.x addresses, and computers elsewhere can't reach it. That includes one that never leaves home.</p></div>
+          </details>
+          <details>
+            <summary>I already followed the LAN guide. Start over?</summary>
+            <div class="answer"><p>No. Run the install script again with the Tailscale address (on Linux, edit the config), then change the server address on each computer to the Tailscale one. Paired devices stay paired.</p></div>
+          </details>
+          <details>
+            <summary>Can Tailscale see what I copy?</summary>
+            <div class="answer"><p>No. Tailscale connections are end-to-end encrypted with WireGuard, and inside runs CopySync's own DTLS-encrypted connection; only your two computers can open either layer. Tailscale's servers only exchange device keys and addresses, and its relays forward encrypted packets.</p></div>
+          </details>
+          <details>
+            <summary>Will the server's Tailscale address change?</summary>
+            <div class="answer"><p>Usually not. The address belongs to the device and survives restarts and network changes; it only changes if you remove the device from Tailscale and add it again.</p></div>
+          </details>
+          <details>
+            <summary>I have a public IP. Do I need Tailscale?</summary>
+            <div class="answer"><p>No. Run the server on the machine with the public IP and enter that address on every computer; see the <a href="../../en/#cloud">steps on the home page</a>.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">The server stays home.<br>Your clipboard comes with you.</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
+        </div>
+        <p class="note">Version 1.3.3, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <a class="source" href="../../en/server/">Back to the LAN guide</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync is open source under the GNU AGPL-3.0, with commercial licenses available.</p>
+      <nav aria-label="Footer">
+        <a href="https://github.com/baiyuze/copysync/releases">All releases</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">Commercial license</a>
+        <a href="https://github.com/baiyuze/copysync/issues">Report an issue</a>
+      </nav>
+      <nav aria-label="Language">
+        <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/tailscale/" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a>
+        <a href="../../ja/tailscale/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

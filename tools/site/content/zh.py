@@ -13,8 +13,8 @@ C = {
     "skip": "跳到正文",
     "home_label": "CopySync 首页",
     "nav_label": "页面导航",
+    "nav_start": "快速开始",
     "nav_how": "工作原理",
-    "nav_install": "安装",
     "nav_faq": "常见问题",
     "nav_server": "部署服务器",
     "lang_label": "语言",
@@ -25,11 +25,28 @@ C = {
     "dl_mac": "下载 Mac 版",
     "dl_win": "下载 Windows 版",
     "dl_note": "版本 1.3.3，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
+    "start_link": "第一次用？看快速开始，三步配好 →",
     "stage_label": "演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来",
     "stage_file": "季度汇报-终版.pptx",
     "stage_win": "Windows 笔记本",
     "stage_arc": "直连，端到端加密",
     "replay": "再演示一次",
+
+    # 三种部署方式：(适用条件, 情况, 做法, 说明, 链接文字)，链接依次是局域网教程、Tailscale 教程、首页的云服务器部署
+    "paths_h2": "没有公网 IP，也能用",
+    "paths_intro": "两台电脑要靠一台服务器找到彼此。这台服务器不必在公网上：大多数人家里没有公网 IP，放在家里一台常开的电脑上就行。",
+    "paths": [
+        ("不需要公网 IP", "两台电脑在同一个网络里", "局域网部署",
+         "家里或办公室，连着同一个 Wi‑Fi 或有线网络。服务器装在其中一台常开的 Windows、Mac 或 Linux 电脑上，运行一个脚本就好。",
+         "局域网部署教程 →"),
+        ("不需要公网 IP", "一台在家，一台在公司", "局域网部署 + Tailscale",
+         "服务器照样放在家里。每台电脑装上 Tailscale，就像在同一个局域网里：笔记本带到哪儿，复制都能同步。",
+         "Tailscale 教程 →"),
+        ("需要公网 IP", "有一台公网服务器", "云服务器部署",
+         "一台有公网 IP 的 Linux 云主机，最低配置就够。所有电脑直接连它，不用另装组网工具。",
+         "部署步骤 →"),
+    ],
+    "paths_after": "拿不准选哪个？跟着<a href=\"{start}\">快速开始</a>一步步来。",
 
     "history_h2": "所有设备上复制过的，都在这里",
     "history_intro": "复制记录保留最近 3 天的内容，随时可以放回剪贴板，图片点开就能预览。"
@@ -138,7 +155,7 @@ C = {
     ],
 
     "install_h2": "安装",
-    "install_intro": "每台电脑装一个 App，再准备一台两边都能访问到的服务器。两台电脑在同一个局域网的话，服务器放在其中一台 Windows、Mac 或 Linux 电脑上就行，见<a href=\"server/\">局域网部署教程</a>。",
+    "install_intro": "每台电脑装一个 App，再准备一台服务器。不需要公网 IP：服务器放在家里一台常开的电脑上，同一个局域网直接用，不在同一个网络就加上 Tailscale。第一次装可以跟着<a href=\"{start}\">快速开始</a>。",
     "mac_steps": [
         "下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。",
         "从「应用程序」里打开。<span class=\"aside\">第一次会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证。"
@@ -154,7 +171,10 @@ C = {
         "在「设置」里填入服务器地址，按回车。防火墙询问时选择允许。",
     ],
     "server_h3": "服务器",
-    "server_intro": "跨公网使用时，一台有公网 IP 的 Linux 服务器，需要 root。ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。",
+    "server_lan": "<strong>没有公网 IP 也行。</strong>服务器装在家里或办公室一台常开的 Windows、Mac 或 Linux 电脑上，运行一个脚本。不在同一个网络的电脑，装上 Tailscale 就能连回来。",
+    "server_ts": "用 Tailscale 跨网络",
+    "server_cloud": "有公网 IP 的服务器",
+    "server_intro": "一台有公网 IP 的 Linux 服务器，需要 root。ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。",
     "copy": "复制",
     "copied": "已复制",
     "public_ip": "你的公网IP",
@@ -203,8 +223,12 @@ C = {
             "实测公司 4 个出口与家用宽带之间可以直连。对端是端口随机分配的 NAT 时仍会走中转。",
         ]),
         ("必须自己准备服务器吗？", [
-            "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。两台电脑在同一个局域网时，在其中一台常开的 Windows、Mac 或 Linux 电脑上运行服务器即可，见<a href=\"server/\">局域网部署教程</a>；"
-            "跨网络使用需要一台有公网 IP 的服务器，最低配置的云主机就够。",
+            "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。但它不需要公网 IP：放在家里一台常开的 Windows、Mac 或 Linux 电脑上就行，见<a href=\"{server}\">局域网部署教程</a>；"
+            "不在同一个网络的电脑，装上 Tailscale 就能连回来，见<a href=\"{ts}\">Tailscale 教程</a>。有公网 IP 的话，也可以部署在云服务器上，最低配置就够。",
+        ]),
+        ("家里没有公网 IP，能在家和公司之间同步吗？", [
+            "能。服务器装在家里一台常开的电脑上，家里和公司的电脑都装上 Tailscale、登录同一个账号，服务器地址填它的 Tailscale 地址。"
+            "它们就像在同一个局域网里，复制的内容照样在两台电脑之间直接传输。步骤见<a href=\"{ts}\">用 Tailscale 跨网络使用</a>。",
         ]),
         ("支持 Windows 吗？iPhone 呢？", [
             "支持 Windows 10 与 Windows 11（x64），与 Mac 互通。复制的文件在 Windows 上粘贴出来就是真实文件，能直接粘进资源管理器、微信、Office。",
@@ -243,7 +267,8 @@ C = {
         "h1": "在局域网里部署服务器",
         "lede": "家里或办公室的电脑在同一个网络里，就不需要云服务器。找一台常开的电脑，下载、运行一个脚本，"
                 "再把它显示的地址填进每台电脑的 CopySync 里。",
-        "toc": [("prepare", "准备"), ("install", "安装服务器"), ("check", "检查"), ("clients", "填地址"), ("faq", "常见问题")],
+        "hero_aside": "两台电脑不在同一个网络，又没有公网 IP？看<a href=\"{ts}\">用 Tailscale 跨网络使用</a>。",
+        "toc": [("prepare", "准备"), ("install", "安装服务器"), ("check", "检查"), ("clients", "填地址"), ("away", "离开家也想用"), ("faq", "常见问题")],
 
         "overview_h2": "服务器只负责牵线",
         "overview_intro": "每台电脑一直连着服务器，靠它找到对方、交换连接信息。连上之后，复制的内容在两台电脑之间直接传输；"
@@ -276,8 +301,8 @@ C = {
             ("一个固定的地址", "在路由器的「DHCP 静态分配」（也叫「地址保留」「IP 与 MAC 绑定」）里给这台电脑固定一个地址。"
                              "不然路由器换了地址，每台电脑都要重新填。"),
             ("在同一个网络里", "设备连同一个 Wi‑Fi 或有线网络就行。访客网络、开了「AP 隔离」的 Wi‑Fi 不让设备互相访问，需要换个网络或关掉隔离。"),
-            ("离开这个网络就不同步", "服务器只在局域网里访问得到，笔记本带出门后，回来才会继续同步。想在任何地方都能同步，"
-                                   "需要一台有公网 IP 的服务器，见首页的「安装」。"),
+            ("离开这个网络也想同步", "服务器只在局域网里访问得到。笔记本带出门也想同步，给每台电脑装上 Tailscale 就行，"
+                                   "不需要公网 IP，见<a href=\"{ts}\">Tailscale 教程</a>。"),
         ],
 
         "install_h2": "安装服务器",
@@ -366,7 +391,11 @@ C = {
             ("看连接状态", "「连接状态」变成绿色的「已连接」就好了。接着在「设备」里配对，之后复制就会同步。"),
         ],
         "clients_alt": "CopySync 的设置页：信令服务器地址填着 ws://192.168.1.20:8787/signal，连接状态显示已连接",
-        "clients_after": '还没装 App？见首页的<a href="{home}#install">安装</a>。',
+        "clients_after": '还没装 App？见<a href="{start}">快速开始</a>。',
+
+        "away_h2": "离开家，也想同步？",
+        "away_text": "给每台电脑装上 Tailscale，服务器用它分配的地址，在公司、在外面都能连回家里的服务器，就像在同一个局域网里。不需要公网 IP，也不用改路由器。",
+        "away_button": "用 Tailscale 跨网络使用",
 
         "faq_h2": "常见问题",
         "faq": [
@@ -386,8 +415,9 @@ C = {
                 "在路由器里给它固定一个地址，就不会再遇到这件事。",
             ]),
             ("离开局域网以后还能同步吗？", [
-                "不能，服务器只在局域网里访问得到。要在外面也能用，可以把服务器部署到有公网 IP 的机器上（首页的「安装」里有步骤），"
-                "或者用 Tailscale、ZeroTier 这类组网工具把设备连进同一个虚拟局域网，服务器地址填它在虚拟网里的地址。",
+                "能，加上 Tailscale 就行：每台电脑装上 Tailscale、登录同一个账号，服务器用 Tailscale 地址安装，客户端也填这个地址，不需要公网 IP。"
+                "步骤见<a href=\"{ts}\">用 Tailscale 跨网络使用</a>。",
+                "有公网 IP 的话，也可以把服务器部署到云服务器上，见<a href=\"{home}#cloud\">首页的部署步骤</a>。",
             ]),
             ("用国内的云服务器，填域名连不上、填 IP 却能连？", [
                 "域名没有备案时，国内的云厂商会拦截访问它的明文 HTTP 请求，返回一个跳转到拦截页的响应，实测 8787 这样的非常用端口也一样。"
@@ -401,6 +431,217 @@ C = {
 
         "closing": "一台常开的电脑，就够了。",
         "source": "服务器的完整部署说明（含公网与 Docker）",
+    },
+
+    # ── 快速开始（start/ 页面） ──
+    "start": {
+        "title": "快速开始：三步用上 CopySync",
+        "description": "第一次用 CopySync？在每台电脑上安装 App，选一种方式部署服务器（局域网、Tailscale 或云服务器），"
+                       "填好地址再配对，就能在 Mac 与 Windows 之间复制粘贴。不需要公网 IP。",
+        "h1": "快速开始",
+        "lede": "装好 App，准备一台服务器，再把两台电脑配对。第一次大约十分钟，之后复制就会自动同步。",
+        "toc": [("app", "安装 App"), ("server", "准备服务器"), ("connect", "填服务器地址"), ("pair", "配对")],
+        "step": "第 {n} 步",
+
+        "app_h2": "在每台电脑上安装 App",
+        "app_intro": "要同步的每台电脑都装一个，Mac 与 Windows 可以混用。",
+        "mac": [
+            "下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。",
+            "从「应用程序」里打开。<span class=\"aside\">第一次会提示「无法验证开发者」：到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」。</span>",
+            "点「启用后台同步」。系统询问是否允许读取剪贴板时，选择允许。",
+        ],
+        "win": [
+            "运行 CopySync-Setup.exe，不需要管理员权限。<span class=\"aside\">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span>",
+            "打开 CopySync，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。",
+        ],
+        "app_alt": "第一次打开 CopySync：提示启用后台同步",
+
+        "server_h2": "准备一台服务器",
+        "server_intro": "两台电脑靠它找到彼此，复制的内容不会存在上面。CopySync 不提供公共服务器，按你的情况选一种：",
+        "server_after": "装好后，安装脚本最后会显示一个地址，形如 <code>ws://192.168.1.20:8787/signal</code>，下一步要用。",
+
+        "connect_h2": "在每台电脑上填服务器地址",
+        "connect_steps": [
+            ("打开设置", "在每台电脑上打开 CopySync，进入「设置」。服务器所在的那台电脑也一样。"),
+            ("填入地址", "在「信令服务器地址」里填上一步显示的地址，按回车保存。"),
+            ("看连接状态", "「连接状态」变成绿色的「已连接」，这台电脑就准备好了。"),
+        ],
+        "connect_alt": "CopySync 的设置页：信令服务器地址填着 ws://192.168.1.20:8787/signal，连接状态显示已连接",
+        "connect_after": "一直是「未连接」？看<a href=\"{server}#faq\">常见问题</a>。",
+
+        "pair_h2": "把两台电脑配对",
+        "pair_intro": "每两台电脑之间配对一次，之后就不用再管了。",
+        "pair_steps": [
+            "在一台电脑上打开「设备」，点「添加设备」，会显示一个 6 位配对码，5 分钟内有效。",
+            "在另一台电脑上同样点「添加设备」，切到「输入配对码」，输入它。",
+            "两块屏幕会显示同样的两行安全指纹。逐字核对一致后，再点确认。"
+            "<span class=\"aside\">这一步防止有人在中间冒充你的设备，不要跳过。</span>",
+        ],
+        "pair_alt": "添加设备：显示配对码 K7MP2X，在另一台设备上输入它",
+
+        "done_h2": "复制试试。",
+        "done_text": "在一台电脑上复制文字、图片或文件，到另一台按 ⌘V 或 Ctrl+V。两边复制过的内容都在「复制记录」里。",
+        "help": "遇到问题：<a href=\"{server}#faq\">局域网部署的常见问题</a> · <a href=\"{ts}#faq\">Tailscale 的常见问题</a> · "
+                "<a href=\"{issues}\">反馈问题</a>",
+    },
+
+    # ── 用 Tailscale 跨网络使用（tailscale/ 页面） ──
+    "ts": {
+        "title": "用 Tailscale 跨网络使用 CopySync：没有公网 IP 也能在家和公司之间同步",
+        "description": "服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale，就像在同一个局域网里："
+                       "不需要公网 IP，也不用改路由器，在公司、在外面都能同步剪贴板。Windows、Mac、Linux 图文教程。",
+        "h1": "用 Tailscale 跨网络使用",
+        "lede": "没有公网 IP，也能在家和公司之间同步。服务器照样放在家里，每台电脑装上 Tailscale，"
+                "它们就像在同一个局域网里，不用改路由器，也不用买云服务器。",
+        "toc": [("join", "装 Tailscale"), ("address", "查地址"), ("install", "安装服务器"), ("check", "检查"),
+                ("clients", "填地址"), ("faq", "常见问题")],
+        "step": "第 {n} 步",
+
+        "overview_h2": "像在同一个局域网里",
+        "overview_intro": "Tailscale 是一个组网工具：装了它、登录同一个账号的设备，各自分到一个固定的 100 开头的地址，"
+                          "不管实际在哪个网络里，都能用这个地址互相访问。CopySync 的服务器用这个地址安装，客户端也填这个地址，其余和局域网部署一样。",
+        "diagram": {
+            "title": "通过 Tailscale 使用 CopySync",
+            "desc": "服务器在家里，Mac 在公司，Windows 在家里，三台设备都装了 Tailscale，在同一个虚拟局域网里各有一个 100 开头的地址。"
+                    "两台电脑通过信令连接到服务器 100.101.102.103，复制的内容在两台电脑之间直连传输，直连不通时经服务器中转。",
+            "net": "Tailscale 虚拟局域网：每台设备一个 100 开头的地址",
+            "server": "服务器",
+            "server_place": "在家里，一直开着",
+            "mac_place": "在公司",
+            "win_place": "在家里",
+            "sig_note": "信令 TCP 8787",
+            "relay_note": "中转 UDP 3478，直连不通时",
+            "direct": "直连，两层加密",
+            "direct_note": "复制的内容只在两台电脑之间传输",
+        },
+        "overview_points": [
+            "<strong>服务器还在家里。</strong>任意一台常开的 Windows、Mac 或 Linux 电脑，和局域网部署一样。",
+            "<strong>每台电脑都装 Tailscale，</strong>登录同一个账号。服务器所在的那台也要装。",
+            "<strong>两层加密。</strong>Tailscale 的 WireGuard 隧道里，跑的是 CopySync 自己端到端加密的连接，Tailscale 和你的服务器都看不到内容。",
+        ],
+
+        "prep": [
+            ("一台常开的电脑", "当服务器用，要求和<a href=\"{server}#prepare\">局域网部署</a>一样，关机或睡眠时同步会暂停。"
+                             "它的 Tailscale 地址不会变，不需要在路由器里固定地址。"),
+            ("一个 Tailscale 账号", "个人使用免费，用 Google、Microsoft、GitHub 或 Apple 账号就能登录。所有设备登录同一个账号。"),
+            ("每台电脑都装 Tailscale", "Windows、macOS、Linux 都有客户端。用 CopySync 的电脑都要装，一直待在家里的那台也一样。"),
+            ("用 ZeroTier 也行", "其他能给每台设备分配固定虚拟地址的组网工具，做法相同：服务器用它分配的地址安装，客户端填这个地址。下面以 Tailscale 为例。"),
+        ],
+
+        "join_h2": "在每台电脑上装 Tailscale",
+        "join_intro": "服务器所在的电脑和每台要同步的电脑，都装上并登录同一个账号。",
+        "join_steps": [
+            "到 Tailscale 官网下载对应系统的客户端并安装。"
+            "<span class=\"aside\">Linux 上运行 <code>curl -fsSL https://tailscale.com/install.sh | sh</code>，再运行 <code>sudo tailscale up</code>，打开它给出的链接登录。</span>",
+            "打开 Tailscale，登录。每台电脑都用同一个账号。",
+            "登录后，在 Tailscale 的管理后台能看到所有设备，每台都有一个 100 开头的地址。",
+        ],
+        "join_download": "下载 Tailscale",
+        "machines_cols": ["设备", "Tailscale 地址", "系统"],
+        "machines_server": "服务器",
+        "machines_label": "Tailscale 管理后台的设备列表（示意）：mac-mini 是服务器，地址 100.101.102.103；macbook-pro 是 100.88.20.5；home-pc 是 100.92.41.17",
+        "server_notes_h3": "服务器所在的那台电脑，再多做一步",
+        "server_notes": [
+            "<strong>Windows：</strong>在任务栏右下角的 Tailscale 图标上右键，在「Preferences」里勾选「Run unattended」。"
+            "不然注销之后 Tailscale 会断开，外面的电脑就连不上服务器了。",
+            "<strong>Mac：</strong>保持登录、不睡眠，确认 Tailscale 登录后会自动打开。CopySync 的服务器也是登录后才运行。",
+            "<strong>关掉密钥过期：</strong>Tailscale 默认每 180 天要求设备重新登录一次。在管理后台的 Machines 页面，"
+            "点服务器那一行最右边的菜单，选「Disable key expiry」。",
+        ],
+
+        "address_h2": "查服务器的 Tailscale 地址",
+        "address_intro": "在服务器所在的电脑上点菜单栏（Windows 上是任务栏右下角）的 Tailscale 图标，菜单里能看到本机的地址；"
+                         "或者在终端里运行 <code>tailscale ip -4</code>。",
+        "address_label": "在终端里运行 tailscale ip -4，输出本机的 Tailscale 地址 100.101.102.103",
+        "address_after": "下面都以 <code>100.101.102.103</code> 为例，换成你的地址。",
+
+        "install_h2": "用这个地址安装服务器",
+        "install_intro": "安装脚本默认用局域网地址，这里要带上 Tailscale 地址，外面的电脑才用得到服务器的中转。"
+                         "已经照<a href=\"{server}\">局域网教程</a>装过的，带上地址再运行一次即可，原来的设置保留。",
+        "win": {
+            "steps": [
+                "下载 copysync-server-windows-amd64.zip，右键选「全部解压缩」。已经装过的，用原来解压出的文件夹。",
+                "打开解压出的文件夹，在窗口顶部的地址栏里输入 <code>cmd</code>，按回车，打开命令提示符。",
+                "运行 <code>install.cmd 100.101.102.103</code>（换成你的地址），弹出用户账户控制时点「是」。",
+                "安装在新打开的窗口里进行。最后显示的地址应当是 <code>ws://100.101.102.103:8787/signal</code>。",
+            ],
+            "notes": [
+                "<strong>防火墙已经放行：</strong>脚本添加的入站规则对所有网络生效，Tailscale 的网卡也包括在内。",
+                "提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。",
+            ],
+            "cmd_title": "命令提示符",
+            "cmd_label": "在解压出的文件夹里打开命令提示符，运行 install.cmd 100.101.102.103",
+            "term_label": "install.cmd 运行完的窗口：最后显示客户端要填的地址 ws://100.101.102.103:8787/signal",
+        },
+        "mac": {
+            "steps": [
+                "打开「终端」，逐行运行，最后一行换成你的地址：",
+                "最后显示的地址应当是 <code>ws://100.101.102.103:8787/signal</code>。",
+            ],
+            "notes": [
+                "已经装过的，在原来的文件夹里运行 <code>./install.sh 100.101.102.103</code> 即可，原来的设置保留。",
+                "<strong>开着系统防火墙的话，</strong>脚本最后会给出放行 copysync-server 的命令。",
+            ],
+            "term_label": "在终端里运行 ./install.sh 100.101.102.103 的输出，最后显示客户端要填的地址 ws://100.101.102.103:8787/signal",
+        },
+        "linux": {
+            "steps": [
+                "逐行运行，最后一行换成你的地址：<span class=\"aside\">ARM 设备把 <code>amd64</code> 换成 <code>arm64</code>。</span>",
+                "最后显示的地址应当是 <code>ws://100.101.102.103:8787/signal</code>。",
+            ],
+            "switch": "<strong>已经装过的：</strong>Linux 的安装脚本不会改动已有的配置。把配置里原来的地址换成 Tailscale 地址"
+                      "（下面的 <code>192.168.1.20</code> 换成你原来的地址），再重启服务：",
+            "term_label": "运行 sudo ./install.sh 100.101.102.103 的输出，最后显示客户端要填的地址 ws://100.101.102.103:8787/signal",
+        },
+
+        "check_h2": "从外面检查一下",
+        "check_intro": "找一台不在家里网络的电脑，或者让笔记本连上手机热点，确认 Tailscale 已连接，"
+                       "在浏览器里打开 <code>http://100.101.102.103:8787/healthz</code>。看到下面这一行，在外面也能访问到服务器了。",
+        "check_label": "浏览器打开 http://100.101.102.103:8787/healthz，页面显示服务器的状态 ok 与版本号",
+        "check_after": "打不开的话，看下面的<a href=\"#faq\">常见问题</a>。",
+
+        "clients_h2": "在每台电脑上填地址",
+        "clients_steps": [
+            ("打开设置", "在每台电脑上打开 CopySync，进入「设置」。服务器所在的那台电脑也一样。"),
+            ("填 Tailscale 地址", "在「信令服务器地址」里填 <code>ws://100.101.102.103:8787/signal</code>（换成你的地址），按回车保存。"),
+            ("看连接状态", "「连接状态」变成绿色的「已连接」就好了。还没配对的话，在「设备」里配对。"),
+        ],
+        "clients_alt": "CopySync 的设置页：信令服务器地址填着 ws://100.101.102.103:8787/signal，连接状态显示已连接",
+        "clients_after": "家里的电脑也填 Tailscale 地址，不要填局域网地址：这样电脑在家、在外面，地址都不用改。都在家时，数据照样只在家里的网络里走。",
+
+        "faq": [
+            ("设备之间显示「直连」，速度却很慢？", [
+                "CopySync 显示的「直连」，指两台电脑在 Tailscale 的虚拟网里直接相连。Tailscale 自己打不通两台电脑时，"
+                "会经它在境外的中转服务器（DERP）转发，在国内用就会慢。",
+                "在终端里运行 <code>tailscale ping 对方的地址</code>：显示 via DERP，说明 Tailscale 在中转；显示 via 一个 IP 和端口，就是点对点。"
+                "公司网络、校园网比较容易遇到中转，可以自建 DERP 中转服务器，或者换一种组网工具。",
+            ]),
+            ("连接状态一直是「未连接」？", [
+                "先确认这台电脑的 Tailscale 已连接，再在浏览器里打开 <code>http://服务器的 Tailscale 地址:8787/healthz</code>。",
+                "打不开的话，看服务器那台电脑是不是睡眠了、Tailscale 是否在线（Windows 上要勾选 Run unattended，Mac 上要保持登录），"
+                "服务器是不是还用着局域网地址，以及 Mac、Linux 上的防火墙有没有放行。",
+            ]),
+            ("一定要每台电脑都装 Tailscale 吗？", [
+                "是的。没装的电脑访问不到 100 开头的地址，在外面的电脑也找不到它。一直待在家里的那台也要装。",
+            ]),
+            ("已经照局域网教程装好了，要从头来吗？", [
+                "不用。带上 Tailscale 地址把安装脚本再运行一次（Linux 上改一下配置），然后在每台电脑上把服务器地址改成 Tailscale 地址。"
+                "已经配对的设备不用重新配对。",
+            ]),
+            ("Tailscale 能看到我复制的内容吗？", [
+                "不能。Tailscale 的连接用 WireGuard 端到端加密，里面跑的又是 CopySync 自己的 DTLS 加密连接，两层都只有两台电脑能解开。"
+                "Tailscale 的服务器只交换设备的公钥和地址，中转服务器也只转发加密后的数据包。",
+            ]),
+            ("服务器的 Tailscale 地址会变吗？", [
+                "一般不会。地址跟着设备走，重启、换网络都不变；只有把设备从 Tailscale 里删掉再重新加入，才会换一个。",
+            ]),
+            ("我有公网 IP，还需要 Tailscale 吗？", [
+                "不需要。把服务器部署在有公网 IP 的机器上，所有电脑填它的公网地址就行，见<a href=\"{home}#cloud\">首页的部署步骤</a>。",
+            ]),
+        ],
+
+        "closing": "服务器在家里，<br>复制跟着你走。",
+        "source": "回到局域网部署教程",
     },
 
     "ld_description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。"

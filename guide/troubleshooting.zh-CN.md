@@ -8,6 +8,9 @@
 **国内云服务器：填域名连不上，填 IP 能连**
 域名没有备案时，国内云厂商会拦截访问它的明文 HTTP 请求，任何端口都一样，返回一个跳转到拦截页的响应。WebSocket 握手就是明文 HTTP 请求，所以同样被拦。地址里直接填 IP（`ws://<服务器IP>:8787/signal`），或者给域名备案。
 
+**用 Tailscale 时显示「直连」，传输却很慢**
+「直连」指两台电脑在 Tailscale 的虚拟网里直接相连。Tailscale 自己打不通两台电脑时，会经它在境外的中转服务器（DERP）转发，在国内用就会慢。运行 `tailscale ping <对方>`：显示 via DERP 说明 Tailscale 在中转，显示 via <IP>:<端口> 才是点对点。另外确认服务器是用 Tailscale 地址安装的，每台电脑填的都是 `ws://<Tailscale 地址>:8787/signal`，见 [Tailscale 教程](https://baiyuze.github.io/copysync/tailscale/)。
+
 **UU 远程开启时不断新增 `.uuremote_…` 文件记录**
 升级两端客户端到 1.3.2 或更新的版本。UU 远程会把临时占位文件写入系统剪贴板，旧版 CopySync 会把它们当成普通文件再次转发。新版在扫描、入库和发送之前过滤已确认的 `.uuremote_aeawv` 加数字命名；混合选择保留正常文件，接收端忽略纯占位记录，启动时清理历史里的纯占位记录（不删除 UU 的源文件）。普通空文件、隐藏文件和大文件不受这条规则影响。50 MB 是自动传输阈值，不是故障原因；无需关闭 UU 的 UDP P2P。其他剪贴板同步工具仍可能造成普通内容重复，可只保留一个工具负责剪贴板同步。技术与验证记录见 [UU 远程兼容修复](../design/uu-remote-clipboard.md)。
 

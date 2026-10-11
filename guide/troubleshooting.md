@@ -8,6 +8,9 @@ Check that the address starts with `ws://`, uses port 8787 and ends in `/signal`
 **A cloud server in mainland China works by IP but not by domain**
 Providers in mainland China intercept plain HTTP requests for domains without an ICP filing, on any port, and answer with a redirect to a block page. The WebSocket handshake is a plain HTTP request, so it's intercepted too. Enter the IP, as in `ws://<server IP>:8787/signal`, or file the domain.
 
+**Using Tailscale: devices show Direct, but transfers are slow**
+Direct means the two computers connect directly on the Tailscale network. When Tailscale can't connect them peer to peer, it relays through its DERP servers, which can be far away. Run `tailscale ping <other device>`: "via DERP" means Tailscale is relaying, "via <IP>:<port>" means peer to peer. Also make sure the server was installed on its Tailscale address and every computer uses `ws://<Tailscale address>:8787/signal`; see the [Tailscale guide](https://baiyuze.github.io/copysync/en/tailscale/).
+
 **`.uuremote_…` file records keep appearing while UU Remote is running**
 Upgrade both clients to 1.3.2 or later. UU Remote puts temporary placeholder files on the system clipboard; older CopySync clients recorded and forwarded them as ordinary files. The new version filters the confirmed `.uuremote_aeawv` followed by digits before scanning, recording or sending, keeps ordinary files in mixed selections, ignores placeholder-only incoming offers, and removes placeholder-only history on startup without deleting UU's source files. Ordinary empty, hidden and large files are unaffected. The 50 MB threshold controls automatic transfer; there is no need to disable UU's UDP P2P. Other clipboard sync tools can still duplicate ordinary content; use one clipboard sync provider if needed. See the [investigation and validation notes](../design/uu-remote-clipboard.md).
 

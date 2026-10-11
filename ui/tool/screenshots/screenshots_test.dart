@@ -320,6 +320,29 @@ void main() {
         section: Section.settings, brightness: Brightness.dark);
   });
 
+  // 网站「用 Tailscale 跨网络使用」：服务器地址填 Tailscale 分配的 100.x 地址
+  testWidgets('settings-tailscale-dark', (tester) async {
+    await _shoot(tester, 'settings-tailscale-dark',
+        state: _demo(server: 'ws://100.101.102.103:8787/signal'),
+        section: Section.settings, brightness: Brightness.dark);
+  });
+
+  // 网站「快速开始」：第一次打开、生成配对码，深色界面配深色网页
+  testWidgets('welcome-dark', (tester) async {
+    final state = _demo(link: LinkState.offline, service: ServiceState.notInstalled, empty: true);
+    await _shoot(tester, 'welcome-dark', state: state, brightness: Brightness.dark);
+  });
+
+  testWidgets('pairing-dark', (tester) async {
+    await _shoot(tester, 'pairing-dark', state: _demo(), section: Section.devices,
+        brightness: Brightness.dark, arrange: () async {
+      showDialog<void>(
+        context: tester.element(find.byType(Shell)),
+        builder: (_) => const PairingDialog(),
+      );
+    });
+  });
+
   // 网站上与文字并排展示的对话框：单独渲染，透明背景，保留对话框自己的圆角与阴影
   for (final dark in [false, true]) {
     testWidgets(dark ? 'card-verify-dark' : 'card-verify', (tester) async {

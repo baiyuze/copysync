@@ -107,7 +107,15 @@
             "name": "Do I need my own server?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. There is no public server, so nobody's data passes through anyone else's machine. On a LAN, run the server on any always-on Windows, Mac or Linux computer; see the LAN guide. Across networks you need a machine with a public IP; the smallest cloud VM is enough."
+              "text": "Yes. There is no public server, so nobody's data passes through anyone else's machine. But it doesn't need a public IP: an always-on Windows, Mac or Linux computer at home will do; see the LAN guide. Computers on other networks reach it through Tailscale; see the Tailscale guide. If you have a public IP, a cloud server works too, and the smallest VM is enough."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "No public IP at home. Can I sync between home and the office?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Run the server on an always-on computer at home, install Tailscale on your home and office computers under the same account, and use the server's Tailscale address. They behave as if they shared a LAN, and what you copy still goes directly between the two computers. See Use it across networks with Tailscale."
             }
           },
           {
@@ -155,8 +163,8 @@
     <div class="wrap">
       <a class="brand" href="./" aria-label="CopySync home"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
       <nav aria-label="Page">
+        <a href="start/">Quick start</a>
         <a class="wide" href="#how">How it works</a>
-        <a class="wide" href="#install">Install</a>
         <a class="wide" href="#faq">FAQ</a>
         <a href="server/">Self-host</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
@@ -176,6 +184,7 @@
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
         </div>
         <p class="note">Version 1.3.3, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <a class="start-link" href="start/">New here? Set it up in three steps →</a>
         <div class="stage" data-play role="img" aria-label="Demo: Command C on a MacBook turns a file into a sheet that flies over a direct connection to a Windows laptop, where Ctrl V pastes it">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -200,6 +209,40 @@
           <span class="sheet-fly" aria-hidden="true"><span class="lines"><i></i><i></i><i></i></span></span>
         </div>
         <button class="replay" type="button">Play again</button>
+      </div>
+    </section>
+
+    <section class="section" id="deploy" aria-labelledby="deploy-title">
+      <div class="wrap">
+        <h2 id="deploy-title">No public IP? No problem</h2>
+        <p class="intro">Your computers find each other through a server, but it doesn't have to be on the public internet. Most home connections have no public IP, and an always-on computer at home works fine.</p>
+        <div class="paths">
+          <a class="path" href="server/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
+            <span class="path-tag">No public IP needed</span>
+            <span class="path-when">Both computers on one network</span>
+            <h3>On your LAN</h3>
+            <p>At home or in the office, on the same Wi‑Fi or wired network. Run the server on one of your always-on Windows, Mac or Linux computers with a single script.</p>
+            <span class="path-go">LAN guide →</span>
+          </a>
+          <a class="path" href="tailscale/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
+            <span class="path-tag">No public IP needed</span>
+            <span class="path-when">One at home, one at the office</span>
+            <h3>LAN + Tailscale</h3>
+            <p>The server stays at home. Install Tailscale on each computer and they act as if they shared a LAN, so your laptop keeps syncing wherever you take it.</p>
+            <span class="path-go">Tailscale guide →</span>
+          </a>
+          <a class="path" href="#cloud">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-tag">Needs a public IP</span>
+            <span class="path-when">You have a public server</span>
+            <h3>Cloud server</h3>
+            <p>A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly, with nothing else to install.</p>
+            <span class="path-go">Setup steps →</span>
+          </a>
+        </div>
+        <p class="note">Not sure which? Follow the <a href="start/">quick start</a>.</p>
       </div>
     </section>
 
@@ -373,7 +416,7 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">Install</h2>
-        <p class="intro">Install the app on each computer, and set up a server both of them can reach. If both share a LAN, the server can run on one of your Windows, Mac or Linux computers; see the <a href="server/">LAN guide</a>.</p>
+        <p class="intro">Install the app on each computer and set up a server. No public IP needed: run the server on an always-on computer at home, use it directly on your LAN, and add Tailscale for computers elsewhere. First time? Follow the <a href="start/">quick start</a>.</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
@@ -396,7 +439,13 @@
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Server</h3>
-            <p class="small">To use it across networks: a Linux server with a public IP, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.</p>
+            <p class="small"><strong>No public IP needed.</strong> Run the server on an always-on Windows, Mac or Linux computer at home or in the office with one script. Computers on other networks reach it through Tailscale.</p>
+            <div class="stack">
+              <a class="button" href="server/">LAN setup guide</a>
+              <a class="button quiet" href="tailscale/">Across networks with Tailscale</a>
+            </div>
+            <h4 id="cloud">On a server with a public IP</h4>
+            <p class="small">A Linux server with a public IP, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.</p>
             <div class="code">
               <button class="copy" type="button" data-done="Copied">Copy</button>
 <pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
@@ -414,7 +463,6 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
               </tbody>
             </table>
             <p class="small">Docker works too; see the <a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">server deployment guide</a>.</p>
-            <a class="button quiet" href="server/">LAN setup guide</a>
           </div>
         </div>
         <p class="pairing"><strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints. Mac with Windows, or two Windows PCs, works the same way.</p>
@@ -469,7 +517,11 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
           </details>
           <details>
             <summary>Do I need my own server?</summary>
-            <div class="answer"><p>Yes. There is no public server, so nobody's data passes through anyone else's machine. On a LAN, run the server on any always-on Windows, Mac or Linux computer; see the <a href="server/">LAN guide</a>. Across networks you need a machine with a public IP; the smallest cloud VM is enough.</p></div>
+            <div class="answer"><p>Yes. There is no public server, so nobody's data passes through anyone else's machine. But it doesn't need a public IP: an always-on Windows, Mac or Linux computer at home will do; see the <a href="server/">LAN guide</a>. Computers on other networks reach it through Tailscale; see the <a href="tailscale/">Tailscale guide</a>. If you have a public IP, a cloud server works too, and the smallest VM is enough.</p></div>
+          </details>
+          <details>
+            <summary>No public IP at home. Can I sync between home and the office?</summary>
+            <div class="answer"><p>Yes. Run the server on an always-on computer at home, install Tailscale on your home and office computers under the same account, and use the server's Tailscale address. They behave as if they shared a LAN, and what you copy still goes directly between the two computers. See <a href="tailscale/">Use it across networks with Tailscale</a>.</p></div>
           </details>
           <details>
             <summary>Windows? iPhone?</summary>
@@ -499,6 +551,7 @@ sudo ./install.sh YOUR_PUBLIC_IP</code></pre>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
         </div>
         <p class="note">Version 1.3.3, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <a class="start-link" href="start/">New here? Set it up in three steps →</a>
         <a class="source" href="https://github.com/baiyuze/copysync">View the source on GitHub</a>
       </div>
     </section>

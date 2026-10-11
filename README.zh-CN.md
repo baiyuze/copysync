@@ -65,20 +65,25 @@ CopySync 的做法是：两台电脑配对一次，之后在一台上复制，�
 
 ## 开始使用
 
-需要**每台电脑装一个 App**，再加**一台两端都能访问到的服务器**。
+第一次用？跟着**[快速开始](https://baiyuze.github.io/copysync/start/)**一步步来，有截图。需要**每台电脑装一个 App**，再加**一台两端都能访问到的服务器**。服务器不需要公网 IP：大多数人放在家里一台常开的电脑上就行。
 
-**1. 部署服务器。**
+**1. 部署服务器。**按你的情况选一种：
 
-- *同一个局域网*（家里或办公室）：放在任意一台常开的 Windows、Mac 或 Linux 电脑上，下载后运行一个安装脚本即可。图文教程：**[在局域网里部署服务器](https://baiyuze.github.io/copysync/server/)**。
-- *跨公网*：一台有公网 IP 的 Linux 服务器，需要 root：
+| 你的情况 | 做法 | 公网 IP |
+|---|---|:-:|
+| 两台电脑在同一个网络里（家里或办公室） | 服务器放在其中一台常开的 Windows、Mac 或 Linux 电脑上，运行一个安装脚本。**[局域网部署教程](https://baiyuze.github.io/copysync/server/)** | 不需要 |
+| 一台在家，一台在公司 | 服务器照样放在家里，每台电脑装上 [Tailscale](https://tailscale.com)，服务器用它的 Tailscale 地址安装。**[Tailscale 教程](https://baiyuze.github.io/copysync/tailscale/)** | 不需要 |
+| 有一台公网服务器 | Linux，需要 root，见下面 | 需要 |
 
-  ```bash
-  curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
-  tar xzf copysync-server-linux-amd64.tar.gz && cd copysync-server-linux-amd64
-  sudo ./install.sh <服务器公网IP>
-  ```
+有公网 IP 的服务器：
 
-  放行 TCP 8787、UDP 3478 与 UDP 32768–60999。Docker 部署与全部参数见[服务器部署说明](server/deploy/README.md)。国内云服务器的域名没有备案时，客户端里请直接填 IP。
+```bash
+curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz && cd copysync-server-linux-amd64
+sudo ./install.sh <服务器公网IP>
+```
+
+放行 TCP 8787、UDP 3478 与 UDP 32768–60999。Docker 部署与全部参数见[服务器部署说明](server/deploy/README.md)。国内云服务器的域名没有备案时，客户端里请直接填 IP。
 
 **2. 在每台电脑上安装 App**：macOS 13 以上用 [CopySync.dmg](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg)，Windows 10/11 用 [CopySync-Setup.exe](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe)（也有[便携版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip)）。还没有公证和代码签名：Mac 上第一次打开时到 **系统设置 → 隐私与安全性** 点 **仍要打开**；Windows 上点 **更多信息 → 仍要运行**。然后点 **启用后台同步**，在 **设置 → 信令服务器地址** 填入 `ws://<服务器地址>:8787/signal`。
 
@@ -95,7 +100,8 @@ CopySync 的做法是：两台电脑配对一次，之后在一台上复制，�
 
 - [工作原理](guide/how-it-works.zh-CN.md)：架构、NAT 打洞、安全模型、兜底、踩过的坑
 - [排障](guide/troubleshooting.zh-CN.md)与已知限制
-- [服务器部署说明](server/deploy/README.md) · [局域网部署图文教程](https://baiyuze.github.io/copysync/server/)
+- [快速开始](https://baiyuze.github.io/copysync/start/) · [局域网部署](https://baiyuze.github.io/copysync/server/) · [用 Tailscale 跨网络使用](https://baiyuze.github.io/copysync/tailscale/)，都是图文教程
+- [服务器部署说明](server/deploy/README.md)：Windows、macOS、Linux、Docker、Tailscale
 - [从源码构建](guide/building.zh-CN.md)
 - 技术方案：[多出口网络的 NAT 打洞](design/nat-traversal.md)、[Windows 客户端](design/windows-client.md)
 - [更新记录](CHANGELOG.md)

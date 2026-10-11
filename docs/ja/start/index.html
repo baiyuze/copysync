@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>はじめかた：3 ステップで CopySync を使い始める</title>
+  <meta name="description" content="CopySync がはじめての方へ。各コンピューターにアプリを入れ、サーバーの置き方（LAN、Tailscale、クラウド）を選び、アドレスを入力してペアリングすれば、Mac と Windows のあいだでコピー＆ペーストできます。グローバル IP は不要です。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/start/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/start/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/start/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/start/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="はじめかた：3 ステップで CopySync を使い始める">
+  <meta property="og:description" content="CopySync がはじめての方へ。各コンピューターにアプリを入れ、サーバーの置き方（LAN、Tailscale、クラウド）を選び、アドレスを入力してペアリングすれば、Mac と Windows のあいだでコピー＆ペーストできます。グローバル IP は不要です。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/start/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../ja/" aria-label="CopySync ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="ページ内の移動">
+        <a href="./" aria-current="page">はじめかた</a>
+        <a class="wide" href="../../ja/#how">しくみ</a>
+        <a class="wide" href="../../ja/#faq">よくある質問</a>
+        <a href="../../ja/server/">サーバーの設置</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../start/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/start/" hreflang="en" lang="en" data-lang="en">English</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../ja/">CopySync</a> / はじめかた</p>
+        <h1 class="display">はじめかた</h1>
+        <p class="lede">アプリを入れて、サーバーを用意し、2 台をペアリングします。最初の設定は 10 分ほど。そのあとはコピーするだけで同期されます。</p>
+        <ol class="guide-toc">
+          <li><a href="#app">アプリを入れる</a></li>
+          <li><a href="#server">サーバーを用意</a></li>
+          <li><a href="#connect">アドレスを入力</a></li>
+          <li><a href="#pair">ペアリング</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="app" aria-labelledby="app-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 1</p>
+        <h2 id="app-title">各コンピューターにアプリを入れる</h2>
+        <p class="intro">同期したいコンピューターすべてに入れます。Mac と Windows の組み合わせも自由です。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <div class="qs-app">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
+              <ol class="steps">
+                <li>CopySync.dmg をダウンロードして開き、CopySync を「アプリケーション」にドラッグします。</li>
+                <li>「アプリケーション」から開きます。<span class="aside">初回は「開発元を検証できません」と表示されます。「システム設定 → プライバシーとセキュリティ」を開き、ページ下部の「このまま開く」をクリックします。</span></li>
+                <li>「バックグラウンド同期を有効にする」をクリックし、クリップボードの読み取りを聞かれたら許可します。</li>
+              </ol>
+              <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+            </div>
+            <div class="qs-app">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+              <ol class="steps">
+                <li>CopySync-Setup.exe を実行します。管理者権限は要りません。<span class="aside">「Windows によって PC が保護されました」と出たら、「詳細情報」を押してから「実行」を押します。</span></li>
+                <li>CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ウィンドウを閉じても通知領域で動き続けます。</li>
+              </ol>
+              <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+            </div>
+          </div>
+          <figure class="shot">
+            <img src="../../assets/screenshots/ja/welcome-dark.png" width="2112" height="1472" alt="初めて開いた CopySync：バックグラウンド同期を有効にするよう案内している">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="server" aria-labelledby="server-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 2</p>
+        <h2 id="server-title">サーバーを用意する</h2>
+        <p class="intro">2 台はサーバーを通じてお互いを見つけます。コピーした内容がそこに保存されることはありません。公開サーバーはないので、状況に合うものを選んでください。</p>
+        <div class="paths">
+          <a class="path" href="../../ja/server/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
+            <span class="path-tag">グローバル IP 不要</span>
+            <span class="path-when">2 台が同じネットワークにある</span>
+            <h3>LAN に置く</h3>
+            <p>家や会社で、同じ Wi‑Fi か有線ネットワークにつながっている場合。電源を入れたままの Windows・Mac・Linux のどれか 1 台で、スクリプトをひとつ実行するだけです。</p>
+            <span class="path-go">LAN での設置手順 →</span>
+          </a>
+          <a class="path" href="../../ja/tailscale/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
+            <span class="path-tag">グローバル IP 不要</span>
+            <span class="path-when">1 台は自宅、1 台は会社</span>
+            <h3>LAN ＋ Tailscale</h3>
+            <p>サーバーは自宅に置いたまま。各コンピューターに Tailscale を入れれば同じ LAN にあるのと同じように扱えて、ノートパソコンを持ち出しても同期が続きます。</p>
+            <span class="path-go">Tailscale での手順 →</span>
+          </a>
+          <a class="path" href="../../ja/#cloud">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-tag">グローバル IP が必要</span>
+            <span class="path-when">公開サーバーがある</span>
+            <h3>クラウドに置く</h3>
+            <p>グローバル IP を持つ Linux のクラウドサーバー。最小構成で足ります。すべてのコンピューターが直接つながり、ほかに入れるものはありません。</p>
+            <span class="path-go">設置手順 →</span>
+          </a>
+        </div>
+        <p class="note">インストールが終わると、スクリプトが <code>ws://192.168.1.20:8787/signal</code> のようなアドレスを表示します。次のステップで使います。</p>
+      </div>
+    </section>
+
+    <section class="section" id="connect" aria-labelledby="connect-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 3</p>
+        <h2 id="connect-title">各コンピューターにサーバーのアドレスを入力</h2>
+        <ol class="flow">
+          <li><h3>設定を開く</h3><p>各コンピューターで CopySync を開き、「設定」に進みます。サーバーを動かしているコンピューターも同じです。</p></li>
+          <li><h3>アドレスを入力</h3><p>「シグナリングサーバー」に前のステップで表示されたアドレスを入力し、Return か Enter を押します。</p></li>
+          <li><h3>状態を確認</h3><p>「接続状態」が緑の「接続済み」になれば、そのコンピューターは準備完了です。</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../../assets/screenshots/ja/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync の設定画面：シグナリングサーバーは ws://192.168.1.20:8787/signal、接続状態は接続済み">
+        </figure>
+        <p class="note">「未接続」のままなら<a href="../../ja/server/#faq">よくある質問</a>をご覧ください。</p>
+      </div>
+    </section>
+
+    <section class="section" id="pair" aria-labelledby="pair-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 4</p>
+        <h2 id="pair-title">2 台をペアリングする</h2>
+        <p class="intro">2 台ごとに一度ペアリングすれば、あとは何もする必要はありません。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>一台で「デバイス」を開き、「デバイスを追加」をクリックします。5 分間有効な 6 桁のコードが表示されます。</li>
+              <li>もう一台でも「デバイスを追加」をクリックし、「コードを入力」に切り替えて入力します。</li>
+              <li>両方の画面に同じ 2 行の指紋が表示されます。1 文字ずつ照合して一致していれば確定します。<span class="aside">途中で誰かがあなたのデバイスになりすますのを防ぐ手順です。省略しないでください。</span></li>
+            </ol>
+            <figure class="figure-card qs-verify">
+              <img src="../../assets/screenshots/ja/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="ペアリング時の「セキュリティ指紋を確認」ダイアログ。R8NF-2WTC-QL5J が表示され、もう一台の表示と完全に一致するか確かめるよう求めている">
+            </figure>
+          </div>
+          <figure class="shot">
+            <img src="../../assets/screenshots/ja/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="デバイスを追加：ペアリングコード K7MP2X を表示し、もう一台で入力する">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">コピーしてみましょう。</h2>
+        <p class="lede">一台でテキスト、画像、ファイルをコピーし、もう一台で ⌘V か Ctrl+V を押します。どちらでコピーしたものも履歴に残ります。</p>
+        <p class="note">困ったときは：<a href="../../ja/server/#faq">LAN のよくある質問</a> · <a href="../../ja/tailscale/#faq">Tailscale のよくある質問</a> · <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync は GNU AGPL-3.0 のオープンソースです。商用ライセンスもあります。</p>
+      <nav aria-label="フッターのリンク">
+        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>
+        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+      </nav>
+      <nav aria-label="言語">
+        <a href="../../start/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/start/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/start/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

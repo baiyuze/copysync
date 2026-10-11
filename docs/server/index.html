@@ -30,8 +30,9 @@
     <div class="wrap">
       <a class="brand" href=".././" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
       <nav aria-label="页面导航">
+        <a href="../start/">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
-        <a class="wide" href=".././#install">安装</a>
+        <a class="wide" href=".././#faq">常见问题</a>
         <a href="./" aria-current="page">部署服务器</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../en/server/" hreflang="en" lang="en" data-lang="en">English</a>
@@ -46,11 +47,13 @@
         <p class="crumb"><a href=".././">CopySync</a> / 部署服务器</p>
         <h1 class="display">在局域网里部署服务器</h1>
         <p class="lede">家里或办公室的电脑在同一个网络里，就不需要云服务器。找一台常开的电脑，下载、运行一个脚本，再把它显示的地址填进每台电脑的 CopySync 里。</p>
+        <p class="hero-aside">两台电脑不在同一个网络，又没有公网 IP？看<a href="../tailscale/">用 Tailscale 跨网络使用</a>。</p>
         <ol class="guide-toc">
           <li><a href="#prepare">准备</a></li>
           <li><a href="#install">安装服务器</a></li>
           <li><a href="#check">检查</a></li>
           <li><a href="#clients">填地址</a></li>
+          <li><a href="#away">离开家也想用</a></li>
           <li><a href="#faq">常见问题</a></li>
         </ol>
       </div>
@@ -106,7 +109,7 @@
           <div><dt>一台常开的电脑</dt><dd>Windows 10、11，macOS 13 及以上，或者任意 Linux 都行，两台电脑中的一台也可以。它关机或睡眠时同步会暂停，醒来后自动恢复。NAS、软路由、Mac mini 这类一直开着的设备最合适，内存只占约 15 MB。</dd></div>
           <div><dt>一个固定的地址</dt><dd>在路由器的「DHCP 静态分配」（也叫「地址保留」「IP 与 MAC 绑定」）里给这台电脑固定一个地址。不然路由器换了地址，每台电脑都要重新填。</dd></div>
           <div><dt>在同一个网络里</dt><dd>设备连同一个 Wi‑Fi 或有线网络就行。访客网络、开了「AP 隔离」的 Wi‑Fi 不让设备互相访问，需要换个网络或关掉隔离。</dd></div>
-          <div><dt>离开这个网络就不同步</dt><dd>服务器只在局域网里访问得到，笔记本带出门后，回来才会继续同步。想在任何地方都能同步，需要一台有公网 IP 的服务器，见首页的「安装」。</dd></div>
+          <div><dt>离开这个网络也想同步</dt><dd>服务器只在局域网里访问得到。笔记本带出门也想同步，给每台电脑装上 Tailscale 就行，不需要公网 IP，见<a href="../tailscale/">Tailscale 教程</a>。</dd></div>
         </dl>
       </div>
     </section>
@@ -327,7 +330,20 @@ sudo ./install.sh</code></pre>
         <figure class="shot">
           <img src="../assets/screenshots/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的设置页：信令服务器地址填着 ws://192.168.1.20:8787/signal，连接状态显示已连接">
         </figure>
-        <p class="note">还没装 App？见首页的<a href=".././#install">安装</a>。</p>
+        <p class="note">还没装 App？见<a href="../start/">快速开始</a>。</p>
+      </div>
+    </section>
+
+    <section class="section" id="away" aria-labelledby="away-title">
+      <div class="wrap">
+        <div class="callout">
+          <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
+          <div>
+            <h2 id="away-title">离开家，也想同步？</h2>
+            <p>给每台电脑装上 Tailscale，服务器用它分配的地址，在公司、在外面都能连回家里的服务器，就像在同一个局域网里。不需要公网 IP，也不用改路由器。</p>
+            <a class="button" href="../tailscale/">用 Tailscale 跨网络使用</a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -349,7 +365,7 @@ sudo ./install.sh</code></pre>
           </details>
           <details>
             <summary>离开局域网以后还能同步吗？</summary>
-            <div class="answer"><p>不能，服务器只在局域网里访问得到。要在外面也能用，可以把服务器部署到有公网 IP 的机器上（首页的「安装」里有步骤），或者用 Tailscale、ZeroTier 这类组网工具把设备连进同一个虚拟局域网，服务器地址填它在虚拟网里的地址。</p></div>
+            <div class="answer"><p>能，加上 Tailscale 就行：每台电脑装上 Tailscale、登录同一个账号，服务器用 Tailscale 地址安装，客户端也填这个地址，不需要公网 IP。步骤见<a href="../tailscale/">用 Tailscale 跨网络使用</a>。</p><p>有公网 IP 的话，也可以把服务器部署到云服务器上，见<a href=".././#cloud">首页的部署步骤</a>。</p></div>
           </details>
           <details>
             <summary>用国内的云服务器，填域名连不上、填 IP 却能连？</summary>

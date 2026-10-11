@@ -65,20 +65,25 @@ With CopySync you pair two computers once. After that, copy on one and paste on 
 
 ## Get started
 
-You need **the app on each computer** and **a server both can reach**.
+New here? The **[quick start](https://baiyuze.github.io/copysync/en/start/)** walks through it with screenshots. You need **the app on each computer** and **a server both can reach**. It doesn't need a public IP: most people run it on an always-on computer at home.
 
-**1. Run the server.**
+**1. Run the server.** Pick what fits:
 
-- *Same LAN* (home or office): run it on any always-on Windows, Mac or Linux computer. Download the package, run one install script, done. Step-by-step guide: **[Run the server on your LAN](https://baiyuze.github.io/copysync/en/server/)**.
-- *Across the internet*: a Linux machine with a public IP, as root:
+| Your situation | What to do | Public IP |
+|---|---|:-:|
+| Both computers on one network (home or office) | Run the server on any always-on Windows, Mac or Linux computer there with one install script. **[LAN guide](https://baiyuze.github.io/copysync/en/server/)** | Not needed |
+| One at home, one at the office | Same server at home, plus [Tailscale](https://tailscale.com) on every computer; install the server on its Tailscale address. **[Tailscale guide](https://baiyuze.github.io/copysync/en/tailscale/)** | Not needed |
+| You have a server with a public IP | Linux, as root; see below | Needed |
 
-  ```bash
-  curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
-  tar xzf copysync-server-linux-amd64.tar.gz && cd copysync-server-linux-amd64
-  sudo ./install.sh <public IP of the server>
-  ```
+On a server with a public IP:
 
-  Open TCP 8787, UDP 3478 and UDP 32768–60999. Docker and all options: [server deployment guide](server/deploy/README.md).
+```bash
+curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz && cd copysync-server-linux-amd64
+sudo ./install.sh <public IP of the server>
+```
+
+Open TCP 8787, UDP 3478 and UDP 32768–60999. Docker and all options: [server deployment guide](server/deploy/README.md).
 
 **2. Install the app** on each computer: [CopySync.dmg](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg) for macOS 13+, [CopySync-Setup.exe](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe) for Windows 10/11 ([portable zip](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip)). The builds aren't notarized or code-signed yet: on Mac, allow it once under **System Settings → Privacy & Security → Open Anyway**; on Windows, click **More info → Run anyway**. Then click **Turn on background sync** and enter `ws://<server address>:8787/signal` under **Settings → Signaling server**.
 
@@ -95,7 +100,8 @@ You need **the app on each computer** and **a server both can reach**.
 
 - [How it works](guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned
 - [Troubleshooting](guide/troubleshooting.md) and known limitations
-- [Server deployment](server/deploy/README.md) · [LAN guide with screenshots](https://baiyuze.github.io/copysync/en/server/)
+- [Quick start](https://baiyuze.github.io/copysync/en/start/) · [LAN guide](https://baiyuze.github.io/copysync/en/server/) · [Across networks with Tailscale](https://baiyuze.github.io/copysync/en/tailscale/), all with screenshots
+- [Server deployment](server/deploy/README.md): Windows, macOS, Linux, Docker, Tailscale
 - [Building from source](guide/building.md)
 - Design notes (Chinese): [NAT traversal on multi-uplink networks](design/nat-traversal.md), [Windows client](design/windows-client.md)
 - [Changelog](CHANGELOG.md)

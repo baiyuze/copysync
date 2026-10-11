@@ -30,8 +30,9 @@
     <div class="wrap">
       <a class="brand" href="../../ja/" aria-label="CopySync ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
       <nav aria-label="ページ内の移動">
+        <a href="../../ja/start/">はじめかた</a>
         <a class="wide" href="../../ja/#how">しくみ</a>
-        <a class="wide" href="../../ja/#install">インストール</a>
+        <a class="wide" href="../../ja/#faq">よくある質問</a>
         <a href="./" aria-current="page">サーバーの設置</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
@@ -46,11 +47,13 @@
         <p class="crumb"><a href="../../ja/">CopySync</a> / サーバーの設置</p>
         <h1 class="display">LAN にサーバーを置く</h1>
         <p class="lede">家や会社のコンピューターが同じネットワークにあるなら、クラウドサーバーは要りません。電源を入れたままのコンピューターを 1 台選び、スクリプトをダウンロードして実行し、表示されたアドレスを各コンピューターの CopySync に入力します。</p>
+        <p class="hero-aside">2 台が別のネットワークにあり、グローバル IP もない場合は<a href="../../ja/tailscale/">Tailscale でネットワークをまたいで使う</a>をご覧ください。</p>
         <ol class="guide-toc">
           <li><a href="#prepare">準備</a></li>
           <li><a href="#install">インストール</a></li>
           <li><a href="#check">確認</a></li>
           <li><a href="#clients">アドレスの入力</a></li>
+          <li><a href="#away">外出先でも使う</a></li>
           <li><a href="#faq">よくある質問</a></li>
         </ol>
       </div>
@@ -106,7 +109,7 @@
           <div><dt>電源を入れたままのコンピューター</dt><dd>Windows 10・11、macOS 13 以降、または Linux なら何でも可。同期する 2 台のうちの 1 台でもかまいません。電源が切れたりスリープしたりすると同期は止まり、復帰すると再開します。NAS、ルーター、Mac mini などが最適で、メモリは約 15 MB です。</dd></div>
           <div><dt>固定のアドレス</dt><dd>ルーターの DHCP 設定（「固定割り当て」「アドレス予約」など）で、このコンピューターのアドレスを固定します。そうしないと、アドレスが変わるたびに全部のコンピューターで入れ直すことになります。</dd></div>
           <div><dt>同じネットワークに</dt><dd>同じ Wi‑Fi か有線ネットワークにつながっていれば十分です。ゲストネットワークや AP アイソレーションが有効な Wi‑Fi ではデバイスどうしが通信できないので、別のネットワークを使うか、アイソレーションをオフにしてください。</dd></div>
-          <div><dt>ネットワークの外では同期しない</dt><dd>サーバーには LAN の中からしか届きません。持ち出したノートパソコンは、戻ってきてから同期を再開します。どこからでも同期したい場合は、グローバル IP を持つサーバーが必要です（トップページの「インストール」）。</dd></div>
+          <div><dt>ネットワークの外でも同期したいなら</dt><dd>サーバーには LAN の中からしか届きません。持ち出したノートパソコンでも同期したい場合は、各コンピューターに Tailscale を入れれば、グローバル IP なしでつながります（<a href="../../ja/tailscale/">Tailscale での手順</a>）。</dd></div>
         </dl>
       </div>
     </section>
@@ -327,7 +330,20 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
         <figure class="shot">
           <img src="../../assets/screenshots/ja/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync の設定画面：シグナリングサーバーは ws://192.168.1.20:8787/signal、接続状態は接続済み">
         </figure>
-        <p class="note">アプリがまだなら、トップページの<a href="../../ja/#install">インストール</a>をご覧ください。</p>
+        <p class="note">アプリがまだなら、<a href="../../ja/start/">はじめかた</a>をご覧ください。</p>
+      </div>
+    </section>
+
+    <section class="section" id="away" aria-labelledby="away-title">
+      <div class="wrap">
+        <div class="callout">
+          <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
+          <div>
+            <h2 id="away-title">外出先でも同期したい？</h2>
+            <p>各コンピューターに Tailscale を入れ、サーバーをその Tailscale アドレスで動かせば、会社からでも外出先からでも、同じ LAN にいるように自宅のサーバーにつながります。グローバル IP もルーターの設定も要りません。</p>
+            <a class="button" href="../../ja/tailscale/">Tailscale でネットワークをまたいで使う</a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -349,7 +365,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
           </details>
           <details>
             <summary>LAN の外でも同期できますか？</summary>
-            <div class="answer"><p>できません。サーバーには LAN の中からしか届かないためです。どこでも使いたい場合は、グローバル IP を持つマシンにサーバーを置くか（トップページの「インストール」）、Tailscale や ZeroTier などでデバイスを同じ仮想ネットワークに参加させ、その中でのサーバーのアドレスを入力します。</p></div>
+            <div class="answer"><p>Tailscale を使えばできます。各コンピューターに入れて同じアカウントでサインインし、サーバーを Tailscale のアドレスでインストールして、アプリにもそのアドレスを入力します。グローバル IP は不要です。手順は<a href="../../ja/tailscale/">Tailscale でネットワークをまたいで使う</a>をご覧ください。</p><p>グローバル IP があれば、クラウドサーバーに置くこともできます（<a href="../../ja/#cloud">トップページの設置手順</a>）。</p></div>
           </details>
           <details>
             <summary>中国本土のクラウドサーバーで、ドメインではつながらず IP ならつながる</summary>

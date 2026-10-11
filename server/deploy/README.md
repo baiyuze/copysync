@@ -4,14 +4,17 @@ The server only does two things: it lets your devices find each other (signaling
 
 CopySync 的服务器只做两件事：让你的设备找到彼此（信令），以及在设备之间打不通直连时转发加密后的数据（TURN 中转）。它不存账号，也看不到你复制的内容。
 
-Step-by-step guide with screenshots / 带截图的图文教程：
-<https://baiyuze.github.io/copysync/server/>
+Step-by-step guides with screenshots / 带截图的图文教程：
+
+- On your LAN / 局域网部署：<https://baiyuze.github.io/copysync/server/>
+- Across networks with Tailscale, no public IP / 用 Tailscale 跨网络使用，不需要公网 IP：<https://baiyuze.github.io/copysync/tailscale/>
 
 ## Where to run it / 放在哪里
 
 | | Requirement 要求 |
 |---|---|
 | **On your LAN** 局域网 | Any always-on Windows 10/11, macOS 13+ or Linux computer on the same network, one of your own computers included. Reserve its address in the router. 同一网络里任意一台常开的 Windows 10/11、macOS 13 以上或 Linux 电脑，自己的电脑也行；在路由器里给它固定地址。 |
+| **Across networks, no public IP** 跨网络，没有公网 IP | The same always-on computer at home, with [Tailscale](https://tailscale.com) on it and on every client; see [Tailscale](#tailscale) below. 同样放在家里一台常开的电脑上，它和每台客户端都装上 Tailscale，见下面的 [Tailscale](#tailscale)。 |
 | **Across the internet** 跨公网 | A Linux machine with a public IP; the smallest VPS is enough. 一台有公网 IP 的 Linux 机器，最低配的云主机就够。 |
 
 It uses about 15 MB of RAM. 内存占用约 15 MB。
@@ -95,15 +98,36 @@ docker compose up -d
 
 必须使用 `network_mode: host`（compose 文件里已经写好）：TURN 为每个会话随机分配 UDP 端口，端口映射模式下这些端口不可达。同样的原因，Mac 与 Windows 上的 Docker Desktop 不适用，请用安装脚本。
 
+## Tailscale
+
+Without a public IP you can still sync across networks: keep the server at home and join every computer, the server's included, to the same [Tailscale](https://tailscale.com) network. Each device gets a fixed `100.x.y.z` address that the others can reach from anywhere. Install the server on that address, so the TURN relay is reachable through Tailscale too, and enter it in every app.
+
+没有公网 IP 也能跨网络使用：服务器照样放在家里，所有电脑（包括服务器所在的那台）加入同一个 [Tailscale](https://tailscale.com) 网络。每台设备会分到一个固定的 `100.x.y.z` 地址，在哪儿都能互相访问。服务器用这个地址安装（TURN 中转也就能通过 Tailscale 访问到），每台电脑也填这个地址。
+
+```bash
+tailscale ip -4                     # the server's Tailscale address / 服务器的 Tailscale 地址，例如 100.101.102.103
+install.cmd 100.101.102.103         # Windows
+./install.sh 100.101.102.103        # macOS
+sudo ./install.sh 100.101.102.103   # Linux, fresh install / Linux 首次安装
+```
+
+Windows and macOS switch to the new address when you run the script again. The Linux script keeps an existing config, so replace the old address (it appears in `-turn-ip` and `-stun`) in `/etc/copysync/server.env` and run `systemctl restart copysync-server`. Then use `ws://100.101.102.103:8787/signal` in the apps, at home too.
+
+Windows 与 macOS 带上新地址再运行一次脚本即可切换。Linux 的脚本不改已有配置：把 `/etc/copysync/server.env` 里原来的地址（`-turn-ip` 与 `-stun` 两处）换成 Tailscale 地址，再 `systemctl restart copysync-server`。之后每台电脑都填 `ws://100.101.102.103:8787/signal`，家里的也一样。
+
+On the server computer: turn on **Run unattended** in Tailscale on Windows (otherwise it disconnects when you sign out), and **Disable key expiry** for it in the Tailscale admin console. If CopySync shows Direct but transfers are slow, `tailscale ping <peer>` tells you whether Tailscale itself is relaying through DERP. The same approach works with ZeroTier or any tool that gives each device a fixed virtual address.
+
+服务器所在的电脑：Windows 上在 Tailscale 里打开 **Run unattended**（否则注销后会断开），并在 Tailscale 管理后台给它 **Disable key expiry**。CopySync 显示直连但传输很慢时，用 `tailscale ping <对方>` 看 Tailscale 自己是不是在经 DERP 中转。ZeroTier 等能给每台设备分配固定虚拟地址的工具，做法相同。
+
 ## Run it directly / 直接运行
 
 ```bash
 ./copysync-server -addr :8787 -turn-ip <address> -turn-secret <random string>
 ```
 
-`-turn-ip` is the address clients use to reach the relay: the LAN address on a LAN, the public IP on a cloud server. Without it there is no relay. `-log <file>` writes the log to a file instead of standard error. Run `copysync-server -h` for all options.
+`-turn-ip` is the address clients use to reach the relay: the LAN address on a LAN, the Tailscale address with Tailscale, the public IP on a cloud server. Without it there is no relay. `-log <file>` writes the log to a file instead of standard error. Run `copysync-server -h` for all options.
 
-`-turn-ip` 是客户端访问中转用的地址：局域网里填局域网地址，云服务器填公网 IP；不填就没有中转。`-log <文件>` 把日志写到文件而不是标准错误。全部参数见 `copysync-server -h`。
+`-turn-ip` 是客户端访问中转用的地址：局域网里填局域网地址，用 Tailscale 时填 Tailscale 地址，云服务器填公网 IP；不填就没有中转。`-log <文件>` 把日志写到文件而不是标准错误。全部参数见 `copysync-server -h`。
 
 ## Client setup / 客户端设置
 

@@ -26,6 +26,27 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/"/>
   </url>
   <url>
+    <loc>https://baiyuze.github.io/copysync/start/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/start/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/start/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/start/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/en/start/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/start/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/start/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/start/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/ja/start/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/start/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/start/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/start/"/>
+  </url>
+  <url>
     <loc>https://baiyuze.github.io/copysync/server/</loc>
     <lastmod>2026-10-11</lastmod>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/"/>
@@ -45,6 +66,27 @@
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/server/"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/server/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/tailscale/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/en/tailscale/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/ja/tailscale/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/"/>
   </url>
   <url>
     <loc>https://baiyuze.github.io/copysync/design/nat-traversal.html</loc>

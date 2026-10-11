@@ -1,4 +1,5 @@
-"""生成官网：docs/index.html（简体中文）、docs/en/、docs/ja/，以及 docs/design/ 下的技术方案页面。
+"""生成官网：docs/index.html（简体中文）、docs/en/、docs/ja/，每种语言下还有快速开始（start/）、
+局域网部署（server/）、用 Tailscale 跨网络使用（tailscale/）三个教程页面，以及 docs/design/ 下的技术方案页面。
 
     python3 tools/site/build.py
 
@@ -34,8 +35,11 @@ LANGS = {
 ANALYTICS = ("  <script type=\"module\" src=\"https://static.cloudflareinsights.com/beacon.min.js\" "
              "data-cf-beacon='{\"token\": \"7ee226baf4a949a397c4bfd69a9e7461\"}'></script>\n")
 
-# 「在局域网里部署服务器」教程，每种语言目录下一份
+# 教程页面，每种语言目录下各一份：在局域网里部署服务器、快速开始、用 Tailscale 跨网络使用
 GUIDE = "server/"
+START = "start/"
+TAILSCALE = "tailscale/"
+SUBPAGES = [START, GUIDE, TAILSCALE]
 
 # 放到网站上的技术方案：文件名 → 网页名。其他 design/*.md 链接到 GitHub
 DESIGN_DOCS = {"nat-traversal.md": "nat-traversal", "windows-client.md": "windows-client"}
@@ -126,13 +130,96 @@ def footer(c: dict, code: str, up: str, sub: str = "") -> str:
   </footer>"""
 
 
-def cta(c: dict) -> str:
+def cta(c: dict, start: str = "") -> str:
+    """两个下载按钮。start 是快速开始页面的地址，给了就在下面加一行链接。"""
+    link = f'\n        <a class="start-link" href="{start}">{c["start_link"]}</a>' if start else ""
     return f"""
         <div class="cta">
           <a class="button" href="{DL}CopySync.dmg">{DOWN}{c["dl_mac"]}</a>
           <a class="button quiet" href="{DL}CopySync-Setup.exe">{DOWN}{c["dl_win"]}</a>
         </div>
-        <p class="note">{c["dl_note"]}</p>"""
+        <p class="note">{c["dl_note"]}</p>{link}"""
+
+
+def header(c: dict, code: str, up: str, sub: str = "") -> str:
+    """顶栏。sub 是当前的教程页面（START、GUIDE 等），首页为空。窄屏只留不带 wide 的几项。"""
+    path = LANGS[code][0]
+    if sub:
+        home = up + (path or "./")
+        base = up + path  # 语言根目录，教程页面互相链接用
+    else:
+        home, base = "", ""
+
+    def page(target: str, label: str) -> str:
+        if target == sub:
+            return f'<a href="./" aria-current="page">{label}</a>'
+        return f'<a href="{base}{target}">{label}</a>'
+
+    return f"""  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="{home or "./"}" aria-label="{c["home_label"]}"><img src="{up}assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="{c["nav_label"]}">
+        {page(START, c["nav_start"])}
+        <a class="wide" href="{home}#how">{c["nav_how"]}</a>
+        <a class="wide" href="{home}#faq">{c["nav_faq"]}</a>
+        {page(GUIDE, c["nav_server"])}
+        <a class="wide" href="{REPO}">GitHub</a>
+        {lang_links(code, up, sub)}
+      </nav>
+    </div>
+  </header>"""
+
+
+# 三种部署方式的小插图：设备是笔记本与服务器的轮廓，虚线框是一个网络，蓝线是复制的内容走的路
+def _laptop(x: int, y: int) -> str:
+    return (f'<rect class="p-dev" x="{x + 5}" y="{y}" width="38" height="24" rx="3"/>'
+            f'<path class="p-dev" d="M{x} {y + 29}h48"/>')
+
+
+def _server(x: int, y: int) -> str:
+    return (f'<rect class="p-dev" x="{x}" y="{y}" width="44" height="12" rx="3"/>'
+            f'<rect class="p-dev" x="{x}" y="{y + 15}" width="44" height="12" rx="3"/>')
+
+
+PATH_ART = {
+    # 同一个局域网：一个网络里，服务器在上，两台电脑在下
+    "lan": ('<rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/>'
+            + _server(98, 16)
+            + '<path class="p-sig" d="M58 66V30h40M182 66V30h-40"/>'
+            + '<path class="p-data" d="M82 82h76"/>'
+            + _laptop(34, 66) + _laptop(158, 66)),
+    # 局域网 + Tailscale：家与公司是两个网络，蓝色虚线框把它们连成一个虚拟局域网
+    "ts": ('<rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/>'
+           '<rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/>'
+           '<rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/>'
+           + _server(39, 20)
+           + '<path class="p-sig" d="M180 64V54H61v-7M61 64V54"/>'
+           + '<path class="p-data" d="M85 80h71"/>'
+           + _laptop(37, 64) + _laptop(156, 64)),
+    # 云服务器：服务器在两个网络之外，两边都直接连它
+    "cloud": (_server(98, 8)
+              + '<rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/>'
+              + '<rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/>'
+              + '<path class="p-sig" d="M56 64V22h42M184 64V22h-42"/>'
+              + '<path class="p-data" d="M80 80h80"/>'
+              + _laptop(32, 64) + _laptop(160, 64)),
+}
+
+
+def paths(c: dict, base: str, home: str) -> str:
+    """三种部署方式的卡片。base 是语言根目录（教程页面在它下面），home 是首页地址（首页上为空）。"""
+    hrefs = [base + GUIDE, base + TAILSCALE, home + "#cloud"]
+    cards = []
+    for (tag, when, title, text, go), href, art in zip(c["paths"], hrefs, PATH_ART.values()):
+        cards.append(f"""          <a class="path" href="{href}">
+            <svg viewBox="0 0 240 112" aria-hidden="true">{art}</svg>
+            <span class="path-tag">{tag}</span>
+            <span class="path-when">{when}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+            <span class="path-go">{go}</span>
+          </a>""")
+    return '<div class="paths">\n' + "\n".join(cards) + "\n        </div>"
 
 
 def jsonld(c: dict, code: str, path: str, shots: str) -> str:
@@ -199,11 +286,8 @@ def home(code: str) -> str:
     win_steps = "\n".join(f"              <li>{s}</li>" for s in c["win_steps"])
     ports = "\n".join(f"                <tr><td>{p}</td><td>{u}</td></tr>" for p, u in c["ports"])
     specs = "\n".join(f'            <tr><th scope="row">{k}</th><td>{v}</td></tr>' for k, v in c["specs"])
-    faq = "\n".join(
-        f"""          <details>
-            <summary>{q}</summary>
-            <div class="answer">{"".join(f"<p>{p}</p>" for p in answer)}</div>
-          </details>""" for q, answer in c["faq"])
+    links = {"server": GUIDE, "ts": TAILSCALE, "start": START}
+    faq = faq_list(c["faq"], links)
     d = c["diagram"]
 
     return f"""<!doctype html>
@@ -238,25 +322,13 @@ def home(code: str) -> str:
 <body>
   <a class="skip" href="#main">{c["skip"]}</a>
 
-  <header class="bar">
-    <div class="wrap">
-      <a class="brand" href="./" aria-label="{c["home_label"]}"><img src="{a}icon.svg" alt="" width="26" height="26">CopySync</a>
-      <nav aria-label="{c["nav_label"]}">
-        <a class="wide" href="#how">{c["nav_how"]}</a>
-        <a class="wide" href="#install">{c["nav_install"]}</a>
-        <a class="wide" href="#faq">{c["nav_faq"]}</a>
-        <a href="{GUIDE}">{c["nav_server"]}</a>
-        <a class="wide" href="{REPO}">GitHub</a>
-        {lang_links(code, up)}
-      </nav>
-    </div>
-  </header>
+{header(c, code, up)}
 
   <main id="main">
     <section class="hero">
       <div class="wrap">
         <h1 class="display">{c["h1"]}</h1>
-        <p class="lede">{c["lede"]}</p>{cta(c)}
+        <p class="lede">{c["lede"]}</p>{cta(c, START)}
         <div class="stage" data-play role="img" aria-label="{esc(c["stage_label"])}">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -281,6 +353,15 @@ def home(code: str) -> str:
           <span class="sheet-fly" aria-hidden="true">{LINES}</span>
         </div>
         <button class="replay" type="button">{c["replay"]}</button>
+      </div>
+    </section>
+
+    <section class="section" id="deploy" aria-labelledby="deploy-title">
+      <div class="wrap">
+        <h2 id="deploy-title">{c["paths_h2"]}</h2>
+        <p class="intro">{c["paths_intro"]}</p>
+        {paths(c, "", "")}
+        <p class="note">{fill(c["paths_after"], links)}</p>
       </div>
     </section>
 
@@ -417,7 +498,7 @@ def home(code: str) -> str:
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">{c["install_h2"]}</h2>
-        <p class="intro">{c["install_intro"]}</p>
+        <p class="intro">{fill(c["install_intro"], links)}</p>
         <div class="install">
           <div>
             <h3>{LAPTOP}Mac</h3>
@@ -435,6 +516,12 @@ def home(code: str) -> str:
           </div>
           <div>
             <h3>{SERVER}{c["server_h3"]}</h3>
+            <p class="small">{c["server_lan"]}</p>
+            <div class="stack">
+              <a class="button" href="{GUIDE}">{c["server_guide"]}</a>
+              <a class="button quiet" href="{TAILSCALE}">{c["server_ts"]}</a>
+            </div>
+            <h4 id="cloud">{c["server_cloud"]}</h4>
             <p class="small">{c["server_intro"]}</p>
             <div class="code">
               <button class="copy" type="button" data-done="{c["copied"]}">{c["copy"]}</button>
@@ -451,7 +538,6 @@ sudo ./install.sh {c["public_ip"]}</code></pre>
               </tbody>
             </table>
             <p class="small">{c["server_docker"]}</p>
-            <a class="button quiet" href="{GUIDE}">{c["server_guide"]}</a>
           </div>
         </div>
         <p class="pairing">{c["pairing"]}</p>
@@ -482,7 +568,7 @@ sudo ./install.sh {c["public_ip"]}</code></pre>
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 class="display" id="closing-title">{c["closing"]}</h2>{cta(c)}
+        <h2 class="display" id="closing-title">{c["closing"]}</h2>{cta(c, START)}
         <a class="source" href="{REPO}">{c["source"]}</a>
       </div>
     </section>
@@ -608,10 +694,11 @@ WINDOWS_LOGO = ('<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
                 '<path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>')
 
 
-def transcript(text: str, prompt: str, command: str) -> str:
-    """终端窗口里的内容：先是输入的命令，再是脚本的输出，客户端要填的地址用蓝色标出来。"""
-    out = html.escape(text, quote=False)
-    url = f"ws://{LAN_IP}:8787/signal"
+def transcript(text: str, prompt: str, command: str, ip: str = LAN_IP) -> str:
+    """终端窗口里的内容：先是输入的命令，再是脚本的输出，客户端要填的地址用蓝色标出来。
+    ip 是服务器的地址：脚本输出照局域网教程抄写，换成别的地址时一并替换。"""
+    out = html.escape(text.replace(LAN_IP, ip), quote=False)
+    url = f"ws://{ip}:8787/signal"
     out = out.replace(url, f'<span class="t-url">{url}</span>')
     # 脚本每一步的提示行（Mac 与 Linux 是 ▶，Windows 是 >，转义后是 &gt;）
     out = re.sub(r"^((?:▶|&gt;) .*)$", r'<span class="t-step">\1</span>', out, flags=re.M)
@@ -639,32 +726,99 @@ def code_block(c: dict, code: str) -> str:
                 </div>"""
 
 
-def server_page(code: str) -> str:
-    c = load(code)
-    g = c["guide"]
-    path, hl, locale, _ = LANGS[code]
-    up = "../" * (path + GUIDE).count("/")
-    home_href = up + (path or "./")
-    a = up + "assets/"
-    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
-    t = TRANSCRIPTS["zh" if code == "zh" else "en"]
-    url = f"ws://{LAN_IP}:8787/signal"
-    alternates = "\n".join(
-        f'  <link rel="alternate" hreflang="{h}" href="{SITE}{p}{GUIDE}">' for p, h, _, _ in LANGS.values())
+def items(lst: list[str], indent: str = "                ") -> str:
+    return "\n".join(f"{indent}<li>{x}</li>" for x in lst)
 
-    def items(lst: list[str], indent: str = "                ") -> str:
-        return "\n".join(f"{indent}<li>{x}</li>" for x in lst)
 
-    def manage(rows: list[tuple[str, str]]) -> str:
-        body = "\n".join(f'                  <tr><th scope="row">{k}</th><td>{v}</td></tr>' for k, v in rows)
-        return f"""<div class="table-scroll">
+def manage(caption: str, rows: list[tuple[str, str]]) -> str:
+    """安装后会用到的命令表。"""
+    body = "\n".join(f'                  <tr><th scope="row">{k}</th><td>{v}</td></tr>' for k, v in rows)
+    return f"""<div class="table-scroll">
                 <table class="manage">
-                  <caption>{g["manage_caption"]}</caption>
+                  <caption>{caption}</caption>
                   <tbody>
 {body}
                   </tbody>
                 </table>
               </div>"""
+
+
+def fill(text: str, links: dict) -> str:
+    """把文案里的 {home}、{ts} 这类占位换成链接地址。不用 str.format：文案里可能有别的花括号。"""
+    for k, v in links.items():
+        text = text.replace("{" + k + "}", v)
+    return text
+
+
+def faq_list(faq: list, links: dict) -> str:
+    return "\n".join(
+        f"""          <details>
+            <summary>{q}</summary>
+            <div class="answer">{"".join(f"<p>{fill(p, links)}</p>" for p in answer)}</div>
+          </details>""" for q, answer in faq)
+
+
+def toc_list(toc: list[tuple[str, str]]) -> str:
+    return "\n".join(f'          <li><a href="#{anchor}">{label}</a></li>' for anchor, label in toc)
+
+
+def page_top(c: dict, code: str, sub: str, title: str, description: str) -> str:
+    """教程页面从 <!doctype> 到顶栏的部分。sub 是页面目录（GUIDE、START 等）。"""
+    path, hl, locale, _ = LANGS[code]
+    up = "../" * (path + sub).count("/")
+    a = up + "assets/"
+    alternates = "\n".join(
+        f'  <link rel="alternate" hreflang="{h}" href="{SITE}{p}{sub}">' for p, h, _, _ in LANGS.values())
+    return f"""<!doctype html>
+<html lang="{hl}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title}</title>
+  <meta name="description" content="{esc(description)}">
+  <link rel="canonical" href="{SITE}{path}{sub}">
+{alternates}
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="{esc(title)}">
+  <meta property="og:description" content="{esc(description)}">
+  <meta property="og:url" content="{SITE}{path}{sub}">
+  <meta property="og:image" content="{SITE}assets/{c["og_image"]}">
+  <meta property="og:locale" content="{locale}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="{a}favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="{a}favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="{a}apple-touch-icon.png">
+  <link rel="stylesheet" href="{a}site.css">
+</head>
+<body>
+  <a class="skip" href="#main">{c["skip"]}</a>
+
+{header(c, code, up, sub)}
+"""
+
+
+def page_bottom(c: dict, code: str, sub: str) -> str:
+    up = "../" * (LANGS[code][0] + sub).count("/")
+    return f"""
+{footer(c, code, up, sub)}
+
+  <script src="{up}assets/site.js" defer></script>
+{ANALYTICS}</body>
+</html>
+"""
+
+
+def server_page(code: str) -> str:
+    c = load(code)
+    g = c["guide"]
+    path = LANGS[code][0]
+    up = "../" * (path + GUIDE).count("/")
+    home_href = up + (path or "./")
+    base = up + path
+    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    t = TRANSCRIPTS["zh" if code == "zh" else "en"]
 
     linux_dl = f"""curl -LO {DL}copysync-server-linux-amd64.tar.gz
 tar xzf copysync-server-linux-amd64.tar.gz
@@ -685,62 +839,20 @@ cd copysync-server-macos
         explorer.append(f'                  <li{cls}><span class="f-icon {kind}" aria-hidden="true"></span>'
                         f'<span class="f-name">{name}</span>{mark}</li>')
     explorer = "\n".join(explorer)
-    prep = "\n".join(f"          <div><dt>{h}</dt><dd>{p}</dd></div>" for h, p in g["prep"])
-    faq = "\n".join(
-        f"""          <details>
-            <summary>{q}</summary>
-            <div class="answer">{"".join(f"<p>{p}</p>" for p in answer)}</div>
-          </details>""" for q, answer in g["faq"])
+    links = {"home": home_href, "ts": base + TAILSCALE, "start": base + START}
+    prep = "\n".join(f"          <div><dt>{h}</dt><dd>{fill(p, links)}</dd></div>" for h, p in g["prep"])
     d = g["diagram"]
-    toc = "\n".join(f'          <li><a href="#{anchor}">{label}</a></li>' for anchor, label in g["toc"])
 
-    return f"""<!doctype html>
-<html lang="{hl}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{g["title"]}</title>
-  <meta name="description" content="{esc(g["description"])}">
-  <link rel="canonical" href="{SITE}{path}{GUIDE}">
-{alternates}
-  <meta name="theme-color" content="#141416">
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="{esc(g["title"])}">
-  <meta property="og:description" content="{esc(g["description"])}">
-  <meta property="og:url" content="{SITE}{path}{GUIDE}">
-  <meta property="og:image" content="{SITE}assets/{c["og_image"]}">
-  <meta property="og:locale" content="{locale}">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="{a}favicon.svg" type="image/svg+xml">
-  <link rel="icon" href="{a}favicon-32.png" sizes="32x32" type="image/png">
-  <link rel="apple-touch-icon" href="{a}apple-touch-icon.png">
-  <link rel="stylesheet" href="{a}site.css">
-</head>
-<body>
-  <a class="skip" href="#main">{c["skip"]}</a>
-
-  <header class="bar">
-    <div class="wrap">
-      <a class="brand" href="{home_href}" aria-label="{c["home_label"]}"><img src="{a}icon.svg" alt="" width="26" height="26">CopySync</a>
-      <nav aria-label="{c["nav_label"]}">
-        <a class="wide" href="{home_href}#how">{c["nav_how"]}</a>
-        <a class="wide" href="{home_href}#install">{c["nav_install"]}</a>
-        <a href="./" aria-current="page">{c["nav_server"]}</a>
-        <a class="wide" href="{REPO}">GitHub</a>
-        {lang_links(code, up, GUIDE)}
-      </nav>
-    </div>
-  </header>
-
+    return page_top(c, code, GUIDE, g["title"], g["description"]) + f"""
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
         <p class="crumb"><a href="{home_href}">CopySync</a> / {c["nav_server"]}</p>
         <h1 class="display">{g["h1"]}</h1>
         <p class="lede">{g["lede"]}</p>
+        <p class="hero-aside">{fill(g["hero_aside"], links)}</p>
         <ol class="guide-toc">
-{toc}
+{toc_list(g["toc"])}
         </ol>
       </div>
     </section>
@@ -828,7 +940,7 @@ cd copysync-server-macos
                 {term("win", w["term_title"], transcript(t["win"], "", ""), w["term_label"])}
               </div>
             </div>
-            {manage(w["manage"])}
+            {manage(g["manage_caption"], w["manage"])}
           </section>
 
           <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
@@ -848,7 +960,7 @@ cd copysync-server-macos
                 {term("mac", "copysync-server-macos — zsh", transcript(t["mac"], "%", "./install.sh"), m["term_label"])}
               </div>
             </div>
-            {manage(m["manage"])}
+            {manage(g["manage_caption"], m["manage"])}
           </section>
 
           <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
@@ -868,7 +980,7 @@ cd copysync-server-macos
                 {term("mac", f"ssh {LAN_IP}", transcript(t["linux"], "$", "sudo ./install.sh"), l["term_label"])}
               </div>
             </div>
-            {manage(l["manage"])}
+            {manage(g["manage_caption"], l["manage"])}
           </section>
         </div>
       </div>
@@ -895,7 +1007,20 @@ cd copysync-server-macos
         <figure class="shot">
           <img src="{shots}settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(g["clients_alt"])}">
         </figure>
-        <p class="note">{g["clients_after"].format(home=home_href)}</p>
+        <p class="note">{fill(g["clients_after"], links)}</p>
+      </div>
+    </section>
+
+    <section class="section" id="away" aria-labelledby="away-title">
+      <div class="wrap">
+        <div class="callout">
+          <svg viewBox="0 0 240 112" aria-hidden="true">{PATH_ART["ts"]}</svg>
+          <div>
+            <h2 id="away-title">{g["away_h2"]}</h2>
+            <p>{g["away_text"]}</p>
+            <a class="button" href="{links["ts"]}">{g["away_button"]}</a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -903,7 +1028,7 @@ cd copysync-server-macos
       <div class="wrap">
         <h2 id="faq-title">{g["faq_h2"]}</h2>
         <div class="faq">
-{faq}
+{faq_list(g["faq"], links)}
         </div>
       </div>
     </section>
@@ -915,13 +1040,397 @@ cd copysync-server-macos
       </div>
     </section>
   </main>
+""" + page_bottom(c, code, GUIDE)
 
-{footer(c, code, up, GUIDE)}
 
-  <script src="{a}site.js" defer></script>
-{ANALYTICS}</body>
-</html>
-"""
+# ─────────────────────────── 快速开始 ───────────────────────────
+
+
+def start_page(code: str) -> str:
+    c = load(code)
+    s = c["start"]
+    path = LANGS[code][0]
+    up = "../" * (path + START).count("/")
+    home_href = up + (path or "./")
+    base = up + path
+    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    links = {"home": home_href, "server": base + GUIDE, "ts": base + TAILSCALE, "issues": REPO + "/issues"}
+
+    def step(n: int) -> str:
+        return f'<p class="eyebrow">{s["step"].format(n=n)}</p>'
+
+    return page_top(c, code, START, s["title"], s["description"]) + f"""
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="{home_href}">CopySync</a> / {c["nav_start"]}</p>
+        <h1 class="display">{s["h1"]}</h1>
+        <p class="lede">{s["lede"]}</p>
+        <ol class="guide-toc">
+{toc_list(s["toc"])}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="app" aria-labelledby="app-title">
+      <div class="wrap">
+        {step(1)}
+        <h2 id="app-title">{s["app_h2"]}</h2>
+        <p class="intro">{s["app_intro"]}</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <div class="qs-app">
+              <h3>{LAPTOP}Mac</h3>
+              <ol class="steps">
+{items(s["mac"])}
+              </ol>
+              <a class="button" href="{DL}CopySync.dmg">{DOWN}{c["dl_mac"]}</a>
+            </div>
+            <div class="qs-app">
+              <h3>{DESKTOP}Windows</h3>
+              <ol class="steps">
+{items(s["win"])}
+              </ol>
+              <a class="button" href="{DL}CopySync-Setup.exe">{DOWN}{c["dl_win"]}</a>
+            </div>
+          </div>
+          <figure class="shot">
+            <img src="{shots}welcome-dark.png" width="2112" height="1472" alt="{esc(s["app_alt"])}">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="server" aria-labelledby="server-title">
+      <div class="wrap">
+        {step(2)}
+        <h2 id="server-title">{s["server_h2"]}</h2>
+        <p class="intro">{s["server_intro"]}</p>
+        {paths(c, base, home_href)}
+        <p class="note">{s["server_after"]}</p>
+      </div>
+    </section>
+
+    <section class="section" id="connect" aria-labelledby="connect-title">
+      <div class="wrap">
+        {step(3)}
+        <h2 id="connect-title">{s["connect_h2"]}</h2>
+        <ol class="flow">
+{chr(10).join(f"          <li><h3>{h}</h3><p>{p}</p></li>" for h, p in s["connect_steps"])}
+        </ol>
+        <figure class="shot">
+          <img src="{shots}settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(s["connect_alt"])}">
+        </figure>
+        <p class="note">{fill(s["connect_after"], links)}</p>
+      </div>
+    </section>
+
+    <section class="section" id="pair" aria-labelledby="pair-title">
+      <div class="wrap">
+        {step(4)}
+        <h2 id="pair-title">{s["pair_h2"]}</h2>
+        <p class="intro">{s["pair_intro"]}</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+{items(s["pair_steps"], "              ")}
+            </ol>
+            <figure class="figure-card qs-verify">
+              <img src="{shots}card-verify-dark.png" width="1120" height="800" loading="lazy" alt="{esc(c["verify_alt"])}">
+            </figure>
+          </div>
+          <figure class="shot">
+            <img src="{shots}pairing-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(s["pair_alt"])}">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">{s["done_h2"]}</h2>
+        <p class="lede">{s["done_text"]}</p>
+        <p class="note">{fill(s["help"], links)}</p>
+      </div>
+    </section>
+  </main>
+""" + page_bottom(c, code, START)
+
+
+# ─────────────────────────── 用 Tailscale 跨网络使用 ───────────────────────────
+
+# 教程里的 Tailscale 地址：服务器一个，两台电脑各一个。都在 Tailscale 用的 100.64.0.0/10 里
+TS_IP = "100.101.102.103"
+TS_MAC = "100.88.20.5"
+TS_WIN = "100.92.41.17"
+# 管理后台设备列表里的示例：主机名、地址、系统，第一台是服务器
+TS_MACHINES = [("mac-mini", TS_IP, "macOS"), ("macbook-pro", TS_MAC, "macOS"), ("home-pc", TS_WIN, "Windows")]
+
+
+def tailscale_page(code: str) -> str:
+    c = load(code)
+    g = c["guide"]
+    ts = c["ts"]
+    path = LANGS[code][0]
+    up = "../" * (path + TAILSCALE).count("/")
+    home_href = up + (path or "./")
+    base = up + path
+    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    t = TRANSCRIPTS["zh" if code == "zh" else "en"]
+    links = {"home": home_href, "server": base + GUIDE, "start": base + START}
+    d = ts["diagram"]
+    w, m, l = ts["win"], ts["mac"], ts["linux"]
+
+    mac_dl = f"""curl -LO {DL}copysync-server-macos.tar.gz
+tar xzf copysync-server-macos.tar.gz
+cd copysync-server-macos
+./install.sh {TS_IP}"""
+    linux_dl = f"""curl -LO {DL}copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh {TS_IP}"""
+    # Linux 的安装脚本不会改已有配置里的地址，装过的要自己换：-turn-ip 与 -stun 两处
+    linux_switch = f"""sudo sed -i 's/{LAN_IP}/{TS_IP}/g' /etc/copysync/server.env
+sudo systemctl restart copysync-server"""
+    cmd_line = (f'<span class="t-prompt">C:\\Users\\me\\Downloads\\copysync-server-windows-amd64&gt;</span>'
+                f"install.cmd {TS_IP}")
+
+    rows = []
+    for i, (name, ip, system) in enumerate(TS_MACHINES):
+        tag = f' <em>{ts["machines_server"]}</em>' if i == 0 else ""
+        cls = ' class="hl"' if i == 0 else ""
+        rows.append(f"                <tr{cls}><td>{name}{tag}</td><td>{ip}</td><td>{system}</td></tr>")
+    machines = "\n".join(rows)
+    cols = "".join(f'<th scope="col">{h}</th>' for h in ts["machines_cols"])
+
+    return page_top(c, code, TAILSCALE, ts["title"], ts["description"]) + f"""
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="{home_href}">CopySync</a> / <a href="{links["server"]}">{c["nav_server"]}</a> / Tailscale</p>
+        <h1 class="display">{ts["h1"]}</h1>
+        <p class="lede">{ts["lede"]}</p>
+        <ol class="guide-toc">
+{toc_list(ts["toc"])}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">{ts["overview_h2"]}</h2>
+        <p class="intro">{ts["overview_intro"]}</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 460" role="img" aria-labelledby="ts-title ts-desc">
+            <title id="ts-title">{d["title"]}</title>
+            <desc id="ts-desc">{d["desc"]}</desc>
+            <rect class="d-ts" x="8" y="8" width="944" height="404" rx="22"/>
+            <text class="d-ts-label" x="32" y="42">{d["net"]}</text>
+            <rect class="d-box" x="340" y="64" width="280" height="122" rx="14"/>
+            <text class="d-title" x="480" y="102" text-anchor="middle">{d["server"]}</text>
+            <text class="d-sub" x="480" y="130" text-anchor="middle">{d["server_place"]}</text>
+            <text class="d-ip" x="480" y="164" text-anchor="middle">{TS_IP}</text>
+            <path class="d-sig" d="M150 266V96H340"/>
+            <path class="d-sig" d="M810 266V96H620"/>
+            <path class="d-relay" d="M206 266V154H340"/>
+            <path class="d-relay" d="M754 266V154H620"/>
+            <text class="d-note" x="164" y="86">{d["sig_note"]}</text>
+            <text class="d-note" x="220" y="214">{d["relay_note"]}</text>
+            <rect class="d-box" x="40" y="266" width="240" height="126" rx="14"/>
+            <text class="d-title" x="160" y="306" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="334" text-anchor="middle">{d["mac_place"]}</text>
+            <text class="d-ip" x="160" y="368" text-anchor="middle">{TS_MAC}</text>
+            <rect class="d-box" x="680" y="266" width="240" height="126" rx="14"/>
+            <text class="d-title" x="800" y="306" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="334" text-anchor="middle">{d["win_place"]}</text>
+            <text class="d-ip" x="800" y="368" text-anchor="middle">{TS_WIN}</text>
+            <path class="d-direct" d="M280 330H680"/>
+            <text class="d-label" x="480" y="316" text-anchor="middle">{d["direct"]}</text>
+            <text class="d-note" x="480" y="358" text-anchor="middle">{d["direct_note"]}</text>
+            <g class="d-legend" transform="translate(40 444)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">{g["diagram"]["legend_direct"]}</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">{g["diagram"]["legend_relay"]}</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">{g["diagram"]["legend_sig"]}</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+{items(ts["overview_points"], "          ")}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">{g["prep_h2"]}</h2>
+        <dl class="fallbacks">
+{chr(10).join(f"          <div><dt>{h}</dt><dd>{fill(p, links)}</dd></div>" for h, p in ts["prep"])}
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="join" aria-labelledby="join-title">
+      <div class="wrap">
+        <p class="eyebrow">{ts["step"].format(n=1)}</p>
+        <h2 id="join-title">{ts["join_h2"]}</h2>
+        <p class="intro">{ts["join_intro"]}</p>
+        <div class="os-grid qs-grid">
+          <div class="os-steps">
+            <ol class="steps">
+{items(ts["join_steps"], "              ")}
+            </ol>
+            <a class="button" href="https://tailscale.com/download">{DOWN}{ts["join_download"]}</a>
+          </div>
+          <div class="os-figures">
+            <figure class="browser machines" role="img" aria-label="{esc(ts["machines_label"])}">
+              <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">login.tailscale.com/admin/machines</span></div>
+              <table>
+                <thead><tr>{cols}</tr></thead>
+                <tbody>
+{machines}
+                </tbody>
+              </table>
+            </figure>
+          </div>
+        </div>
+        <div class="server-notes">
+          <h3>{ts["server_notes_h3"]}</h3>
+          <ul class="points">
+{items(ts["server_notes"], "            ")}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="address" aria-labelledby="address-title">
+      <div class="wrap">
+        <p class="eyebrow">{ts["step"].format(n=2)}</p>
+        <h2 id="address-title">{ts["address_h2"]}</h2>
+        <p class="intro">{ts["address_intro"]}</p>
+        <div class="address-term">
+          {term("mac", "mac-mini — zsh", f'<span class="t-prompt">%</span> tailscale ip -4{chr(10)}<span class="t-url">{TS_IP}</span>', ts["address_label"])}
+        </div>
+        <p class="note">{ts["address_after"]}</p>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <p class="eyebrow">{ts["step"].format(n=3)}</p>
+        <h2 id="install-title">{ts["install_h2"]}</h2>
+        <p class="intro">{fill(ts["install_intro"], links)}</p>
+        <div class="os-tabs" data-tabs>
+          <div class="tablist" role="tablist" aria-label="{g["os_label"]}" hidden>
+            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
+            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
+            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+          </div>
+
+          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
+            <h3 class="os-title">{DESKTOP}Windows</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+{items(w["steps"])}
+                </ol>
+                <a class="button" href="{DL}copysync-server-windows-amd64.zip">{DOWN}{g["win"]["download"]}</a>
+                <ul class="points">
+{items(w["notes"])}
+                </ul>
+              </div>
+              <div class="os-figures">
+                {term("win", w["cmd_title"], cmd_line, w["cmd_label"])}
+                {term("win", g["win"]["term_title"], transcript(t["win"], "", "", TS_IP), w["term_label"])}
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
+            <h3 class="os-title">{LAPTOP}macOS</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>{m["steps"][0]}
+                {code_block(c, mac_dl)}</li>
+{items(m["steps"][1:])}
+                </ol>
+                <ul class="points">
+{items(m["notes"])}
+                </ul>
+              </div>
+              <div class="os-figures">
+                {term("mac", "copysync-server-macos — zsh", transcript(t["mac"], "%", f"./install.sh {TS_IP}", TS_IP), m["term_label"])}
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
+            <h3 class="os-title">{SERVER}Linux</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>{l["steps"][0]}
+                {code_block(c, linux_dl)}</li>
+{items(l["steps"][1:])}
+                </ol>
+                <div class="switch">
+                  <p>{l["switch"]}</p>
+                  {code_block(c, linux_switch)}
+                </div>
+              </div>
+              <div class="os-figures">
+                {term("mac", f"ssh {TS_IP}", transcript(t["linux"], "$", f"sudo ./install.sh {TS_IP}", TS_IP), l["term_label"])}
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <p class="eyebrow">{ts["step"].format(n=4)}</p>
+        <h2 id="check-title">{ts["check_h2"]}</h2>
+        <p class="intro">{ts["check_intro"]}</p>
+        <figure class="browser" role="img" aria-label="{esc(ts["check_label"])}">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://{TS_IP}:8787/healthz</span></div>
+          <pre class="b-body">{{"status":"ok","version":"{VERSION}"}}</pre>
+        </figure>
+        <p class="note">{ts["check_after"]}</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <p class="eyebrow">{ts["step"].format(n=5)}</p>
+        <h2 id="clients-title">{ts["clients_h2"]}</h2>
+        <ol class="flow">
+{chr(10).join(f"          <li><h3>{h}</h3><p>{p}</p></li>" for h, p in ts["clients_steps"])}
+        </ol>
+        <figure class="shot">
+          <img src="{shots}settings-tailscale-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(ts["clients_alt"])}">
+        </figure>
+        <p class="note">{fill(ts["clients_after"], links)}</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">{g["faq_h2"]}</h2>
+        <div class="faq">
+{faq_list(ts["faq"], links)}
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">{ts["closing"]}</h2>{cta(c)}
+        <a class="source" href="{links["server"]}">{ts["source"]}</a>
+      </div>
+    </section>
+  </main>
+""" + page_bottom(c, code, TAILSCALE)
 
 
 # ─────────────────────────── Markdown → HTML ───────────────────────────
@@ -1117,6 +1626,7 @@ def design_page(md_name: str, page: str) -> str:
     <div class="wrap">
       <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
       <nav aria-label="页面导航">
+        <a href="../{START}">{zh["nav_start"]}</a>
         <a href="../{GUIDE}">{zh["nav_server"]}</a>
         <a class="wide" href="{REPO}/blob/main/design/{md_name}">在 GitHub 上查看</a>
         <a class="wide" href="{REPO}">GitHub</a>
@@ -1175,10 +1685,11 @@ def sitemap() -> str:
     alts += f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{SITE}"/>'
     urls = [f"  <url>\n    <loc>{SITE}{p}</loc>\n    <lastmod>{DATE}</lastmod>{alts}\n  </url>"
             for p, _, _, _ in LANGS.values()]
-    server_alts = "".join(
-        f'\n    <xhtml:link rel="alternate" hreflang="{h}" href="{SITE}{p}{GUIDE}"/>' for p, h, _, _ in LANGS.values())
-    urls += [f"  <url>\n    <loc>{SITE}{p}{GUIDE}</loc>\n    <lastmod>{DATE}</lastmod>{server_alts}\n  </url>"
-             for p, _, _, _ in LANGS.values()]
+    for sub in SUBPAGES:
+        sub_alts = "".join(
+            f'\n    <xhtml:link rel="alternate" hreflang="{h}" href="{SITE}{p}{sub}"/>' for p, h, _, _ in LANGS.values())
+        urls += [f"  <url>\n    <loc>{SITE}{p}{sub}</loc>\n    <lastmod>{DATE}</lastmod>{sub_alts}\n  </url>"
+                 for p, _, _, _ in LANGS.values()]
     urls += [f"  <url>\n    <loc>{SITE}design/{page}.html</loc>\n    <lastmod>{DATE}</lastmod>\n  </url>"
              for page in DESIGN_DOCS.values()]
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -1196,6 +1707,8 @@ def main() -> None:
     for code, (path, _, _, _) in LANGS.items():
         write(DOCS / path / "index.html", home(code))
         write(DOCS / path / GUIDE / "index.html", server_page(code))
+        write(DOCS / path / START / "index.html", start_page(code))
+        write(DOCS / path / TAILSCALE / "index.html", tailscale_page(code))
     for md_name, page in DESIGN_DOCS.items():
         write(DOCS / "design" / f"{page}.html", design_page(md_name, page))
     write(DOCS / "404.html", not_found())

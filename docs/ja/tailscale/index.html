@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tailscale で CopySync をネットワークをまたいで使う：グローバル IP なしで自宅と会社を同期</title>
+  <meta name="description" content="サーバーは自宅で電源を入れたままのコンピューターに置き、各コンピューターに Tailscale を入れれば、同じ LAN にあるのと同じように使えます。グローバル IP もルーターの設定も不要で、会社や外出先からもクリップボードを同期できます。Windows・Mac・Linux の手順つき。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/tailscale/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="Tailscale で CopySync をネットワークをまたいで使う：グローバル IP なしで自宅と会社を同期">
+  <meta property="og:description" content="サーバーは自宅で電源を入れたままのコンピューターに置き、各コンピューターに Tailscale を入れれば、同じ LAN にあるのと同じように使えます。グローバル IP もルーターの設定も不要で、会社や外出先からもクリップボードを同期できます。Windows・Mac・Linux の手順つき。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/tailscale/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../ja/" aria-label="CopySync ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="ページ内の移動">
+        <a href="../../ja/start/">はじめかた</a>
+        <a class="wide" href="../../ja/#how">しくみ</a>
+        <a class="wide" href="../../ja/#faq">よくある質問</a>
+        <a href="../../ja/server/">サーバーの設置</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/tailscale/" hreflang="en" lang="en" data-lang="en">English</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/server/">サーバーの設置</a> / Tailscale</p>
+        <h1 class="display">Tailscale でネットワークをまたぐ</h1>
+        <p class="lede">グローバル IP がなくても、自宅と会社のあいだで同期できます。サーバーは自宅に置いたまま、各コンピューターに Tailscale を入れれば、同じ LAN にあるのと同じように扱えます。ルーターの設定もクラウドサーバーも要りません。</p>
+        <ol class="guide-toc">
+          <li><a href="#join">Tailscale を入れる</a></li>
+          <li><a href="#address">アドレスを調べる</a></li>
+          <li><a href="#install">サーバーを入れる</a></li>
+          <li><a href="#check">確認</a></li>
+          <li><a href="#clients">アドレスの入力</a></li>
+          <li><a href="#faq">よくある質問</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">同じ LAN にあるように</h2>
+        <p class="intro">Tailscale はデバイスどうしをつなぐネットワークツールです。同じアカウントでサインインしたデバイスにはそれぞれ 100 で始まる固定のアドレスが割り当てられ、実際にどこのネットワークにいても、そのアドレスで互いに届きます。CopySync のサーバーをこのアドレスでインストールし、アプリにも同じアドレスを入力すれば、あとは LAN に置く場合と同じです。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 460" role="img" aria-labelledby="ts-title ts-desc">
+            <title id="ts-title">Tailscale 経由の CopySync</title>
+            <desc id="ts-desc">サーバーと Windows PC は自宅に、Mac は会社にあります。3 台とも Tailscale を使い、同じ仮想ネットワーク上で 100 で始まるアドレスを持っています。2 台はシグナリングでサーバー 100.101.102.103 に接続し、コピーした内容は 2 台のあいだを直接流れ、直接つながらないときだけサーバーで中継します。</desc>
+            <rect class="d-ts" x="8" y="8" width="944" height="404" rx="22"/>
+            <text class="d-ts-label" x="32" y="42">Tailscale の仮想ネットワーク：各デバイスに 100 で始まるアドレス</text>
+            <rect class="d-box" x="340" y="64" width="280" height="122" rx="14"/>
+            <text class="d-title" x="480" y="102" text-anchor="middle">サーバー</text>
+            <text class="d-sub" x="480" y="130" text-anchor="middle">自宅、電源を入れたまま</text>
+            <text class="d-ip" x="480" y="164" text-anchor="middle">100.101.102.103</text>
+            <path class="d-sig" d="M150 266V96H340"/>
+            <path class="d-sig" d="M810 266V96H620"/>
+            <path class="d-relay" d="M206 266V154H340"/>
+            <path class="d-relay" d="M754 266V154H620"/>
+            <text class="d-note" x="164" y="86">シグナリング TCP 8787</text>
+            <text class="d-note" x="220" y="214">中継 UDP 3478（直接不可のとき）</text>
+            <rect class="d-box" x="40" y="266" width="240" height="126" rx="14"/>
+            <text class="d-title" x="160" y="306" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="334" text-anchor="middle">会社</text>
+            <text class="d-ip" x="160" y="368" text-anchor="middle">100.88.20.5</text>
+            <rect class="d-box" x="680" y="266" width="240" height="126" rx="14"/>
+            <text class="d-title" x="800" y="306" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="334" text-anchor="middle">自宅</text>
+            <text class="d-ip" x="800" y="368" text-anchor="middle">100.92.41.17</text>
+            <path class="d-direct" d="M280 330H680"/>
+            <text class="d-label" x="480" y="316" text-anchor="middle">直接接続、二重の暗号化</text>
+            <text class="d-note" x="480" y="358" text-anchor="middle">内容は 2 台のあいだだけを流れる</text>
+            <g class="d-legend" transform="translate(40 444)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">データ（直接）</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">データ（中継、予備）</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">シグナリング</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>サーバーは自宅のまま。</strong>電源を入れたままの Windows・Mac・Linux なら何でもよく、LAN に置く場合と同じです。</li>
+          <li><strong>すべてのコンピューターに Tailscale を入れ、</strong>同じアカウントでサインインします。サーバーを動かすコンピューターも同様です。</li>
+          <li><strong>二重の暗号化。</strong>Tailscale の WireGuard トンネルの中を、CopySync 自身のエンドツーエンド暗号化接続が通ります。Tailscale にもサーバーにも内容は見えません。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">始める前に</h2>
+        <dl class="fallbacks">
+          <div><dt>電源を入れたままのコンピューター</dt><dd>サーバーを動かします。条件は<a href="../../ja/server/#prepare">LAN に置く場合</a>と同じで、電源が切れたりスリープしたりすると同期は止まります。Tailscale のアドレスは変わらないので、ルーターでアドレスを固定する必要はありません。</dd></div>
+          <div><dt>Tailscale のアカウント</dt><dd>個人利用は無料で、Google、Microsoft、GitHub、Apple のアカウントでサインインできます。すべてのデバイスで同じアカウントを使います。</dd></div>
+          <div><dt>すべてのコンピューターに Tailscale</dt><dd>Windows、macOS、Linux 用のクライアントがあります。CopySync を使うコンピューターにはすべて必要で、自宅から動かないものも同じです。</dd></div>
+          <div><dt>ZeroTier でも同様</dt><dd>各デバイスに固定の仮想アドレスを割り当てるツールなら同じ手順で使えます。サーバーをそのアドレスでインストールし、アプリにも入力します。ここでは Tailscale を例にします。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="join" aria-labelledby="join-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 1</p>
+        <h2 id="join-title">各コンピューターに Tailscale を入れる</h2>
+        <p class="intro">サーバーを動かすコンピューターと、同期するすべてのコンピューターに入れて、同じアカウントでサインインします。</p>
+        <div class="os-grid qs-grid">
+          <div class="os-steps">
+            <ol class="steps">
+              <li>Tailscale の公式サイトから OS に合ったクライアントをダウンロードしてインストールします。<span class="aside">Linux では <code>curl -fsSL https://tailscale.com/install.sh | sh</code> を実行してから <code>sudo tailscale up</code> を実行し、表示されたリンクを開いてサインインします。</span></li>
+              <li>Tailscale を開いてサインインします。すべてのコンピューターで同じアカウントを使います。</li>
+              <li>サインインすると、Tailscale の管理画面にすべてのデバイスが並び、それぞれに 100 で始まるアドレスが付いています。</li>
+            </ol>
+            <a class="button" href="https://tailscale.com/download"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Tailscale をダウンロード</a>
+          </div>
+          <div class="os-figures">
+            <figure class="browser machines" role="img" aria-label="Tailscale の管理画面のデバイス一覧（イメージ）：mac-mini がサーバーで 100.101.102.103、macbook-pro は 100.88.20.5、home-pc は 100.92.41.17">
+              <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">login.tailscale.com/admin/machines</span></div>
+              <table>
+                <thead><tr><th scope="col">デバイス</th><th scope="col">Tailscale のアドレス</th><th scope="col">OS</th></tr></thead>
+                <tbody>
+                <tr class="hl"><td>mac-mini <em>サーバー</em></td><td>100.101.102.103</td><td>macOS</td></tr>
+                <tr><td>macbook-pro</td><td>100.88.20.5</td><td>macOS</td></tr>
+                <tr><td>home-pc</td><td>100.92.41.17</td><td>Windows</td></tr>
+                </tbody>
+              </table>
+            </figure>
+          </div>
+        </div>
+        <div class="server-notes">
+          <h3>サーバーを動かすコンピューターでは、もうひと手間</h3>
+          <ul class="points">
+            <li><strong>Windows：</strong>通知領域の Tailscale アイコンを右クリックし、「Preferences」で「Run unattended」をオンにします。そうしないとサインアウトしたときに Tailscale が切れ、外のコンピューターからサーバーに届かなくなります。</li>
+            <li><strong>Mac：</strong>ログインしたまま、スリープさせず、Tailscale がログイン時に開くようにしておきます。CopySync のサーバーもログイン中だけ動きます。</li>
+            <li><strong>キーの有効期限をオフに：</strong>Tailscale は初期設定で 180 日ごとにデバイスの再サインインを求めます。管理画面の Machines ページで、サーバーの行の右端のメニューから「Disable key expiry」を選びます。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="address" aria-labelledby="address-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 2</p>
+        <h2 id="address-title">サーバーの Tailscale アドレスを調べる</h2>
+        <p class="intro">サーバーを動かすコンピューターで、メニューバー（Windows では通知領域）の Tailscale アイコンをクリックすると、メニューにこのデバイスのアドレスが表示されます。ターミナルで <code>tailscale ip -4</code> を実行しても分かります。</p>
+        <div class="address-term">
+          <figure class="term" role="img" aria-label="ターミナルで tailscale ip -4 を実行すると、このデバイスの Tailscale アドレス 100.101.102.103 が表示される">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">mac-mini — zsh</span></div>
+<pre class="t-body"><span class="t-prompt">%</span> tailscale ip -4
+<span class="t-url">100.101.102.103</span></pre>
+              </figure>
+        </div>
+        <p class="note">以下では <code>100.101.102.103</code> を例にします。あなたのアドレスに置き換えてください。</p>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 3</p>
+        <h2 id="install-title">そのアドレスでサーバーを入れる</h2>
+        <p class="intro">インストールスクリプトは初期設定で LAN のアドレスを使います。ここでは Tailscale のアドレスを指定して、外のコンピューターからもサーバーの中継を使えるようにします。すでに<a href="../../ja/server/">LAN での手順</a>で入れている場合は、アドレスを付けてもう一度実行するだけで、設定は引き継がれます。</p>
+        <div class="os-tabs" data-tabs>
+          <div class="tablist" role="tablist" aria-label="サーバーを動かすコンピューターの OS" hidden>
+            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
+            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
+            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+          </div>
+
+          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                <li>copysync-server-windows-amd64.zip をダウンロードし、右クリックで「すべて展開」します。インストール済みなら、前に展開したフォルダーを使います。</li>
+                <li>展開したフォルダーを開き、上部のアドレスバーに <code>cmd</code> と入力して Enter を押し、コマンドプロンプトを開きます。</li>
+                <li><code>install.cmd 100.101.102.103</code>（あなたのアドレス）を実行し、ユーザーアカウント制御が出たら「はい」を押します。</li>
+                <li>インストールは新しく開くウィンドウで進みます。最後に表示されるアドレスが <code>ws://100.101.102.103:8787/signal</code> になっていれば成功です。</li>
+                </ol>
+                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版サーバーをダウンロード</a>
+                <ul class="points">
+                <li><strong>ファイアウォールは設定済み：</strong>スクリプトが追加する受信規則はすべてのネットワークに適用され、Tailscale のアダプターも含まれます。</li>
+                <li>「Windows によって PC が保護されました」と出たら、「詳細情報」から「実行」を押します。</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="展開したフォルダーで開いたコマンドプロンプトで install.cmd 100.101.102.103 を実行する">
+                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>コマンド プロンプト</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<pre class="t-body"><span class="t-prompt">C:\Users\me\Downloads\copysync-server-windows-amd64&gt;</span>install.cmd 100.101.102.103</pre>
+              </figure>
+                <figure class="term" role="img" aria-label="install.cmd の実行後のウィンドウ。最後にアドレス ws://100.101.102.103:8787/signal を表示">
+                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>管理者: Windows PowerShell</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<pre class="t-body"><span class="t-step">&gt; Stopping the running version</span>
+<span class="t-step">&gt; Installing to C:\Program Files\CopySync Server</span>
+<span class="t-step">&gt; Registering the service CopySyncServer (relay address 100.101.102.103)</span>
+<span class="t-step">&gt; Allowing it through Windows Firewall</span>
+<span class="t-step">&gt; Starting</span>
+  √ Running
+
+Installed: copysync-server 1.3.3. It runs as a Windows service and starts with Windows.
+In CopySync on each computer, set Settings &gt; Signaling server to:
+
+    <span class="t-url">ws://100.101.102.103:8787/signal</span>
+
+  Program    C:\Program Files\CopySync Server
+  Logs       C:\ProgramData\CopySync Server\server.log
+  Restart    Restart-Service CopySyncServer (in an administrator PowerShell)
+  Uninstall  double-click uninstall.cmd</pre>
+              </figure>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>macOS</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>「ターミナル」を開き、次の行を順に実行します。最後の行はあなたのアドレスに置き換えます：
+                <div class="code">
+                  <button class="copy" type="button" data-done="コピーしました">コピー</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
+tar xzf copysync-server-macos.tar.gz
+cd copysync-server-macos
+./install.sh 100.101.102.103</code></pre>
+                </div></li>
+                <li>最後に表示されるアドレスが <code>ws://100.101.102.103:8787/signal</code> になっていれば成功です。</li>
+                </ol>
+                <ul class="points">
+                <li>インストール済みなら、同じフォルダーで <code>./install.sh 100.101.102.103</code> を実行するだけです。設定は引き継がれます。</li>
+                <li><strong>macOS のファイアウォールがオンなら、</strong>スクリプトの最後に copysync-server を許可するコマンドが表示されます。</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="ターミナルで ./install.sh 100.101.102.103 を実行した出力。最後にアドレス ws://100.101.102.103:8787/signal を表示">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">copysync-server-macos — zsh</span></div>
+<pre class="t-body"><span class="t-prompt">%</span> ./install.sh 100.101.102.103
+<span class="t-step">▶ Stopping the running version</span>
+<span class="t-step">▶ Installing to /Users/me/Library/Application Support/CopySync Server</span>
+<span class="t-step">▶ Writing the LaunchAgent (relay address 100.101.102.103)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3. It starts whenever you log in to this Mac.
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://100.101.102.103:8787/signal</span>
+
+  Logs       /Users/me/Library/Logs/CopySync/server.log
+  Restart    launchctl kickstart -k gui/501/com.copysync.server
+  Uninstall  ./install.sh uninstall</pre>
+              </figure>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Linux</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>次の行を順に実行します。最後の行はあなたのアドレスに置き換えます：<span class="aside">ARM では <code>amd64</code> を <code>arm64</code> に置き換えます。</span>
+                <div class="code">
+                  <button class="copy" type="button" data-done="コピーしました">コピー</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh 100.101.102.103</code></pre>
+                </div></li>
+                <li>最後に表示されるアドレスが <code>ws://100.101.102.103:8787/signal</code> になっていれば成功です。</li>
+                </ol>
+                <div class="switch">
+                  <p><strong>インストール済みの場合：</strong>Linux のスクリプトは既存の設定を書き換えません。設定の中の古いアドレスを Tailscale のアドレスに置き換え（下の <code>192.168.1.20</code> を元のアドレスに）、サービスを再起動します：</p>
+                  <div class="code">
+                  <button class="copy" type="button" data-done="コピーしました">コピー</button>
+<pre><code>sudo sed -i 's/192.168.1.20/100.101.102.103/g' /etc/copysync/server.env
+sudo systemctl restart copysync-server</code></pre>
+                </div>
+                </div>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="sudo ./install.sh 100.101.102.103 の出力。最後にアドレス ws://100.101.102.103:8787/signal を表示">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh 100.101.102.103</span></div>
+<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 100.101.102.103
+<span class="t-step">▶ Installing the binary to /usr/local/bin</span>
+<span class="t-step">▶ Writing the systemd unit</span>
+<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 100.101.102.103)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://100.101.102.103:8787/signal</span>
+
+  Config     /etc/copysync/server.env
+  Logs       journalctl -u copysync-server -f
+  Restart    systemctl restart copysync-server
+  Uninstall  sudo ./install.sh uninstall
+
+Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
+              </figure>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 4</p>
+        <h2 id="check-title">外から確認する</h2>
+        <p class="intro">自宅のネットワークの外にあるコンピューター（スマートフォンのテザリングにつないだノートパソコンなど）で Tailscale が接続されていることを確かめ、ブラウザーで <code>http://100.101.102.103:8787/healthz</code> を開きます。次の 1 行が表示されれば、外からサーバーに届いています。</p>
+        <figure class="browser" role="img" aria-label="ブラウザーで http://100.101.102.103:8787/healthz を開くと、サーバーの状態 ok とバージョンが表示される">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://100.101.102.103:8787/healthz</span></div>
+          <pre class="b-body">{"status":"ok","version":"1.3.3"}</pre>
+        </figure>
+        <p class="note">開けない場合は、下の<a href="#faq">よくある質問</a>をご覧ください。</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 5</p>
+        <h2 id="clients-title">各コンピューターにアドレスを入力</h2>
+        <ol class="flow">
+          <li><h3>設定を開く</h3><p>各コンピューターで CopySync を開き、「設定」に進みます。サーバーを動かしているコンピューターも同じです。</p></li>
+          <li><h3>Tailscale のアドレスを入力</h3><p>「シグナリングサーバー」に <code>ws://100.101.102.103:8787/signal</code>（あなたのアドレス）を入力し、Return か Enter を押します。</p></li>
+          <li><h3>状態を確認</h3><p>「接続状態」が緑の「接続済み」になれば完了です。まだペアリングしていなければ「デバイス」でペアリングします。</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../../assets/screenshots/ja/settings-tailscale-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync の設定画面：シグナリングサーバーは ws://100.101.102.103:8787/signal、接続状態は接続済み">
+        </figure>
+        <p class="note">自宅のコンピューターにも LAN ではなく Tailscale のアドレスを入力してください。持ち出しても入れ直す必要がありません。全員が自宅にいるときも、データは自宅のネットワークの中だけを流れます。</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">よくある質問</h2>
+        <div class="faq">
+          <details>
+            <summary>「直接接続」と表示されるのに遅い</summary>
+            <div class="answer"><p>CopySync の「直接接続」は、2 台が Tailscale のネットワーク上で直接つながっていることを指します。Tailscale 自身が 2 台を P2P でつなげないときは、遠くにあることもある DERP サーバーで中継します。</p><p>ターミナルで <code>tailscale ping 相手のアドレス</code> を実行し、via DERP なら Tailscale が中継中、via IP とポートなら P2P です。会社や学校のネットワークでは中継になりやすく、DERP サーバーを自分で立てるか、別のツールを試す方法があります。</p></div>
+          </details>
+          <details>
+            <summary>接続状態が「未接続」のまま</summary>
+            <div class="answer"><p>まずそのコンピューターで Tailscale が接続されているか確かめ、ブラウザーで <code>http://サーバーの Tailscale アドレス:8787/healthz</code> を開きます。</p><p>開けなければ、サーバーのコンピューターがスリープしていないか、そこで Tailscale がオンラインか（Windows では Run unattended、Mac ではログインしたまま）、サーバーが LAN のアドレスのままになっていないか、Mac や Linux のファイアウォールに止められていないかを確認します。</p></div>
+          </details>
+          <details>
+            <summary>すべてのコンピューターに Tailscale が必要ですか？</summary>
+            <div class="answer"><p>はい。入っていないコンピューターは 100 で始まるアドレスに届かず、外のコンピューターからもそのコンピューターに届きません。自宅から動かないものも同じです。</p></div>
+          </details>
+          <details>
+            <summary>LAN の手順でインストール済みです。やり直しが必要？</summary>
+            <div class="answer"><p>いいえ。Tailscale のアドレスを付けてインストールスクリプトをもう一度実行し（Linux は設定を編集）、各コンピューターのサーバーアドレスを Tailscale のものに変えるだけです。ペアリング済みのデバイスはそのままです。</p></div>
+          </details>
+          <details>
+            <summary>Tailscale にコピーした内容は見えますか？</summary>
+            <div class="answer"><p>見えません。Tailscale の接続は WireGuard でエンドツーエンド暗号化され、その中を CopySync 自身の DTLS 暗号化接続が通ります。どちらの層も開けるのは 2 台のコンピューターだけです。Tailscale のサーバーが扱うのはデバイスの公開鍵とアドレスだけで、中継サーバーも暗号化されたパケットを転送するだけです。</p></div>
+          </details>
+          <details>
+            <summary>サーバーの Tailscale アドレスは変わりますか？</summary>
+            <div class="answer"><p>通常は変わりません。アドレスはデバイスに付いていて、再起動やネットワークの変更でも同じです。デバイスを Tailscale から削除して追加し直したときだけ変わります。</p></div>
+          </details>
+          <details>
+            <summary>グローバル IP があります。Tailscale は必要？</summary>
+            <div class="answer"><p>不要です。グローバル IP を持つマシンにサーバーを置き、すべてのコンピューターにそのアドレスを入力してください（<a href="../../ja/#cloud">トップページの設置手順</a>）。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">サーバーは自宅に。<br>クリップボードはあなたと一緒に。</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+        </div>
+        <p class="note">バージョン 1.3.3、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <a class="source" href="../../ja/server/">LAN での設置手順に戻る</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync は GNU AGPL-3.0 のオープンソースです。商用ライセンスもあります。</p>
+      <nav aria-label="フッターのリンク">
+        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>
+        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+      </nav>
+      <nav aria-label="言語">
+        <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/tailscale/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/tailscale/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>
