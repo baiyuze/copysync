@@ -3,13 +3,14 @@
 //
 // 信任模型：服务器只是个转发通道。所有经它转发的消息都由发送方用设备私钥签名，
 // 接收方用配对时存下的对端公钥验签——服务器改不了内容，也冒充不了任何一方。
-// 验签失败的消息直接丢弃。
+// 验签失败的消息直接丢弃。签名与校验见 transport/signed。
+//
+// 服务器是可选的：地址为空时客户端什么也不做，设备只在局域网里互相发现。
 package signaling
 
 import (
 	"context"
 	"crypto/ed25519"
-	cryptorand "crypto/rand"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -21,6 +22,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"github.com/baiyuze/copysync/client-core/internal/identity"
+	"github.com/baiyuze/copysync/client-core/internal/transport/signed"
 	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
 )
 
@@ -28,8 +30,6 @@ const (
 	maxMessageBytes = 256 << 10
 	dialTimeout     = 15 * time.Second
 	writeTimeout    = 10 * time.Second
-	// 防重放：拒绝时间戳偏离过大的消息
-	maxClockSkew = 5 * time.Minute
 )
 
 // Handlers 是调用方关心的事件。均在客户端的读循环中同步调用，
@@ -52,9 +52,7 @@ type Client struct {
 	log      *slog.Logger
 	handlers Handlers
 
-	// PublicKeyOf 返回已配对设备的公钥，用于验签。返回 nil 表示未配对，
-	// 此时来自该设备的消息一律丢弃。
-	publicKeyOf func(deviceID string) ed25519.PublicKey
+	verifier *signed.Verifier
 	// DeviceInfo 提供每次握手时上报的设备名与已配对列表
 	deviceInfo func() (name, platform string, pairedIDs []string)
 
@@ -62,16 +60,20 @@ type Client struct {
 	conn      *websocket.Conn
 	url       string
 	connected bool
-
-	// 防重放：记录近期见过的 nonce
-	seenNonces map[string]time.Time
+	// urlChanged 在地址变化时唤醒正在等待的 Run，立即按新地址连接
+	urlChanged chan struct{}
 }
 
 type Options struct {
-	Identity    *identity.Identity
-	URL         string
-	Logger      *slog.Logger
-	Handlers    Handlers
+	Identity *identity.Identity
+	URL      string
+	Logger   *slog.Logger
+	Handlers Handlers
+	// Verifier 校验转发来的信令。与局域网通道共用一个，同一条信令两条路都到时只处理一次。
+	// 为空时按 PublicKeyOf 自建一个。
+	Verifier *signed.Verifier
+	// PublicKeyOf 返回已配对设备的公钥，用于验签。返回 nil 表示未配对，
+	// 此时来自该设备的消息一律丢弃。
 	PublicKeyOf func(deviceID string) ed25519.PublicKey
 	DeviceInfo  func() (name, platform string, pairedIDs []string)
 }
@@ -81,19 +83,23 @@ func New(opts Options) *Client {
 	if log == nil {
 		log = slog.Default()
 	}
+	verifier := opts.Verifier
+	if verifier == nil {
+		verifier = signed.NewVerifier(opts.Identity.DeviceID, opts.PublicKeyOf)
+	}
 	return &Client{
-		identity:    opts.Identity,
-		url:         opts.URL,
-		log:         log,
-		handlers:    opts.Handlers,
-		publicKeyOf: opts.PublicKeyOf,
-		deviceInfo:  opts.DeviceInfo,
-		seenNonces:  make(map[string]time.Time),
+		identity:   opts.Identity,
+		url:        opts.URL,
+		log:        log,
+		handlers:   opts.Handlers,
+		verifier:   verifier,
+		deviceInfo: opts.DeviceInfo,
+		urlChanged: make(chan struct{}, 1),
 	}
 }
 
-// SetURL 更换信令服务器地址，下次重连生效。
-// 当前连接会被断开，以便立即切换。
+// SetURL 更换信令服务器地址，立即生效。
+// 当前连接会被断开，以便立即切换；地址为空表示不用服务器。
 func (c *Client) SetURL(url string) {
 	c.mu.Lock()
 	changed := c.url != url
@@ -101,8 +107,15 @@ func (c *Client) SetURL(url string) {
 	conn := c.conn
 	c.mu.Unlock()
 
-	if changed && conn != nil {
+	if !changed {
+		return
+	}
+	if conn != nil {
 		conn.Close(websocket.StatusNormalClosure, "切换服务器")
+	}
+	select {
+	case c.urlChanged <- struct{}{}:
+	default:
 	}
 }
 
@@ -119,17 +132,33 @@ func (c *Client) Connected() bool {
 }
 
 // Run 维持与信令服务器的连接，断线后自动重连，直到 ctx 取消。
+// 没配地址时空等，直到 SetURL 给出地址。
 func (c *Client) Run(ctx context.Context) {
-	backoff := time.Second
+	const initialBackoff = time.Second
 	const maxBackoff = 30 * time.Second
+	backoff := initialBackoff
 
 	for ctx.Err() == nil {
-		err := c.session(ctx)
+		if c.URL() == "" {
+			select {
+			case <-ctx.Done():
+				return
+			case <-c.urlChanged:
+				backoff = initialBackoff
+				continue
+			}
+		}
+
+		established, err := c.session(ctx)
 		if ctx.Err() != nil {
 			return
 		}
 		if err != nil {
 			c.log.Debug("信令连接中断", "err", err, "重试间隔", backoff)
+		}
+		// 连上过就从头计时：服务器重启后应当很快重连，而不是沿用上次的长间隔
+		if established {
+			backoff = initialBackoff
 		}
 
 		// 加抖动，避免服务器重启后所有设备同时涌入
@@ -137,6 +166,9 @@ func (c *Client) Run(ctx context.Context) {
 		select {
 		case <-ctx.Done():
 			return
+		case <-c.urlChanged:
+			backoff = initialBackoff
+			continue
 		case <-time.After(backoff + jitter):
 		}
 		if backoff < maxBackoff {
@@ -145,24 +177,24 @@ func (c *Client) Run(ctx context.Context) {
 	}
 }
 
-// session 完成一次完整的连接生命周期。
-func (c *Client) session(ctx context.Context) error {
+// session 完成一次完整的连接生命周期。established 表示握手成功过。
+func (c *Client) session(ctx context.Context) (established bool, err error) {
 	url := c.URL()
 	if url == "" {
-		return errors.New("未配置信令服务器地址")
+		return false, errors.New("未配置信令服务器地址")
 	}
 
 	dialCtx, cancel := context.WithTimeout(ctx, dialTimeout)
 	conn, _, err := websocket.Dial(dialCtx, url, nil)
 	cancel()
 	if err != nil {
-		return fmt.Errorf("连接 %s: %w", url, err)
+		return false, fmt.Errorf("连接 %s: %w", url, err)
 	}
 	conn.SetReadLimit(maxMessageBytes)
 	defer conn.Close(websocket.StatusNormalClosure, "")
 
 	if err := c.handshake(ctx, conn); err != nil {
-		return fmt.Errorf("握手: %w", err)
+		return false, fmt.Errorf("握手: %w", err)
 	}
 
 	c.mu.Lock()
@@ -184,7 +216,8 @@ func (c *Client) session(ctx context.Context) error {
 		}
 	}()
 
-	return c.readLoop(ctx, conn)
+	err = c.readLoop(ctx, conn)
+	return true, err
 }
 
 // handshake 应答服务器的 challenge，证明本机持有该公钥对应的私钥。
@@ -266,62 +299,21 @@ func (c *Client) readLoop(ctx context.Context, conn *websocket.Conn) error {
 //
 // 这是整个信任模型的落点：服务器能转发任意字节，但伪造不出对端的签名。
 // 任何验签不过的消息都当作攻击丢弃，不向上层暴露。
-func (c *Client) handleForwarded(signed *pb.Signed) {
-	from := signed.GetFromDeviceId()
-	pub := c.publicKeyOf(from)
-	if pub == nil {
-		c.log.Warn("丢弃未配对设备的消息", "from", from)
+func (c *Client) handleForwarded(s *pb.Signed) {
+	from, msg, err := c.verifier.Verify(s)
+	switch {
+	case errors.Is(err, signed.ErrReplay):
+		// 局域网那条路往往先到，这份是重复的，正常现象
+		c.log.Debug("丢弃重复的消息", "from", from)
 		return
-	}
-	if !ed25519.Verify(pub, signed.GetPayload(), signed.GetSignature()) {
-		c.log.Warn("丢弃签名无效的消息", "from", from)
-		return
-	}
-
-	var msg pb.SignalMessage
-	if err := proto.Unmarshal(signed.GetPayload(), &msg); err != nil {
-		c.log.Warn("丢弃无法解析的消息", "from", from, "err", err)
-		return
-	}
-
-	// 防重放：时间戳超出容忍范围，或 nonce 重复出现过
-	ts := time.Unix(msg.GetTimestampUnix(), 0)
-	if skew := time.Since(ts); skew > maxClockSkew || skew < -maxClockSkew {
-		c.log.Warn("丢弃时间戳异常的消息", "from", from, "偏差", skew)
-		return
-	}
-	if c.seenNonce(msg.GetNonce()) {
-		c.log.Warn("丢弃重放的消息", "from", from)
+	case err != nil:
+		c.log.Warn("丢弃转发来的消息", "from", from, "原因", err)
 		return
 	}
 
 	if c.handlers.OnSignal != nil {
-		c.handlers.OnSignal(from, &msg)
+		c.handlers.OnSignal(from, msg)
 	}
-}
-
-// seenNonce 记录并判断 nonce 是否重复，同时清理过期条目。
-func (c *Client) seenNonce(nonce []byte) bool {
-	if len(nonce) == 0 {
-		return false
-	}
-	key := string(nonce)
-
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	now := time.Now()
-	if _, dup := c.seenNonces[key]; dup {
-		return true
-	}
-	// 超出时钟容忍窗口的 nonce 不可能再被接受，可以安全丢弃
-	for k, t := range c.seenNonces {
-		if now.Sub(t) > maxClockSkew*2 {
-			delete(c.seenNonces, k)
-		}
-	}
-	c.seenNonces[key] = now
-	return false
 }
 
 // ─────────────────────────── 发送 ───────────────────────────
@@ -341,28 +333,19 @@ func (c *Client) send(ctx context.Context, env *pb.ClientEnvelope) error {
 	return writeProto(ctx, conn, env)
 }
 
-// Signal 向对端发送一条已签名的信令。
+// Signal 签名后经服务器发给对端。
 func (c *Client) Signal(ctx context.Context, to string, msg *pb.SignalMessage) error {
-	msg.ToDeviceId = to
-	msg.TimestampUnix = time.Now().Unix()
-	if msg.Nonce == nil {
-		nonce := make([]byte, 16)
-		if _, err := cryptorand.Read(nonce); err != nil {
-			return err
-		}
-		msg.Nonce = nonce
-	}
-
-	payload, err := proto.Marshal(msg)
+	s, err := signed.Sign(c.identity, to, msg)
 	if err != nil {
 		return err
 	}
+	return c.SendSigned(ctx, s)
+}
+
+// SendSigned 请服务器转发一条已签名的信令。
+func (c *Client) SendSigned(ctx context.Context, s *pb.Signed) error {
 	return c.send(ctx, &pb.ClientEnvelope{
-		Payload: &pb.ClientEnvelope_Forward{Forward: &pb.Signed{
-			Payload:      payload,
-			Signature:    c.identity.Sign(payload),
-			FromDeviceId: c.identity.DeviceID,
-		}},
+		Payload: &pb.ClientEnvelope_Forward{Forward: s},
 	})
 }
 
