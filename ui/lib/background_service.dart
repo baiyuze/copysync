@@ -64,6 +64,10 @@ class MacBackgroundService implements BackgroundService {
 
   static const label = 'com.copysync.daemon';
 
+  /// 界面 App 的 bundle ID。写进登录项，系统才知道后台服务属于哪个 App：
+  /// macOS 15 的「本地网络」权限按它记账，登录项列表里也显示成 CopySync。
+  static const _appBundleId = 'com.copysync.app';
+
   final String _executable;
   final String _home;
 
@@ -93,7 +97,9 @@ class MacBackgroundService implements BackgroundService {
     if (_runningFromTemporaryLocation) return ServiceState.mustMove;
     final plist = File(plistPath);
     if (!await plist.exists()) return ServiceState.notInstalled;
-    if (!(await plist.readAsString()).contains(helperBinary)) return ServiceState.stale;
+    final content = await plist.readAsString();
+    // 1.4.0 之前写的登录项没有 AssociatedBundleIdentifiers，重新写一份
+    if (!content.contains(helperBinary) || !content.contains(_appBundleId)) return ServiceState.stale;
     final r = await Process.run('launchctl', ['print', await _target()]);
     if (r.exitCode != 0) return ServiceState.stopped;
     return '${r.stdout}'.contains('state = running')
@@ -174,6 +180,10 @@ class MacBackgroundService implements BackgroundService {
     <key>StandardOutPath</key>    <string>${_xml(logPath)}</string>
     <key>StandardErrorPath</key>  <string>${_xml(logPath)}</string>
     <key>ProcessType</key>        <string>Interactive</string>
+    <key>AssociatedBundleIdentifiers</key>
+    <array>
+        <string>$_appBundleId</string>
+    </array>
 </dict>
 </plist>
 ''';

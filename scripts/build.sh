@@ -56,6 +56,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleExecutable</key>         <string>copysyncd</string>
     <key>CFBundleIdentifier</key>         <string>com.copysync.daemon</string>
     <key>CFBundleName</key>               <string>CopySync Daemon</string>
+    <key>CFBundleDevelopmentRegion</key>  <string>en</string>
     <key>CFBundleIconFile</key>           <string>AppIcon</string>
     <key>CFBundlePackageType</key>        <string>APPL</string>
     <key>CFBundleShortVersionString</key> <string>$VERSION</string>
@@ -63,12 +64,26 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>LSMinimumSystemVersion</key>     <string>13.0</string>
     <!-- 后台常驻：不出现在 Dock 与任务切换器里 -->
     <key>LSUIElement</key>                <true/>
+    <!-- macOS 15 起，后台服务连接局域网里的设备要经用户允许，系统弹窗里显示这段说明 -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>CopySync finds your other computers on this network and syncs the clipboard with them directly.</string>
+    <key>NSBonjourServices</key>
+    <array><string>_copysync._udp</string></array>
 </dict>
 </plist>
 PLIST
 # 系统设置的「隐私与安全性」列表里会显示后台服务，给它同一个图标
 mkdir -p "$APP/Contents/Resources"
 cp assets/brand/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
+# 本地网络权限弹窗里的说明，按系统语言显示
+localize() {
+    mkdir -p "$APP/Contents/Resources/$1.lproj"
+    printf '"NSLocalNetworkUsageDescription" = "%s";\n' "$2" \
+        > "$APP/Contents/Resources/$1.lproj/InfoPlist.strings"
+}
+localize en "CopySync finds your other computers on this network and syncs the clipboard with them directly."
+localize zh-Hans "CopySync 在局域网里查找你的其他电脑，直接与它们同步剪贴板。"
+localize ja "CopySync はこのネットワーク上のほかのコンピューターを見つけ、クリップボードを直接同期します。"
 # ad-hoc 签名即可让 TCC 记住授权决定；正式分发应换成 Developer ID
 codesign --force --sign - "$APP"
 echo "  ✓ $APP"
