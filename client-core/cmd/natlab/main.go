@@ -3,9 +3,11 @@
 //
 //	natlab infra -http 10.200.0.2:9000 -stun 10.200.1.1,10.200.1.2 -turn 10.200.0.3
 //	natlab peer -id a -peer b -infra http://10.200.0.2:9000 -stun ... -probe ... -turn ...
+//	natlab lanpeer -seed a -peer-seed b [-mdns] [-addr ip:port]
 //
 // infra 扮演「互联网」上的服务：信令转发、若干台 STUN 服务器、一台 TURN 中转。
 // peer 用的就是 CopySync 真实的 P2P 连接代码，只把信令换成了这里的 HTTP 转发。
+// lanpeer 不用服务器，信令与发现走真实的局域网通道（transport/lan）。
 package main
 
 import (
@@ -36,7 +38,7 @@ const turnSecret = "natlab"
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "用法: natlab <infra|peer> [参数]")
+		fmt.Fprintln(os.Stderr, "用法: natlab <infra|peer|lanpeer> [参数]")
 		os.Exit(2)
 	}
 	var err error
@@ -45,6 +47,8 @@ func main() {
 		err = runInfra(os.Args[2:])
 	case "peer":
 		err = runPeer(os.Args[2:])
+	case "lanpeer":
+		err = runLANPeer(os.Args[2:])
 	default:
 		err = fmt.Errorf("未知的子命令 %q", os.Args[1])
 	}

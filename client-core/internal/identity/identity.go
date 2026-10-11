@@ -113,6 +113,14 @@ func save(path string, id *Identity) error {
 	return os.Rename(tmp, path)
 }
 
+// FromSeed 由 32 字节种子确定性地生成身份，不落盘。只给 natlab 这类实验用：
+// 两端按约定的种子各自算出对方的公钥，相当于已经配对过。
+func FromSeed(seed []byte) *Identity {
+	priv := ed25519.NewKeyFromSeed(seed)
+	pub := priv.Public().(ed25519.PublicKey)
+	return &Identity{DeviceID: DeviceIDFor(pub), PublicKey: pub, privateKey: priv}
+}
+
 func (i *Identity) Sign(data []byte) []byte {
 	return ed25519.Sign(i.privateKey, data)
 }

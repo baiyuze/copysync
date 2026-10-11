@@ -15,6 +15,11 @@
 # 10.200.1.1 扮演自己的服务器（信令服务器下发的 STUN），10.200.1.2–4 扮演公共 STUN。
 # rA 按目标地址选出口，模拟公司双线、运营商地址池；入站只放行有连接记录的包，
 # 与真实路由器一样「只认打过招呼的地址」。
+#
+# 局域网场景（没有服务器，见 setup_lan）另搭一套拓扑：
+#
+#   同一网段  [a] 192.168.10.2 ── [sw] 网桥 ── [b] 192.168.10.3
+#   两个网段  [a] 192.168.10.2 ── [r] 路由器，不做 NAT ── [b] 192.168.20.2
 
 set -euo pipefail
 
@@ -34,7 +39,7 @@ cleanup() {
         wait "$INFRA_PID" 2>/dev/null || true
         INFRA_PID=""
     fi
-    for n in inet rA a rB b; do ip netns del "$n" 2>/dev/null || true; done
+    for n in inet rA a rB b sw r; do ip netns del "$n" 2>/dev/null || true; done
 }
 trap 'cleanup; rm -rf "$WORK"' EXIT
 
@@ -211,6 +216,89 @@ check() {
     fi
 }
 
+# setup_lan <same|routed|isolated>：没有服务器的局域网
+#   same      a、b 接在同一台交换机（网桥）上，同一网段，mDNS 互通
+#   routed    a、b 在两个网段，路由器转发、不做 NAT；mDNS 过不去
+#   isolated  同 routed，但路由器不让两个网段互通（访客网络与办公网络常这样隔开）
+setup_lan() {
+    cleanup
+    for n in a b; do
+        ip netns add "$n"
+        ns "$n" ip link set lo up
+    done
+    case $1 in
+    same)
+        ip netns add sw
+        ns sw ip link add br0 type bridge
+        ns sw ip link set br0 up
+        veth sw p-a a eth0
+        veth sw p-b b eth0
+        for p in p-a p-b; do
+            ns sw ip link set "$p" master br0
+            ns sw ip link set "$p" up
+        done
+        ns a ip addr add 192.168.10.2/24 dev eth0
+        ns b ip addr add 192.168.10.3/24 dev eth0
+        for n in a b; do
+            ns "$n" ip link set eth0 up
+            ns "$n" ip route replace 224.0.0.0/4 dev eth0 # 没有默认路由，组播要有个去处
+        done
+        ;;
+    routed | isolated)
+        ip netns add r
+        veth r la a eth0
+        veth r lb b eth0
+        ns r ip addr add 192.168.10.1/24 dev la
+        ns r ip addr add 192.168.20.1/24 dev lb
+        ns r ip link set la up
+        ns r ip link set lb up
+        ns r sysctl -qw net.ipv4.ip_forward=1
+        ns a ip addr add 192.168.10.2/24 dev eth0
+        ns b ip addr add 192.168.20.2/24 dev eth0
+        ns a ip link set eth0 up
+        ns b ip link set eth0 up
+        ns a ip route add default via 192.168.10.1
+        ns b ip route add default via 192.168.20.1
+        if [[ $1 == isolated ]]; then
+            ns r iptables -A FORWARD -j DROP
+        fi
+        ;;
+    esac
+}
+
+# check_lan <场景名> <same|routed|isolated> <direct|offline> "<a 的参数>" "<b 的参数>" [hostfw]
+#   hostfw：两台设备自己都拦截入站的新连接，模拟没有放行规则的 Windows 防火墙
+check_lan() {
+    [[ -n ${NATLAB_ONLY:-} && $1 != *"$NATLAB_ONLY"* ]] && return
+    local name=$1 expect=$3
+    setup_lan "$2"
+    if [[ ${6:-} == hostfw ]]; then
+        for n in a b; do ns "$n" iptables -A INPUT -i eth0 -p udp -m conntrack --ctstate NEW -j DROP; done
+    fi
+    # shellcheck disable=SC2086 # 参数故意按空格拆开
+    ns b "$BIN" lanpeer -seed b -peer-seed a $5 >"$WORK/b.json" 2>"$WORK/b.log" &
+    local bpid=$!
+    # shellcheck disable=SC2086
+    ns a "$BIN" lanpeer -seed a -peer-seed b $4 >"$WORK/a.json" 2>"$WORK/a.log" || true
+    wait "$bpid" || true
+
+    local a b
+    a=$(sed -n 's/.*"state":"\([a-z]*\)".*/\1/p' "$WORK/a.json")
+    b=$(sed -n 's/.*"state":"\([a-z]*\)".*/\1/p' "$WORK/b.json")
+    if [[ $a == "$expect" && $b == "$expect" ]]; then
+        PASS=$((PASS + 1))
+        printf '  ✓ %-34s %s\n' "$name" "$a"
+    else
+        FAIL=$((FAIL + 1))
+        printf '  ✗ %-34s 期望 %s，实际 a=%s b=%s\n' "$name" "$expect" "${a:-无结果}" "${b:-无结果}"
+        grep -h -E '局域网|P2P|失败|error' "$WORK/a.log" "$WORK/b.log" | head -8 | sed 's/^/    /'
+    fi
+    if [[ -n ${NATLAB_KEEP:-} ]]; then
+        local dir="$NATLAB_KEEP/${name// /_}"
+        mkdir -p "$dir" && cp "$WORK"/*.log "$dir/" 2>/dev/null || true
+    fi
+}
+
 echo "NAT 打洞实验室"
 check "单出口 ↔ 家用路由器" single cone direct
 check "两个出口（旧版本，对照）" dual cone relay legacy
@@ -223,6 +311,16 @@ check "两个出口 ↔ 端口随机分配的 NAT" dual symmetric relay
 check "一开始打不通，先中转后换直连" dual cone direct late
 check "公司路由器会为外来的包占住端口" dual cone direct leaky-a
 check "家用路由器会为外来的包占住端口" dual cone direct leaky-b
+
+echo
+echo "局域网（没有服务器）"
+A=192.168.10.2:8788
+B=192.168.20.2:8788
+check_lan "同一网段，靠 mDNS 发现" same direct "-mdns" "-mdns"
+check_lan "两个网段，一边记得对方地址" routed direct "-addr $B" ""
+check_lan "两个网段，两台都挡入站，都记得地址" routed direct "-addr $B" "-addr $A" hostfw
+check_lan "两个网段，两台都挡入站，一边记得" routed offline "-addr $B" "" hostfw
+check_lan "两个网段之间被隔离" isolated offline "-addr $B" "-addr $A"
 
 echo
 echo "通过 $PASS，失败 $FAIL"
