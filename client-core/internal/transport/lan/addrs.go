@@ -87,7 +87,7 @@ func defaultRouteIP() (netip.Addr, bool) {
 	return ap.Addr(), true
 }
 
-// localNetworks 返回本机各网卡直连的网段。
+// localNetworks 返回本机各网卡直连的网段，Addr() 是本机在那个网段里的地址。
 func localNetworks() []netip.Prefix {
 	ifaces, err := net.Interfaces()
 	if err != nil {
@@ -101,18 +101,27 @@ func localNetworks() []netip.Prefix {
 		list, _ := ifc.Addrs()
 		for _, a := range list {
 			if ipn, ok := a.(*net.IPNet); ok && ipn.IP.To4() != nil {
+				// 不做 Masked：保留本机地址，onLink 要用它排除自己
 				ones, _ := ipn.Mask.Size()
 				ip, _ := netip.AddrFromSlice(ipn.IP.To4())
-				out = append(out, netip.PrefixFrom(ip, ones).Masked())
+				out = append(out, netip.PrefixFrom(ip, ones))
 			}
 		}
 	}
 	return out
 }
 
-// onLink 判断地址是否在本机直连的网段里（不经路由器就能到）。
+// onLink 判断地址是否在本机直连的网段里（不经路由器就能到），本机自己的地址除外：
+// 发往本机地址的包不受 macOS 本地网络权限限制，发成功了也证明不了什么。
+// 虚拟机经 NAT 发来的包，源地址就可能是本机的地址。
 func onLink(ip netip.Addr) bool {
-	for _, p := range localNetworks() {
+	nets := localNetworks()
+	for _, p := range nets {
+		if p.Addr() == ip {
+			return false
+		}
+	}
+	for _, p := range nets {
 		if p.Contains(ip) {
 			return true
 		}

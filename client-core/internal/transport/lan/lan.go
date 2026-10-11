@@ -46,8 +46,15 @@ const (
 	resendDelay       = 150 * time.Millisecond // 信令补发一次，抵消 UDP 偶尔丢包
 	perIPLimit        = 200                    // 每个来源每秒最多处理的包数
 	blockedFor        = 5 * time.Minute
-	instanceTTL       = 5 * time.Minute
-	saveAddrEvery     = 10 * time.Minute
+	// 新版本刚启动时，系统要先核对已有的授权，实测有十几秒最初的包也会被拦下。
+	// 持续被拦这么久才算真的没授权，免得每次升级都闪一下提示
+	blockGrace    = 30 * time.Second
+	instanceTTL   = 5 * time.Minute
+	saveAddrEvery = 10 * time.Minute
+	// 本地网络权限的探测间隔（只有 macOS 探测）：被拦着时勤一些，用户一允许就能很快撤掉提示
+	probeEvery        = 10 * time.Minute
+	probeEveryBlocked = 20 * time.Second
+	discardPort       = 9
 )
 
 var (
@@ -141,9 +148,13 @@ type Transport struct {
 	tokensDay string
 	selfAddrs []string
 	netKey    string
-	blockedAt time.Time
-	rate      map[netip.Addr]int
-	rateAt    time.Time
+	// deniedSince 是这一轮连续被系统拦下的开始时间（中间有一次发成功就清零），
+	// lastDenied 是最近一次被拦的时间；reportedBlocked 是上次告诉上层的状态
+	deniedSince     time.Time
+	lastDenied      time.Time
+	reportedBlocked bool
+	rate            map[netip.Addr]int
+	rateAt          time.Time
 
 	pairing   *pairingState
 	responses map[string]cachedResponse
@@ -152,6 +163,8 @@ type Transport struct {
 	// 显示配对码的一方据此先往本机发一个空包，见 found
 	seeking int
 	pokedAt map[string]time.Time
+	// nextProbe 是下一次探测本地网络权限的时间，见 probeTarget
+	nextProbe time.Time
 
 	// reach 是各设备可达状态的副本，由叶子锁保护：peers 层会在持有自己的锁时查询它，
 	// 不能让它去等 t.mu（t.mu 持有期间可能回调 peers 层）
@@ -288,7 +301,11 @@ func (t *Transport) Port() int {
 func (t *Transport) Blocked() bool {
 	t.mu.Lock()
 	defer t.mu.Unlock()
-	return t.running && !t.blockedAt.IsZero() && time.Since(t.blockedAt) < blockedFor
+	return t.running && t.blockedLocked(time.Now())
+}
+
+func (t *Transport) blockedLocked(now time.Time) bool {
+	return !t.deniedSince.IsZero() && now.Sub(t.deniedSince) >= blockGrace && now.Sub(t.lastDenied) < blockedFor
 }
 
 // Reachable 报告某台设备当前能否在局域网里收到本机的信令。
@@ -628,6 +645,17 @@ func (t *Transport) tick() {
 	if dayChanged {
 		t.rebuildTokensLocked(now, peers)
 	}
+	probe := !now.Before(t.nextProbe)
+	if probe {
+		if t.deniedSince.IsZero() {
+			t.nextProbe = now.Add(probeEvery)
+		} else {
+			t.nextProbe = now.Add(probeEveryBlocked)
+		}
+	}
+	blocked := t.blockedLocked(now)
+	blockedChanged := blocked != t.reportedBlocked
+	t.reportedBlocked = blocked
 	pairingExpired := t.pairing != nil && now.After(t.pairing.expires)
 	if pairingExpired {
 		t.pairing = nil
@@ -683,6 +711,14 @@ func (t *Transport) tick() {
 		t.log.Info("局域网里的设备不再可达", "device", id)
 		t.reachable(id, false)
 	}
+	if blockedChanged {
+		if blocked {
+			t.log.Warn("系统拦下了发往局域网的包，需要在系统设置里允许本地网络访问")
+		} else {
+			t.log.Info("系统不再拦着发往局域网的包")
+		}
+		t.changed()
+	}
 	if netChanged {
 		// 网卡变了：mDNS 要在新网卡上重新加入组播
 		t.log.Info("网络已变化，重新开始局域网发现")
@@ -693,6 +729,11 @@ func (t *Transport) tick() {
 	}
 	for _, h := range hellos {
 		t.sendHello(h.id, h.targets, true, h.interval)
+	}
+	if probe {
+		if gw, ok := probeTarget(); ok {
+			_ = t.write(netip.AddrPortFrom(gw, discardPort), []byte(magic))
+		}
 	}
 }
 
@@ -923,23 +964,20 @@ func (t *Transport) write(dst netip.AddrPort, pkt []byte) error {
 	}
 	_, err := conn.WriteToUDPAddrPort(pkt, dst)
 
-	local := onLink(dst.Addr())
-	t.mu.Lock()
-	wasBlocked := !t.blockedAt.IsZero()
-	switch {
-	case err != nil && local && deniedByOS(err):
-		t.blockedAt = time.Now()
-	case err == nil && local:
-		t.blockedAt = time.Time{}
-	}
-	nowBlocked := !t.blockedAt.IsZero()
-	t.mu.Unlock()
-
-	if nowBlocked != wasBlocked {
-		if nowBlocked {
-			t.log.Warn("系统拦下了发往局域网的包，需要在系统设置里允许本地网络访问", "dst", dst, "err", err)
+	// 只记下来，是否算「被拦着」由 tick 按宽限期判断并通知上层
+	if onLink(dst.Addr()) {
+		now := time.Now()
+		t.mu.Lock()
+		switch {
+		case err != nil && deniedByOS(err):
+			if t.deniedSince.IsZero() {
+				t.deniedSince = now
+			}
+			t.lastDenied = now
+		case err == nil:
+			t.deniedSince = time.Time{}
 		}
-		t.changed()
+		t.mu.Unlock()
 	}
 	return err
 }

@@ -4,6 +4,7 @@ package lan
 
 import (
 	"fmt"
+	"net/netip"
 	"os"
 	"strings"
 
@@ -41,3 +42,6 @@ func RequestPermission() error {
 
 // Windows 不会在发送时拦截，防火墙只挡入站。
 func deniedByOS(error) bool { return false }
+
+// 只有 macOS 会在发送时拦截，Windows 不需要探测。
+func probeTarget() (netip.Addr, bool) { return netip.Addr{}, false }
