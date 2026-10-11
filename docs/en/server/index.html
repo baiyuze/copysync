@@ -33,7 +33,7 @@
         <a href="../../en/start/">Quick start</a>
         <a class="wide" href="../../en/#how">How it works</a>
         <a class="wide" href="../../en/#faq">FAQ</a>
-        <a href="../../en/start/#server" aria-current="true">Self-host</a>
+        <a href="../../en/start/#server" aria-current="true">Ways to connect</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../../ja/server/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -44,9 +44,10 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/start/#server">Self-host</a></p>
+        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/start/#server">Ways to connect</a></p>
         <h1 class="display">Run the server on your LAN</h1>
         <p class="lede">If your computers are on the same home or office network, you don't need a cloud server. Pick a computer that stays on, download and run one script, then enter the address it prints into CopySync on each computer.</p>
+        <p class="notice"><strong>On the same network you no longer need a server:</strong> install the app and pair; see the <a href="../../en/lan/">same network guide</a>. This guide still helps when two subnets can't reach each other and traffic has to go through a computer both can reach.</p>
         <ol class="guide-toc">
           <li><a href="#prepare">Before you start</a></li>
           <li><a href="#install">Install</a></li>
@@ -350,7 +351,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
           </details>
           <details>
             <summary>Does it sync away from the LAN?</summary>
-            <div class="answer"><p>No, the server is only reachable on your LAN. To sync from other networks, switch to one of the other two ways: a <a href="../../en/cloud/">public server</a>, or <a href="../../en/tailscale/">LAN + Tailscale</a>.</p></div>
+            <div class="answer"><p>No, the server is only reachable on your LAN. To sync from other networks, use a <a href="../../en/cloud/">public server</a> or <a href="../../en/tailscale/">Tailscale</a>.</p></div>
           </details>
           <details>
             <summary>The server computer also runs CopySync. Which address?</summary>

@@ -6,11 +6,11 @@ SITE = "https://baiyuze.github.io/copysync/"
 C = {
     "title": "CopySync: sync the clipboard and files between Mac and Windows, across accounts and networks",
     "description": "CopySync lets you copy on one computer and paste on another, Mac or Windows: text, images, files and folders. "
-                   "No shared account or network required. Peer-to-peer, end-to-end encrypted, with a server you host that "
-                   "can't see your content. Free and open source.",
+                   "No shared account required. On the same network it works with no server at all; across networks, use a server "
+                   "you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.",
     "og_title": "CopySync: copy on this computer, paste on that one",
     "og_description": "Mac and Windows. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end "
-                      "encrypted, self-hosted server. Free and open source.",
+                      "encrypted, no server needed on the same network. Free and open source.",
     "og_image": "og-en.png",
     "skip": "Skip to content",
     "home_label": "CopySync home",
@@ -18,12 +18,12 @@ C = {
     "nav_start": "Quick start",
     "nav_how": "How it works",
     "nav_faq": "FAQ",
-    "nav_server": "Self-host",
+    "nav_server": "Ways to connect",
     "lang_label": "Language",
 
     "h1": "Copy on this computer.<br>Paste on that one.",
-    "lede": "Mac and Windows. Text, images, files, whole folders. No shared account required, no shared network required. "
-            "Data moves directly between your devices, and stays encrypted even when it passes through your own server.",
+    "lede": "Mac and Windows. Text, images, files, whole folders. No shared account required. On the same network it works "
+            "with no server at all, and it works across networks too. Data moves directly between your devices, end-to-end encrypted.",
     "dl_mac": "Download for Mac",
     "dl_win": "Download for Windows",
     "dl_note": "Version 1.3.4, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.",
@@ -35,15 +35,35 @@ C = {
     "stage_arc": "Direct, end-to-end encrypted",
     "replay": "Play again",
 
-    # Three ways to run the server, on equal footing; the reader picks one. Home cards use name, fit, summary, go;
+    # Three ways to connect, on equal footing; the reader picks one. Home cards use name, fit, summary, go;
     # the quick start tabs use name, facts, steps, address, go; the install section uses name, fit.
-    # {cloud}, {server} and {ts} in steps become links to the matching guide.
-    "paths_h2": "Where to run the server",
-    "paths_intro": "Your computers find each other through a server; nothing you copy is stored on it. There's no public server, "
-                   "so pick one of three ways to run your own.",
+    # {lan}, {cloud}, {server} and {ts} in steps and address become links to the matching guide.
+    "paths_h2": "How your computers connect",
+    "paths_intro": "On the same network, install the app and pair; no server needed. Across networks, your computers find each "
+                   "other through a server or Tailscale, and nothing you copy is stored there. Pick the way that fits.",
     "paths_after": "Not sure? The <a href=\"{start}#server\">quick start</a> compares all three.",
-    "plans_label": "Ways to run the server",
+    "plans_label": "Ways to connect",
     "plans": {
+        "lan": {
+            "name": "Same network",
+            "fit": "Nothing to set up",
+            "summary": "At home or in the office, behind the same router. Install the app on both computers and enter a pairing code. "
+                       "No server, and no computer that has to stay on.",
+            "go": "Same network guide →",
+            "facts": [
+                ("Best for", "Computers on the same Wi‑Fi or wired network, such as at home or in the office."),
+                ("You need", "Nothing. Just the app on each computer."),
+                ("Keep in mind", "No sync away from that network; it resumes when you're back. If wired and Wi‑Fi are on "
+                                 "different subnets, as in many offices, you also enter an address when pairing."),
+            ],
+            "steps": [
+                "Install the app on each computer and click Turn on background sync.",
+                "Allow CopySync if Windows Firewall asks, and allow it to find devices on your local network if macOS asks.",
+                "Show a code on one, enter it on the other and compare fingerprints. On a different subnet, also enter the address "
+                "shown under the code; see the <a href=\"{lan}#subnet\">same network guide</a>.",
+            ],
+            "address": "No server address to enter.",
+        },
         "cloud": {
             "name": "Public server",
             "fit": "Syncs from anywhere",
@@ -59,49 +79,28 @@ C = {
             "steps": [
                 "In your cloud provider's security group, open TCP 8787, UDP 3478 and UDP 32768–60999.",
                 "Log in with ssh, download the install script and run it with the public IP: <code>sudo ./install.sh PUBLIC_IP</code>.",
-                "Open <code>http://PUBLIC_IP:8787/healthz</code> in a browser; ok means it's running.",
+                "In Settings on each computer, enter <code>ws://PUBLIC_IP:8787/signal</code>, press Return, then pair.",
             ],
-            "address": "Address for every computer: <code>ws://PUBLIC_IP:8787/signal</code>",
-        },
-        "lan": {
-            "name": "LAN",
-            "fit": "All computers on one network",
-            "summary": "At home or in the office, on the same Wi‑Fi or wired network. Run the server on one of your always-on "
-                       "Windows, Mac or Linux computers with one script. Free.",
-            "go": "LAN guide →",
-            "facts": [
-                ("Best for", "Computers on the same Wi‑Fi or wired network, such as at home or in the office."),
-                ("You need", "An always-on Windows, Mac or Linux computer; one of the computers you sync is fine."),
-                ("Keep in mind", "No sync away from that network; it resumes when you're back. Sync also pauses while the "
-                                 "server computer is off or asleep."),
-            ],
-            "steps": [
-                "Reserve an address for the server computer in your router.",
-                "Download the server for its system and run the install script: double-click <code>install.cmd</code> on "
-                "<a href=\"{server}#windows\">Windows</a>, run <code>./install.sh</code> on <a href=\"{server}#macos\">macOS</a> "
-                "or <a href=\"{server}#linux\">Linux</a>.",
-                "The script finds the computer's LAN address and prints the address for the apps.",
-            ],
-            "address": "Address for every computer: <code>ws://LAN_ADDRESS:8787/signal</code>, for example <code>ws://192.168.1.20:8787/signal</code>",
+            "address": "Open <code>http://PUBLIC_IP:8787/healthz</code> in a browser; ok means it's running.",
         },
         "ts": {
-            "name": "LAN + Tailscale",
-            "fit": "Across networks, no public server",
-            "summary": "Run the server on an always-on computer at home, then install Tailscale on each computer under the same "
-                       "account. They act as if they shared a LAN.",
+            "name": "Tailscale",
+            "fit": "Across networks, no server",
+            "summary": "Install Tailscale on each computer under one account and enter the other computer's Tailscale address when "
+                       "pairing. Syncs at home and at the office, with no server and no computer that has to stay on.",
             "go": "Tailscale guide →",
             "facts": [
                 ("Best for", "Computers on different networks, without a public server."),
-                ("You need", "An always-on computer for the server, and Tailscale on every computer under one account."),
-                ("Keep in mind", "Every computer that runs CopySync needs Tailscale, and the one at home stays on. When "
-                                 "Tailscale can't connect peer to peer it relays through DERP servers, which can be slow."),
+                ("You need", "Tailscale on every computer, signed in to one account."),
+                ("Keep in mind", "Every computer that runs CopySync needs Tailscale, connected. When Tailscale can't connect "
+                                 "peer to peer it relays through DERP servers, which can be slow."),
             ],
             "steps": [
                 "Install Tailscale on each computer and sign in to the same account.",
-                "On the server computer, run <code>tailscale ip -4</code> and note the address starting with 100.",
-                "Install the server with that address, as in <code>install.cmd 100.101.102.103</code> or <code>./install.sh 100.101.102.103</code>.",
+                "On the computer you'll pair with, run <code>tailscale ip -4</code> and note the address starting with 100.",
+                "When pairing, on the computer entering the code, click On a different subnet? and enter that address.",
             ],
-            "address": "Address for every computer: <code>ws://TAILSCALE_ADDRESS:8787/signal</code>",
+            "address": "No server. A Tailscale address doesn't change, so you enter it once, when pairing.",
         },
     },
 
@@ -139,8 +138,9 @@ C = {
     ],
 
     "how_h2": "How it works",
-    "how_intro": "Your two computers open an encrypted connection to each other. Your server only helps them find one "
-                 "another, and relays traffic when a direct path can't be made.",
+    "how_intro": "Your two computers open an encrypted connection to each other. On the same network they find each other "
+                 "on their own; across networks your server introduces them, and relays traffic when a direct path can't be "
+                 "made. The diagram shows the cross-network case.",
     "diagram": {
         "title": "How CopySync connects",
         "desc": "Computer A and computer B (Mac or Windows) connect directly over WebRTC. Both connect to your server for "
@@ -188,6 +188,11 @@ C = {
         ("Blocked at first, network recovers later", "Relay, then direct"),
         ("Office router locks a port for unsolicited packets", "Direct"),
         ("Home router locks a port for unsolicited packets", "Relay, then direct after one retry"),
+        ("No server, same subnet, found over mDNS", "Direct"),
+        ("No server, two subnets, one side remembers the address", "Direct"),
+        ("No server, both block inbound, both remember", "Direct"),
+        ("No server, both block inbound, only one remembers", "No connection (known limit)"),
+        ("No server, subnets isolated from each other", "No connection"),
     ],
     "uplink_measured": "Measured: a Mac on a 4-uplink office network and one at home could only relay before, capped at "
                        "0.6 MB/s by the server's bandwidth. Now they connect directly, about 3 seconds after reaching the server.",
@@ -199,17 +204,20 @@ C = {
         ("You compare fingerprints when pairing.", " Both screens show the same two lines: the fingerprint of each device's key. The server could swap keys in transit, but then the two screens would no longer match. That check is what stops a man in the middle."),
         ("Every message after that is signed,", " so the server can't impersonate your device. The direct channel's certificate is checked again after the handshake; a mismatch drops the connection."),
         ("The relay only forwards ciphertext.", " TURN carries encrypted packets, and relay credentials are issued per device and expire after 12 hours."),
+        ("Same on the local network.", " What a device broadcasts on the LAN is an anonymous token that changes daily, not its name. Pairing still means comparing fingerprints, and every message is still signed."),
     ],
     "verify_alt": "The fingerprint check during pairing shows R8NF-2WTC-QL5J and asks you to confirm it matches the other computer exactly",
 
     "fallback_h2": "When things go wrong",
     "fallback_intro": "Every network is different. Each of these cases was considered, and each has a test.",
     "fallbacks": [
+        ("Can't find the other computer on the network", "Different subnets, guest networks and Wi‑Fi with client isolation block local discovery. Enter the address shown under the other computer's code when pairing; it's remembered afterwards, and if both computers change addresses you enter it once more in the device list."),
+        ("The system blocks the local network", "From macOS 15, the background service needs your permission to reach devices on the local network; Windows asks about the firewall on first run. If either isn't allowed, the app says so and links straight to the fix."),
         ("No direct path between the computers", "Common behind symmetric NAT and corporate firewalls. Traffic switches to the TURN relay on your server, still encrypted, and the device list shows \"Relay\"."),
         ("Public STUN servers unreachable", "Public STUN is unreliable in some regions, including mainland China. Your server runs its own STUN, and clients prefer it."),
         ("Connected through the relay first", "The relay handshake is fast and sometimes beats the direct path. Once connected, the side that started the connection punches again while idle and switches to direct when that works, never in the middle of a transfer."),
         ("The other computer sleeps, drops off or restarts", "A connection that dies silently is noticed, closed and reconnected. Anything you copy meanwhile is kept and added to the other computer's history once it's back, without overwriting what's on its clipboard now."),
-        ("Server connection drops", "Reconnects automatically: the delay starts at 1 second and doubles up to 30, with jitter so devices don't all reconnect at once. The app shows the status live."),
+        ("Server connection drops", "Reconnects automatically: the delay starts at 1 second and doubles up to 30, with jitter so devices don't all reconnect at once. Devices on the same network keep syncing."),
         ("File too large", "Above the limit only a record is synced, pulled when you need it. If the source file is gone by then, you get a clear message instead of a vague failure."),
         ("Pasting into plain-text fields", "Rich text copied from the web is written as both HTML and plain text, so no markup leaks into what you paste."),
         ("A file name Windows doesn't allow", "Colons, question marks and a few other characters that are fine on a Mac arrive as the matching full-width characters, so the name still reads the same. Two names that differ only in case never overwrite each other."),
@@ -220,41 +228,44 @@ C = {
     ],
 
     "install_h2": "Install",
-    "install_intro": "Install the app on each computer, and set up a server both of them can reach. First time? Follow the "
-                     "<a href=\"{start}\">quick start</a>.",
+    "install_intro": "Install the app on each computer. On the same network you can pair right away; across networks, pick a way "
+                     "for them to find each other. First time? Follow the <a href=\"{start}\">quick start</a>.",
     "mac_steps": [
         "Download CopySync.dmg, open it and drag CopySync into Applications.",
         "Open it from Applications.<span class=\"aside\">The first time, macOS says it can't verify the developer: CopySync "
         "isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. "
         "You only do this once.</span>",
-        "Click Turn on background sync. In Settings, enter your server as <code>ws://server-address:8787/signal</code> and press Return.",
-        "When macOS asks whether CopySync may read the clipboard, allow it.",
+        "Click Turn on background sync. When macOS asks whether CopySync may read the clipboard or find devices on your local "
+        "network, allow both.",
+        "To sync across networks, enter your server in Settings as <code>ws://server-address:8787/signal</code> and press "
+        "Return. On the same network, leave it empty.",
     ],
     "win_steps": [
         "Run CopySync-Setup.exe. It installs for the current user, no administrator rights needed."
         "<span class=\"aside\">CopySync isn't code-signed yet, so Windows says \"Windows protected your PC\": click More info, "
         f"then Run anyway. To skip the installer, get the <a href=\"{REPO}/releases/latest/download/CopySync-windows-x64.zip\">portable zip</a>.</span>",
-        "Open CopySync and click Turn on background sync. After you close the window it keeps running in the notification area.",
-        "In Settings, enter your server address and press Enter. Allow it if Windows Firewall asks.",
+        "Open CopySync and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it "
+        "keeps running in the notification area.",
+        "To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.",
     ],
-    "server_h3": "Server",
-    "server_intro": "Three ways to run it; pick the one that fits. Each has a step-by-step guide:",
+    "server_h3": "Ways to connect",
+    "server_intro": "No server on the same network. Pick the way that fits; each has a step-by-step guide:",
     "server_compare": "Compare the three",
     "copy": "Copy",
     "copied": "Copied",
     "pairing": "<strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on "
-               "the other, and confirm once both screens show the same two fingerprints. Mac with Windows, or two Windows PCs, "
-               "works the same way.",
+               "the other, and confirm once both screens show the same two fingerprints. On a different subnet, also enter the "
+               "address shown under the code. Mac with Windows, or two Windows PCs, works the same way.",
 
     "specs_h2": "Specifications",
     "specs": [
         ("Version", '1.3.4, released <time datetime="2026-10-11">October 11, 2026</time>'),
         ("Mac app", "macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 47 MB download"),
         ("Windows app", "Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
-        ("Server", "Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM"),
+        ("Server", "Optional, only for syncing across networks. Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM"),
         ("Languages", "English, Simplified Chinese and Japanese; follows the system by default, switchable in Settings"),
         ("Content", "Plain text, rich text, images and screenshots, files, folders; each type can be turned off"),
-        ("Transport", "WebRTC data channels, direct first with TURN relay fallback; every uplink probed on multi-uplink networks; files streamed as tar + zstd"),
+        ("Transport", "WebRTC data channels, direct first with TURN relay fallback; on the same network, mDNS discovery and connection details over UDP 8788; every uplink probed on multi-uplink networks; files streamed as tar + zstd"),
         ("Encryption and identity", "End-to-end DTLS; Ed25519 device keys; every signaling message signed"),
         ("Pairing", "6-character code valid for 5 minutes, using an alphabet without look-alikes such as 0/O and 1/I; fingerprints compared by you"),
         ("Auto-sync limit", "50 MB by default, adjustable from 1 MB to 1 GB"),
@@ -271,9 +282,9 @@ C = {
         ]),
         ("How is this different from Universal Clipboard?", [
             "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and "
-            "works only between Apple devices. CopySync only needs both computers to reach your server, so different Apple IDs "
-            "work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and "
-            "lets you pull large files on demand.",
+            "works only between Apple devices. CopySync works on the same network as soon as it's installed; across networks, both "
+            "computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so "
+            "does one at home and one at the office. It also keeps a history and lets you pull large files on demand.",
             "If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.",
         ]),
         ("Can the server see what I copy?", [
@@ -287,16 +298,25 @@ C = {
             "back to the relay.",
         ]),
         ("Do I need my own server?", [
-            "Yes. There is no public server, so nobody's data passes through anyone else's machine. There are three ways to run it: "
-            "a <a href=\"{cloud}\">public server</a>, where the smallest VM is enough and sync works from anywhere; "
-            "your <a href=\"{server}\">LAN</a>, on an always-on computer when all your computers share a network; "
-            "or <a href=\"{ts}\">LAN + Tailscale</a>, across networks without a public server.",
+            "Not necessarily. When your computers are on the <a href=\"{lan}\">same network</a>, install the app and pair; "
+            "there's no server.",
+            "Across networks there are two ways: a <a href=\"{cloud}\">public server</a>, where the smallest VM is enough and "
+            "sync works from anywhere; or <a href=\"{ts}\">Tailscale</a> on each computer, entering the other computer's "
+            "Tailscale address when pairing, with no server at all. There's no public CopySync server, so nobody's data passes "
+            "through anyone else's machine.",
         ]),
         ("No public IP at home. Can I sync between home and the office?", [
             "Yes, in two ways. With a public server, run CopySync's server there and connect both computers to it; see the "
-            "<a href=\"{cloud}\">public server guide</a>. Without one, run the server on an always-on computer at home, install "
-            "Tailscale on every computer under the same account, and use the server's Tailscale address; see "
-            "<a href=\"{ts}\">LAN + Tailscale</a>.",
+            "<a href=\"{cloud}\">public server guide</a>. Without one, install Tailscale on every computer under the same "
+            "account and enter the other computer's Tailscale address when pairing; see the <a href=\"{ts}\">Tailscale guide</a>.",
+        ]),
+        ("Both computers are on the same network. Why can't they find each other?", [
+            "Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client "
+            "isolation don't let devices see each other. In that case, on the computer entering the code, click On a different "
+            "subnet? and enter the address shown under the other computer's code.",
+            "On Windows, allow CopySync when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → "
+            "Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy &amp; Security → Local Network. More in "
+            "the <a href=\"{lan}#faq\">same network guide</a>.",
         ]),
         ("Windows? iPhone?", [
             "Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you "
@@ -341,6 +361,9 @@ C = {
         "h1": "Run the server on your LAN",
         "lede": "If your computers are on the same home or office network, you don't need a cloud server. Pick a computer that stays on, "
                 "download and run one script, then enter the address it prints into CopySync on each computer.",
+        "notice": "<strong>On the same network you no longer need a server:</strong> install the app and pair; see the "
+                  "<a href=\"{lan}\">same network guide</a>. This guide still helps when two subnets can't reach each other and "
+                  "traffic has to go through a computer both can reach.",
         "toc": [("prepare", "Before you start"), ("install", "Install"), ("check", "Check"), ("clients", "Set up the apps"), ("faq", "Questions")],
 
         "overview_h2": "The server only introduces devices",
@@ -491,8 +514,8 @@ C = {
                 "Reserving the address in your router avoids this.",
             ]),
             ("Does it sync away from the LAN?", [
-                "No, the server is only reachable on your LAN. To sync from other networks, switch to one of the other two ways: "
-                "a <a href=\"{cloud}\">public server</a>, or <a href=\"{ts}\">LAN + Tailscale</a>.",
+                "No, the server is only reachable on your LAN. To sync from other networks, use a <a href=\"{cloud}\">public "
+                "server</a> or <a href=\"{ts}\">Tailscale</a>.",
             ]),
             ("The server computer also runs CopySync. Which address?", [
                 "The same LAN address works, and so does <code>ws://127.0.0.1:8787/signal</code>. The server and the app don't interfere.",
@@ -611,8 +634,8 @@ C = {
             ]),
             ("My home connection has a public IP. Can I use that?", [
                 "Yes, but it's more work than a VM: forward TCP 8787, UDP 3478 and a large range of UDP relay ports to that computer, "
-                "and a home IP may change. If all your computers are at home, the <a href=\"{server}\">LAN</a> setup is simpler; to sync "
-                "across networks without port forwarding, see <a href=\"{ts}\">LAN + Tailscale</a>.",
+                "and a home IP may change. If all your computers are at home, they need no server at all on the "
+                "<a href=\"{lan}\">same network</a>; to sync across networks without port forwarding, see <a href=\"{ts}\">Tailscale</a>.",
             ]),
         ],
 
@@ -623,13 +646,12 @@ C = {
     # ── Quick start (start/ page) ──
     "start": {
         "title": "Quick start: set up CopySync in three steps",
-        "description": "New to CopySync? Install the app on each computer, pick a way to run the server (on your LAN, with "
-                       "Tailscale, or in the cloud), enter its address and pair, then copy and paste between Mac and Windows. "
-                       "No public IP needed.",
+        "description": "New to CopySync? Install the app on each computer. On the same network, just pair, with no server; across "
+                       "networks, use a public server or Tailscale. Then copy and paste between Mac and Windows.",
         "h1": "Quick start",
-        "lede": "Install the app, set up a server, and pair your computers. The first time takes about ten minutes; "
+        "lede": "Install the app, pick a way to connect, and pair your computers. On the same network it takes a few minutes; "
                 "after that, copying just syncs.",
-        "toc": [("app", "Install the app"), ("server", "Set up a server"), ("connect", "Enter the address"), ("pair", "Pair")],
+        "toc": [("app", "Install the app"), ("server", "Pick a way to connect"), ("pair", "Pair")],
         "step": "Step {n}",
 
         "app_h2": "Install the app on each computer",
@@ -638,98 +660,188 @@ C = {
             "Download CopySync.dmg, open it and drag CopySync into Applications.",
             "Open it from Applications.<span class=\"aside\">The first time, macOS says it can't verify the developer: go to "
             "System Settings → Privacy &amp; Security and click Open Anyway near the bottom.</span>",
-            "Click Turn on background sync, and allow clipboard access when macOS asks.",
+            "Click Turn on background sync. When macOS asks about clipboard access and finding devices on your local network, "
+            "allow both.",
         ],
         "win": [
             "Run CopySync-Setup.exe; no administrator rights needed.<span class=\"aside\">If you see \"Windows protected your PC\", "
             "click More info, then Run anyway.</span>",
-            "Open CopySync and click Turn on background sync. After you close the window it keeps running in the notification area.",
+            "Open CopySync and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it "
+            "keeps running in the notification area.",
         ],
         "app_alt": "CopySync the first time it opens, asking you to turn on background sync",
 
-        "server_h2": "Set up a server",
-        "server_intro": "Your computers find each other through it; nothing you copy is stored there. There's no public server, "
-                        "and there are three ways to run your own. Pick the one that fits.",
-
-        "connect_h2": "Enter the server address on each computer",
-        "connect_steps": [
-            ("Open Settings", "Open CopySync on each computer, including the one running the server, and go to Settings."),
-            ("Enter the address", "Under Signaling server, enter the address from the previous step and press Return or Enter."),
-            ("Check the status", "When Connection shows a green Connected, that computer is ready."),
-        ],
-        "connect_alt": "CopySync Settings: the signaling server is ws://192.168.1.20:8787/signal and the connection status shows Connected",
-        "connect_after": "Stuck at Not connected? See the <a href=\"{server}#faq\">questions</a>.",
+        "server_h2": "Pick a way to connect",
+        "server_intro": "On the same network there's nothing to set up. Across networks, your computers find each other through "
+                        "a public server or Tailscale, and nothing you copy is stored there.",
 
         "pair_h2": "Pair your computers",
         "pair_intro": "Pair each two computers once, and you're done.",
         "pair_steps": [
-            "On one computer, open Devices and click Add device. It shows a 6-character code, valid for 5 minutes.",
-            "On the other, click Add device too, switch to Enter a code and type it in.",
+            "On one computer, open Devices and click Add device. It shows a 6-character code, valid for 5 minutes, and this "
+            "computer's address below it.",
+            "On the other, click Add device too, switch to Enter a code and type it in."
+            "<span class=\"aside\">On a different subnet, or with Tailscale, click On a different subnet? and enter the other "
+            "computer's address as well.</span>",
             "Both screens show the same two fingerprint lines. Check them character by character, then confirm."
             "<span class=\"aside\">This stops anyone in the middle from posing as your device. Don't skip it.</span>",
         ],
-        "pair_alt": "Add device: the pairing code K7MP2X, to be entered on the other device",
+        "pair_alt": "Add device: the pairing code K7MP2X, with this computer's address 192.168.1.20 below it",
 
         "done_h2": "Now copy something.",
         "done_text": "Copy text, an image or a file on one computer and press ⌘V or Ctrl+V on the other. Everything copied on "
                      "either side is in the history.",
-        "help": "Need help? <a href=\"{server}#faq\">LAN questions</a> · <a href=\"{ts}#faq\">Tailscale questions</a> · "
-                "<a href=\"{issues}\">Report an issue</a>",
+        "help": "Need help? <a href=\"{lan}#faq\">Same network questions</a> · <a href=\"{ts}#faq\">Tailscale questions</a> · "
+                "<a href=\"{cloud}#faq\">Public server questions</a> · <a href=\"{issues}\">Report an issue</a>",
     },
 
-    # ── Use it across networks with Tailscale (tailscale/ page) ──
+    # ── Same network (lan/ page), no server ──
+    "lan": {
+        "title": "Use CopySync on one network: no server, just pair",
+        "description": "When your computers share a Wi‑Fi or wired network, CopySync needs no server: install the app, enter a "
+                       "6-character pairing code, and sync the clipboard and files between Mac and Windows. On a different "
+                       "subnet, you enter one address when pairing.",
+        "h1": "On the same network",
+        "lede": "Computers behind the same router don't need a server. Install the app, enter a pairing code, and copying syncs from then on.",
+        "toc": [("prepare", "Before you start"), ("pair", "Pair"), ("subnet", "Different subnets"), ("faq", "Questions")],
+        "step": "Step {n}",
+
+        "overview_h2": "No server",
+        "overview_intro": "Two computers on the same network find each other over mDNS, exchange connection details directly, "
+                          "and open an encrypted direct connection. No server, and no computer that has to stay on.",
+        "diagram": {
+            "title": "CopySync on one network",
+            "desc": "On one LAN, a Mac (192.168.1.20) and a Windows PC (192.168.1.35) find each other over mDNS and exchange "
+                    "connection details over UDP 8788. Copied content goes directly between them; there is no server.",
+            "lan": "LAN: the same Wi‑Fi or wired network",
+            "client": "Running CopySync",
+            "find_note": "Found over mDNS, connection details over UDP 8788",
+            "direct": "Direct, end-to-end encrypted",
+            "direct_note": "Content stays between the two computers",
+        },
+        "overview_points": [
+            "<strong>Found automatically.</strong> Each computer announces itself on the LAN over mDNS, with only an anonymous "
+            "token that changes daily, so nobody can tell whose computer it is.",
+            "<strong>Direct.</strong> Content goes straight between the two computers, at the speed of your network.",
+            "<strong>Same security.</strong> You compare two fingerprint lines when pairing, and every message after that is "
+            "signed, so others on the network can't pose as your device.",
+        ],
+        "prep": [
+            ("The same network", "Both computers behind the same router; Wi‑Fi and wired can mix. Guest networks and Wi‑Fi with "
+                                 "client isolation keep devices apart, and in many offices wired and Wi‑Fi are separate subnets: "
+                                 "see <a href=\"#subnet\">different subnets</a> below."),
+            ("Windows Firewall", "On first run, Windows asks whether CopySync may get through the firewall; allow it. If you "
+                                 "clicked Cancel, click Allow under Settings → Local network in CopySync, which asks for "
+                                 "administrator approval once."),
+            ("Local Network on macOS", "From macOS 15, the first time it reaches a device on your network, macOS asks whether "
+                                       "CopySync Daemon may find devices on your local network; allow it. If you declined, turn "
+                                       "it on in System Settings → Privacy &amp; Security → Local Network."),
+            ("No server address", "Leave the server field in Settings empty. To sync across networks later, add a server or use "
+                                  "Tailscale; paired devices stay paired."),
+        ],
+
+        "pair_h2": "Pair your computers",
+        "pair_intro": "Pair each two computers once. If the app isn't installed yet, see the <a href=\"{start}#app\">quick start</a>.",
+        "pair_steps": [
+            "On one computer, open Devices and click Add device. It shows a 6-character code, valid for 5 minutes.",
+            "On the other, click Add device too, switch to Enter a code, type it in and click Continue.",
+            "Both screens show the same two fingerprint lines. Check them character by character, then confirm. Copying syncs from now on.",
+        ],
+        "pair_alt": "Add device: the pairing code K7MP2X, with this computer's address 192.168.1.20 below it",
+
+        "subnet_h2": "Different subnets",
+        "subnet_intro": "Local discovery only reaches one subnet. When your computers are on different subnets that can still "
+                        "reach each other, as in many offices, you enter one address when pairing.",
+        "subnet_steps": [
+            "The computer showing the code lists its address below it, such as <code>192.168.1.20</code>.",
+            "On the computer entering the code, click On a different subnet?, enter that address, and click Continue.",
+            "After pairing, each computer remembers the other's address. If one changes address, the other finds it again on its "
+            "own; if both change, open the device's … menu under Devices and choose Enter its address.",
+        ],
+        "subnet_alt": "Enter a code: the code K7MP2X, with the address field opened below it holding 192.168.1.20",
+        "subnet_after": "If the subnets can't reach each other at all, such as a guest network kept apart from the office network, "
+                        "traffic has to go through a computer both can reach: see <a href=\"{server}\">run a server on your LAN</a>.",
+
+        "faq": [
+            ("The other computer can't be found", [
+                "Make sure both are on the network with background sync on. Then try entering the other computer's address on the "
+                "one entering the code: if that works, they're on different subnets, or the network blocks mDNS.",
+                "Still nothing? Check the other computer's firewall. On Windows, click Allow under Settings → Local network; on a "
+                "Mac, make sure CopySync Daemon is on under System Settings → Privacy &amp; Security → Local Network and the "
+                "macOS firewall isn't blocking it.",
+            ]),
+            ("Does it sync away from this network?", [
+                "No. It resumes when you're back, and anything copied in between is added to the other computer's history. To sync "
+                "across networks, add a <a href=\"{cloud}\">public server</a> or use <a href=\"{ts}\">Tailscale</a>; paired "
+                "devices stay paired.",
+            ]),
+            ("What if an address changes?", [
+                "Usually nothing to do. On one subnet, mDNS finds the computer again at any time; across subnets, it reconnects as "
+                "long as one of the two keeps its address. If both change, enter the address once more under Devices.",
+                "For a desktop that never moves, you can reserve its address in your router's DHCP settings.",
+            ]),
+            ("Can others on the network see my computer?", [
+                "They can see that a CopySync device is there, but not whose: the broadcast carries an anonymous token that changes "
+                "daily, with no device name or ID. Messages from devices you haven't paired with are dropped, and pairing requires "
+                "comparing fingerprints on both screens.",
+            ]),
+            ("Which ports does it use?", [
+                "UDP 8788 for connection details (a random port if that's taken), UDP 5353 for mDNS, and another random UDP port "
+                "for the data once connected. Nothing to configure on your router.",
+            ]),
+        ],
+
+        "closing": "One network,<br>nothing to set up.",
+        "source": "Design notes on local network mode (in Chinese)",
+    },
+
+    # ── Use it across networks with Tailscale (tailscale/ page), no server ──
     "ts": {
-        "title": "Use CopySync across networks with Tailscale: sync home and office without a public IP",
-        "description": "Run the server on an always-on computer at home and install Tailscale on each computer: they act as if "
-                       "they shared a LAN, so the clipboard syncs from the office or anywhere else. No public IP, no router "
-                       "settings. Step-by-step for Windows, Mac and Linux.",
+        "title": "Use CopySync across networks with Tailscale: no server, home and office in sync",
+        "description": "Install Tailscale on each computer under one account and enter the other computer's Tailscale address "
+                       "when pairing: no public IP, no server and no computer that has to stay on. The clipboard syncs from "
+                       "the office or anywhere else.",
         "h1": "Across networks with Tailscale",
-        "lede": "Sync between home and the office without a public IP. The server stays at home; with Tailscale on each "
-                "computer, they act as if they shared a LAN. No router settings, no cloud server.",
-        "toc": [("join", "Install Tailscale"), ("address", "Find the address"), ("install", "Install the server"),
-                ("check", "Check"), ("clients", "Set up the apps"), ("faq", "Questions")],
+        "lede": "No public IP, and no wish to run a server? Install Tailscale on each computer and enter the other computer's "
+                "Tailscale address when pairing. Syncs at home and at the office.",
+        "toc": [("join", "Install Tailscale"), ("address", "Find the address"), ("pair", "Pair"), ("faq", "Questions")],
         "step": "Step {n}",
 
         "overview_h2": "As if on one LAN",
         "overview_intro": "Tailscale connects your devices into a private network: every device signed in to the same account "
-                          "gets a fixed address starting with 100, reachable from the others wherever they are. Install the "
-                          "CopySync server on that address and enter it in the apps; everything else works as on a LAN.",
+                          "gets a fixed address starting with 100, reachable from the others wherever they are. CopySync "
+                          "remembers the other computer's address when you pair, and connects as if both were on one network.",
         "diagram": {
             "title": "CopySync over Tailscale",
-            "desc": "The server and a Windows PC are at home, a Mac is at the office. All three run Tailscale and each has an "
-                    "address starting with 100 on the same private network. Both computers connect to the server at "
-                    "100.101.102.103 for signaling; copied content goes directly between them, and through the server's relay "
-                    "only if that fails.",
+            "desc": "A Mac at the office and a Windows PC at home both run Tailscale and each has an address starting with 100 "
+                    "on the same private network. Copied content goes directly between them; there is no server.",
             "net": "Tailscale network: every device has a 100.x address",
-            "server": "Server",
-            "server_place": "At home, always on",
             "mac_place": "At the office",
             "win_place": "At home",
-            "sig_note": "Signaling, TCP 8787",
-            "relay_note": "Relay, UDP 3478, if direct fails",
             "direct": "Direct, encrypted twice",
             "direct_note": "Content stays between the two computers",
         },
         "overview_points": [
-            "<strong>The server stays at home</strong> on any always-on Windows, Mac or Linux computer, just like on a LAN.",
-            "<strong>Every computer runs Tailscale,</strong> signed in to the same account, including the server computer.",
+            "<strong>No server,</strong> and no computer that has to stay on: two computers that are on and connected to "
+            "Tailscale sync.",
+            "<strong>Enter the address once.</strong> A Tailscale address doesn't change; you enter it when pairing and the two "
+            "computers find each other from then on.",
             "<strong>Encrypted twice.</strong> Inside Tailscale's WireGuard tunnel runs CopySync's own end-to-end encrypted "
-            "connection. Neither Tailscale nor your server can see the content.",
+            "connection. Tailscale can't see the content.",
         ],
 
         "prep": [
-            ("A computer that stays on", "It runs the server, with the same requirements as <a href=\"{server}#prepare\">on a LAN</a>; "
-                                        "sync pauses while it's off or asleep. Its Tailscale address doesn't change, so there's "
-                                        "nothing to reserve in the router."),
             ("A Tailscale account", "Free for personal use; sign in with Google, Microsoft, GitHub or Apple. Use the same account on every device."),
-            ("Tailscale on every computer", "There are clients for Windows, macOS and Linux. Every computer that runs CopySync needs "
-                                           "it, including one that never leaves home."),
-            ("ZeroTier works too", "So does any tool that gives each device a fixed virtual address: install the server on that "
-                                   "address and enter it in the apps. This guide uses Tailscale."),
+            ("Tailscale on every computer", "There are clients for Windows, macOS and Linux. Every computer that runs CopySync "
+                                           "needs it, connected."),
+            ("CopySync installed", "The app on each computer with background sync on; see the <a href=\"{start}#app\">quick start</a>. "
+                                   "Leave the server address empty."),
+            ("ZeroTier works too", "So does any tool that gives each device a fixed virtual address: enter that address when "
+                                   "pairing. This guide uses Tailscale."),
         ],
 
         "join_h2": "Install Tailscale on each computer",
-        "join_intro": "On the server computer and every computer you sync, install it and sign in to the same account.",
+        "join_intro": "On every computer you sync, install it and sign in to the same account.",
         "join_steps": [
             "Download the client for your system from the Tailscale website and install it."
             "<span class=\"aside\">On Linux, run <code>curl -fsSL https://tailscale.com/install.sh | sh</code>, then "
@@ -739,82 +851,32 @@ C = {
         ],
         "join_download": "Download Tailscale",
         "machines_cols": ["Machine", "Tailscale address", "OS"],
-        "machines_server": "Server",
-        "machines_label": "The machine list in the Tailscale admin console (illustration): mac-mini is the server at 100.101.102.103, "
-                          "macbook-pro is 100.88.20.5 and home-pc is 100.92.41.17",
-        "server_notes_h3": "One more thing on the server computer",
-        "server_notes": [
-            "<strong>Windows:</strong> right-click the Tailscale icon in the notification area and turn on Run unattended under "
-            "Preferences. Otherwise Tailscale disconnects when you sign out, and computers elsewhere lose the server.",
-            "<strong>Mac:</strong> stay logged in, keep it awake, and make sure Tailscale opens at login. The CopySync server "
-            "also only runs while you're logged in.",
-            "<strong>Turn off key expiry:</strong> by default Tailscale asks devices to sign in again every 180 days. On the "
-            "Machines page of the admin console, open the menu at the end of the server's row and choose Disable key expiry.",
+        "machines_label": "The Tailscale admin console's machine list (illustration): macbook-pro is 100.88.20.5 and home-pc is 100.92.41.17",
+        "join_notes_h3": "Keep Tailscale connected",
+        "join_notes": [
+            "<strong>Windows:</strong> right-click the Tailscale icon in the notification area and check Run unattended under "
+            "Preferences, so it stays connected after you sign out.",
+            "<strong>Mac:</strong> make sure Tailscale opens at login.",
+            "<strong>Disable key expiry:</strong> by default Tailscale asks devices to sign in again every 180 days. For a computer "
+            "that rarely changes, open the menu at the end of its row on the Machines page and choose Disable key expiry.",
         ],
 
-        "address_h2": "Find the server's Tailscale address",
-        "address_intro": "On the server computer, click the Tailscale icon in the menu bar (the notification area on Windows); "
-                         "the menu shows this device's address. Or run <code>tailscale ip -4</code> in a terminal.",
-        "address_label": "tailscale ip -4 in a terminal prints this device's Tailscale address, 100.101.102.103",
-        "address_after": "The steps below use <code>100.101.102.103</code>; use your own address.",
+        "address_h2": "Find the other computer's Tailscale address",
+        "address_intro": "On the computer you'll pair with, click the Tailscale icon (in the menu bar on a Mac, in the notification "
+                         "area on Windows) to see its address, or run <code>tailscale ip -4</code> in a terminal.",
+        "address_label": "Running tailscale ip -4 in PowerShell prints the computer's Tailscale address, 100.92.41.17",
+        "address_after": "The steps below use <code>100.92.41.17</code>, the Windows PC at home. Use your own address.",
 
-        "install_h2": "Install the server on that address",
-        "install_intro": "The install scripts use the LAN address by default. Pass the Tailscale address instead so computers "
-                         "elsewhere can use the server's relay. Already installed it with the <a href=\"{server}\">LAN guide</a>? "
-                         "Run the script again with the address; your settings are kept.",
-        "win": {
-            "steps": [
-                "Download copysync-server-windows-amd64.zip and choose Extract All. If it's already installed, use the folder you extracted before.",
-                "Open the extracted folder, type <code>cmd</code> in the address bar at the top and press Enter to open a Command Prompt.",
-                "Run <code>install.cmd 100.101.102.103</code> with your address, and click Yes when User Account Control asks.",
-                "Installation continues in a new window. The address at the end should be <code>ws://100.101.102.103:8787/signal</code>.",
-            ],
-            "notes": [
-                "<strong>Firewall already allowed:</strong> the script's inbound rule applies to every network, Tailscale's adapter included.",
-                "If you see \"Windows protected your PC\", click More info, then Run anyway.",
-            ],
-            "cmd_title": "Command Prompt",
-            "cmd_label": "A Command Prompt opened in the extracted folder runs install.cmd 100.101.102.103",
-            "term_label": "The window after install.cmd finishes, ending with the address ws://100.101.102.103:8787/signal",
-        },
-        "mac": {
-            "steps": [
-                "Open Terminal and run these lines, with your address on the last one:",
-                "The address at the end should be <code>ws://100.101.102.103:8787/signal</code>.",
-            ],
-            "notes": [
-                "Already installed? Run <code>./install.sh 100.101.102.103</code> in the same folder; your settings are kept.",
-                "<strong>If the macOS firewall is on,</strong> the script ends with the command to allow copysync-server.",
-            ],
-            "term_label": "Output of ./install.sh 100.101.102.103 in Terminal, ending with the address ws://100.101.102.103:8787/signal",
-        },
-        "linux": {
-            "steps": [
-                "Run these lines, with your address on the last one:<span class=\"aside\">On ARM, replace <code>amd64</code> with <code>arm64</code>.</span>",
-                "The address at the end should be <code>ws://100.101.102.103:8787/signal</code>.",
-            ],
-            "switch": "<strong>Already installed?</strong> The Linux script leaves an existing config alone. Replace the old "
-                      "address in it with the Tailscale address (put your old address in place of <code>192.168.1.20</code>) "
-                      "and restart the service:",
-            "term_label": "Output of sudo ./install.sh 100.101.102.103, ending with the address ws://100.101.102.103:8787/signal",
-        },
-
-        "check_h2": "Check from outside",
-        "check_intro": "On a computer outside your home network, or a laptop on your phone's hotspot, make sure Tailscale is "
-                       "connected and open <code>http://100.101.102.103:8787/healthz</code> in a browser. If you see this line, "
-                       "the server is reachable from outside.",
-        "check_label": "A browser showing http://100.101.102.103:8787/healthz, with the server's status ok and its version",
-        "check_after": "If it doesn't load, see the <a href=\"#faq\">questions</a> below.",
-
-        "clients_h2": "Enter the address on each computer",
-        "clients_steps": [
-            ("Open Settings", "Open CopySync on each computer, including the one running the server, and go to Settings."),
-            ("Enter the Tailscale address", "Under Signaling server, enter <code>ws://100.101.102.103:8787/signal</code> with your address and press Return or Enter."),
-            ("Check the status", "When Connection shows a green Connected, you're set. If you haven't paired yet, pair under Devices."),
+        "pair_h2": "Enter the address when pairing",
+        "pair_intro": "Just like pairing on one network, with one extra address.",
+        "pair_steps": [
+            "On the Windows PC at home, open Devices, click Add device and note the 6-character code.",
+            "On the Mac at the office, click Add device, switch to Enter a code and type it in; then click On a different "
+            "subnet?, enter <code>100.92.41.17</code> and click Continue.",
+            "Both screens show the same two fingerprint lines. Check them, then confirm. The two computers now sync wherever they are.",
         ],
-        "clients_alt": "CopySync Settings: the signaling server is ws://100.101.102.103:8787/signal and the connection status shows Connected",
-        "clients_after": "Use the Tailscale address on your home computers too, not the LAN address, so nothing changes when a "
-                         "computer leaves the house. When they're all at home, the data still stays on your home network.",
+        "pair_alt": "Enter a code: the code K7MP2X, with the Tailscale address 100.92.41.17 in the address field",
+        "pair_after": "When both computers are at home, CopySync also finds the other one on the LAN directly, so data takes no detour.",
 
         "faq": [
             ("Devices show Direct, but it's slow", [
@@ -824,47 +886,50 @@ C = {
                 "and port means it's peer to peer. Office and campus networks relay more often; you can run your own DERP "
                 "server or try another mesh VPN.",
             ]),
-            ("The status stays at Not connected", [
-                "First make sure Tailscale is connected on that computer, then open <code>http://server-tailscale-address:8787/healthz</code> in a browser.",
-                "If it doesn't load, check whether the server computer is asleep, whether Tailscale is online there (Run unattended "
-                "on Windows, staying logged in on a Mac), whether the server still uses its LAN address, and whether a firewall on "
-                "a Mac or Linux server blocks it.",
+            ("Pairing can't find the other computer", [
+                "First make sure Tailscale is connected on both: run <code>tailscale ping other-address</code> and try again once "
+                "it answers.",
+                "If ping works but pairing doesn't, the other computer's firewall is likely blocking it. On Windows, click Allow "
+                "under Settings → Local network in CopySync; on a Mac, turn on CopySync Daemon under System Settings → Privacy "
+                "&amp; Security → Local Network.",
             ]),
             ("Does every computer need Tailscale?", [
-                "Yes. A computer without it can't reach the 100.x addresses, and computers elsewhere can't reach it. That includes "
-                "one that never leaves home.",
+                "Yes, a computer without it can't reach the 100.x addresses. Computers on the same network don't need it; see "
+                "the <a href=\"{lan}\">same network guide</a>.",
             ]),
-            ("I already followed the LAN guide. Start over?", [
-                "No. Run the install script again with the Tailscale address (on Linux, edit the config), then change the server "
-                "address on each computer to the Tailscale one. Paired devices stay paired.",
+            ("I set up a server at home with the old guide. Do I still need it?", [
+                "No. Clear the server address in Settings on each computer and uninstall the server at home; paired devices stay "
+                "paired. Keeping it doesn't hurt either: a server and Tailscale work together.",
             ]),
             ("Can Tailscale see what I copy?", [
                 "No. Tailscale connections are end-to-end encrypted with WireGuard, and inside runs CopySync's own DTLS-encrypted "
                 "connection; only your two computers can open either layer. Tailscale's servers only exchange device keys and "
                 "addresses, and its relays forward encrypted packets.",
             ]),
-            ("Will the server's Tailscale address change?", [
+            ("Will a Tailscale address change?", [
                 "Usually not. The address belongs to the device and survives restarts and network changes; it only changes if you "
-                "remove the device from Tailscale and add it again.",
+                "remove the device from Tailscale and add it again. If it does, enter it once more under Devices.",
             ]),
-            ("I have a public IP. Do I need Tailscale?", [
+            ("I have a public server. Do I need Tailscale?", [
                 "No. Run the server on the machine with the public IP and enter that address on every computer; see the "
                 "<a href=\"{cloud}\">public server guide</a>.",
             ]),
         ],
 
-        "closing": "The server stays home.<br>Your clipboard comes with you.",
-        "source": "Back to the LAN guide",
+        "closing": "No server.<br>Your clipboard comes with you.",
+        "source": "Back to the same network guide",
     },
 
     "ld_description": "Open-source app that syncs the clipboard and files between Mac and Windows computers. Copy text, "
-                      "images, files or folders on one computer and paste on the other. Devices connect directly over "
-                      "WebRTC with end-to-end DTLS encryption, falling back to a TURN relay on a server the user hosts.",
+                      "images, files or folders on one computer and paste on the other. No server is needed on the same "
+                      "network. Devices connect directly over WebRTC with end-to-end DTLS encryption; across networks, a "
+                      "server the user hosts introduces them and relays over TURN when needed.",
     "ld_os": "macOS 13 or later (Intel and Apple silicon); Windows 10, Windows 11 (x64)",
     "ld_currency": "USD",
     "ld_features": [
         "Syncs plain text, rich text, images, files and folders",
         "Works between Mac and Windows, across accounts and networks",
+        "No server needed on the same network, with automatic mDNS discovery",
         "Direct WebRTC connection with automatic TURN relay fallback",
         "End-to-end DTLS encryption with human-verified fingerprints at pairing",
         "Items under 50 MB pushed on copy, larger files pulled on demand",

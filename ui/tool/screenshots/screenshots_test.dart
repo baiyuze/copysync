@@ -322,13 +322,6 @@ void main() {
         section: Section.settings, brightness: Brightness.dark);
   });
 
-  // 网站「用 Tailscale 跨网络使用」：服务器地址填 Tailscale 分配的 100.x 地址
-  testWidgets('settings-tailscale-dark', (tester) async {
-    await _shoot(tester, 'settings-tailscale-dark',
-        state: _demo(server: 'ws://100.101.102.103:8787/signal'),
-        section: Section.settings, brightness: Brightness.dark);
-  });
-
   // 网站「部署到公网服务器」：服务器地址填公网 IP（文档专用的示例地址段）
   testWidgets('settings-cloud-dark', (tester) async {
     await _shoot(tester, 'settings-cloud-dark',
@@ -351,6 +344,26 @@ void main() {
       );
     });
   });
+
+  // 网站「同一网络」的跨网段一节与「Tailscale」：输入配对码，展开地址框，填上对方显示的地址
+  for (final (name, address) in [('pairing-join-dark', '192.168.1.20'), ('pairing-join-ts-dark', '100.92.41.17')]) {
+    testWidgets(name, (tester) async {
+      await _shoot(tester, name, state: _demo(), section: Section.devices,
+          brightness: Brightness.dark, arrange: () async {
+        showDialog<void>(
+          context: tester.element(find.byType(Shell)),
+          builder: (_) => const PairingDialog(),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(appL10n.enterCode));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField).last, 'K7MP2X');
+        await tester.tap(find.text(appL10n.differentSubnet));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField).last, address);
+      });
+    });
+  }
 
   // 网站上与文字并排展示的对话框：单独渲染，透明背景，保留对话框自己的圆角与阴影
   for (final dark in [false, true]) {

@@ -33,7 +33,7 @@
         <a href="../../ja/start/">はじめかた</a>
         <a class="wide" href="../../ja/#how">しくみ</a>
         <a class="wide" href="../../ja/#faq">よくある質問</a>
-        <a href="../../ja/start/#server" aria-current="true">サーバーの設置</a>
+        <a href="../../ja/start/#server" aria-current="true">接続方法</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../../en/server/" hreflang="en" lang="en" data-lang="en">English</a>
@@ -44,9 +44,10 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/start/#server">サーバーの設置</a></p>
+        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/start/#server">接続方法</a></p>
         <h1 class="display">LAN にサーバーを置く</h1>
         <p class="lede">家や会社のコンピューターが同じネットワークにあるなら、クラウドサーバーは要りません。電源を入れたままのコンピューターを 1 台選び、スクリプトをダウンロードして実行し、表示されたアドレスを各コンピューターの CopySync に入力します。</p>
+        <p class="notice"><strong>同じネットワークなら、もうサーバーは要りません：</strong>アプリを入れてペアリングするだけです（<a href="../../ja/lan/">同じネットワークでの手順</a>）。このページは、2 つのサブネットがお互いに届かず、両方から届くコンピューターを経由して中継する必要がある場合に役立ちます。</p>
         <ol class="guide-toc">
           <li><a href="#prepare">準備</a></li>
           <li><a href="#install">インストール</a></li>
@@ -350,7 +351,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
           </details>
           <details>
             <summary>LAN の外でも同期できますか？</summary>
-            <div class="answer"><p>できません。サーバーには LAN の中からしか届かないためです。別のネットワークからも同期したい場合は、ほかの 2 通りのどちらかに切り替えます：<a href="../../ja/cloud/">公開サーバー</a>、または <a href="../../ja/tailscale/">LAN ＋ Tailscale</a>。</p></div>
+            <div class="answer"><p>できません。サーバーには LAN の中からしか届かないためです。別のネットワークからも同期したい場合は、<a href="../../ja/cloud/">公開サーバー</a>か <a href="../../ja/tailscale/">Tailscale</a> を使います。</p></div>
           </details>
           <details>
             <summary>サーバーを動かすコンピューターでも CopySync を使う場合のアドレスは？</summary>

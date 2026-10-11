@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CopySync：在 Mac 与 Windows 之间同步剪贴板与文件，跨账号跨网络</title>
-  <meta name="description" content="CopySync 让你在一台电脑上复制，另一台上直接粘贴，Mac 与 Windows 互通。支持文本、图片、文件和文件夹，不要求同一个账号，跨网络可用。设备间 P2P 直连、端到端加密，服务器自己部署且看不到内容。免费开源。">
+  <meta name="description" content="CopySync 让你在一台电脑上复制，另一台上直接粘贴，Mac 与 Windows 互通。支持文本、图片、文件和文件夹，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。设备间 P2P 直连、端到端加密。免费开源。">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CopySync">
   <meta property="og:title" content="CopySync：在这台电脑复制，到那台电脑粘贴">
-  <meta property="og:description" content="Mac 与 Windows 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，服务器自己部署。免费开源。">
+  <meta property="og:description" content="Mac 与 Windows 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，同一网络里不需要服务器。免费开源。">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
   <meta property="og:image:width" content="1200">
@@ -55,7 +55,7 @@
         "@type": "SoftwareApplication",
         "@id": "https://baiyuze.github.io/copysync/#app",
         "name": "CopySync",
-        "description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户自建服务器的 TURN 中转。",
+        "description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。同一网络里不需要服务器；设备间 WebRTC 直连、DTLS 端到端加密，跨网络打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）",
         "softwareVersion": "1.3.4",
@@ -75,6 +75,7 @@
         "featureList": [
           "同步纯文本、带格式的文本、图片、文件与文件夹",
           "Mac 与 Windows 互通，不要求同一个账号，跨网络可用",
+          "同一网络里不需要服务器，靠 mDNS 自动发现",
           "WebRTC 直连，打不通时自动经 TURN 中转",
           "DTLS 端到端加密，配对时人工核对安全指纹",
           "50 MB 以内复制即推送，更大的文件按需拉取",
@@ -103,7 +104,7 @@
             "name": "和 macOS 自带的「通用剪贴板」有什么区别？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。CopySync 只要求两台电脑都能连上你部署的服务器：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。 如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。"
+              "text": "通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。CopySync 在同一个网络里装好就能用；跨网络时，两台电脑能连上你部署的服务器、或者都装了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。 如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。"
             }
           },
           {
@@ -127,7 +128,7 @@
             "name": "必须自己准备服务器吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。有三种部署方式：公网服务器，最低配置的云主机就够，在哪儿都能同步；局域网，电脑都在同一个网络里时，放在其中一台常开的电脑上；局域网 + Tailscale，要跨网络又没有公网服务器时用。"
+              "text": "不一定。两台电脑在同一个网络里时，装好 App 直接配对就行，不需要服务器。 跨网络时有两种做法：公网服务器，最低配置的云主机就够，在哪儿都能同步；Tailscale，每台电脑装上它，配对时输入对方的 Tailscale 地址，不需要服务器。CopySync 不提供公共服务器，所以不会有任何人的数据经过别人的机器。"
             }
           },
           {
@@ -135,7 +136,15 @@
             "name": "家里没有公网 IP，能在家和公司之间同步吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "能，有两种做法。有一台公网服务器的话，把服务器部署在上面，家里和公司的电脑都直接连它，见公网服务器部署。没有的话，服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale、登录同一个账号，服务器地址填它的 Tailscale 地址，见局域网 + Tailscale。"
+              "text": "能，有两种做法。有一台公网服务器的话，把服务器部署在上面，家里和公司的电脑都直接连它，见公网服务器部署。没有的话，每台电脑装上 Tailscale、登录同一个账号，配对时输入对方的 Tailscale 地址，见Tailscale 教程。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "在同一个网络里，为什么找不到另一台？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "先看两台是不是真的在同一个网段：公司里有线和无线、访客网络、开了「AP 隔离」的 Wi‑Fi 常常不互通，局域网发现过不去。这时在输入配对码的那台点「不在同一网段？」，填上另一台配对码下面显示的地址。 Windows 上，第一次运行时防火墙会询问，要选允许；点过取消的话，在「设置 → 局域网」里点「放行」。Mac 上，要在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。更多见同一网络教程。"
             }
           },
           {
@@ -186,7 +195,7 @@
         <a href="start/">快速开始</a>
         <a class="wide" href="#how">工作原理</a>
         <a class="wide" href="#faq">常见问题</a>
-        <a href="start/#server">部署服务器</a>
+        <a href="start/#server">连接方式</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="en/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -198,7 +207,7 @@
     <section class="hero">
       <div class="wrap">
         <h1 class="display">在这台电脑复制，<br>到那台电脑粘贴。</h1>
-        <p class="lede">Mac 与 Windows 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号，也不要求在同一个网络。数据在你的设备之间直接传输，经过你自己的服务器时也是加密的。</p>
+        <p class="lede">Mac 与 Windows 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络也可以。数据在你的设备之间直接传输，端到端加密。</p>
         <div class="cta">
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
@@ -234,9 +243,16 @@
 
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
-        <h2 id="deploy-title">服务器放在哪</h2>
-        <p class="intro">两台电脑靠一台服务器找到彼此，复制的内容不会存在上面。CopySync 不提供公共服务器，有三种部署方式，按你的情况选一种。</p>
+        <h2 id="deploy-title">两台电脑怎么连起来</h2>
+        <p class="intro">在同一个网络里，装好 App 就能直接配对，不需要服务器。跨网络时，两台电脑要靠服务器或 Tailscale 找到彼此，复制的内容不会存在上面。按你的情况选一种。</p>
         <div class="paths">
+          <a class="path" href="lan/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
+            <span class="path-when">什么都不用部署</span>
+            <h3>同一网络</h3>
+            <p>家里或办公室，连着同一个路由器。两台电脑装好 App，输入配对码就能同步，不需要服务器，也不需要常开的电脑。</p>
+            <span class="path-go">同一网络教程 →</span>
+          </a>
           <a class="path" href="cloud/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
             <span class="path-when">在哪儿都能同步</span>
@@ -244,18 +260,11 @@
             <p>一台有公网 IP 的 Linux 云主机，最低配置就够。每台电脑直接连它，在家、在公司、在外面都能用，不用另装软件。</p>
             <span class="path-go">公网服务器部署教程 →</span>
           </a>
-          <a class="path" href="server/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
-            <span class="path-when">电脑都在同一个网络里</span>
-            <h3>局域网</h3>
-            <p>家里或办公室，连着同一个 Wi‑Fi 或有线网络。服务器装在其中一台常开的 Windows、Mac 或 Linux 电脑上，运行一个脚本，不花钱。</p>
-            <span class="path-go">局域网部署教程 →</span>
-          </a>
           <a class="path" href="tailscale/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-            <span class="path-when">要跨网络，没有公网服务器</span>
-            <h3>局域网 + Tailscale</h3>
-            <p>服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale、登录同一个账号，就像在同一个局域网里。</p>
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><path class="p-data" d="M85 52h71"/><rect class="p-dev" x="42" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M37 69h48"/><rect class="p-dev" x="161" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M156 69h48"/></svg>
+            <span class="path-when">跨网络，不用服务器</span>
+            <h3>Tailscale</h3>
+            <p>每台电脑装上 Tailscale、登录同一个账号，配对时输入对方的 Tailscale 地址。在家、在公司都能同步，不需要服务器和常开的电脑。</p>
             <span class="path-go">Tailscale 教程 →</span>
           </a>
         </div>
@@ -310,7 +319,7 @@
     <section class="section" id="how" aria-labelledby="how-title">
       <div class="wrap">
         <h2 id="how-title">工作原理</h2>
-        <p class="intro">两台电脑之间直接建立加密连接。你的服务器只负责让它们找到彼此，打不通直连的时候再帮忙转发。</p>
+        <p class="intro">两台电脑之间直接建立加密连接。同一个网络里，它们自己就能找到彼此；跨网络时，你的服务器负责牵线，打不通直连的时候再帮忙转发。下图是跨网络的情形。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">CopySync 的连接方式</title>
@@ -382,6 +391,11 @@
                 <tr><td>一开始打不通，之后网络恢复</td><td>先中转，随后直连</td></tr>
                 <tr><td>公司路由器会为外来的包占住端口</td><td>直连</td></tr>
                 <tr><td>家用路由器会为外来的包占住端口</td><td>先中转，重试一次后直连</td></tr>
+                <tr><td>没有服务器，同一网段，靠 mDNS 发现</td><td>直连</td></tr>
+                <tr><td>没有服务器，两个网段，一边记得对方地址</td><td>直连</td></tr>
+                <tr><td>没有服务器，两台都挡入站连接，都记得地址</td><td>直连</td></tr>
+                <tr><td>没有服务器，两台都挡入站连接，只有一边记得</td><td>连不上（已知限制）</td></tr>
+                <tr><td>没有服务器，两个网段之间被隔离</td><td>连不上</td></tr>
                 </tbody>
               </table>
             </div>
@@ -401,6 +415,7 @@
             <li><strong>配对时由你核对安全指纹。</strong>两块屏幕会显示同样的两行：双方各自公钥的指纹。服务器有能力替换转发中的公钥，但替换之后两块屏幕就对不上了，这一步就是防中间人的闸门。</li>
             <li><strong>之后的每条消息都带签名，</strong>服务器无法冒充你的设备。直连通道的证书在握手后还会再核对一次，不一致立即断开。</li>
             <li><strong>中转也只是转发密文。</strong>TURN 转发的是加密后的数据包，中转凭证按设备单独签发，12 小时后过期。</li>
+            <li><strong>局域网里也一样。</strong>设备在局域网里广播的只是一个每天都变的匿名标识，看不出是谁的电脑；配对同样要核对指纹，之后的消息同样带签名。</li>
           </ul>
           <figure class="figure-card">
             <img src="assets/screenshots/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配对时的「核对安全指纹」对话框，显示 R8NF-2WTC-QL5J，要求与另一台电脑上显示的完全一致">
@@ -414,11 +429,13 @@
         <h2 id="fallback-title">出问题的时候会发生什么</h2>
         <p class="intro">每个人的网络环境都不一样。下面这些情况都考虑过，也都有对应的测试。</p>
         <dl class="fallbacks">
+          <div><dt>同一网络里找不到对方</dt><dd>不同网段、访客网络、开了 AP 隔离的 Wi‑Fi 会挡住局域网发现。配对时输入对方配对码下面显示的地址就行；之后地址会被记住，两边都换了地址时，在设备列表里给它重新输入一次。</dd></div>
+          <div><dt>系统拦着局域网</dt><dd>macOS 15 起，后台服务连接局域网里的设备要你允许；Windows 第一次运行时会问防火墙。没放行时 App 会提示，并给出直达的按钮。</dd></div>
           <div><dt>两台电脑打不通直连</dt><dd>常见于对称 NAT 和公司防火墙。自动改走你服务器上的 TURN 中转，内容依然加密，设备列表里显示「中转」。</dd></div>
           <div><dt>公共 STUN 服务器连不上</dt><dd>国内访问公共 STUN 时通时断。服务器自带 STUN，客户端优先用它。</dd></div>
           <div><dt>先连上了中转</dt><dd>中转握手快，有时会抢在直连之前。连上之后，发起连接的一方会在空闲时再打一次洞，打通就换成直连；正在传文件时不打扰。</dd></div>
           <div><dt>对方睡眠、断网或重启</dt><dd>连接悄悄断了也能发现，立即关闭重连。这期间复制的内容会记下来，连上后补发到对方的复制记录里，但不会覆盖对方此刻剪贴板里的内容。</dd></div>
-          <div><dt>服务器断开</dt><dd>自动重连，间隔从 1 秒开始翻倍、最长 30 秒，并带随机抖动，避免一群设备同时重连。界面实时显示连接状态。</dd></div>
+          <div><dt>服务器断开</dt><dd>自动重连，间隔从 1 秒开始翻倍、最长 30 秒，并带随机抖动，避免一群设备同时重连。同一网络里的设备不受影响，照常同步。</dd></div>
           <div><dt>文件太大</dt><dd>超过上限的只同步一条记录，需要时再拉取。拉取时源文件已经被删，会明确告诉你，而不是不明不白地失败。</dd></div>
           <div><dt>粘贴到只认纯文本的地方</dt><dd>从网页复制的带格式文字会同时写入 HTML 和纯文本两份，粘贴到哪里都不会冒出标签。</dd></div>
           <div><dt>文件名在 Windows 上不合法</dt><dd>Mac 上可以用的冒号、问号等字符，收到时换成对应的全角字符，名字照样看得懂；只差大小写的两个文件也不会互相覆盖。</dd></div>
@@ -433,15 +450,15 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">安装</h2>
-        <p class="intro">每台电脑装一个 App，再准备一台两边都能访问到的服务器。第一次装可以跟着<a href="start/">快速开始</a>。</p>
+        <p class="intro">每台电脑装一个 App。同一个网络里装好就能配对；跨网络时，再选一种方式让两台电脑找到彼此。第一次装可以跟着<a href="start/">快速开始</a>。</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
               <li>下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。</li>
               <li>从「应用程序」里打开。<span class="aside">第一次会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证。到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」，只需要这一次。</span></li>
-              <li>点「启用后台同步」，在「设置」里填入服务器地址 <code>ws://服务器地址:8787/signal</code>，按回车。</li>
-              <li>系统询问是否允许读取剪贴板时，选择允许。</li>
+              <li>点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。</li>
+              <li>跨网络同步时，在「设置」里填入服务器地址 <code>ws://服务器地址:8787/signal</code>，按回车；同一个网络里不用填。</li>
             </ol>
             <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           </div>
@@ -449,23 +466,23 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
               <li>运行 CopySync-Setup.exe。装在当前用户目录下，不需要管理员权限。<span class="aside">CopySync 还没有代码签名，Windows 会提示「Windows 已保护你的电脑」：点「更多信息」，再点「仍要运行」。不想运行安装程序的话，可以下载<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">便携版</a>。</span></li>
-              <li>打开 CopySync，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。</li>
-              <li>在「设置」里填入服务器地址，按回车。防火墙询问时选择允许。</li>
+              <li>打开 CopySync，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。防火墙询问时选择允许。</li>
+              <li>跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。</li>
             </ol>
             <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
           </div>
           <div>
-            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>服务器</h3>
-            <p class="small">三种部署方式，按你的情况选一种，每种都有图文教程：</p>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>连接方式</h3>
+            <p class="small">同一个网络里不需要服务器。三种方式按你的情况选一种，每种都有图文教程：</p>
             <ul class="opts">
+              <li><a href="lan/">同一网络</a><span>什么都不用部署</span></li>
               <li><a href="cloud/">公网服务器</a><span>在哪儿都能同步</span></li>
-              <li><a href="server/">局域网</a><span>电脑都在同一个网络里</span></li>
-              <li><a href="tailscale/">局域网 + Tailscale</a><span>要跨网络，没有公网服务器</span></li>
+              <li><a href="tailscale/">Tailscale</a><span>跨网络，不用服务器</span></li>
             </ul>
             <a class="button quiet" href="start/#server">对比三种方式</a>
           </div>
         </div>
-        <p class="pairing"><strong>配对：</strong>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。Mac 与 Windows 之间、两台 Windows 之间都一样。</p>
+        <p class="pairing"><strong>配对：</strong>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。不在同一网段时，输入配对码的同时输入它下面显示的地址。Mac 与 Windows 之间、两台 Windows 之间都一样。</p>
       </div>
     </section>
 
@@ -478,10 +495,10 @@
             <tr><th scope="row">版本</th><td>1.3.4，<time datetime="2026-10-11">2026 年 10 月 11 日</time>发布</td></tr>
             <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB</td></tr>
             <tr><th scope="row">Windows 客户端</th><td>Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB</td></tr>
-            <tr><th scope="row">服务器</th><td>Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 与 Apple 芯片）、Windows 10 与 11 x64（系统服务）；约 15 MB 内存</td></tr>
+            <tr><th scope="row">服务器</th><td>可选，只在跨网络时需要。Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 与 Apple 芯片）、Windows 10 与 11 x64（系统服务）；约 15 MB 内存</td></tr>
             <tr><th scope="row">界面语言</th><td>简体中文、English、日本語，默认跟随系统，可在设置里切换</td></tr>
             <tr><th scope="row">同步的内容</th><td>纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭</td></tr>
-            <tr><th scope="row">传输</th><td>WebRTC 数据通道，直连优先，打不通时经 TURN 中转；多出口网络逐个探测每个出口；文件以 tar + zstd 流式打包</td></tr>
+            <tr><th scope="row">传输</th><td>WebRTC 数据通道，直连优先，打不通时经 TURN 中转；同一网络里经 mDNS 发现、UDP 8788 交换连接信息；多出口网络逐个探测每个出口；文件以 tar + zstd 流式打包</td></tr>
             <tr><th scope="row">加密与身份</th><td>DTLS 端到端加密；设备身份为 Ed25519 密钥；信令消息逐条签名</td></tr>
             <tr><th scope="row">配对</th><td>6 位配对码，5 分钟内有效，字符集去掉了 0/O、1/I 等易混字符；配对时人工核对安全指纹</td></tr>
             <tr><th scope="row">自动同步上限</th><td>默认 50 MB，可在 1 MB 到 1 GB 之间调整</td></tr>
@@ -505,7 +522,7 @@
           </details>
           <details>
             <summary>和 macOS 自带的「通用剪贴板」有什么区别？</summary>
-            <div class="answer"><p>通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。CopySync 只要求两台电脑都能连上你部署的服务器：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。</p><p>如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。</p></div>
+            <div class="answer"><p>通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。CopySync 在同一个网络里装好就能用；跨网络时，两台电脑能连上你部署的服务器、或者都装了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。</p><p>如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。</p></div>
           </details>
           <details>
             <summary>服务器会看到我复制的内容吗？</summary>
@@ -517,11 +534,15 @@
           </details>
           <details>
             <summary>必须自己准备服务器吗？</summary>
-            <div class="answer"><p>是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。有三种部署方式：<a href="cloud/">公网服务器</a>，最低配置的云主机就够，在哪儿都能同步；<a href="server/">局域网</a>，电脑都在同一个网络里时，放在其中一台常开的电脑上；<a href="tailscale/">局域网 + Tailscale</a>，要跨网络又没有公网服务器时用。</p></div>
+            <div class="answer"><p>不一定。两台电脑在<a href="lan/">同一个网络</a>里时，装好 App 直接配对就行，不需要服务器。</p><p>跨网络时有两种做法：<a href="cloud/">公网服务器</a>，最低配置的云主机就够，在哪儿都能同步；<a href="tailscale/">Tailscale</a>，每台电脑装上它，配对时输入对方的 Tailscale 地址，不需要服务器。CopySync 不提供公共服务器，所以不会有任何人的数据经过别人的机器。</p></div>
           </details>
           <details>
             <summary>家里没有公网 IP，能在家和公司之间同步吗？</summary>
-            <div class="answer"><p>能，有两种做法。有一台公网服务器的话，把服务器部署在上面，家里和公司的电脑都直接连它，见<a href="cloud/">公网服务器部署</a>。没有的话，服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale、登录同一个账号，服务器地址填它的 Tailscale 地址，见<a href="tailscale/">局域网 + Tailscale</a>。</p></div>
+            <div class="answer"><p>能，有两种做法。有一台公网服务器的话，把服务器部署在上面，家里和公司的电脑都直接连它，见<a href="cloud/">公网服务器部署</a>。没有的话，每台电脑装上 Tailscale、登录同一个账号，配对时输入对方的 Tailscale 地址，见<a href="tailscale/">Tailscale 教程</a>。</p></div>
+          </details>
+          <details>
+            <summary>在同一个网络里，为什么找不到另一台？</summary>
+            <div class="answer"><p>先看两台是不是真的在同一个网段：公司里有线和无线、访客网络、开了「AP 隔离」的 Wi‑Fi 常常不互通，局域网发现过不去。这时在输入配对码的那台点「不在同一网段？」，填上另一台配对码下面显示的地址。</p><p>Windows 上，第一次运行时防火墙会询问，要选允许；点过取消的话，在「设置 → 局域网」里点「放行」。Mac 上，要在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。更多见<a href="lan/#faq">同一网络教程</a>。</p></div>
           </details>
           <details>
             <summary>支持 Windows 吗？iPhone 呢？</summary>

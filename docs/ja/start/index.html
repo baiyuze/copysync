@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>はじめかた：3 ステップで CopySync を使い始める</title>
-  <meta name="description" content="CopySync がはじめての方へ。各コンピューターにアプリを入れ、サーバーの置き方（LAN、Tailscale、クラウド）を選び、アドレスを入力してペアリングすれば、Mac と Windows のあいだでコピー＆ペーストできます。グローバル IP は不要です。">
+  <meta name="description" content="CopySync がはじめての方へ。各コンピューターにアプリを入れ、同じネットワークならそのままペアリング（サーバー不要）、ネットワークをまたぐなら公開サーバーか Tailscale を選びます。あとは Mac と Windows のあいだでコピー＆ペーストできます。">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/start/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/start/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/start/">
@@ -13,7 +13,7 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="CopySync">
   <meta property="og:title" content="はじめかた：3 ステップで CopySync を使い始める">
-  <meta property="og:description" content="CopySync がはじめての方へ。各コンピューターにアプリを入れ、サーバーの置き方（LAN、Tailscale、クラウド）を選び、アドレスを入力してペアリングすれば、Mac と Windows のあいだでコピー＆ペーストできます。グローバル IP は不要です。">
+  <meta property="og:description" content="CopySync がはじめての方へ。各コンピューターにアプリを入れ、同じネットワークならそのままペアリング（サーバー不要）、ネットワークをまたぐなら公開サーバーか Tailscale を選びます。あとは Mac と Windows のあいだでコピー＆ペーストできます。">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/start/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
   <meta property="og:locale" content="ja_JP">
@@ -33,7 +33,7 @@
         <a href="./" aria-current="page">はじめかた</a>
         <a class="wide" href="../../ja/#how">しくみ</a>
         <a class="wide" href="../../ja/#faq">よくある質問</a>
-        <a href="#server">サーバーの設置</a>
+        <a href="#server">接続方法</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../../start/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../../en/start/" hreflang="en" lang="en" data-lang="en">English</a>
@@ -46,11 +46,10 @@
       <div class="wrap">
         <p class="crumb"><a href="../../ja/">CopySync</a> / はじめかた</p>
         <h1 class="display">はじめかた</h1>
-        <p class="lede">アプリを入れて、サーバーを用意し、2 台をペアリングします。最初の設定は 10 分ほど。そのあとはコピーするだけで同期されます。</p>
+        <p class="lede">アプリを入れて、接続方法を選び、2 台をペアリングします。同じネットワークなら数分で終わり、そのあとはコピーするだけで同期されます。</p>
         <ol class="guide-toc">
           <li><a href="#app">アプリを入れる</a></li>
-          <li><a href="#server">サーバーを用意</a></li>
-          <li><a href="#connect">アドレスを入力</a></li>
+          <li><a href="#server">接続方法を選ぶ</a></li>
           <li><a href="#pair">ペアリング</a></li>
         </ol>
       </div>
@@ -68,7 +67,7 @@
               <ol class="steps">
                 <li>CopySync.dmg をダウンロードして開き、CopySync を「アプリケーション」にドラッグします。</li>
                 <li>「アプリケーション」から開きます。<span class="aside">初回は「開発元を検証できません」と表示されます。「システム設定 → プライバシーとセキュリティ」を開き、ページ下部の「このまま開く」をクリックします。</span></li>
-                <li>「バックグラウンド同期を有効にする」をクリックし、クリップボードの読み取りを聞かれたら許可します。</li>
+                <li>「バックグラウンド同期を有効にする」をクリックします。クリップボードの読み取りと、ローカルネットワーク上のデバイスを探すことについて聞かれたら、どちらも許可します。</li>
               </ol>
               <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
             </div>
@@ -76,7 +75,7 @@
               <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
               <ol class="steps">
                 <li>CopySync-Setup.exe を実行します。管理者権限は要りません。<span class="aside">「Windows によって PC が保護されました」と出たら、「詳細情報」を押してから「実行」を押します。</span></li>
-                <li>CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ウィンドウを閉じても通知領域で動き続けます。</li>
+                <li>CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても通知領域で動き続けます。</li>
               </ol>
               <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
             </div>
@@ -91,14 +90,37 @@
     <section class="section" id="server" aria-labelledby="server-title">
       <div class="wrap">
         <p class="eyebrow">ステップ 2</p>
-        <h2 id="server-title">サーバーを用意する</h2>
-        <p class="intro">2 台はサーバーを通じてお互いを見つけます。コピーした内容がそこに保存されることはありません。公開サーバーはないので、3 通りの置き方から状況に合うものを選んでください。</p>
+        <h2 id="server-title">接続方法を選ぶ</h2>
+        <p class="intro">同じネットワークなら、準備は何も要りません。ネットワークをまたぐときは、公開サーバーか Tailscale を通じてお互いを見つけます。コピーした内容がそこに保存されることはありません。</p>
         <div class="os-tabs" data-tabs="plan">
-          <div class="tablist" role="tablist" aria-label="サーバーの置き方" hidden>
+          <div class="tablist" role="tablist" aria-label="接続方法" hidden>
+            <button type="button" role="tab" id="tab-plan-lan" aria-controls="plan-lan">同じネットワーク</button>
             <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">公開サーバー</button>
-            <button type="button" role="tab" id="tab-plan-lan" aria-controls="plan-lan">LAN</button>
-            <button type="button" role="tab" id="tab-plan-ts" aria-controls="plan-ts">LAN ＋ Tailscale</button>
+            <button type="button" role="tab" id="tab-plan-ts" aria-controls="plan-ts">Tailscale</button>
           </div>
+
+          <section class="os" id="plan-lan" role="tabpanel" aria-labelledby="tab-plan-lan">
+            <h3 class="os-title">同じネットワーク</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>各コンピューターにアプリを入れ、「バックグラウンド同期を有効にする」をクリックします。</li>
+                  <li>Windows ファイアウォールに聞かれたら許可し、macOS にローカルネットワーク上のデバイスを探してよいか聞かれたら、それも許可します。</li>
+                  <li>一台でコードを表示し、もう一台で入力して指紋を照合します。別のサブネットにある場合は、コードの下に表示されたアドレスも入力します（<a href="../../ja/lan/#subnet">同じネットワークでの手順</a>）。</li>
+                </ol>
+                <p class="plan-address">サーバーのアドレスを入力する必要はありません。</p>
+                <a class="button quiet" href="../../ja/lan/">同じネットワークでの手順 →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
+                <dl>
+                  <div><dt>向いている</dt><dd>コンピューターがすべて同じ Wi‑Fi か有線ネットワークにある場合（家や会社など）。</dd></div>
+                  <div><dt>必要なもの</dt><dd>何もありません。各コンピューターにアプリを入れるだけです。</dd></div>
+                  <div><dt>注意</dt><dd>そのネットワークの外では同期せず、戻ると再開します。会社などで有線と Wi‑Fi のサブネットが分かれている場合は、ペアリング時にアドレスもひとつ入力します。</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
 
           <section class="os" id="plan-cloud" role="tabpanel" aria-labelledby="tab-plan-cloud">
             <h3 class="os-title">公開サーバー</h3>
@@ -107,9 +129,9 @@
                 <ol class="steps">
                   <li>クラウドのセキュリティグループで TCP 8787、UDP 3478、UDP 32768–60999 を開けます。</li>
                   <li>ssh でログインし、インストールスクリプトをダウンロードして、グローバル IP を付けて実行します：<code>sudo ./install.sh グローバルIP</code>。</li>
-                  <li>ブラウザーで <code>http://グローバルIP:8787/healthz</code> を開き、ok と表示されれば完了です。</li>
+                  <li>各コンピューターの「設定」にサーバーのアドレス <code>ws://グローバルIP:8787/signal</code> を入力して Return を押し、ペアリングします。</li>
                 </ol>
-                <p class="plan-address">各コンピューターに入力するアドレス：<code>ws://グローバルIP:8787/signal</code></p>
+                <p class="plan-address">ブラウザーで <code>http://グローバルIP:8787/healthz</code> を開き、ok と表示されれば完了です。</p>
                 <a class="button quiet" href="../../ja/cloud/">公開サーバーでの手順 →</a>
               </div>
               <div class="plan-card">
@@ -123,47 +145,24 @@
             </div>
           </section>
 
-          <section class="os" id="plan-lan" role="tabpanel" aria-labelledby="tab-plan-lan">
-            <h3 class="os-title">LAN</h3>
-            <div class="plan-grid">
-              <div>
-                <ol class="steps">
-                  <li>サーバーにするコンピューターのアドレスをルーターで固定します。</li>
-                  <li>OS に合ったサーバーをダウンロードしてインストールスクリプトを実行します。<a href="../../ja/server/#windows">Windows</a> は <code>install.cmd</code> をダブルクリック、<a href="../../ja/server/#macos">macOS</a> と <a href="../../ja/server/#linux">Linux</a> は <code>./install.sh</code> を実行します。</li>
-                  <li>スクリプトが LAN のアドレスを見つけ、最後にアプリに入力するアドレスを表示します。</li>
-                </ol>
-                <p class="plan-address">各コンピューターに入力するアドレス：<code>ws://LANのアドレス:8787/signal</code>（例：<code>ws://192.168.1.20:8787/signal</code>）</p>
-                <a class="button quiet" href="../../ja/server/">LAN での設置手順 →</a>
-              </div>
-              <div class="plan-card">
-                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
-                <dl>
-                  <div><dt>向いている</dt><dd>コンピューターがすべて同じ Wi‑Fi か有線ネットワークにある場合（家や会社など）。</dd></div>
-                  <div><dt>必要なもの</dt><dd>電源を入れたままの Windows・Mac・Linux。同期するコンピューターの 1 台でもかまいません。</dd></div>
-                  <div><dt>注意</dt><dd>そのネットワークの外では同期せず、戻ると再開します。そのコンピューターの電源が切れたりスリープしたりしているあいだも止まります。</dd></div>
-                </dl>
-              </div>
-            </div>
-          </section>
-
           <section class="os" id="plan-ts" role="tabpanel" aria-labelledby="tab-plan-ts">
-            <h3 class="os-title">LAN ＋ Tailscale</h3>
+            <h3 class="os-title">Tailscale</h3>
             <div class="plan-grid">
               <div>
                 <ol class="steps">
                   <li>各コンピューターに Tailscale を入れ、同じアカウントでサインインします。</li>
-                  <li>サーバーにするコンピューターで <code>tailscale ip -4</code> を実行し、100 で始まるアドレスを控えます。</li>
-                  <li>そのアドレスを付けてサーバーをインストールします（例：<code>install.cmd 100.101.102.103</code>、<code>./install.sh 100.101.102.103</code>）。</li>
+                  <li>ペアリングする相手のコンピューターで <code>tailscale ip -4</code> を実行し、100 で始まるアドレスを控えます。</li>
+                  <li>ペアリングのとき、コードを入力する側で「別のサブネットにありますか？」をクリックし、そのアドレスを入力します。</li>
                 </ol>
-                <p class="plan-address">各コンピューターに入力するアドレス：<code>ws://Tailscaleのアドレス:8787/signal</code></p>
+                <p class="plan-address">サーバーは要りません。Tailscale のアドレスは変わらないので、入力はペアリングのときの一度だけです。</p>
                 <a class="button quiet" href="../../ja/tailscale/">Tailscale での手順 →</a>
               </div>
               <div class="plan-card">
-                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><path class="p-data" d="M85 52h71"/><rect class="p-dev" x="42" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M37 69h48"/><rect class="p-dev" x="161" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M156 69h48"/></svg>
                 <dl>
                   <div><dt>向いている</dt><dd>コンピューターが別々のネットワークにあり、公開サーバーがない場合。</dd></div>
-                  <div><dt>必要なもの</dt><dd>サーバー用に電源を入れたままのコンピューター 1 台と、すべてのコンピューターに同じアカウントの Tailscale。</dd></div>
-                  <div><dt>注意</dt><dd>CopySync を使うコンピューターすべてに Tailscale が必要で、自宅の 1 台は電源を入れたままにします。Tailscale が P2P でつなげないときは DERP サーバーで中継され、遅くなることがあります。</dd></div>
+                  <div><dt>必要なもの</dt><dd>すべてのコンピューターに、同じアカウントでサインインした Tailscale。</dd></div>
+                  <div><dt>注意</dt><dd>CopySync を使うコンピューターすべてに Tailscale が必要で、接続したままにします。Tailscale が P2P でつなげないときは DERP サーバーで中継され、遅くなることがあります。</dd></div>
                 </dl>
               </div>
             </div>
@@ -172,32 +171,16 @@
       </div>
     </section>
 
-    <section class="section" id="connect" aria-labelledby="connect-title">
-      <div class="wrap">
-        <p class="eyebrow">ステップ 3</p>
-        <h2 id="connect-title">各コンピューターにサーバーのアドレスを入力</h2>
-        <ol class="flow">
-          <li><h3>設定を開く</h3><p>各コンピューターで CopySync を開き、「設定」に進みます。サーバーを動かしているコンピューターも同じです。</p></li>
-          <li><h3>アドレスを入力</h3><p>「シグナリングサーバー」に前のステップで表示されたアドレスを入力し、Return か Enter を押します。</p></li>
-          <li><h3>状態を確認</h3><p>「接続状態」が緑の「接続済み」になれば、そのコンピューターは準備完了です。</p></li>
-        </ol>
-        <figure class="shot">
-          <img src="../../assets/screenshots/ja/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync の設定画面：シグナリングサーバーは ws://192.168.1.20:8787/signal、接続状態は接続済み">
-        </figure>
-        <p class="note">「未接続」のままなら<a href="../../ja/server/#faq">よくある質問</a>をご覧ください。</p>
-      </div>
-    </section>
-
     <section class="section" id="pair" aria-labelledby="pair-title">
       <div class="wrap">
-        <p class="eyebrow">ステップ 4</p>
+        <p class="eyebrow">ステップ 3</p>
         <h2 id="pair-title">2 台をペアリングする</h2>
         <p class="intro">2 台ごとに一度ペアリングすれば、あとは何もする必要はありません。</p>
         <div class="os-grid qs-grid">
           <div>
             <ol class="steps">
-              <li>一台で「デバイス」を開き、「デバイスを追加」をクリックします。5 分間有効な 6 桁のコードが表示されます。</li>
-              <li>もう一台でも「デバイスを追加」をクリックし、「コードを入力」に切り替えて入力します。</li>
+              <li>一台で「デバイス」を開き、「デバイスを追加」をクリックします。5 分間有効な 6 桁のコードと、その下にこのコンピューターのアドレスが表示されます。</li>
+              <li>もう一台でも「デバイスを追加」をクリックし、「コードを入力」に切り替えて入力します。<span class="aside">別のサブネットにある場合や Tailscale を使う場合は、「別のサブネットにありますか？」をクリックして相手のアドレスも入力します。</span></li>
               <li>両方の画面に同じ 2 行の指紋が表示されます。1 文字ずつ照合して一致していれば確定します。<span class="aside">途中で誰かがあなたのデバイスになりすますのを防ぐ手順です。省略しないでください。</span></li>
             </ol>
             <figure class="figure-card qs-verify">
@@ -205,7 +188,7 @@
             </figure>
           </div>
           <figure class="shot">
-            <img src="../../assets/screenshots/ja/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="デバイスを追加：ペアリングコード K7MP2X を表示し、もう一台で入力する">
+            <img src="../../assets/screenshots/ja/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="デバイスを追加：ペアリングコード K7MP2X と、その下にこのコンピューターのアドレス 192.168.1.20">
           </figure>
         </div>
       </div>
@@ -215,7 +198,7 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">コピーしてみましょう。</h2>
         <p class="lede">一台でテキスト、画像、ファイルをコピーし、もう一台で ⌘V か Ctrl+V を押します。どちらでコピーしたものも履歴に残ります。</p>
-        <p class="note">困ったときは：<a href="../../ja/server/#faq">LAN のよくある質問</a> · <a href="../../ja/tailscale/#faq">Tailscale のよくある質問</a> · <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a></p>
+        <p class="note">困ったときは：<a href="../../ja/lan/#faq">同じネットワークのよくある質問</a> · <a href="../../ja/tailscale/#faq">Tailscale のよくある質問</a> · <a href="../../ja/cloud/#faq">公開サーバーのよくある質問</a> · <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a></p>
       </div>
     </section>
   </main>

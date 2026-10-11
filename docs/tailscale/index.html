@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>用 Tailscale 跨网络使用 CopySync：没有公网 IP 也能在家和公司之间同步</title>
-  <meta name="description" content="服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale，就像在同一个局域网里：不需要公网 IP，也不用改路由器，在公司、在外面都能同步剪贴板。Windows、Mac、Linux 图文教程。">
+  <title>用 Tailscale 跨网络使用 CopySync：不用服务器，在家和公司之间同步</title>
+  <meta name="description" content="每台电脑装上 Tailscale、登录同一个账号，配对时输入对方的 Tailscale 地址：不需要公网 IP，不需要服务器，也不需要一直开着的电脑，在公司、在外面都能同步剪贴板。">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/tailscale/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/">
@@ -12,8 +12,8 @@
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="用 Tailscale 跨网络使用 CopySync：没有公网 IP 也能在家和公司之间同步">
-  <meta property="og:description" content="服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale，就像在同一个局域网里：不需要公网 IP，也不用改路由器，在公司、在外面都能同步剪贴板。Windows、Mac、Linux 图文教程。">
+  <meta property="og:title" content="用 Tailscale 跨网络使用 CopySync：不用服务器，在家和公司之间同步">
+  <meta property="og:description" content="每台电脑装上 Tailscale、登录同一个账号，配对时输入对方的 Tailscale 地址：不需要公网 IP，不需要服务器，也不需要一直开着的电脑，在公司、在外面都能同步剪贴板。">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/tailscale/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
   <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
         <a href="../start/">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
-        <a href="../start/#server" aria-current="true">部署服务器</a>
+        <a href="../start/#server" aria-current="true">连接方式</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../en/tailscale/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="../ja/tailscale/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -44,15 +44,13 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">部署服务器</a></p>
+        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">连接方式</a></p>
         <h1 class="display">用 Tailscale 跨网络使用</h1>
-        <p class="lede">没有公网 IP，也能在家和公司之间同步。服务器照样放在家里，每台电脑装上 Tailscale，它们就像在同一个局域网里，不用改路由器，也不用买云服务器。</p>
+        <p class="lede">没有公网 IP，也不想部署服务器？每台电脑装上 Tailscale，配对时输入对方的 Tailscale 地址，在家、在公司都能同步。</p>
         <ol class="guide-toc">
           <li><a href="#join">装 Tailscale</a></li>
           <li><a href="#address">查地址</a></li>
-          <li><a href="#install">安装服务器</a></li>
-          <li><a href="#check">检查</a></li>
-          <li><a href="#clients">填地址</a></li>
+          <li><a href="#pair">配对</a></li>
           <li><a href="#faq">常见问题</a></li>
         </ol>
       </div>
@@ -61,45 +59,30 @@
     <section class="section" id="overview" aria-labelledby="overview-title">
       <div class="wrap">
         <h2 id="overview-title">像在同一个局域网里</h2>
-        <p class="intro">Tailscale 是一个组网工具：装了它、登录同一个账号的设备，各自分到一个固定的 100 开头的地址，不管实际在哪个网络里，都能用这个地址互相访问。CopySync 的服务器用这个地址安装，客户端也填这个地址，其余和局域网部署一样。</p>
+        <p class="intro">Tailscale 是一个组网工具：装了它、登录同一个账号的设备，各自分到一个固定的 100 开头的地址，不管实际在哪个网络里，都能用这个地址互相访问。CopySync 配对时记住对方的这个地址，之后就像在同一个网络里一样直接连接。</p>
         <figure class="diagram">
-          <svg viewBox="0 0 960 460" role="img" aria-labelledby="ts-title ts-desc">
+          <svg viewBox="0 0 960 330" role="img" aria-labelledby="ts-title ts-desc">
             <title id="ts-title">通过 Tailscale 使用 CopySync</title>
-            <desc id="ts-desc">服务器在家里，Mac 在公司，Windows 在家里，三台设备都装了 Tailscale，在同一个虚拟局域网里各有一个 100 开头的地址。两台电脑通过信令连接到服务器 100.101.102.103，复制的内容在两台电脑之间直连传输，直连不通时经服务器中转。</desc>
-            <rect class="d-ts" x="8" y="8" width="944" height="404" rx="22"/>
+            <desc id="ts-desc">Mac 在公司，Windows 在家里，两台都装了 Tailscale，在同一个虚拟局域网里各有一个 100 开头的地址。复制的内容在两台电脑之间直接传输，没有服务器。</desc>
+            <rect class="d-ts" x="8" y="8" width="944" height="314" rx="22"/>
             <text class="d-ts-label" x="32" y="42">Tailscale 虚拟局域网：每台设备一个 100 开头的地址</text>
-            <rect class="d-box" x="340" y="64" width="280" height="122" rx="14"/>
-            <text class="d-title" x="480" y="102" text-anchor="middle">服务器</text>
-            <text class="d-sub" x="480" y="130" text-anchor="middle">在家里，一直开着</text>
-            <text class="d-ip" x="480" y="164" text-anchor="middle">100.101.102.103</text>
-            <path class="d-sig" d="M150 266V96H340"/>
-            <path class="d-sig" d="M810 266V96H620"/>
-            <path class="d-relay" d="M206 266V154H340"/>
-            <path class="d-relay" d="M754 266V154H620"/>
-            <text class="d-note" x="164" y="86">信令 TCP 8787</text>
-            <text class="d-note" x="220" y="214">中转 UDP 3478，直连不通时</text>
-            <rect class="d-box" x="40" y="266" width="240" height="126" rx="14"/>
-            <text class="d-title" x="160" y="306" text-anchor="middle">Mac</text>
-            <text class="d-sub" x="160" y="334" text-anchor="middle">在公司</text>
-            <text class="d-ip" x="160" y="368" text-anchor="middle">100.88.20.5</text>
-            <rect class="d-box" x="680" y="266" width="240" height="126" rx="14"/>
-            <text class="d-title" x="800" y="306" text-anchor="middle">Windows</text>
-            <text class="d-sub" x="800" y="334" text-anchor="middle">在家里</text>
-            <text class="d-ip" x="800" y="368" text-anchor="middle">100.92.41.17</text>
-            <path class="d-direct" d="M280 330H680"/>
-            <text class="d-label" x="480" y="316" text-anchor="middle">直连，两层加密</text>
-            <text class="d-note" x="480" y="358" text-anchor="middle">复制的内容只在两台电脑之间传输</text>
-            <g class="d-legend" transform="translate(40 444)">
-              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">数据（直连）</text>
-              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">数据（中转，备用）</text>
-              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">信令</text>
-            </g>
+            <rect class="d-box" x="40" y="100" width="240" height="160" rx="14"/>
+            <text class="d-title" x="160" y="146" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="174" text-anchor="middle">在公司</text>
+            <text class="d-ip" x="160" y="226" text-anchor="middle">100.88.20.5</text>
+            <rect class="d-box" x="680" y="100" width="240" height="160" rx="14"/>
+            <text class="d-title" x="800" y="146" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="174" text-anchor="middle">在家里</text>
+            <text class="d-ip" x="800" y="226" text-anchor="middle">100.92.41.17</text>
+            <path class="d-direct" d="M280 190H680"/>
+            <text class="d-label" x="480" y="176" text-anchor="middle">直连，两层加密</text>
+            <text class="d-note" x="480" y="218" text-anchor="middle">复制的内容只在两台电脑之间传输</text>
           </svg>
         </figure>
         <ul class="points ports">
-          <li><strong>服务器还在家里。</strong>任意一台常开的 Windows、Mac 或 Linux 电脑，和局域网部署一样。</li>
-          <li><strong>每台电脑都装 Tailscale，</strong>登录同一个账号。服务器所在的那台也要装。</li>
-          <li><strong>两层加密。</strong>Tailscale 的 WireGuard 隧道里，跑的是 CopySync 自己端到端加密的连接，Tailscale 和你的服务器都看不到内容。</li>
+          <li><strong>不需要服务器，</strong>也不需要一直开着的电脑：两台电脑开着、连着 Tailscale，就能同步。</li>
+          <li><strong>地址只输入一次。</strong>Tailscale 地址不会变，配对时输入一次，之后两台会自动找到彼此。</li>
+          <li><strong>两层加密。</strong>Tailscale 的 WireGuard 隧道里，跑的是 CopySync 自己端到端加密的连接，Tailscale 看不到内容。</li>
         </ul>
       </div>
     </section>
@@ -108,10 +91,10 @@
       <div class="wrap">
         <h2 id="prepare-title">开始之前</h2>
         <dl class="fallbacks">
-          <div><dt>一台常开的电脑</dt><dd>当服务器用，要求和<a href="../server/#prepare">局域网部署</a>一样，关机或睡眠时同步会暂停。它的 Tailscale 地址不会变，不需要在路由器里固定地址。</dd></div>
           <div><dt>一个 Tailscale 账号</dt><dd>个人使用免费，用 Google、Microsoft、GitHub 或 Apple 账号就能登录。所有设备登录同一个账号。</dd></div>
-          <div><dt>每台电脑都装 Tailscale</dt><dd>Windows、macOS、Linux 都有客户端。用 CopySync 的电脑都要装，一直待在家里的那台也一样。</dd></div>
-          <div><dt>用 ZeroTier 也行</dt><dd>其他能给每台设备分配固定虚拟地址的组网工具，做法相同：服务器用它分配的地址安装，客户端填这个地址。下面以 Tailscale 为例。</dd></div>
+          <div><dt>每台电脑都装 Tailscale</dt><dd>Windows、macOS、Linux 都有客户端。用 CopySync 的电脑都要装，并保持连接。</dd></div>
+          <div><dt>CopySync 已经装好</dt><dd>每台电脑装好 App、启用了后台同步，见<a href="../start/#app">快速开始</a>。服务器地址留空就行。</dd></div>
+          <div><dt>用 ZeroTier 也行</dt><dd>其他能给每台设备分配固定虚拟地址的组网工具，做法相同：配对时输入它分配的地址。下面以 Tailscale 为例。</dd></div>
         </dl>
       </div>
     </section>
@@ -120,7 +103,7 @@
       <div class="wrap">
         <p class="eyebrow">第 1 步</p>
         <h2 id="join-title">在每台电脑上装 Tailscale</h2>
-        <p class="intro">服务器所在的电脑和每台要同步的电脑，都装上并登录同一个账号。</p>
+        <p class="intro">每台要同步的电脑，都装上并登录同一个账号。</p>
         <div class="os-grid qs-grid">
           <div class="os-steps">
             <ol class="steps">
@@ -131,12 +114,11 @@
             <a class="button" href="https://tailscale.com/download"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Tailscale</a>
           </div>
           <div class="os-figures">
-            <figure class="browser listing" role="img" aria-label="Tailscale 管理后台的设备列表（示意）：mac-mini 是服务器，地址 100.101.102.103；macbook-pro 是 100.88.20.5；home-pc 是 100.92.41.17">
+            <figure class="browser listing" role="img" aria-label="Tailscale 管理后台的设备列表（示意）：macbook-pro 的地址是 100.88.20.5，home-pc 是 100.92.41.17">
               <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">login.tailscale.com/admin/machines</span></div>
               <table>
                 <thead><tr><th scope="col">设备</th><th scope="col">Tailscale 地址</th><th scope="col">系统</th></tr></thead>
                 <tbody>
-                <tr class="hl"><td>mac-mini <em>服务器</em></td><td>100.101.102.103</td><td>macOS</td></tr>
                 <tr><td>macbook-pro</td><td>100.88.20.5</td><td>macOS</td></tr>
                 <tr><td>home-pc</td><td>100.92.41.17</td><td>Windows</td></tr>
                 </tbody>
@@ -145,11 +127,11 @@
           </div>
         </div>
         <div class="server-notes">
-          <h3>服务器所在的那台电脑，再多做一步</h3>
+          <h3>让 Tailscale 一直连着</h3>
           <ul class="points">
-            <li><strong>Windows：</strong>在任务栏右下角的 Tailscale 图标上右键，在「Preferences」里勾选「Run unattended」。不然注销之后 Tailscale 会断开，外面的电脑就连不上服务器了。</li>
-            <li><strong>Mac：</strong>保持登录、不睡眠，确认 Tailscale 登录后会自动打开。CopySync 的服务器也是登录后才运行。</li>
-            <li><strong>关掉密钥过期：</strong>Tailscale 默认每 180 天要求设备重新登录一次。在管理后台的 Machines 页面，点服务器那一行最右边的菜单，选「Disable key expiry」。</li>
+            <li><strong>Windows：</strong>在任务栏右下角的 Tailscale 图标上右键，在「Preferences」里勾选「Run unattended」，注销之后也保持连接。</li>
+            <li><strong>Mac：</strong>确认 Tailscale 登录后会自动打开。</li>
+            <li><strong>关掉密钥过期：</strong>Tailscale 默认每 180 天要求设备重新登录一次。常年不动的电脑，可以在管理后台的 Machines 页面，点那一行最右边的菜单，选「Disable key expiry」。</li>
           </ul>
         </div>
       </div>
@@ -158,197 +140,37 @@
     <section class="section" id="address" aria-labelledby="address-title">
       <div class="wrap">
         <p class="eyebrow">第 2 步</p>
-        <h2 id="address-title">查服务器的 Tailscale 地址</h2>
-        <p class="intro">在服务器所在的电脑上点菜单栏（Windows 上是任务栏右下角）的 Tailscale 图标，菜单里能看到本机的地址；或者在终端里运行 <code>tailscale ip -4</code>。</p>
+        <h2 id="address-title">查对方的 Tailscale 地址</h2>
+        <p class="intro">在要配对的另一台电脑上点 Tailscale 的图标（Mac 在菜单栏，Windows 在任务栏右下角），菜单里能看到本机的地址；或者在终端里运行 <code>tailscale ip -4</code>。</p>
         <div class="address-term">
-          <figure class="term" role="img" aria-label="在终端里运行 tailscale ip -4，输出本机的 Tailscale 地址 100.101.102.103">
-                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">mac-mini — zsh</span></div>
-<pre class="t-body"><span class="t-prompt">%</span> tailscale ip -4
-<span class="t-url">100.101.102.103</span></pre>
+          <figure class="term" role="img" aria-label="在 PowerShell 里运行 tailscale ip -4，输出本机的 Tailscale 地址 100.92.41.17">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">home-pc — PowerShell</span></div>
+<pre class="t-body"><span class="t-prompt">&gt;</span> tailscale ip -4
+<span class="t-url">100.92.41.17</span></pre>
               </figure>
         </div>
-        <p class="note">下面都以 <code>100.101.102.103</code> 为例，换成你的地址。</p>
+        <p class="note">下面以家里那台 Windows 的 <code>100.92.41.17</code> 为例，换成你的地址。</p>
       </div>
     </section>
 
-    <section class="section" id="install" aria-labelledby="install-title">
+    <section class="section" id="pair" aria-labelledby="pair-title">
       <div class="wrap">
         <p class="eyebrow">第 3 步</p>
-        <h2 id="install-title">用这个地址安装服务器</h2>
-        <p class="intro">安装脚本默认用局域网地址，这里要带上 Tailscale 地址，外面的电脑才用得到服务器的中转。已经照<a href="../server/">局域网教程</a>装过的，带上地址再运行一次即可，原来的设置保留。</p>
-        <div class="os-tabs" data-tabs="os">
-          <div class="tablist" role="tablist" aria-label="服务器所在电脑的系统" hidden>
-            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
-            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
-            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+        <h2 id="pair-title">配对时输入这个地址</h2>
+        <p class="intro">和在同一网络里配对一样，只是多输入一个地址。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>在家里那台 Windows 上打开「设备」，点「添加设备」，记下 6 位配对码。</li>
+              <li>在公司的 Mac 上点「添加设备」，切到「输入配对码」，输入它；再点「不在同一网段？」，填上 <code>100.92.41.17</code>，点「继续」。</li>
+              <li>两块屏幕会显示同样的两行安全指纹，逐字核对一致后确认。之后两台在哪儿都能同步。</li>
+            </ol>
           </div>
-
-          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
-            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
-            <div class="os-grid">
-              <div class="os-steps">
-                <ol class="steps">
-                <li>下载 copysync-server-windows-amd64.zip，右键选「全部解压缩」。已经装过的，用原来解压出的文件夹。</li>
-                <li>打开解压出的文件夹，在窗口顶部的地址栏里输入 <code>cmd</code>，按回车，打开命令提示符。</li>
-                <li>运行 <code>install.cmd 100.101.102.103</code>（换成你的地址），弹出用户账户控制时点「是」。</li>
-                <li>安装在新打开的窗口里进行。最后显示的地址应当是 <code>ws://100.101.102.103:8787/signal</code>。</li>
-                </ol>
-                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版服务器</a>
-                <ul class="points">
-                <li><strong>防火墙已经放行：</strong>脚本添加的入站规则对所有网络生效，Tailscale 的网卡也包括在内。</li>
-                <li>提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</li>
-                </ul>
-              </div>
-              <div class="os-figures">
-                <figure class="term" role="img" aria-label="在解压出的文件夹里打开命令提示符，运行 install.cmd 100.101.102.103">
-                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>命令提示符</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
-<pre class="t-body"><span class="t-prompt">C:\Users\me\Downloads\copysync-server-windows-amd64&gt;</span>install.cmd 100.101.102.103</pre>
-              </figure>
-                <figure class="term" role="img" aria-label="install.cmd 运行完的窗口：最后显示客户端要填的地址 ws://100.101.102.103:8787/signal">
-                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>管理员: Windows PowerShell</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
-<pre class="t-body"><span class="t-step">&gt; 停止旧版本</span>
-<span class="t-step">&gt; 安装到 C:\Program Files\CopySync Server</span>
-<span class="t-step">&gt; 注册服务 CopySyncServer（中转地址 100.101.102.103）</span>
-<span class="t-step">&gt; 在 Windows 防火墙里放行</span>
-<span class="t-step">&gt; 启动</span>
-  √ 已启动
-
-安装完成：copysync-server 1.3.4，作为 Windows 服务开机自动运行
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
-
-    <span class="t-url">ws://100.101.102.103:8787/signal</span>
-
-  程序   C:\Program Files\CopySync Server
-  日志   C:\ProgramData\CopySync Server\server.log
-  重启   Restart-Service CopySyncServer（管理员 PowerShell）
-  卸载   双击 uninstall.cmd</pre>
-              </figure>
-              </div>
-            </div>
-          </section>
-
-          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
-            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>macOS</h3>
-            <div class="os-grid">
-              <div class="os-steps">
-                <ol class="steps">
-                  <li>打开「终端」，逐行运行，最后一行换成你的地址：
-                <div class="code">
-                  <button class="copy" type="button" data-done="已复制">复制</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
-tar xzf copysync-server-macos.tar.gz
-cd copysync-server-macos
-./install.sh 100.101.102.103</code></pre>
-                </div></li>
-                <li>最后显示的地址应当是 <code>ws://100.101.102.103:8787/signal</code>。</li>
-                </ol>
-                <ul class="points">
-                <li>已经装过的，在原来的文件夹里运行 <code>./install.sh 100.101.102.103</code> 即可，原来的设置保留。</li>
-                <li><strong>开着系统防火墙的话，</strong>脚本最后会给出放行 copysync-server 的命令。</li>
-                </ul>
-              </div>
-              <div class="os-figures">
-                <figure class="term" role="img" aria-label="在终端里运行 ./install.sh 100.101.102.103 的输出，最后显示客户端要填的地址 ws://100.101.102.103:8787/signal">
-                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">copysync-server-macos — zsh</span></div>
-<pre class="t-body"><span class="t-prompt">%</span> ./install.sh 100.101.102.103
-<span class="t-step">▶ 停止旧版本</span>
-<span class="t-step">▶ 安装到 /Users/me/Library/Application Support/CopySync Server</span>
-<span class="t-step">▶ 写入 LaunchAgent（中转地址 100.101.102.103）</span>
-<span class="t-step">▶ 启动</span>
-  ✓ 已启动
-
-安装完成：copysync-server 1.3.4，登录这台 Mac 后自动运行
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
-
-    <span class="t-url">ws://100.101.102.103:8787/signal</span>
-
-  日志   /Users/me/Library/Logs/CopySync/server.log
-  重启   launchctl kickstart -k gui/501/com.copysync.server
-  卸载   ./install.sh uninstall</pre>
-              </figure>
-              </div>
-            </div>
-          </section>
-
-          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
-            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Linux</h3>
-            <div class="os-grid">
-              <div class="os-steps">
-                <ol class="steps">
-                  <li>逐行运行，最后一行换成你的地址：<span class="aside">ARM 设备把 <code>amd64</code> 换成 <code>arm64</code>。</span>
-                <div class="code">
-                  <button class="copy" type="button" data-done="已复制">复制</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
-sudo ./install.sh 100.101.102.103</code></pre>
-                </div></li>
-                <li>最后显示的地址应当是 <code>ws://100.101.102.103:8787/signal</code>。</li>
-                </ol>
-                <div class="switch">
-                  <p><strong>已经装过的：</strong>Linux 的安装脚本不会改动已有的配置。把配置里原来的地址换成 Tailscale 地址（下面的 <code>192.168.1.20</code> 换成你原来的地址），再重启服务：</p>
-                  <div class="code">
-                  <button class="copy" type="button" data-done="已复制">复制</button>
-<pre><code>sudo sed -i 's/192.168.1.20/100.101.102.103/g' /etc/copysync/server.env
-sudo systemctl restart copysync-server</code></pre>
-                </div>
-                </div>
-              </div>
-              <div class="os-figures">
-                <figure class="term" role="img" aria-label="运行 sudo ./install.sh 100.101.102.103 的输出，最后显示客户端要填的地址 ws://100.101.102.103:8787/signal">
-                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh 100.101.102.103</span></div>
-<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 100.101.102.103
-<span class="t-step">▶ 安装二进制到 /usr/local/bin</span>
-<span class="t-step">▶ 写入 systemd 单元</span>
-<span class="t-step">▶ 生成配置 /etc/copysync/server.env（中转地址 100.101.102.103）</span>
-<span class="t-step">▶ 启动</span>
-  ✓ 已启动
-
-安装完成：copysync-server 1.3.4
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
-
-    <span class="t-url">ws://100.101.102.103:8787/signal</span>
-
-  配置   /etc/copysync/server.env
-  日志   journalctl -u copysync-server -f
-  重启   systemctl restart copysync-server
-  卸载   sudo ./install.sh uninstall
-
-防火墙需放行：TCP 8787（信令）、UDP 3478（STUN 与 TURN）、UDP 32768-60999（中转端口，系统随机分配）</pre>
-              </figure>
-              </div>
-            </div>
-          </section>
+          <figure class="shot">
+            <img src="../assets/screenshots/pairing-join-ts-dark.png" width="2112" height="1472" loading="lazy" alt="输入配对码：填好配对码 K7MP2X，地址框里填着 Tailscale 地址 100.92.41.17">
+          </figure>
         </div>
-      </div>
-    </section>
-
-    <section class="section" id="check" aria-labelledby="check-title">
-      <div class="wrap">
-        <p class="eyebrow">第 4 步</p>
-        <h2 id="check-title">从外面检查一下</h2>
-        <p class="intro">找一台不在家里网络的电脑，或者让笔记本连上手机热点，确认 Tailscale 已连接，在浏览器里打开 <code>http://100.101.102.103:8787/healthz</code>。看到下面这一行，在外面也能访问到服务器了。</p>
-        <figure class="browser" role="img" aria-label="浏览器打开 http://100.101.102.103:8787/healthz，页面显示服务器的状态 ok 与版本号">
-          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://100.101.102.103:8787/healthz</span></div>
-          <pre class="b-body">{"status":"ok","version":"1.3.4"}</pre>
-        </figure>
-        <p class="note">打不开的话，看下面的<a href="#faq">常见问题</a>。</p>
-      </div>
-    </section>
-
-    <section class="section" id="clients" aria-labelledby="clients-title">
-      <div class="wrap">
-        <p class="eyebrow">第 5 步</p>
-        <h2 id="clients-title">在每台电脑上填地址</h2>
-        <ol class="flow">
-          <li><h3>打开设置</h3><p>在每台电脑上打开 CopySync，进入「设置」。服务器所在的那台电脑也一样。</p></li>
-          <li><h3>填 Tailscale 地址</h3><p>在「信令服务器地址」里填 <code>ws://100.101.102.103:8787/signal</code>（换成你的地址），按回车保存。</p></li>
-          <li><h3>看连接状态</h3><p>「连接状态」变成绿色的「已连接」就好了。还没配对的话，在「设备」里配对。</p></li>
-        </ol>
-        <figure class="shot">
-          <img src="../assets/screenshots/settings-tailscale-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的设置页：信令服务器地址填着 ws://100.101.102.103:8787/signal，连接状态显示已连接">
-        </figure>
-        <p class="note">家里的电脑也填 Tailscale 地址，不要填局域网地址：这样电脑在家、在外面，地址都不用改。都在家时，数据照样只在家里的网络里走。</p>
+        <p class="note">两台都在家里时，CopySync 也会在局域网里直接找到对方，数据不会绕道。</p>
       </div>
     </section>
 
@@ -361,28 +183,28 @@ sudo systemctl restart copysync-server</code></pre>
             <div class="answer"><p>CopySync 显示的「直连」，指两台电脑在 Tailscale 的虚拟网里直接相连。Tailscale 自己打不通两台电脑时，会经它在境外的中转服务器（DERP）转发，在国内用就会慢。</p><p>在终端里运行 <code>tailscale ping 对方的地址</code>：显示 via DERP，说明 Tailscale 在中转；显示 via 一个 IP 和端口，就是点对点。公司网络、校园网比较容易遇到中转，可以自建 DERP 中转服务器，或者换一种组网工具。</p></div>
           </details>
           <details>
-            <summary>连接状态一直是「未连接」？</summary>
-            <div class="answer"><p>先确认这台电脑的 Tailscale 已连接，再在浏览器里打开 <code>http://服务器的 Tailscale 地址:8787/healthz</code>。</p><p>打不开的话，看服务器那台电脑是不是睡眠了、Tailscale 是否在线（Windows 上要勾选 Run unattended，Mac 上要保持登录），服务器是不是还用着局域网地址，以及 Mac、Linux 上的防火墙有没有放行。</p></div>
+            <summary>配对时找不到对方？</summary>
+            <div class="answer"><p>先确认两台的 Tailscale 都已连接：在终端里运行 <code>tailscale ping 对方的地址</code>，能 ping 通再试。</p><p>能 ping 通还找不到，多半是对方的防火墙挡住了：对方是 Windows 的话，在它的 CopySync「设置 → 局域网」里点「放行」；是 Mac 的话，确认「系统设置 → 隐私与安全性 → 本地网络」里打开了 CopySync Daemon。</p></div>
           </details>
           <details>
             <summary>一定要每台电脑都装 Tailscale 吗？</summary>
-            <div class="answer"><p>是的。没装的电脑访问不到 100 开头的地址，在外面的电脑也找不到它。一直待在家里的那台也要装。</p></div>
+            <div class="answer"><p>是的，没装的电脑访问不到 100 开头的地址。两台在同一个网络里时，不装也能用，见<a href="../lan/">同一网络教程</a>。</p></div>
           </details>
           <details>
-            <summary>已经照局域网教程装好了，要从头来吗？</summary>
-            <div class="answer"><p>不用。带上 Tailscale 地址把安装脚本再运行一次（Linux 上改一下配置），然后在每台电脑上把服务器地址改成 Tailscale 地址。已经配对的设备不用重新配对。</p></div>
+            <summary>以前照教程在家里装过服务器，还要它吗？</summary>
+            <div class="answer"><p>不需要了。在每台电脑的「设置」里清空服务器地址，再在家里那台电脑上卸载服务器即可，已经配对的设备不用重新配对。留着也没关系，服务器和 Tailscale 可以同时用。</p></div>
           </details>
           <details>
             <summary>Tailscale 能看到我复制的内容吗？</summary>
             <div class="answer"><p>不能。Tailscale 的连接用 WireGuard 端到端加密，里面跑的又是 CopySync 自己的 DTLS 加密连接，两层都只有两台电脑能解开。Tailscale 的服务器只交换设备的公钥和地址，中转服务器也只转发加密后的数据包。</p></div>
           </details>
           <details>
-            <summary>服务器的 Tailscale 地址会变吗？</summary>
-            <div class="answer"><p>一般不会。地址跟着设备走，重启、换网络都不变；只有把设备从 Tailscale 里删掉再重新加入，才会换一个。</p></div>
+            <summary>Tailscale 地址会变吗？</summary>
+            <div class="answer"><p>一般不会。地址跟着设备走，重启、换网络都不变；只有把设备从 Tailscale 里删掉再重新加入，才会换一个。换了的话，在「设备」里给那台设备重新输入一次地址。</p></div>
           </details>
           <details>
-            <summary>我有公网 IP，还需要 Tailscale 吗？</summary>
-            <div class="answer"><p>不需要。把服务器部署在有公网 IP 的机器上，所有电脑填它的公网地址就行，见<a href="../cloud/">公网服务器部署教程</a>。</p></div>
+            <summary>我有公网服务器，还需要 Tailscale 吗？</summary>
+            <div class="answer"><p>不需要。把服务器部署在有公网 IP 的机器上，所有电脑填它的地址就行，见<a href="../cloud/">公网服务器部署教程</a>。</p></div>
           </details>
         </div>
       </div>
@@ -390,13 +212,13 @@ sudo systemctl restart copysync-server</code></pre>
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 class="display" id="closing-title">服务器在家里，<br>复制跟着你走。</h2>
+        <h2 class="display" id="closing-title">不用服务器，<br>复制跟着你走。</h2>
         <div class="cta">
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
         </div>
         <p class="note">版本 1.3.4，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
-        <a class="source" href="../server/">回到局域网部署教程</a>
+        <a class="source" href="../lan/">回到同一网络教程</a>
       </div>
     </section>
   </main>

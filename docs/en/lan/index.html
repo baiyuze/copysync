@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Use CopySync on one network: no server, just pair</title>
+  <meta name="description" content="When your computers share a Wi‑Fi or wired network, CopySync needs no server: install the app, enter a 6-character pairing code, and sync the clipboard and files between Mac and Windows. On a different subnet, you enter one address when pairing.">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/en/lan/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/lan/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/lan/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/lan/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="Use CopySync on one network: no server, just pair">
+  <meta property="og:description" content="When your computers share a Wi‑Fi or wired network, CopySync needs no server: install the app, enter a 6-character pairing code, and sync the clipboard and files between Mac and Windows. On a different subnet, you enter one address when pairing.">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/en/lan/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../en/" aria-label="CopySync home"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="Page">
+        <a href="../../en/start/">Quick start</a>
+        <a class="wide" href="../../en/#how">How it works</a>
+        <a class="wide" href="../../en/#faq">FAQ</a>
+        <a href="../../en/start/#server" aria-current="true">Ways to connect</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../lan/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../ja/lan/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/start/#server">Ways to connect</a></p>
+        <h1 class="display">On the same network</h1>
+        <p class="lede">Computers behind the same router don't need a server. Install the app, enter a pairing code, and copying syncs from then on.</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">Before you start</a></li>
+          <li><a href="#pair">Pair</a></li>
+          <li><a href="#subnet">Different subnets</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">No server</h2>
+        <p class="intro">Two computers on the same network find each other over mDNS, exchange connection details directly, and open an encrypted direct connection. No server, and no computer that has to stay on.</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 330" role="img" aria-labelledby="lan-title lan-desc">
+            <title id="lan-title">CopySync on one network</title>
+            <desc id="lan-desc">On one LAN, a Mac (192.168.1.20) and a Windows PC (192.168.1.35) find each other over mDNS and exchange connection details over UDP 8788. Copied content goes directly between them; there is no server.</desc>
+            <rect class="d-lan" x="8" y="8" width="944" height="314" rx="22"/>
+            <text class="d-lan-label" x="32" y="42">LAN: the same Wi‑Fi or wired network</text>
+            <rect class="d-box" x="40" y="120" width="240" height="140" rx="14"/>
+            <text class="d-title" x="160" y="170" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="198" text-anchor="middle">Running CopySync</text>
+            <text class="d-ip" x="160" y="234" text-anchor="middle">192.168.1.20</text>
+            <rect class="d-box" x="680" y="120" width="240" height="140" rx="14"/>
+            <text class="d-title" x="800" y="170" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="198" text-anchor="middle">Running CopySync</text>
+            <text class="d-ip" x="800" y="234" text-anchor="middle">192.168.1.35</text>
+            <path class="d-sig" d="M280 150H680"/>
+            <text class="d-note" x="480" y="138" text-anchor="middle">Found over mDNS, connection details over UDP 8788</text>
+            <path class="d-direct" d="M280 214H680"/>
+            <text class="d-label" x="480" y="200" text-anchor="middle">Direct, end-to-end encrypted</text>
+            <text class="d-note" x="480" y="242" text-anchor="middle">Content stays between the two computers</text>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>Found automatically.</strong> Each computer announces itself on the LAN over mDNS, with only an anonymous token that changes daily, so nobody can tell whose computer it is.</li>
+          <li><strong>Direct.</strong> Content goes straight between the two computers, at the speed of your network.</li>
+          <li><strong>Same security.</strong> You compare two fingerprint lines when pairing, and every message after that is signed, so others on the network can't pose as your device.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">Before you start</h2>
+        <dl class="fallbacks">
+          <div><dt>The same network</dt><dd>Both computers behind the same router; Wi‑Fi and wired can mix. Guest networks and Wi‑Fi with client isolation keep devices apart, and in many offices wired and Wi‑Fi are separate subnets: see <a href="#subnet">different subnets</a> below.</dd></div>
+          <div><dt>Windows Firewall</dt><dd>On first run, Windows asks whether CopySync may get through the firewall; allow it. If you clicked Cancel, click Allow under Settings → Local network in CopySync, which asks for administrator approval once.</dd></div>
+          <div><dt>Local Network on macOS</dt><dd>From macOS 15, the first time it reaches a device on your network, macOS asks whether CopySync Daemon may find devices on your local network; allow it. If you declined, turn it on in System Settings → Privacy &amp; Security → Local Network.</dd></div>
+          <div><dt>No server address</dt><dd>Leave the server field in Settings empty. To sync across networks later, add a server or use Tailscale; paired devices stay paired.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="pair" aria-labelledby="pair-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 1</p>
+        <h2 id="pair-title">Pair your computers</h2>
+        <p class="intro">Pair each two computers once. If the app isn't installed yet, see the <a href="../../en/start/#app">quick start</a>.</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>On one computer, open Devices and click Add device. It shows a 6-character code, valid for 5 minutes.</li>
+              <li>On the other, click Add device too, switch to Enter a code, type it in and click Continue.</li>
+              <li>Both screens show the same two fingerprint lines. Check them character by character, then confirm. Copying syncs from now on.</li>
+            </ol>
+            <figure class="figure-card qs-verify">
+              <img src="../../assets/screenshots/en/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="The fingerprint check during pairing shows R8NF-2WTC-QL5J and asks you to confirm it matches the other computer exactly">
+            </figure>
+          </div>
+          <figure class="shot">
+            <img src="../../assets/screenshots/en/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="Add device: the pairing code K7MP2X, with this computer&#x27;s address 192.168.1.20 below it">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="subnet" aria-labelledby="subnet-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 2</p>
+        <h2 id="subnet-title">Different subnets</h2>
+        <p class="intro">Local discovery only reaches one subnet. When your computers are on different subnets that can still reach each other, as in many offices, you enter one address when pairing.</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>The computer showing the code lists its address below it, such as <code>192.168.1.20</code>.</li>
+              <li>On the computer entering the code, click On a different subnet?, enter that address, and click Continue.</li>
+              <li>After pairing, each computer remembers the other's address. If one changes address, the other finds it again on its own; if both change, open the device's … menu under Devices and choose Enter its address.</li>
+            </ol>
+          </div>
+          <figure class="shot">
+            <img src="../../assets/screenshots/en/pairing-join-dark.png" width="2112" height="1472" loading="lazy" alt="Enter a code: the code K7MP2X, with the address field opened below it holding 192.168.1.20">
+          </figure>
+        </div>
+        <p class="note">If the subnets can't reach each other at all, such as a guest network kept apart from the office network, traffic has to go through a computer both can reach: see <a href="../../en/server/">run a server on your LAN</a>.</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">Questions</h2>
+        <div class="faq">
+          <details>
+            <summary>The other computer can't be found</summary>
+            <div class="answer"><p>Make sure both are on the network with background sync on. Then try entering the other computer's address on the one entering the code: if that works, they're on different subnets, or the network blocks mDNS.</p><p>Still nothing? Check the other computer's firewall. On Windows, click Allow under Settings → Local network; on a Mac, make sure CopySync Daemon is on under System Settings → Privacy &amp; Security → Local Network and the macOS firewall isn't blocking it.</p></div>
+          </details>
+          <details>
+            <summary>Does it sync away from this network?</summary>
+            <div class="answer"><p>No. It resumes when you're back, and anything copied in between is added to the other computer's history. To sync across networks, add a <a href="../../en/cloud/">public server</a> or use <a href="../../en/tailscale/">Tailscale</a>; paired devices stay paired.</p></div>
+          </details>
+          <details>
+            <summary>What if an address changes?</summary>
+            <div class="answer"><p>Usually nothing to do. On one subnet, mDNS finds the computer again at any time; across subnets, it reconnects as long as one of the two keeps its address. If both change, enter the address once more under Devices.</p><p>For a desktop that never moves, you can reserve its address in your router's DHCP settings.</p></div>
+          </details>
+          <details>
+            <summary>Can others on the network see my computer?</summary>
+            <div class="answer"><p>They can see that a CopySync device is there, but not whose: the broadcast carries an anonymous token that changes daily, with no device name or ID. Messages from devices you haven't paired with are dropped, and pairing requires comparing fingerprints on both screens.</p></div>
+          </details>
+          <details>
+            <summary>Which ports does it use?</summary>
+            <div class="answer"><p>UDP 8788 for connection details (a random port if that's taken), UDP 5353 for mDNS, and another random UDP port for the data once connected. Nothing to configure on your router.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">One network,<br>nothing to set up.</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
+        </div>
+        <p class="note">Version 1.3.4, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <a class="source" href="../../design/lan-mode.html">Design notes on local network mode (in Chinese)</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync is open source under the GNU AGPL-3.0, with commercial licenses available.</p>
+      <nav aria-label="Footer">
+        <a href="https://github.com/baiyuze/copysync/releases">All releases</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">Commercial license</a>
+        <a href="https://github.com/baiyuze/copysync/issues">Report an issue</a>
+      </nav>
+      <nav aria-label="Language">
+        <a href="../../lan/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/lan/" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a>
+        <a href="../../ja/lan/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

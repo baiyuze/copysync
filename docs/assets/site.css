@@ -1478,6 +1478,19 @@ td {
   font-size: clamp(2.3rem, 6.5vw, 4.6rem);
 }
 
+/* 教程顶部的提示：这篇已经不是首选做法时，指向更合适的那篇 */
+.guide-hero .notice {
+  max-width: 40rem;
+  margin: 1.75rem auto 0;
+  padding: 0.9rem 1.2rem;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  text-align: left;
+}
+
 /* 页内目录：几个带序号的胶囊 */
 .guide-toc {
   display: flex;

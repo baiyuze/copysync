@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CopySync: sync the clipboard and files between Mac and Windows, across accounts and networks</title>
-  <meta name="description" content="CopySync lets you copy on one computer and paste on another, Mac or Windows: text, images, files and folders. No shared account or network required. Peer-to-peer, end-to-end encrypted, with a server you host that can&#x27;t see your content. Free and open source.">
+  <meta name="description" content="CopySync lets you copy on one computer and paste on another, Mac or Windows: text, images, files and folders. No shared account required. On the same network it works with no server at all; across networks, use a server you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/en/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CopySync">
   <meta property="og:title" content="CopySync: copy on this computer, paste on that one">
-  <meta property="og:description" content="Mac and Windows. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end encrypted, self-hosted server. Free and open source.">
+  <meta property="og:description" content="Mac and Windows. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end encrypted, no server needed on the same network. Free and open source.">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/en/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
   <meta property="og:image:width" content="1200">
@@ -35,7 +35,7 @@
         "@type": "SoftwareApplication",
         "@id": "https://baiyuze.github.io/copysync/#app",
         "name": "CopySync",
-        "description": "Open-source app that syncs the clipboard and files between Mac and Windows computers. Copy text, images, files or folders on one computer and paste on the other. Devices connect directly over WebRTC with end-to-end DTLS encryption, falling back to a TURN relay on a server the user hosts.",
+        "description": "Open-source app that syncs the clipboard and files between Mac and Windows computers. Copy text, images, files or folders on one computer and paste on the other. No server is needed on the same network. Devices connect directly over WebRTC with end-to-end DTLS encryption; across networks, a server the user hosts introduces them and relays over TURN when needed.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 or later (Intel and Apple silicon); Windows 10, Windows 11 (x64)",
         "softwareVersion": "1.3.4",
@@ -55,6 +55,7 @@
         "featureList": [
           "Syncs plain text, rich text, images, files and folders",
           "Works between Mac and Windows, across accounts and networks",
+          "No server needed on the same network, with automatic mDNS discovery",
           "Direct WebRTC connection with automatic TURN relay fallback",
           "End-to-end DTLS encryption with human-verified fingerprints at pairing",
           "Items under 50 MB pushed on copy, larger files pulled on demand",
@@ -83,7 +84,7 @@
             "name": "How is this different from Universal Clipboard?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. CopySync only needs both computers to reach your server, so different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand. If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough."
+              "text": "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. CopySync works on the same network as soon as it's installed; across networks, both computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand. If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough."
             }
           },
           {
@@ -107,7 +108,7 @@
             "name": "Do I need my own server?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. There is no public server, so nobody's data passes through anyone else's machine. There are three ways to run it: a public server, where the smallest VM is enough and sync works from anywhere; your LAN, on an always-on computer when all your computers share a network; or LAN + Tailscale, across networks without a public server."
+              "text": "Not necessarily. When your computers are on the same network, install the app and pair; there's no server. Across networks there are two ways: a public server, where the smallest VM is enough and sync works from anywhere; or Tailscale on each computer, entering the other computer's Tailscale address when pairing, with no server at all. There's no public CopySync server, so nobody's data passes through anyone else's machine."
             }
           },
           {
@@ -115,7 +116,15 @@
             "name": "No public IP at home. Can I sync between home and the office?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, in two ways. With a public server, run CopySync's server there and connect both computers to it; see the public server guide. Without one, run the server on an always-on computer at home, install Tailscale on every computer under the same account, and use the server's Tailscale address; see LAN + Tailscale."
+              "text": "Yes, in two ways. With a public server, run CopySync's server there and connect both computers to it; see the public server guide. Without one, install Tailscale on every computer under the same account and enter the other computer's Tailscale address when pairing; see the Tailscale guide."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Both computers are on the same network. Why can't they find each other?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code. On Windows, allow CopySync when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. More in the same network guide."
             }
           },
           {
@@ -166,7 +175,7 @@
         <a href="start/">Quick start</a>
         <a class="wide" href="#how">How it works</a>
         <a class="wide" href="#faq">FAQ</a>
-        <a href="start/#server">Self-host</a>
+        <a href="start/#server">Ways to connect</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -178,7 +187,7 @@
     <section class="hero">
       <div class="wrap">
         <h1 class="display">Copy on this computer.<br>Paste on that one.</h1>
-        <p class="lede">Mac and Windows. Text, images, files, whole folders. No shared account required, no shared network required. Data moves directly between your devices, and stays encrypted even when it passes through your own server.</p>
+        <p class="lede">Mac and Windows. Text, images, files, whole folders. No shared account required. On the same network it works with no server at all, and it works across networks too. Data moves directly between your devices, end-to-end encrypted.</p>
         <div class="cta">
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
@@ -214,9 +223,16 @@
 
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
-        <h2 id="deploy-title">Where to run the server</h2>
-        <p class="intro">Your computers find each other through a server; nothing you copy is stored on it. There's no public server, so pick one of three ways to run your own.</p>
+        <h2 id="deploy-title">How your computers connect</h2>
+        <p class="intro">On the same network, install the app and pair; no server needed. Across networks, your computers find each other through a server or Tailscale, and nothing you copy is stored there. Pick the way that fits.</p>
         <div class="paths">
+          <a class="path" href="lan/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
+            <span class="path-when">Nothing to set up</span>
+            <h3>Same network</h3>
+            <p>At home or in the office, behind the same router. Install the app on both computers and enter a pairing code. No server, and no computer that has to stay on.</p>
+            <span class="path-go">Same network guide →</span>
+          </a>
           <a class="path" href="cloud/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
             <span class="path-when">Syncs from anywhere</span>
@@ -224,18 +240,11 @@
             <p>A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly, at home, at the office or anywhere else, with nothing extra to install.</p>
             <span class="path-go">Public server guide →</span>
           </a>
-          <a class="path" href="server/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
-            <span class="path-when">All computers on one network</span>
-            <h3>LAN</h3>
-            <p>At home or in the office, on the same Wi‑Fi or wired network. Run the server on one of your always-on Windows, Mac or Linux computers with one script. Free.</p>
-            <span class="path-go">LAN guide →</span>
-          </a>
           <a class="path" href="tailscale/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-            <span class="path-when">Across networks, no public server</span>
-            <h3>LAN + Tailscale</h3>
-            <p>Run the server on an always-on computer at home, then install Tailscale on each computer under the same account. They act as if they shared a LAN.</p>
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><path class="p-data" d="M85 52h71"/><rect class="p-dev" x="42" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M37 69h48"/><rect class="p-dev" x="161" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M156 69h48"/></svg>
+            <span class="path-when">Across networks, no server</span>
+            <h3>Tailscale</h3>
+            <p>Install Tailscale on each computer under one account and enter the other computer's Tailscale address when pairing. Syncs at home and at the office, with no server and no computer that has to stay on.</p>
             <span class="path-go">Tailscale guide →</span>
           </a>
         </div>
@@ -290,7 +299,7 @@
     <section class="section" id="how" aria-labelledby="how-title">
       <div class="wrap">
         <h2 id="how-title">How it works</h2>
-        <p class="intro">Your two computers open an encrypted connection to each other. Your server only helps them find one another, and relays traffic when a direct path can't be made.</p>
+        <p class="intro">Your two computers open an encrypted connection to each other. On the same network they find each other on their own; across networks your server introduces them, and relays traffic when a direct path can't be made. The diagram shows the cross-network case.</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">How CopySync connects</title>
@@ -362,6 +371,11 @@
                 <tr><td>Blocked at first, network recovers later</td><td>Relay, then direct</td></tr>
                 <tr><td>Office router locks a port for unsolicited packets</td><td>Direct</td></tr>
                 <tr><td>Home router locks a port for unsolicited packets</td><td>Relay, then direct after one retry</td></tr>
+                <tr><td>No server, same subnet, found over mDNS</td><td>Direct</td></tr>
+                <tr><td>No server, two subnets, one side remembers the address</td><td>Direct</td></tr>
+                <tr><td>No server, both block inbound, both remember</td><td>Direct</td></tr>
+                <tr><td>No server, both block inbound, only one remembers</td><td>No connection (known limit)</td></tr>
+                <tr><td>No server, subnets isolated from each other</td><td>No connection</td></tr>
                 </tbody>
               </table>
             </div>
@@ -381,6 +395,7 @@
             <li><strong>You compare fingerprints when pairing.</strong> Both screens show the same two lines: the fingerprint of each device's key. The server could swap keys in transit, but then the two screens would no longer match. That check is what stops a man in the middle.</li>
             <li><strong>Every message after that is signed,</strong> so the server can't impersonate your device. The direct channel's certificate is checked again after the handshake; a mismatch drops the connection.</li>
             <li><strong>The relay only forwards ciphertext.</strong> TURN carries encrypted packets, and relay credentials are issued per device and expire after 12 hours.</li>
+            <li><strong>Same on the local network.</strong> What a device broadcasts on the LAN is an anonymous token that changes daily, not its name. Pairing still means comparing fingerprints, and every message is still signed.</li>
           </ul>
           <figure class="figure-card">
             <img src="../assets/screenshots/en/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="The fingerprint check during pairing shows R8NF-2WTC-QL5J and asks you to confirm it matches the other computer exactly">
@@ -394,11 +409,13 @@
         <h2 id="fallback-title">When things go wrong</h2>
         <p class="intro">Every network is different. Each of these cases was considered, and each has a test.</p>
         <dl class="fallbacks">
+          <div><dt>Can't find the other computer on the network</dt><dd>Different subnets, guest networks and Wi‑Fi with client isolation block local discovery. Enter the address shown under the other computer's code when pairing; it's remembered afterwards, and if both computers change addresses you enter it once more in the device list.</dd></div>
+          <div><dt>The system blocks the local network</dt><dd>From macOS 15, the background service needs your permission to reach devices on the local network; Windows asks about the firewall on first run. If either isn't allowed, the app says so and links straight to the fix.</dd></div>
           <div><dt>No direct path between the computers</dt><dd>Common behind symmetric NAT and corporate firewalls. Traffic switches to the TURN relay on your server, still encrypted, and the device list shows "Relay".</dd></div>
           <div><dt>Public STUN servers unreachable</dt><dd>Public STUN is unreliable in some regions, including mainland China. Your server runs its own STUN, and clients prefer it.</dd></div>
           <div><dt>Connected through the relay first</dt><dd>The relay handshake is fast and sometimes beats the direct path. Once connected, the side that started the connection punches again while idle and switches to direct when that works, never in the middle of a transfer.</dd></div>
           <div><dt>The other computer sleeps, drops off or restarts</dt><dd>A connection that dies silently is noticed, closed and reconnected. Anything you copy meanwhile is kept and added to the other computer's history once it's back, without overwriting what's on its clipboard now.</dd></div>
-          <div><dt>Server connection drops</dt><dd>Reconnects automatically: the delay starts at 1 second and doubles up to 30, with jitter so devices don't all reconnect at once. The app shows the status live.</dd></div>
+          <div><dt>Server connection drops</dt><dd>Reconnects automatically: the delay starts at 1 second and doubles up to 30, with jitter so devices don't all reconnect at once. Devices on the same network keep syncing.</dd></div>
           <div><dt>File too large</dt><dd>Above the limit only a record is synced, pulled when you need it. If the source file is gone by then, you get a clear message instead of a vague failure.</dd></div>
           <div><dt>Pasting into plain-text fields</dt><dd>Rich text copied from the web is written as both HTML and plain text, so no markup leaks into what you paste.</dd></div>
           <div><dt>A file name Windows doesn't allow</dt><dd>Colons, question marks and a few other characters that are fine on a Mac arrive as the matching full-width characters, so the name still reads the same. Two names that differ only in case never overwrite each other.</dd></div>
@@ -413,15 +430,15 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">Install</h2>
-        <p class="intro">Install the app on each computer, and set up a server both of them can reach. First time? Follow the <a href="start/">quick start</a>.</p>
+        <p class="intro">Install the app on each computer. On the same network you can pair right away; across networks, pick a way for them to find each other. First time? Follow the <a href="start/">quick start</a>.</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
               <li>Download CopySync.dmg, open it and drag CopySync into Applications.</li>
               <li>Open it from Applications.<span class="aside">The first time, macOS says it can't verify the developer: CopySync isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once.</span></li>
-              <li>Click Turn on background sync. In Settings, enter your server as <code>ws://server-address:8787/signal</code> and press Return.</li>
-              <li>When macOS asks whether CopySync may read the clipboard, allow it.</li>
+              <li>Click Turn on background sync. When macOS asks whether CopySync may read the clipboard or find devices on your local network, allow both.</li>
+              <li>To sync across networks, enter your server in Settings as <code>ws://server-address:8787/signal</code> and press Return. On the same network, leave it empty.</li>
             </ol>
             <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
           </div>
@@ -429,23 +446,23 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
               <li>Run CopySync-Setup.exe. It installs for the current user, no administrator rights needed.<span class="aside">CopySync isn't code-signed yet, so Windows says "Windows protected your PC": click More info, then Run anyway. To skip the installer, get the <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">portable zip</a>.</span></li>
-              <li>Open CopySync and click Turn on background sync. After you close the window it keeps running in the notification area.</li>
-              <li>In Settings, enter your server address and press Enter. Allow it if Windows Firewall asks.</li>
+              <li>Open CopySync and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it keeps running in the notification area.</li>
+              <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
             </ol>
             <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
           </div>
           <div>
-            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Server</h3>
-            <p class="small">Three ways to run it; pick the one that fits. Each has a step-by-step guide:</p>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Ways to connect</h3>
+            <p class="small">No server on the same network. Pick the way that fits; each has a step-by-step guide:</p>
             <ul class="opts">
+              <li><a href="lan/">Same network</a><span>Nothing to set up</span></li>
               <li><a href="cloud/">Public server</a><span>Syncs from anywhere</span></li>
-              <li><a href="server/">LAN</a><span>All computers on one network</span></li>
-              <li><a href="tailscale/">LAN + Tailscale</a><span>Across networks, no public server</span></li>
+              <li><a href="tailscale/">Tailscale</a><span>Across networks, no server</span></li>
             </ul>
             <a class="button quiet" href="start/#server">Compare the three</a>
           </div>
         </div>
-        <p class="pairing"><strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints. Mac with Windows, or two Windows PCs, works the same way.</p>
+        <p class="pairing"><strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints. On a different subnet, also enter the address shown under the code. Mac with Windows, or two Windows PCs, works the same way.</p>
       </div>
     </section>
 
@@ -458,10 +475,10 @@
             <tr><th scope="row">Version</th><td>1.3.4, released <time datetime="2026-10-11">October 11, 2026</time></td></tr>
             <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 47 MB download</td></tr>
             <tr><th scope="row">Windows app</th><td>Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download</td></tr>
-            <tr><th scope="row">Server</th><td>Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM</td></tr>
+            <tr><th scope="row">Server</th><td>Optional, only for syncing across networks. Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM</td></tr>
             <tr><th scope="row">Languages</th><td>English, Simplified Chinese and Japanese; follows the system by default, switchable in Settings</td></tr>
             <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>
-            <tr><th scope="row">Transport</th><td>WebRTC data channels, direct first with TURN relay fallback; every uplink probed on multi-uplink networks; files streamed as tar + zstd</td></tr>
+            <tr><th scope="row">Transport</th><td>WebRTC data channels, direct first with TURN relay fallback; on the same network, mDNS discovery and connection details over UDP 8788; every uplink probed on multi-uplink networks; files streamed as tar + zstd</td></tr>
             <tr><th scope="row">Encryption and identity</th><td>End-to-end DTLS; Ed25519 device keys; every signaling message signed</td></tr>
             <tr><th scope="row">Pairing</th><td>6-character code valid for 5 minutes, using an alphabet without look-alikes such as 0/O and 1/I; fingerprints compared by you</td></tr>
             <tr><th scope="row">Auto-sync limit</th><td>50 MB by default, adjustable from 1 MB to 1 GB</td></tr>
@@ -485,7 +502,7 @@
           </details>
           <details>
             <summary>How is this different from Universal Clipboard?</summary>
-            <div class="answer"><p>Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. CopySync only needs both computers to reach your server, so different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand.</p><p>If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.</p></div>
+            <div class="answer"><p>Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. CopySync works on the same network as soon as it's installed; across networks, both computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand.</p><p>If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.</p></div>
           </details>
           <details>
             <summary>Can the server see what I copy?</summary>
@@ -497,11 +514,15 @@
           </details>
           <details>
             <summary>Do I need my own server?</summary>
-            <div class="answer"><p>Yes. There is no public server, so nobody's data passes through anyone else's machine. There are three ways to run it: a <a href="cloud/">public server</a>, where the smallest VM is enough and sync works from anywhere; your <a href="server/">LAN</a>, on an always-on computer when all your computers share a network; or <a href="tailscale/">LAN + Tailscale</a>, across networks without a public server.</p></div>
+            <div class="answer"><p>Not necessarily. When your computers are on the <a href="lan/">same network</a>, install the app and pair; there's no server.</p><p>Across networks there are two ways: a <a href="cloud/">public server</a>, where the smallest VM is enough and sync works from anywhere; or <a href="tailscale/">Tailscale</a> on each computer, entering the other computer's Tailscale address when pairing, with no server at all. There's no public CopySync server, so nobody's data passes through anyone else's machine.</p></div>
           </details>
           <details>
             <summary>No public IP at home. Can I sync between home and the office?</summary>
-            <div class="answer"><p>Yes, in two ways. With a public server, run CopySync's server there and connect both computers to it; see the <a href="cloud/">public server guide</a>. Without one, run the server on an always-on computer at home, install Tailscale on every computer under the same account, and use the server's Tailscale address; see <a href="tailscale/">LAN + Tailscale</a>.</p></div>
+            <div class="answer"><p>Yes, in two ways. With a public server, run CopySync's server there and connect both computers to it; see the <a href="cloud/">public server guide</a>. Without one, install Tailscale on every computer under the same account and enter the other computer's Tailscale address when pairing; see the <a href="tailscale/">Tailscale guide</a>.</p></div>
+          </details>
+          <details>
+            <summary>Both computers are on the same network. Why can't they find each other?</summary>
+            <div class="answer"><p>Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code.</p><p>On Windows, allow CopySync when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy &amp; Security → Local Network. More in the <a href="lan/#faq">same network guide</a>.</p></div>
           </details>
           <details>
             <summary>Windows? iPhone?</summary>

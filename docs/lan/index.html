@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>在同一网络里使用 CopySync：不用服务器，配对就能同步</title>
+  <meta name="description" content="两台电脑在同一个 Wi‑Fi 或有线网络里时，CopySync 不需要服务器：装好 App，输入 6 位配对码，就能在 Mac 与 Windows 之间同步剪贴板和文件。不在同一网段时，配对时多输入一个地址。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/lan/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/lan/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/lan/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/lan/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="在同一网络里使用 CopySync：不用服务器，配对就能同步">
+  <meta property="og:description" content="两台电脑在同一个 Wi‑Fi 或有线网络里时，CopySync 不需要服务器：装好 App，输入 6 位配对码，就能在 Mac 与 Windows 之间同步剪贴板和文件。不在同一网段时，配对时多输入一个地址。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/lan/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href=".././" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="页面导航">
+        <a href="../start/">快速开始</a>
+        <a class="wide" href=".././#how">工作原理</a>
+        <a class="wide" href=".././#faq">常见问题</a>
+        <a href="../start/#server" aria-current="true">连接方式</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../en/lan/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/lan/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">连接方式</a></p>
+        <h1 class="display">在同一网络里直接用</h1>
+        <p class="lede">两台电脑连着同一个路由器，就不需要服务器。装好 App，输入配对码，之后复制就会同步。</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">开始之前</a></li>
+          <li><a href="#pair">配对</a></li>
+          <li><a href="#subnet">不在同一网段</a></li>
+          <li><a href="#faq">常见问题</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">不需要服务器</h2>
+        <p class="intro">同一个网络里的两台电脑，靠 mDNS 互相发现、直接交换连接信息，然后建立加密的直连。没有服务器，也不需要一台一直开着的电脑。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 330" role="img" aria-labelledby="lan-title lan-desc">
+            <title id="lan-title">同一网络里的 CopySync</title>
+            <desc id="lan-desc">同一个局域网里，Mac（192.168.1.20）与 Windows（192.168.1.35）通过 mDNS 互相发现，经 UDP 8788 交换连接信息，复制的内容在两台电脑之间直连传输，没有服务器。</desc>
+            <rect class="d-lan" x="8" y="8" width="944" height="314" rx="22"/>
+            <text class="d-lan-label" x="32" y="42">局域网：同一个 Wi‑Fi 或有线网络</text>
+            <rect class="d-box" x="40" y="120" width="240" height="140" rx="14"/>
+            <text class="d-title" x="160" y="170" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="198" text-anchor="middle">装着 CopySync</text>
+            <text class="d-ip" x="160" y="234" text-anchor="middle">192.168.1.20</text>
+            <rect class="d-box" x="680" y="120" width="240" height="140" rx="14"/>
+            <text class="d-title" x="800" y="170" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="198" text-anchor="middle">装着 CopySync</text>
+            <text class="d-ip" x="800" y="234" text-anchor="middle">192.168.1.35</text>
+            <path class="d-sig" d="M280 150H680"/>
+            <text class="d-note" x="480" y="138" text-anchor="middle">mDNS 互相发现，UDP 8788 交换连接信息</text>
+            <path class="d-direct" d="M280 214H680"/>
+            <text class="d-label" x="480" y="200" text-anchor="middle">直连，端到端加密</text>
+            <text class="d-note" x="480" y="242" text-anchor="middle">复制的内容只在两台电脑之间传输</text>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>自动发现。</strong>每台电脑用 mDNS 在局域网里广播自己，广播里只有一个每天都变的匿名标识，看不出是谁的电脑。</li>
+          <li><strong>直连。</strong>复制的内容在两台电脑之间直接传输，速度就是局域网的速度。</li>
+          <li><strong>安全照旧。</strong>配对时核对两行安全指纹，之后的每条消息都带签名，同一网络里的其他人冒充不了你的设备。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">开始之前</h2>
+        <dl class="fallbacks">
+          <div><dt>在同一个网络里</dt><dd>两台电脑连着同一个路由器就行，Wi‑Fi 与有线混用也可以。访客网络、开了「AP 隔离」的 Wi‑Fi 不让设备互相访问；公司里有线和无线常常不在一个网段，这时看下面的<a href="#subnet">不在同一网段</a>。</dd></div>
+          <div><dt>Windows 防火墙</dt><dd>第一次运行时，Windows 会问是否允许 CopySync 通过防火墙，选允许。点过取消的话，在 CopySync 的「设置 → 局域网」里点「放行」，会请求一次管理员权限。</dd></div>
+          <div><dt>macOS 的本地网络权限</dt><dd>macOS 15 起，第一次连接局域网里的设备时，系统会问是否允许 CopySync Daemon 查找本地网络上的设备，选允许。拒绝过的话，到「系统设置 → 隐私与安全性 → 本地网络」里打开它。</dd></div>
+          <div><dt>不用填服务器</dt><dd>「设置」里的服务器地址留空就行。以后要跨网络同步，再填上服务器或者改用 Tailscale，已经配对的设备不用重新配对。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="pair" aria-labelledby="pair-title">
+      <div class="wrap">
+        <p class="eyebrow">第 1 步</p>
+        <h2 id="pair-title">把两台电脑配对</h2>
+        <p class="intro">每两台电脑之间配对一次。还没装 App 的话，先按<a href="../start/#app">快速开始</a>装好。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>在一台电脑上打开「设备」，点「添加设备」，会显示一个 6 位配对码，5 分钟内有效。</li>
+              <li>在另一台电脑上同样点「添加设备」，切到「输入配对码」，输入它，点「继续」。</li>
+              <li>两块屏幕会显示同样的两行安全指纹。逐字核对一致后，再点确认。之后复制就会同步。</li>
+            </ol>
+            <figure class="figure-card qs-verify">
+              <img src="../assets/screenshots/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配对时的「核对安全指纹」对话框，显示 R8NF-2WTC-QL5J，要求与另一台电脑上显示的完全一致">
+            </figure>
+          </div>
+          <figure class="shot">
+            <img src="../assets/screenshots/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="添加设备：显示配对码 K7MP2X，下面是本机地址 192.168.1.20">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="subnet" aria-labelledby="subnet-title">
+      <div class="wrap">
+        <p class="eyebrow">第 2 步</p>
+        <h2 id="subnet-title">不在同一网段</h2>
+        <p class="intro">局域网发现只在一个网段里有效。两台电脑在不同网段、但网段之间互通时（公司里常见），配对时多输入一个地址就行。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>显示配对码的那台，在配对码下面能看到本机的地址，比如 <code>192.168.1.20</code>。</li>
+              <li>输入配对码的那台，点「不在同一网段？」，填上这个地址，再点「继续」。</li>
+              <li>配对之后，两台会记住彼此的地址。一台换了地址时，只要另一台没换，就会自动重新找到；两台都换了时，在「设备」里点那台设备的「…」菜单，选「输入它的地址」。</li>
+            </ol>
+          </div>
+          <figure class="shot">
+            <img src="../assets/screenshots/pairing-join-dark.png" width="2112" height="1472" loading="lazy" alt="输入配对码：填好配对码 K7MP2X，下面展开的地址框里填着 192.168.1.20">
+          </figure>
+        </div>
+        <p class="note">两个网段之间完全不通时（比如访客网络与办公网络隔开），只能经一台两边都能访问的电脑中转，见<a href="../server/">在局域网里部署服务器</a>。</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">常见问题</h2>
+        <div class="faq">
+          <details>
+            <summary>找不到另一台电脑？</summary>
+            <div class="answer"><p>先确认两台连着同一个网络、都启用了后台同步。再试试在输入配对码的那台填上对方的地址：这样能找到的话，说明两台不在同一网段，或者网络挡住了 mDNS。</p><p>还是找不到，就看对方的防火墙：对方是 Windows 的话，在它的「设置 → 局域网」里点「放行」；是 Mac 的话，确认「系统设置 → 隐私与安全性 → 本地网络」里打开了 CopySync Daemon，系统防火墙也没有拦着它。</p></div>
+          </details>
+          <details>
+            <summary>离开这个网络后还能同步吗？</summary>
+            <div class="answer"><p>不能，回到这个网络后自动恢复，这期间复制的内容会补发到对方的复制记录里。要在不同网络之间同步，加一台<a href="../cloud/">公网服务器</a>，或者改用<a href="../tailscale/">Tailscale</a>，已经配对的设备不用重新配对。</p></div>
+          </details>
+          <details>
+            <summary>地址变了怎么办？</summary>
+            <div class="answer"><p>一般不用管。同一网段里靠 mDNS 随时能找到；不同网段时，只要有一台的地址没变，就能自动重新连上。两台都换了地址时，在「设备」里给那台设备重新输入一次地址。</p><p>常放着不动的台式机，可以在路由器的「DHCP 静态分配」里给它固定一个地址。</p></div>
+          </details>
+          <details>
+            <summary>同一网络里的其他人会看到我的电脑吗？</summary>
+            <div class="answer"><p>能看到网络里有一台 CopySync，但看不出是谁的：广播里只有一个每天都变的匿名标识，没有设备名，也没有设备 ID。没有和你配对过的设备，发来的消息一律丢弃；配对还要两边核对安全指纹。</p></div>
+          </details>
+          <details>
+            <summary>用了哪些端口？</summary>
+            <div class="answer"><p>UDP 8788 用来交换连接信息（被占用时换一个随机端口），mDNS 用 UDP 5353，连上之后的数据走另一个随机的 UDP 端口。不需要在路由器上做任何设置。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">同一个网络，<br>装好就能用。</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
+        </div>
+        <p class="note">版本 1.3.4，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
+        <a class="source" href="../design/lan-mode.html">局域网直连的技术方案</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync 以 GNU AGPL-3.0 开源，另提供商业授权。</p>
+      <nav aria-label="页脚链接">
+        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商业授权</a>
+        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+      </nav>
+      <nav aria-label="语言">
+        <a href="../lan/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>
+        <a href="../en/lan/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/lan/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

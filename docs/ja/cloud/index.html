@@ -33,7 +33,7 @@
         <a href="../../ja/start/">はじめかた</a>
         <a class="wide" href="../../ja/#how">しくみ</a>
         <a class="wide" href="../../ja/#faq">よくある質問</a>
-        <a href="../../ja/start/#server" aria-current="true">サーバーの設置</a>
+        <a href="../../ja/start/#server" aria-current="true">接続方法</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../../cloud/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../../en/cloud/" hreflang="en" lang="en" data-lang="en">English</a>
@@ -44,7 +44,7 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/start/#server">サーバーの設置</a></p>
+        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/start/#server">接続方法</a></p>
         <h1 class="display">公開サーバーに置く</h1>
         <p class="lede">グローバル IP を持つ Linux のクラウドサーバー。最小構成で足ります。各コンピューターが直接つながり、自宅でも会社でも外出先でも同期でき、ほかに入れるものはありません。</p>
         <ol class="guide-toc">
@@ -259,7 +259,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
           </details>
           <details>
             <summary>自宅の回線にグローバル IP があります。それで代わりになりますか？</summary>
-            <div class="answer"><p>なりますが、クラウドサーバーより手間がかかります。ルーターで TCP 8787、UDP 3478、中継用の広い範囲の UDP ポートをそのコンピューターに転送する必要があり、自宅のグローバル IP は変わることもあります。全部が自宅にあるなら <a href="../../ja/server/">LAN</a> のほうが簡単で、ポート転送なしでネットワークをまたぐなら <a href="../../ja/tailscale/">LAN ＋ Tailscale</a> があります。</p></div>
+            <div class="answer"><p>なりますが、クラウドサーバーより手間がかかります。ルーターで TCP 8787、UDP 3478、中継用の広い範囲の UDP ポートをそのコンピューターに転送する必要があり、自宅のグローバル IP は変わることもあります。全部が自宅にあるなら<a href="../../ja/lan/">同じネットワーク</a>でサーバーそのものが要らず、ポート転送なしでネットワークをまたぐなら <a href="../../ja/tailscale/">Tailscale</a> があります。</p></div>
           </details>
         </div>
       </div>

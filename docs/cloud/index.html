@@ -33,7 +33,7 @@
         <a href="../start/">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
-        <a href="../start/#server" aria-current="true">部署服务器</a>
+        <a href="../start/#server" aria-current="true">连接方式</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../en/cloud/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="../ja/cloud/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -44,7 +44,7 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">部署服务器</a></p>
+        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">连接方式</a></p>
         <h1 class="display">部署到公网服务器</h1>
         <p class="lede">一台有公网 IP 的 Linux 云主机，最低配置就够。每台电脑直接连它，在家、在公司、在外面都能同步，不用另装软件。</p>
         <ol class="guide-toc">
@@ -259,7 +259,7 @@ sudo ./install.sh 203.0.113.10</code></pre>
           </details>
           <details>
             <summary>家里宽带有公网 IP，能当公网服务器用吗？</summary>
-            <div class="answer"><p>可以，但比云主机麻烦：要在路由器上把 TCP 8787、UDP 3478 和一大段中转用的 UDP 端口转发到那台电脑，家里的公网 IP 也可能会变。电脑都在家里时用<a href="../server/">局域网</a>更简单；要跨网络又不想折腾端口转发，可以用<a href="../tailscale/">局域网 + Tailscale</a>。</p></div>
+            <div class="answer"><p>可以，但比云主机麻烦：要在路由器上把 TCP 8787、UDP 3478 和一大段中转用的 UDP 端口转发到那台电脑，家里的公网 IP 也可能会变。电脑都在家里时，<a href="../lan/">同一个网络</a>里根本不需要服务器；要跨网络又不想折腾端口转发，可以用<a href="../tailscale/">Tailscale</a>。</p></div>
           </details>
         </div>
       </div>

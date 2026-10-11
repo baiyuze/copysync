@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CopySync：Mac と Windows のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK</title>
-  <meta name="description" content="CopySync は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac と Windows の両方に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントや同じネットワークは不要。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。サーバーは自分で用意し、内容は見えません。無料・オープンソース。">
+  <meta name="description" content="CopySync は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac と Windows の両方に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントは不要。同じネットワークならサーバーなしで使え、ネットワークをまたぐときは自分で用意したサーバーか Tailscale を使います。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。無料・オープンソース。">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CopySync">
   <meta property="og:title" content="CopySync：このコンピューターでコピーして、あのコンピューターで貼り付け">
-  <meta property="og:description" content="Mac と Windows に対応。テキスト、画像、ファイル、フォルダを、アカウントやネットワークをまたいで同期。P2P 直接接続、エンドツーエンド暗号化、サーバーはセルフホスト。無料・オープンソース。">
+  <meta property="og:description" content="Mac と Windows に対応。テキスト、画像、ファイル、フォルダを、アカウントやネットワークをまたいで同期。P2P 直接接続、エンドツーエンド暗号化、同じネットワークならサーバー不要。無料・オープンソース。">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
   <meta property="og:image:width" content="1200">
@@ -35,7 +35,7 @@
         "@type": "SoftwareApplication",
         "@id": "https://baiyuze.github.io/copysync/#app",
         "name": "CopySync",
-        "description": "Mac と Windows のコンピューター間でクリップボードとファイルを同期するオープンソースのアプリ。テキスト、画像、ファイル、フォルダを一台でコピーし、もう一台で貼り付けられる。デバイス間は WebRTC で直接つながり DTLS でエンドツーエンド暗号化、つながらないときはユーザーが用意したサーバーの TURN で中継する。",
+        "description": "Mac と Windows のコンピューター間でクリップボードとファイルを同期するオープンソースのアプリ。テキスト、画像、ファイル、フォルダを一台でコピーし、もう一台で貼り付けられる。同じネットワークならサーバーは不要。デバイス間は WebRTC で直接つながり DTLS でエンドツーエンド暗号化、ネットワークをまたいでつながらないときはユーザーが用意したサーバーの TURN で中継する。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 以降（Intel と Apple シリコン）、Windows 10、Windows 11（x64）",
         "softwareVersion": "1.3.4",
@@ -55,6 +55,7 @@
         "featureList": [
           "プレーンテキスト、書式付きテキスト、画像、ファイル、フォルダを同期",
           "Mac と Windows のあいだで、アカウントやネットワークをまたいで使える",
+          "同じネットワークならサーバー不要、mDNS で自動的に発見",
           "WebRTC の直接接続、つながらないときは自動で TURN 中継",
           "DTLS のエンドツーエンド暗号化、ペアリング時に指紋を人が照合",
           "50 MB まではコピーと同時に送信、それより大きいファイルは必要なときに取り込み",
@@ -83,7 +84,7 @@
             "name": "macOS のユニバーサルクリップボードとの違いは？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync に必要なのは、両方のコンピューターがあなたのサーバーにつながることだけです。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。 2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。"
+              "text": "ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync は同じネットワークならインストールしてすぐ使え、ネットワークをまたぐときは両方があなたのサーバーにつながるか、Tailscale を入れていれば使えます。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。 2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。"
             }
           },
           {
@@ -107,7 +108,7 @@
             "name": "サーバーは自分で用意する必要がありますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。置き方は 3 通りです。公開サーバーは最小構成のクラウドサーバーで足り、どこからでも同期できます。LAN はすべてのコンピューターが同じネットワークにあるとき、電源を入れたままの 1 台に置きます。LAN ＋ Tailscale は公開サーバーなしでネットワークをまたぐときに使います。"
+              "text": "場合によります。コンピューターが同じネットワークにあるなら、アプリを入れてペアリングするだけで、サーバーは要りません。 ネットワークをまたぐ方法は 2 つあります。公開サーバーは最小構成のクラウドサーバーで足り、どこからでも同期できます。Tailscale は各コンピューターに入れ、ペアリング時に相手の Tailscale アドレスを入力するだけで、サーバーは要りません。CopySync は公開サーバーを提供しないので、誰のデータも他人のマシンを通りません。"
             }
           },
           {
@@ -115,7 +116,15 @@
             "name": "自宅にグローバル IP がありません。自宅と会社のあいだで同期できますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "できます。方法は 2 つあります。公開サーバーがあれば、そこにサーバーを置いて両方のコンピューターから直接つなぎます（公開サーバーでの手順）。なければ、自宅で電源を入れたままのコンピューターでサーバーを動かし、すべてのコンピューターに Tailscale を入れて同じアカウントでサインインし、サーバーのアドレスに Tailscale のアドレスを使います（LAN ＋ Tailscale）。"
+              "text": "できます。方法は 2 つあります。公開サーバーがあれば、そこにサーバーを置いて両方のコンピューターから直接つなぎます（公開サーバーでの手順）。なければ、すべてのコンピューターに Tailscale を入れて同じアカウントでサインインし、ペアリング時に相手の Tailscale アドレスを入力します（Tailscale での手順）。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "同じネットワークなのに、もう一台が見つからないのはなぜ？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "まず本当に同じサブネットか確認してください。会社の有線と Wi‑Fi、ゲストネットワーク、クライアント分離が有効な Wi‑Fi では、デバイス同士が見えないことがよくあります。その場合は、コードを入力する側で「別のサブネットにありますか？」をクリックし、相手のコードの下に表示されたアドレスを入力します。 Windows では初回起動時にファイアウォールに聞かれたら許可してください。キャンセルした場合は「設定 → ローカルネットワーク」で「許可」をクリックします。Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。詳しくは同じネットワークでの手順を。"
             }
           },
           {
@@ -166,7 +175,7 @@
         <a href="start/">はじめかた</a>
         <a class="wide" href="#how">しくみ</a>
         <a class="wide" href="#faq">よくある質問</a>
-        <a href="start/#server">サーバーの設置</a>
+        <a href="start/#server">接続方法</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
@@ -178,7 +187,7 @@
     <section class="hero">
       <div class="wrap">
         <h1 class="display">こっちでコピーして、<br>あっちで貼り付け。</h1>
-        <p class="lede">Mac と Windows に対応。テキスト、画像、ファイル、フォルダまるごと。同じアカウントも、同じネットワークも要りません。データはデバイス間を直接流れ、自分のサーバーを経由するときも暗号化されたままです。</p>
+        <p class="lede">Mac と Windows に対応。テキスト、画像、ファイル、フォルダまるごと。同じアカウントは要りません。同じネットワークならサーバーなしで使え、ネットワークをまたいでも使えます。データはデバイス間を直接流れ、エンドツーエンドで暗号化されます。</p>
         <div class="cta">
           <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
           <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
@@ -214,9 +223,16 @@
 
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
-        <h2 id="deploy-title">サーバーをどこに置くか</h2>
-        <p class="intro">2 台はサーバーを通じてお互いを見つけます。コピーした内容がそこに保存されることはありません。公開サーバーはないので、3 通りの置き方から状況に合うものを選んでください。</p>
+        <h2 id="deploy-title">2 台をどうつなぐか</h2>
+        <p class="intro">同じネットワークなら、アプリを入れてペアリングするだけで、サーバーは要りません。ネットワークをまたぐときは、サーバーか Tailscale を通じてお互いを見つけます。コピーした内容がそこに保存されることはありません。状況に合うものを選んでください。</p>
         <div class="paths">
+          <a class="path" href="lan/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
+            <span class="path-when">準備は何も要らない</span>
+            <h3>同じネットワーク</h3>
+            <p>家や会社で、同じルーターにつながっている場合。2 台にアプリを入れてペアリングコードを入力するだけ。サーバーも、電源を入れたままのコンピューターも要りません。</p>
+            <span class="path-go">同じネットワークでの手順 →</span>
+          </a>
           <a class="path" href="cloud/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
             <span class="path-when">どこからでも同期</span>
@@ -224,18 +240,11 @@
             <p>グローバル IP を持つ Linux のクラウドサーバー。最小構成で足ります。各コンピューターが直接つながり、自宅でも会社でも外出先でも、ほかに入れるものはありません。</p>
             <span class="path-go">公開サーバーでの手順 →</span>
           </a>
-          <a class="path" href="server/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
-            <span class="path-when">全部が同じネットワークにある</span>
-            <h3>LAN</h3>
-            <p>家や会社で、同じ Wi‑Fi か有線ネットワークにつながっている場合。電源を入れたままの Windows・Mac・Linux のどれか 1 台で、スクリプトをひとつ実行するだけ。費用はかかりません。</p>
-            <span class="path-go">LAN での設置手順 →</span>
-          </a>
           <a class="path" href="tailscale/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-            <span class="path-when">ネットワークをまたぐ、公開サーバーなし</span>
-            <h3>LAN ＋ Tailscale</h3>
-            <p>サーバーは自宅で電源を入れたままのコンピューターに置き、各コンピューターに Tailscale を入れて同じアカウントでサインインします。同じ LAN にあるのと同じように扱えます。</p>
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><path class="p-data" d="M85 52h71"/><rect class="p-dev" x="42" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M37 69h48"/><rect class="p-dev" x="161" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M156 69h48"/></svg>
+            <span class="path-when">ネットワークをまたぐ、サーバーなし</span>
+            <h3>Tailscale</h3>
+            <p>各コンピューターに Tailscale を入れて同じアカウントでサインインし、ペアリング時に相手の Tailscale アドレスを入力します。自宅でも会社でも同期でき、サーバーも電源を入れたままのコンピューターも要りません。</p>
             <span class="path-go">Tailscale での手順 →</span>
           </a>
         </div>
@@ -290,7 +299,7 @@
     <section class="section" id="how" aria-labelledby="how-title">
       <div class="wrap">
         <h2 id="how-title">しくみ</h2>
-        <p class="intro">2 台のコンピューターは、暗号化された接続で直接つながります。サーバーの役目はお互いを見つけさせることと、直接つながらないときに中継することだけです。</p>
+        <p class="intro">2 台のコンピューターは、暗号化された接続で直接つながります。同じネットワークなら自分たちでお互いを見つけます。ネットワークをまたぐときはサーバーが引き合わせ、直接つながらないときだけ中継します。下の図はネットワークをまたぐ場合です。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">CopySync の接続のしかた</title>
@@ -362,6 +371,11 @@
                 <tr><td>最初はつながらず、あとでネットワークが回復</td><td>中継のあと直接</td></tr>
                 <tr><td>会社のルーターが外からのパケットでポートをふさぐ</td><td>直接</td></tr>
                 <tr><td>家庭用ルーターが外からのパケットでポートをふさぐ</td><td>中継のあと、1 回の再試行で直接</td></tr>
+                <tr><td>サーバーなし、同じサブネット、mDNS で発見</td><td>直接</td></tr>
+                <tr><td>サーバーなし、別のサブネット、片方が相手のアドレスを覚えている</td><td>直接</td></tr>
+                <tr><td>サーバーなし、両方が受信をブロック、両方がアドレスを覚えている</td><td>直接</td></tr>
+                <tr><td>サーバーなし、両方が受信をブロック、片方だけが覚えている</td><td>つながらない（既知の制限）</td></tr>
+                <tr><td>サーバーなし、サブネット同士が遮断されている</td><td>つながらない</td></tr>
                 </tbody>
               </table>
             </div>
@@ -381,6 +395,7 @@
             <li><strong>ペアリングでは指紋をあなたが照合する。</strong>両方の画面に同じ 2 行、つまりお互いの公開鍵の指紋が表示されます。サーバーは転送中の公開鍵をすり替えられますが、すり替えれば 2 つの画面が一致しなくなります。この照合が中間者攻撃を防ぐ関門です。</li>
             <li><strong>その後のメッセージはすべて署名付き。</strong>サーバーがあなたのデバイスになりすますことはできません。直接接続の証明書もハンドシェイク後にもう一度照合し、食い違えばすぐ切断します。</li>
             <li><strong>中継も暗号文を転送するだけ。</strong>TURN が運ぶのは暗号化済みのパケットです。中継用の認証情報はデバイスごとに発行され、12 時間で失効します。</li>
+            <li><strong>ローカルネットワークでも同じ。</strong>デバイスが LAN に流すのは毎日変わる匿名の識別子だけで、誰のコンピューターかはわかりません。ペアリングでは同じく指紋を照合し、その後のメッセージも署名付きです。</li>
           </ul>
           <figure class="figure-card">
             <img src="../assets/screenshots/ja/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="ペアリング時の「セキュリティ指紋を確認」ダイアログ。R8NF-2WTC-QL5J が表示され、もう一台の表示と完全に一致するか確かめるよう求めている">
@@ -394,11 +409,13 @@
         <h2 id="fallback-title">うまくいかないときに起きること</h2>
         <p class="intro">ネットワークの事情は人それぞれです。ここに挙げたケースはどれも想定済みで、テストがあります。</p>
         <dl class="fallbacks">
+          <div><dt>同じネットワークなのに相手が見つからない</dt><dd>サブネットが違う、ゲストネットワーク、クライアント分離（AP アイソレーション）が有効な Wi‑Fi では、LAN 内の検出が届きません。ペアリング時に相手のコードの下に表示されたアドレスを入力してください。アドレスはその後も記憶され、両方のアドレスが変わったときはデバイス一覧からもう一度入力します。</dd></div>
+          <div><dt>システムがローカルネットワークを止めている</dt><dd>macOS 15 以降、バックグラウンドサービスが LAN 上のデバイスに接続するにはあなたの許可が要ります。Windows は初回起動時にファイアウォールについて聞いてきます。許可されていないときはアプリが知らせ、設定へ直接飛べるボタンを出します。</dd></div>
           <div><dt>2 台が直接つながらない</dt><dd>対称型 NAT や会社のファイアウォールでよく起きます。自動であなたのサーバーの TURN 中継に切り替わり、内容は暗号化されたまま。デバイス一覧には「中継」と表示されます。</dd></div>
           <div><dt>公開 STUN サーバーにつながらない</dt><dd>中国本土などでは公開 STUN が不安定です。サーバーは STUN を内蔵していて、クライアントはそちらを優先します。</dd></div>
           <div><dt>先に中継でつながった</dt><dd>中継のハンドシェイクは速く、直接接続より先に決まることがあります。接続後、接続を始めた側がアイドル時にもう一度穴あけを試み、成功すれば直接接続に切り替えます。転送中は邪魔しません。</dd></div>
           <div><dt>相手がスリープ、切断、再起動した</dt><dd>黙って切れた接続にも気づき、すぐに閉じて再接続します。そのあいだにコピーしたものは記録しておき、つながったら相手の履歴に追加します。相手のいまのクリップボードは上書きしません。</dd></div>
-          <div><dt>サーバーとの接続が切れた</dt><dd>自動で再接続します。間隔は 1 秒から倍々で最大 30 秒、ランダムな揺らぎ付きで、たくさんのデバイスが一斉に再接続しないようにしています。接続状態はアプリにリアルタイムで表示されます。</dd></div>
+          <div><dt>サーバーとの接続が切れた</dt><dd>自動で再接続します。間隔は 1 秒から倍々で最大 30 秒、ランダムな揺らぎ付きで、たくさんのデバイスが一斉に再接続しないようにしています。同じネットワークのデバイスは影響を受けず、そのまま同期します。</dd></div>
           <div><dt>ファイルが大きすぎる</dt><dd>上限を超えるものは記録だけを同期し、必要なときに取り込みます。そのとき元のファイルが消えていれば、あいまいな失敗ではなく、はっきりそう伝えます。</dd></div>
           <div><dt>プレーンテキストしか受け付けない場所に貼り付ける</dt><dd>Web からコピーした書式付きテキストは HTML とプレーンテキストの両方で書き込むので、どこに貼り付けてもタグが混ざりません。</dd></div>
           <div><dt>Windows では使えないファイル名</dt><dd>Mac では使えるコロンや疑問符などは、対応する全角文字に置き換えて受け取るので、名前はそのまま読めます。大文字と小文字だけが違う 2 つのファイルが上書きし合うこともありません。</dd></div>
@@ -413,15 +430,15 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">インストール</h2>
-        <p class="intro">それぞれのコンピューターにアプリを入れ、両方からアクセスできるサーバーを 1 台用意します。はじめての方は<a href="start/">はじめかた</a>をどうぞ。</p>
+        <p class="intro">それぞれのコンピューターにアプリを入れます。同じネットワークならそのままペアリングでき、ネットワークをまたぐときは 2 台がお互いを見つける方法をひとつ選びます。はじめての方は<a href="start/">はじめかた</a>をどうぞ。</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
               <li>CopySync.dmg をダウンロードして開き、CopySync を「アプリケーション」にドラッグします。</li>
               <li>「アプリケーション」から開きます。<span class="aside">初回は「開発元を検証できません」と表示されます。CopySync はまだ Apple の公証を受けていないためです。「システム設定 → プライバシーとセキュリティ」を開き、ページ下部の「このまま開く」をクリックします。必要なのは一度だけです。</span></li>
-              <li>「バックグラウンド同期を有効にする」をクリックし、「設定」でサーバーのアドレス <code>ws://サーバーアドレス:8787/signal</code> を入力して Return を押します。</li>
-              <li>クリップボードの読み取りを許可するか聞かれたら、許可します。</li>
+              <li>「バックグラウンド同期を有効にする」をクリックします。クリップボードの読み取りと、ローカルネットワーク上のデバイスを探すことについて聞かれたら、どちらも許可します。</li>
+              <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレス <code>ws://サーバーアドレス:8787/signal</code> を入力して Return を押します。同じネットワークなら空欄のままです。</li>
             </ol>
             <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
           </div>
@@ -429,23 +446,23 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
               <li>CopySync-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。<span class="aside">CopySync はまだコード署名されていないため、「Windows によって PC が保護されました」と表示されます。「詳細情報」を押してから「実行」を押してください。インストーラーを使いたくない場合は<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">ポータブル版</a>もあります。</span></li>
-              <li>CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ウィンドウを閉じても、画面右下の通知領域で動き続けます。</li>
-              <li>「設定」でサーバーのアドレスを入力して Enter を押します。ファイアウォールに聞かれたら許可します。</li>
+              <li>CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても、画面右下の通知領域で動き続けます。</li>
+              <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
             </ol>
             <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
           </div>
           <div>
-            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>サーバー</h3>
-            <p class="small">置き方は 3 通り。状況に合うものを選んでください。どれにも手順のページがあります：</p>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>接続方法</h3>
+            <p class="small">同じネットワークならサーバーは要りません。状況に合うものを選んでください。どれにも手順のページがあります：</p>
             <ul class="opts">
+              <li><a href="lan/">同じネットワーク</a><span>準備は何も要らない</span></li>
               <li><a href="cloud/">公開サーバー</a><span>どこからでも同期</span></li>
-              <li><a href="server/">LAN</a><span>全部が同じネットワークにある</span></li>
-              <li><a href="tailscale/">LAN ＋ Tailscale</a><span>ネットワークをまたぐ、公開サーバーなし</span></li>
+              <li><a href="tailscale/">Tailscale</a><span>ネットワークをまたぐ、サーバーなし</span></li>
             </ul>
             <a class="button quiet" href="start/#server">3 通りを比べる</a>
           </div>
         </div>
-        <p class="pairing"><strong>ペアリング：</strong>一台で「デバイス → デバイスを追加」を開いて 6 桁のコードを表示し、もう一台で入力します。両方の画面に同じ 2 行の指紋が表示されたら確定します。Mac と Windows、Windows 同士でも同じ手順です。</p>
+        <p class="pairing"><strong>ペアリング：</strong>一台で「デバイス → デバイスを追加」を開いて 6 桁のコードを表示し、もう一台で入力します。両方の画面に同じ 2 行の指紋が表示されたら確定します。別のサブネットにある場合は、コードの下に表示されたアドレスも入力します。Mac と Windows、Windows 同士でも同じ手順です。</p>
       </div>
     </section>
 
@@ -458,10 +475,10 @@
             <tr><th scope="row">バージョン</th><td>1.3.4（<time datetime="2026-10-11">2026 年 10 月 11 日</time>公開）</td></tr>
             <tr><th scope="row">Mac アプリ</th><td>macOS 13 Ventura 以降。Intel と Apple シリコンのユニバーサルバイナリで Rosetta 不要。ダウンロードは約 47 MB</td></tr>
             <tr><th scope="row">Windows アプリ</th><td>Windows 10（21H2 以降）と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB</td></tr>
-            <tr><th scope="row">サーバー</th><td>Linux（x86_64 または ARM64、systemd または Docker）、macOS（Intel と Apple シリコン）、Windows 10・11 x64（サービスとして動作）。メモリは約 15 MB</td></tr>
+            <tr><th scope="row">サーバー</th><td>任意。ネットワークをまたぐときだけ必要。Linux（x86_64 または ARM64、systemd または Docker）、macOS（Intel と Apple シリコン）、Windows 10・11 x64（サービスとして動作）。メモリは約 15 MB</td></tr>
             <tr><th scope="row">表示言語</th><td>日本語、英語、簡体字中国語。初期設定はシステムに合わせ、「設定」で切り替え可能</td></tr>
             <tr><th scope="row">同期する内容</th><td>プレーンテキスト、書式付きテキスト、画像とスクリーンショット、ファイル、フォルダ。種類ごとにオフにできる</td></tr>
-            <tr><th scope="row">転送</th><td>WebRTC データチャネル。直接接続を優先し、つながらなければ TURN で中継。複数の出口があるネットワークでは出口ごとに調査。ファイルは tar + zstd でストリーム転送</td></tr>
+            <tr><th scope="row">転送</th><td>WebRTC データチャネル。直接接続を優先し、つながらなければ TURN で中継。同じネットワークでは mDNS で発見し、UDP 8788 で接続情報を交換。複数の出口があるネットワークでは出口ごとに調査。ファイルは tar + zstd でストリーム転送</td></tr>
             <tr><th scope="row">暗号化と身元</th><td>DTLS によるエンドツーエンド暗号化。デバイスの身元は Ed25519 の鍵。シグナリングのメッセージはすべて署名付き</td></tr>
             <tr><th scope="row">ペアリング</th><td>5 分間有効な 6 桁のコード。0/O や 1/I のような紛らわしい文字は使わない。指紋は人が照合</td></tr>
             <tr><th scope="row">自動同期の上限</th><td>初期値 50 MB、1 MB〜1 GB で調整可能</td></tr>
@@ -485,7 +502,7 @@
           </details>
           <details>
             <summary>macOS のユニバーサルクリップボードとの違いは？</summary>
-            <div class="answer"><p>ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync に必要なのは、両方のコンピューターがあなたのサーバーにつながることだけです。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。</p><p>2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。</p></div>
+            <div class="answer"><p>ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync は同じネットワークならインストールしてすぐ使え、ネットワークをまたぐときは両方があなたのサーバーにつながるか、Tailscale を入れていれば使えます。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。</p><p>2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。</p></div>
           </details>
           <details>
             <summary>サーバーにコピーした内容は見えますか？</summary>
@@ -497,11 +514,15 @@
           </details>
           <details>
             <summary>サーバーは自分で用意する必要がありますか？</summary>
-            <div class="answer"><p>はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。置き方は 3 通りです。<a href="cloud/">公開サーバー</a>は最小構成のクラウドサーバーで足り、どこからでも同期できます。<a href="server/">LAN</a> はすべてのコンピューターが同じネットワークにあるとき、電源を入れたままの 1 台に置きます。<a href="tailscale/">LAN ＋ Tailscale</a> は公開サーバーなしでネットワークをまたぐときに使います。</p></div>
+            <div class="answer"><p>場合によります。コンピューターが<a href="lan/">同じネットワーク</a>にあるなら、アプリを入れてペアリングするだけで、サーバーは要りません。</p><p>ネットワークをまたぐ方法は 2 つあります。<a href="cloud/">公開サーバー</a>は最小構成のクラウドサーバーで足り、どこからでも同期できます。<a href="tailscale/">Tailscale</a> は各コンピューターに入れ、ペアリング時に相手の Tailscale アドレスを入力するだけで、サーバーは要りません。CopySync は公開サーバーを提供しないので、誰のデータも他人のマシンを通りません。</p></div>
           </details>
           <details>
             <summary>自宅にグローバル IP がありません。自宅と会社のあいだで同期できますか？</summary>
-            <div class="answer"><p>できます。方法は 2 つあります。公開サーバーがあれば、そこにサーバーを置いて両方のコンピューターから直接つなぎます（<a href="cloud/">公開サーバーでの手順</a>）。なければ、自宅で電源を入れたままのコンピューターでサーバーを動かし、すべてのコンピューターに Tailscale を入れて同じアカウントでサインインし、サーバーのアドレスに Tailscale のアドレスを使います（<a href="tailscale/">LAN ＋ Tailscale</a>）。</p></div>
+            <div class="answer"><p>できます。方法は 2 つあります。公開サーバーがあれば、そこにサーバーを置いて両方のコンピューターから直接つなぎます（<a href="cloud/">公開サーバーでの手順</a>）。なければ、すべてのコンピューターに Tailscale を入れて同じアカウントでサインインし、ペアリング時に相手の Tailscale アドレスを入力します（<a href="tailscale/">Tailscale での手順</a>）。</p></div>
+          </details>
+          <details>
+            <summary>同じネットワークなのに、もう一台が見つからないのはなぜ？</summary>
+            <div class="answer"><p>まず本当に同じサブネットか確認してください。会社の有線と Wi‑Fi、ゲストネットワーク、クライアント分離が有効な Wi‑Fi では、デバイス同士が見えないことがよくあります。その場合は、コードを入力する側で「別のサブネットにありますか？」をクリックし、相手のコードの下に表示されたアドレスを入力します。</p><p>Windows では初回起動時にファイアウォールに聞かれたら許可してください。キャンセルした場合は「設定 → ローカルネットワーク」で「許可」をクリックします。Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。詳しくは<a href="lan/#faq">同じネットワークでの手順</a>を。</p></div>
           </details>
           <details>
             <summary>Windows に対応していますか？iPhone は？</summary>

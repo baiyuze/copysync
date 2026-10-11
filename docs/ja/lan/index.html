@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>同じネットワークで CopySync を使う：サーバーなしで、ペアリングするだけ</title>
+  <meta name="description" content="コンピューターが同じ Wi‑Fi か有線ネットワークにあれば、CopySync にサーバーは要りません。アプリを入れて 6 桁のペアリングコードを入力すれば、Mac と Windows のあいだでクリップボードとファイルを同期できます。サブネットが違う場合は、ペアリング時にアドレスをひとつ入力します。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/lan/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/lan/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/lan/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/lan/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="同じネットワークで CopySync を使う：サーバーなしで、ペアリングするだけ">
+  <meta property="og:description" content="コンピューターが同じ Wi‑Fi か有線ネットワークにあれば、CopySync にサーバーは要りません。アプリを入れて 6 桁のペアリングコードを入力すれば、Mac と Windows のあいだでクリップボードとファイルを同期できます。サブネットが違う場合は、ペアリング時にアドレスをひとつ入力します。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/lan/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../ja/" aria-label="CopySync ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="ページ内の移動">
+        <a href="../../ja/start/">はじめかた</a>
+        <a class="wide" href="../../ja/#how">しくみ</a>
+        <a class="wide" href="../../ja/#faq">よくある質問</a>
+        <a href="../../ja/start/#server" aria-current="true">接続方法</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../lan/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/lan/" hreflang="en" lang="en" data-lang="en">English</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/start/#server">接続方法</a></p>
+        <h1 class="display">同じネットワークでそのまま使う</h1>
+        <p class="lede">同じルーターにつながった 2 台なら、サーバーは要りません。アプリを入れてペアリングコードを入力すれば、そのあとはコピーするだけで同期されます。</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">準備</a></li>
+          <li><a href="#pair">ペアリング</a></li>
+          <li><a href="#subnet">別のサブネット</a></li>
+          <li><a href="#faq">よくある質問</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">サーバーは要らない</h2>
+        <p class="intro">同じネットワークにある 2 台は、mDNS でお互いを見つけ、接続情報を直接やり取りして、暗号化された直接接続を結びます。サーバーも、電源を入れたままのコンピューターも要りません。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 330" role="img" aria-labelledby="lan-title lan-desc">
+            <title id="lan-title">同じネットワークでの CopySync</title>
+            <desc id="lan-desc">同じ LAN の中で、Mac（192.168.1.20）と Windows（192.168.1.35）が mDNS でお互いを見つけ、UDP 8788 で接続情報を交換します。コピーした内容は 2 台のあいだを直接流れ、サーバーはありません。</desc>
+            <rect class="d-lan" x="8" y="8" width="944" height="314" rx="22"/>
+            <text class="d-lan-label" x="32" y="42">LAN：同じ Wi‑Fi か有線ネットワーク</text>
+            <rect class="d-box" x="40" y="120" width="240" height="140" rx="14"/>
+            <text class="d-title" x="160" y="170" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="198" text-anchor="middle">CopySync を実行中</text>
+            <text class="d-ip" x="160" y="234" text-anchor="middle">192.168.1.20</text>
+            <rect class="d-box" x="680" y="120" width="240" height="140" rx="14"/>
+            <text class="d-title" x="800" y="170" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="198" text-anchor="middle">CopySync を実行中</text>
+            <text class="d-ip" x="800" y="234" text-anchor="middle">192.168.1.35</text>
+            <path class="d-sig" d="M280 150H680"/>
+            <text class="d-note" x="480" y="138" text-anchor="middle">mDNS で発見、UDP 8788 で接続情報を交換</text>
+            <path class="d-direct" d="M280 214H680"/>
+            <text class="d-label" x="480" y="200" text-anchor="middle">直接接続、エンドツーエンド暗号化</text>
+            <text class="d-note" x="480" y="242" text-anchor="middle">コピーした内容は 2 台のあいだだけを流れる</text>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>自動で見つける。</strong>各コンピューターは mDNS で LAN に自分を知らせます。流すのは毎日変わる匿名の識別子だけで、誰のコンピューターかはわかりません。</li>
+          <li><strong>直接接続。</strong>コピーした内容は 2 台のあいだを直接流れ、速さは LAN の速さそのままです。</li>
+          <li><strong>安全性はそのまま。</strong>ペアリングで 2 行の指紋を照合し、その後のメッセージはすべて署名付き。同じネットワークの他人があなたのデバイスになりすますことはできません。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">始める前に</h2>
+        <dl class="fallbacks">
+          <div><dt>同じネットワーク</dt><dd>2 台が同じルーターにつながっていれば大丈夫です。Wi‑Fi と有線が混ざっていてもかまいません。ゲストネットワークやクライアント分離が有効な Wi‑Fi ではデバイス同士が見えず、会社では有線と Wi‑Fi のサブネットが分かれていることもよくあります。その場合は下の<a href="#subnet">別のサブネット</a>へ。</dd></div>
+          <div><dt>Windows ファイアウォール</dt><dd>初回起動時に、CopySync がファイアウォールを通ってよいか Windows が聞いてくるので、許可します。キャンセルした場合は、CopySync の「設定 → ローカルネットワーク」で「許可」をクリックします。管理者の承認を一度だけ求められます。</dd></div>
+          <div><dt>macOS のローカルネットワーク</dt><dd>macOS 15 以降、LAN 上のデバイスに初めて接続するとき、CopySync Daemon がローカルネットワーク上のデバイスを探してよいか聞かれるので、許可します。拒否した場合は「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」でオンにします。</dd></div>
+          <div><dt>サーバーの入力は不要</dt><dd>「設定」のサーバーのアドレスは空欄のままにします。あとでネットワークをまたいで同期したくなったら、サーバーを追加するか Tailscale を使います。ペアリングはそのままです。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="pair" aria-labelledby="pair-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 1</p>
+        <h2 id="pair-title">2 台をペアリングする</h2>
+        <p class="intro">2 台ごとに一度ペアリングします。まだアプリを入れていなければ、先に<a href="../../ja/start/#app">はじめかた</a>の手順で入れてください。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>一台で「デバイス」を開き、「デバイスを追加」をクリックします。5 分間有効な 6 桁のコードが表示されます。</li>
+              <li>もう一台でも「デバイスを追加」をクリックし、「コードを入力」に切り替えて入力し、「続ける」をクリックします。</li>
+              <li>両方の画面に同じ 2 行の指紋が表示されます。1 文字ずつ照合して一致していれば確定します。これでコピーが同期されます。</li>
+            </ol>
+            <figure class="figure-card qs-verify">
+              <img src="../../assets/screenshots/ja/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="ペアリング時の「セキュリティ指紋を確認」ダイアログ。R8NF-2WTC-QL5J が表示され、もう一台の表示と完全に一致するか確かめるよう求めている">
+            </figure>
+          </div>
+          <figure class="shot">
+            <img src="../../assets/screenshots/ja/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="デバイスを追加：ペアリングコード K7MP2X と、その下にこのコンピューターのアドレス 192.168.1.20">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="subnet" aria-labelledby="subnet-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 2</p>
+        <h2 id="subnet-title">別のサブネットにある場合</h2>
+        <p class="intro">LAN 内の検出が届くのはひとつのサブネットの中だけです。2 台が別のサブネットにあっても互いに通信できるなら（会社でよくあります）、ペアリング時にアドレスをひとつ入力すれば使えます。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>コードを表示している側では、コードの下にこのコンピューターのアドレスが出ています（例：<code>192.168.1.20</code>）。</li>
+              <li>コードを入力する側で「別のサブネットにありますか？」をクリックし、そのアドレスを入力して「続ける」をクリックします。</li>
+              <li>ペアリング後は、2 台ともお互いのアドレスを覚えています。片方のアドレスが変わっても、もう片方が同じなら自動で見つけ直します。両方が変わったときは、「デバイス」でそのデバイスの「…」メニューから「アドレスを入力」を選びます。</li>
+            </ol>
+          </div>
+          <figure class="shot">
+            <img src="../../assets/screenshots/ja/pairing-join-dark.png" width="2112" height="1472" loading="lazy" alt="コードを入力：コード K7MP2X を入力し、その下に開いたアドレス欄に 192.168.1.20 が入っている">
+          </figure>
+        </div>
+        <p class="note">サブネット同士がまったく通信できない場合（ゲストネットワークと社内ネットワークが分けられているなど）は、両方から届くコンピューターを経由して中継するしかありません。<a href="../../ja/server/">LAN にサーバーを置く</a>をご覧ください。</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">よくある質問</h2>
+        <div class="faq">
+          <details>
+            <summary>もう一台が見つからない</summary>
+            <div class="answer"><p>まず 2 台が同じネットワークにあり、どちらもバックグラウンド同期が有効か確認します。次に、コードを入力する側で相手のアドレスを入力してみてください。それで見つかるなら、サブネットが違うか、ネットワークが mDNS を通していません。</p><p>それでも見つからなければ、相手のファイアウォールを確認します。Windows なら「設定 → ローカルネットワーク」で「許可」をクリック、Mac なら「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon がオンになっていて、macOS のファイアウォールに止められていないかを確かめます。</p></div>
+          </details>
+          <details>
+            <summary>このネットワークの外でも同期できますか？</summary>
+            <div class="answer"><p>できません。戻ると自動で再開し、そのあいだにコピーしたものは相手の履歴に追加されます。ネットワークをまたいで同期するなら、<a href="../../ja/cloud/">公開サーバー</a>を追加するか <a href="../../ja/tailscale/">Tailscale</a> を使います。ペアリングはそのままです。</p></div>
+          </details>
+          <details>
+            <summary>アドレスが変わったら？</summary>
+            <div class="answer"><p>たいていは何もしなくて大丈夫です。同じサブネットなら mDNS でいつでも見つけ直し、別のサブネットでも片方のアドレスが同じなら自動でつながり直します。両方が変わったときは、「デバイス」でそのデバイスのアドレスをもう一度入力します。</p><p>動かさないデスクトップなら、ルーターの DHCP の設定でアドレスを固定しておくこともできます。</p></div>
+          </details>
+          <details>
+            <summary>同じネットワークの他の人に、自分のコンピューターが見えますか？</summary>
+            <div class="answer"><p>CopySync のデバイスがあることはわかりますが、誰のものかはわかりません。流しているのは毎日変わる匿名の識別子だけで、デバイス名もデバイス ID も含みません。ペアリングしていないデバイスからのメッセージはすべて捨てられ、ペアリングには両方の画面で指紋の照合が必要です。</p></div>
+          </details>
+          <details>
+            <summary>どのポートを使いますか？</summary>
+            <div class="answer"><p>接続情報のやり取りに UDP 8788（使用中ならランダムなポート）、mDNS に UDP 5353、つながったあとのデータには別のランダムな UDP ポートを使います。ルーターでの設定は何も要りません。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">同じネットワークなら、<br>入れるだけで使える。</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+        </div>
+        <p class="note">バージョン 1.3.4、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <a class="source" href="../../design/lan-mode.html">ローカルネットワーク直接接続の技術資料（中国語）</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync は GNU AGPL-3.0 のオープンソースです。商用ライセンスもあります。</p>
+      <nav aria-label="フッターのリンク">
+        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>
+        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+      </nav>
+      <nav aria-label="言語">
+        <a href="../../lan/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/lan/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/lan/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

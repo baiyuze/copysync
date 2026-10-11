@@ -33,7 +33,7 @@
         <a href="../start/">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
-        <a href="../start/#server" aria-current="true">部署服务器</a>
+        <a href="../start/#server" aria-current="true">连接方式</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../en/server/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="../ja/server/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -44,9 +44,10 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">部署服务器</a></p>
+        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">连接方式</a></p>
         <h1 class="display">在局域网里部署服务器</h1>
         <p class="lede">家里或办公室的电脑在同一个网络里，就不需要云服务器。找一台常开的电脑，下载、运行一个脚本，再把它显示的地址填进每台电脑的 CopySync 里。</p>
+        <p class="notice"><strong>同一个网络里，现在不需要服务器了：</strong>装好 App 直接配对就能用，见<a href="../lan/">同一网络教程</a>。这篇仍然适用于两个网段之间互相访问不到、要经一台两边都能访问的电脑中转的情况。</p>
         <ol class="guide-toc">
           <li><a href="#prepare">准备</a></li>
           <li><a href="#install">安装服务器</a></li>
@@ -350,7 +351,7 @@ sudo ./install.sh</code></pre>
           </details>
           <details>
             <summary>离开局域网以后还能同步吗？</summary>
-            <div class="answer"><p>不能，服务器只在局域网里访问得到。要在别的网络里也能同步，换成另外两种部署方式之一：<a href="../cloud/">公网服务器</a>，或者<a href="../tailscale/">局域网 + Tailscale</a>。</p></div>
+            <div class="answer"><p>不能，服务器只在局域网里访问得到。要在别的网络里也能同步，换成<a href="../cloud/">公网服务器</a>，或者<a href="../tailscale/">Tailscale</a>。</p></div>
           </details>
           <details>
             <summary>服务器所在的那台电脑也要用 CopySync，地址填什么？</summary>
