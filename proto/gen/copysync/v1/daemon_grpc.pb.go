@@ -24,22 +24,24 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DaemonService_Subscribe_FullMethodName                  = "/copysync.v1.DaemonService/Subscribe"
-	DaemonService_ListHistory_FullMethodName                = "/copysync.v1.DaemonService/ListHistory"
-	DaemonService_DeleteHistory_FullMethodName              = "/copysync.v1.DaemonService/DeleteHistory"
-	DaemonService_Fetch_FullMethodName                      = "/copysync.v1.DaemonService/Fetch"
-	DaemonService_ApplyToClipboard_FullMethodName           = "/copysync.v1.DaemonService/ApplyToClipboard"
-	DaemonService_GetImagePreview_FullMethodName            = "/copysync.v1.DaemonService/GetImagePreview"
-	DaemonService_ListDevices_FullMethodName                = "/copysync.v1.DaemonService/ListDevices"
-	DaemonService_CreatePairingCode_FullMethodName          = "/copysync.v1.DaemonService/CreatePairingCode"
-	DaemonService_RedeemPairingCode_FullMethodName          = "/copysync.v1.DaemonService/RedeemPairingCode"
-	DaemonService_ConfirmPairing_FullMethodName             = "/copysync.v1.DaemonService/ConfirmPairing"
-	DaemonService_Unpair_FullMethodName                     = "/copysync.v1.DaemonService/Unpair"
-	DaemonService_GetConfig_FullMethodName                  = "/copysync.v1.DaemonService/GetConfig"
-	DaemonService_UpdateConfig_FullMethodName               = "/copysync.v1.DaemonService/UpdateConfig"
-	DaemonService_GetStatus_FullMethodName                  = "/copysync.v1.DaemonService/GetStatus"
-	DaemonService_RequestClipboardPermission_FullMethodName = "/copysync.v1.DaemonService/RequestClipboardPermission"
-	DaemonService_GetNetwork_FullMethodName                 = "/copysync.v1.DaemonService/GetNetwork"
+	DaemonService_Subscribe_FullMethodName                     = "/copysync.v1.DaemonService/Subscribe"
+	DaemonService_ListHistory_FullMethodName                   = "/copysync.v1.DaemonService/ListHistory"
+	DaemonService_DeleteHistory_FullMethodName                 = "/copysync.v1.DaemonService/DeleteHistory"
+	DaemonService_Fetch_FullMethodName                         = "/copysync.v1.DaemonService/Fetch"
+	DaemonService_ApplyToClipboard_FullMethodName              = "/copysync.v1.DaemonService/ApplyToClipboard"
+	DaemonService_GetImagePreview_FullMethodName               = "/copysync.v1.DaemonService/GetImagePreview"
+	DaemonService_ListDevices_FullMethodName                   = "/copysync.v1.DaemonService/ListDevices"
+	DaemonService_CreatePairingCode_FullMethodName             = "/copysync.v1.DaemonService/CreatePairingCode"
+	DaemonService_RedeemPairingCode_FullMethodName             = "/copysync.v1.DaemonService/RedeemPairingCode"
+	DaemonService_ConfirmPairing_FullMethodName                = "/copysync.v1.DaemonService/ConfirmPairing"
+	DaemonService_Unpair_FullMethodName                        = "/copysync.v1.DaemonService/Unpair"
+	DaemonService_SetDeviceAddress_FullMethodName              = "/copysync.v1.DaemonService/SetDeviceAddress"
+	DaemonService_GetConfig_FullMethodName                     = "/copysync.v1.DaemonService/GetConfig"
+	DaemonService_UpdateConfig_FullMethodName                  = "/copysync.v1.DaemonService/UpdateConfig"
+	DaemonService_GetStatus_FullMethodName                     = "/copysync.v1.DaemonService/GetStatus"
+	DaemonService_RequestClipboardPermission_FullMethodName    = "/copysync.v1.DaemonService/RequestClipboardPermission"
+	DaemonService_RequestLocalNetworkPermission_FullMethodName = "/copysync.v1.DaemonService/RequestLocalNetworkPermission"
+	DaemonService_GetNetwork_FullMethodName                    = "/copysync.v1.DaemonService/GetNetwork"
 )
 
 // DaemonServiceClient is the client API for DaemonService service.
@@ -62,11 +64,16 @@ type DaemonServiceClient interface {
 	// 配对双方各自确认指纹后才真正互信
 	ConfirmPairing(ctx context.Context, in *ConfirmPairingRequest, opts ...grpc.CallOption) (*Empty, error)
 	Unpair(ctx context.Context, in *UnpairRequest, opts ...grpc.CallOption) (*Empty, error)
+	// 手动告诉后台服务某台设备的局域网地址：跨网段、或两边都换了地址时用
+	SetDeviceAddress(ctx context.Context, in *SetDeviceAddressRequest, opts ...grpc.CallOption) (*Empty, error)
 	GetConfig(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Config, error)
 	UpdateConfig(ctx context.Context, in *Config, opts ...grpc.CallOption) (*Config, error)
 	GetStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Status, error)
 	// 引导用户授予剪贴板权限（打开系统设置面板）
 	RequestClipboardPermission(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
+	// 让系统放行局域网访问：macOS 打开「本地网络」设置面板；
+	// Windows 申请管理员权限，在防火墙里放行后台服务。其他平台返回 UNIMPLEMENTED。
+	RequestLocalNetworkPermission(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
 	GetNetwork(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkInfo, error)
 }
@@ -198,6 +205,16 @@ func (c *daemonServiceClient) Unpair(ctx context.Context, in *UnpairRequest, opt
 	return out, nil
 }
 
+func (c *daemonServiceClient) SetDeviceAddress(ctx context.Context, in *SetDeviceAddressRequest, opts ...grpc.CallOption) (*Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DaemonService_SetDeviceAddress_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *daemonServiceClient) GetConfig(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Config, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Config)
@@ -238,6 +255,16 @@ func (c *daemonServiceClient) RequestClipboardPermission(ctx context.Context, in
 	return out, nil
 }
 
+func (c *daemonServiceClient) RequestLocalNetworkPermission(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DaemonService_RequestLocalNetworkPermission_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *daemonServiceClient) GetNetwork(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkInfo, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(NetworkInfo)
@@ -268,11 +295,16 @@ type DaemonServiceServer interface {
 	// 配对双方各自确认指纹后才真正互信
 	ConfirmPairing(context.Context, *ConfirmPairingRequest) (*Empty, error)
 	Unpair(context.Context, *UnpairRequest) (*Empty, error)
+	// 手动告诉后台服务某台设备的局域网地址：跨网段、或两边都换了地址时用
+	SetDeviceAddress(context.Context, *SetDeviceAddressRequest) (*Empty, error)
 	GetConfig(context.Context, *Empty) (*Config, error)
 	UpdateConfig(context.Context, *Config) (*Config, error)
 	GetStatus(context.Context, *Empty) (*Status, error)
 	// 引导用户授予剪贴板权限（打开系统设置面板）
 	RequestClipboardPermission(context.Context, *Empty) (*Empty, error)
+	// 让系统放行局域网访问：macOS 打开「本地网络」设置面板；
+	// Windows 申请管理员权限，在防火墙里放行后台服务。其他平台返回 UNIMPLEMENTED。
+	RequestLocalNetworkPermission(context.Context, *Empty) (*Empty, error)
 	// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
 	GetNetwork(context.Context, *Empty) (*NetworkInfo, error)
 	mustEmbedUnimplementedDaemonServiceServer()
@@ -318,6 +350,9 @@ func (UnimplementedDaemonServiceServer) ConfirmPairing(context.Context, *Confirm
 func (UnimplementedDaemonServiceServer) Unpair(context.Context, *UnpairRequest) (*Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method Unpair not implemented")
 }
+func (UnimplementedDaemonServiceServer) SetDeviceAddress(context.Context, *SetDeviceAddressRequest) (*Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method SetDeviceAddress not implemented")
+}
 func (UnimplementedDaemonServiceServer) GetConfig(context.Context, *Empty) (*Config, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetConfig not implemented")
 }
@@ -329,6 +364,9 @@ func (UnimplementedDaemonServiceServer) GetStatus(context.Context, *Empty) (*Sta
 }
 func (UnimplementedDaemonServiceServer) RequestClipboardPermission(context.Context, *Empty) (*Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method RequestClipboardPermission not implemented")
+}
+func (UnimplementedDaemonServiceServer) RequestLocalNetworkPermission(context.Context, *Empty) (*Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method RequestLocalNetworkPermission not implemented")
 }
 func (UnimplementedDaemonServiceServer) GetNetwork(context.Context, *Empty) (*NetworkInfo, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetNetwork not implemented")
@@ -545,6 +583,24 @@ func _DaemonService_Unpair_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DaemonService_SetDeviceAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetDeviceAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).SetDeviceAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_SetDeviceAddress_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).SetDeviceAddress(ctx, req.(*SetDeviceAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DaemonService_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
@@ -617,6 +673,24 @@ func _DaemonService_RequestClipboardPermission_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DaemonService_RequestLocalNetworkPermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).RequestLocalNetworkPermission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_RequestLocalNetworkPermission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).RequestLocalNetworkPermission(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DaemonService_GetNetwork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
@@ -683,6 +757,10 @@ var DaemonService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DaemonService_Unpair_Handler,
 		},
 		{
+			MethodName: "SetDeviceAddress",
+			Handler:    _DaemonService_SetDeviceAddress_Handler,
+		},
+		{
 			MethodName: "GetConfig",
 			Handler:    _DaemonService_GetConfig_Handler,
 		},
@@ -697,6 +775,10 @@ var DaemonService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RequestClipboardPermission",
 			Handler:    _DaemonService_RequestClipboardPermission_Handler,
+		},
+		{
+			MethodName: "RequestLocalNetworkPermission",
+			Handler:    _DaemonService_RequestLocalNetworkPermission_Handler,
 		},
 		{
 			MethodName: "GetNetwork",

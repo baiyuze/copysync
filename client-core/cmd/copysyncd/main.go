@@ -28,6 +28,7 @@ import (
 	"github.com/baiyuze/copysync/client-core/internal/rpc"
 	"github.com/baiyuze/copysync/client-core/internal/store"
 	syncengine "github.com/baiyuze/copysync/client-core/internal/sync"
+	"github.com/baiyuze/copysync/client-core/internal/transport/lan"
 	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
 	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
 )
@@ -300,6 +301,15 @@ func run(dataDir string) error {
 			slog.Info("信令服务器地址已变更", "from", prev.SignalingURL, "to", c.SignalingURL)
 			peerMgr.SetSignalingURL(c.SignalingURL)
 		}
+		if c.LANDisabled != prev.LANDisabled {
+			peerMgr.SetLANEnabled(!c.LANDisabled)
+		}
+		if c.SignalingURL != prev.SignalingURL || c.LANDisabled != prev.LANDisabled {
+			select {
+			case statusDirty <- struct{}{}:
+			default:
+			}
+		}
 		return nil
 	}
 
@@ -309,23 +319,28 @@ func run(dataDir string) error {
 		return err
 	}
 	srv := rpc.NewServer(rpc.Deps{
-		Store:              db,
-		Paths:              paths,
-		Version:            version,
-		DeviceID:           id.DeviceID,
-		LoadConfig:         loadCfg,
-		SaveConfig:         saveCfgAndApply,
-		Devices:            peerMgr.Devices,
-		CreatePairingCode:  peerMgr.CreatePairingCode,
-		RedeemPairingCode:  peerMgr.RedeemPairingCode,
-		ConfirmPairing:     peerMgr.ConfirmPairing,
-		Unpair:             peerMgr.Unpair,
-		SignalingConnected: peerMgr.Connected,
-		Fetch:              engine.Fetch,
-		FetchForPreview:    engine.FetchForPreview,
-		ApplyToClipboard:   engine.ApplyToClipboard,
-		ImagePreview:       engine.ImagePreview,
-		CacheBytesUsed:     blobs.Size,
+		Store:                    db,
+		Paths:                    paths,
+		Version:                  version,
+		DeviceID:                 id.DeviceID,
+		LoadConfig:               loadCfg,
+		SaveConfig:               saveCfgAndApply,
+		Devices:                  peerMgr.Devices,
+		CreatePairingCode:        peerMgr.CreatePairingCode,
+		RedeemPairingCode:        peerMgr.RedeemPairingCode,
+		ConfirmPairing:           peerMgr.ConfirmPairing,
+		Unpair:                   peerMgr.Unpair,
+		SetDeviceAddress:         peerMgr.SetDeviceAddress,
+		SignalingConnected:       peerMgr.Connected,
+		ServerConfigured:         peerMgr.ServerConfigured,
+		LANEnabled:               peerMgr.LANEnabled,
+		LANBlocked:               peerMgr.LANBlocked,
+		OpenLocalNetworkSettings: lan.RequestPermission,
+		Fetch:                    engine.Fetch,
+		FetchForPreview:          engine.FetchForPreview,
+		ApplyToClipboard:         engine.ApplyToClipboard,
+		ImagePreview:             engine.ImagePreview,
+		CacheBytesUsed:           blobs.Size,
 		Permission: func() clipboard.Permission {
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
@@ -343,6 +358,7 @@ func run(dataDir string) error {
 					Guessed: e.Guessed(), Via: e.Via,
 				})
 			}
+			info.Lan = peerMgr.LANInfo()
 			return info
 		},
 		OpenPermissionSettings: func() error {

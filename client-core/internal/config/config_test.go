@@ -118,8 +118,12 @@ func TestValidateClampsBadValues(t *testing.T) {
 	}
 	c.Validate()
 
-	if c.DeviceName == "" || c.SignalingURL == "" {
-		t.Error("空值未被补为默认值")
+	if c.DeviceName == "" {
+		t.Error("空的设备名未被补为默认值")
+	}
+	// 服务器是可选的：空地址就是不用服务器，不能被补成别的
+	if c.SignalingURL != "" {
+		t.Errorf("空的服务器地址被改成了 %q", c.SignalingURL)
 	}
 	if c.AutoSyncThresholdBytes <= 0 {
 		t.Errorf("负阈值未被修正: %d", c.AutoSyncThresholdBytes)
@@ -207,5 +211,52 @@ func TestSaveWritesPrivatePermissions(t *testing.T) {
 	}
 	if perm := info.Mode().Perm(); perm != 0o600 {
 		t.Errorf("配置文件权限 = %o，期望 0600", perm)
+	}
+}
+
+// 1.4.0 之前的默认服务器地址其实没有服务器在跑：升级后清空，进入局域网模式；
+// 用户自己填过的地址原样保留，迁移只做一次。
+func TestMigrateClearsLegacyDefaultURL(t *testing.T) {
+	cases := []struct {
+		name, file, want string
+	}{
+		{"旧默认地址", `{"device_name":"a","signaling_url":"ws://127.0.0.1:8787/signal"}`, ""},
+		{"自己的服务器", `{"device_name":"a","signaling_url":"ws://192.168.1.20:8787/signal"}`, "ws://192.168.1.20:8787/signal"},
+		{"已迁移过", `{"config_version":2,"device_name":"a","signaling_url":"ws://127.0.0.1:8787/signal"}`, "ws://127.0.0.1:8787/signal"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			p := PathsUnder(t.TempDir())
+			if err := p.EnsureDirs(); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(p.Config, []byte(tc.file), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			c, err := Load(p)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if c.SignalingURL != tc.want {
+				t.Errorf("signaling_url = %q，期望 %q", c.SignalingURL, tc.want)
+			}
+			if c.Version != CurrentVersion {
+				t.Errorf("版本 = %d，期望 %d", c.Version, CurrentVersion)
+			}
+			if c.LANDisabled {
+				t.Error("旧配置没有 lan_disabled，应当默认开启局域网")
+			}
+			// 迁移结果已经存回文件：再读一次不会再变
+			again, err := Load(p)
+			if err != nil || again.SignalingURL != tc.want {
+				t.Errorf("再次读取得到 %q, %v", again.SignalingURL, err)
+			}
+		})
+	}
+}
+
+func TestDefaultHasNoServer(t *testing.T) {
+	if d := Default(); d.SignalingURL != "" || d.LANDisabled {
+		t.Errorf("新装的默认配置应当不用服务器、开启局域网，得到 %q / %v", d.SignalingURL, d.LANDisabled)
 	}
 }

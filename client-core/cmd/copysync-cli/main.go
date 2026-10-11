@@ -3,10 +3,15 @@
 // 它走与 Flutter UI 完全相同的 gRPC 接口，因此既能在 UI 就绪前验证 daemon，
 // 也能在之后用来区分「是 daemon 的问题还是 UI 的问题」。
 //
-//	copysync-cli status      查看 daemon 状态
-//	copysync-cli watch       订阅事件流
-//	copysync-cli history     列出历史记录
-//	copysync-cli config      查看配置
+//	copysync-cli status              查看 daemon 状态
+//	copysync-cli watch               订阅事件流
+//	copysync-cli history             列出历史记录
+//	copysync-cli config              查看配置
+//	copysync-cli devices             列出已配对设备
+//	copysync-cli nat                 网络出口、局域网与各设备连接情况
+//	copysync-cli pair                生成配对码
+//	copysync-cli join CODE [ADDRESS] 兑换配对码；不在同一网段时带上对方显示的地址
+//	copysync-cli address DEVICE ADDR 手动指定某台设备的地址
 package main
 
 import (
@@ -37,7 +42,7 @@ func main() {
 	cmd := flag.Arg(0)
 	if cmd == "" {
 		fmt.Fprintln(os.Stderr,
-			"用法: copysync-cli [-data-dir DIR] <status|watch|history|config|devices|nat|pair|join CODE>")
+			"用法: copysync-cli [-data-dir DIR] <status|watch|history|config|devices|nat|pair|join CODE [ADDRESS]|address DEVICE ADDR>")
 		os.Exit(2)
 	}
 
@@ -88,7 +93,9 @@ func run(cmd, dataDir string) error {
 	case "pair":
 		return createPairing(ctx, client)
 	case "join":
-		return joinPairing(ctx, client, flag.Arg(1))
+		return joinPairing(ctx, client, flag.Arg(1), flag.Arg(2))
+	case "address":
+		return setAddress(ctx, client, flag.Arg(1), flag.Arg(2))
 	default:
 		return fmt.Errorf("未知命令 %q", cmd)
 	}
@@ -152,9 +159,14 @@ func createPairing(ctx context.Context, c pb.DaemonServiceClient) error {
 	}
 
 	fmt.Printf("\n  配对码：%s\n", resp.GetCode())
-	fmt.Printf("  有效期至 %s\n\n",
-		time.Unix(resp.GetExpiresAtUnix(), 0).Format("15:04:05"))
-	fmt.Println("  在另一台设备上运行：copysync-cli join " + resp.GetCode())
+	fmt.Printf("  有效期至 %s\n", time.Unix(resp.GetExpiresAtUnix(), 0).Format("15:04:05"))
+	if addrs := resp.GetLanAddresses(); len(addrs) > 0 {
+		fmt.Printf("  本机地址：%s\n", strings.Join(addrs, "  "))
+	}
+	fmt.Println("\n  在另一台设备上运行：copysync-cli join " + resp.GetCode())
+	if addrs := resp.GetLanAddresses(); len(addrs) > 0 {
+		fmt.Printf("  不在同一网段时：copysync-cli join %s %s\n", resp.GetCode(), addrs[0])
+	}
 	fmt.Println("  等待对方兑换…（Ctrl+C 取消）")
 
 	for {
@@ -257,6 +269,8 @@ func showNetwork(ctx context.Context, c pb.DaemonServiceClient) error {
 		fmt.Println("按历史推算的出口这一轮没探测到，但它不改端口，地址可以推算出来。")
 	}
 
+	showLAN(info.GetLan())
+
 	devs, err := c.ListDevices(ctx, &pb.Empty{})
 	if err != nil {
 		return nil
@@ -270,14 +284,67 @@ func showNetwork(ctx context.Context, c pb.DaemonServiceClient) error {
 	return nil
 }
 
-func joinPairing(ctx context.Context, c pb.DaemonServiceClient, code string) error {
+// showLAN 打印局域网直连的情况：本机在哪个端口、发现了几个实例、各设备在局域网里能否找到。
+func showLAN(lan *pb.LanInfo) {
+	if lan == nil {
+		return
+	}
+	fmt.Println()
+	if !lan.GetEnabled() {
+		fmt.Println("局域网    已关闭")
+		return
+	}
+	fmt.Printf("局域网    端口 %d（UDP），本机地址 %s\n", lan.GetPort(), strings.Join(lan.GetLocalAddresses(), "  "))
+	fmt.Printf("          mDNS 发现了 %d 个 CopySync（含未配对的）\n", lan.GetDiscovered())
+	if lan.GetBlocked() {
+		fmt.Println("          系统拦下了发往局域网的包：到「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync")
+	}
+	for _, p := range lan.GetPeers() {
+		state := "找不到"
+		if p.GetReachable() {
+			state = "可达 " + p.GetAddress()
+		}
+		fmt.Printf("  %-18s %s\n", p.GetDeviceName(), state)
+		if known := p.GetKnownAddresses(); len(known) > 0 {
+			fmt.Printf("  %-18s 记住的地址 %s\n", "", strings.Join(known, "  "))
+		}
+	}
+}
+
+func setAddress(ctx context.Context, c pb.DaemonServiceClient, device, addr string) error {
+	if device == "" || addr == "" {
+		return errors.New("用法: copysync-cli address <设备名或 ID> <地址>")
+	}
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+	devs, err := c.ListDevices(ctx, &pb.Empty{})
+	if err != nil {
+		return err
+	}
+	id := ""
+	for _, p := range devs.GetPeers() {
+		if p.GetId() == device || p.GetName() == device {
+			id = p.GetId()
+		}
+	}
+	if id == "" {
+		return fmt.Errorf("没有叫 %q 的已配对设备", device)
+	}
+	if _, err := c.SetDeviceAddress(ctx, &pb.SetDeviceAddressRequest{DeviceId: id, Address: addr}); err != nil {
+		return err
+	}
+	fmt.Println("已记下，正在那个地址上找它；用 copysync-cli nat 查看结果")
+	return nil
+}
+
+func joinPairing(ctx context.Context, c pb.DaemonServiceClient, code, address string) error {
 	if code == "" {
-		return errors.New("用法: copysync-cli join <配对码>")
+		return errors.New("用法: copysync-cli join <配对码> [对方地址]")
 	}
 	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
 
-	resp, err := c.RedeemPairingCode(ctx, &pb.RedeemPairingCodeRequest{Code: code})
+	resp, err := c.RedeemPairingCode(ctx, &pb.RedeemPairingCodeRequest{Code: code, Address: address})
 	if err != nil {
 		return err
 	}
@@ -328,7 +395,16 @@ func showStatus(ctx context.Context, c pb.DaemonServiceClient, ep rpc.Endpoint) 
 	fmt.Printf("daemon      PID %d  端口 %d  版本 %s\n", ep.PID, ep.Port, st.GetVersion())
 	fmt.Printf("设备        %s\n", st.GetDeviceName())
 	fmt.Printf("设备 ID     %s\n", st.GetDeviceId())
-	fmt.Printf("信令        %s\n", boolText(st.GetSignalingConnected(), "已连接", "未连接"))
+	server := "未设置（只在局域网里同步）"
+	if st.GetServerConfigured() {
+		server = boolText(st.GetSignalingConnected(), "已连接", "未连接")
+	}
+	fmt.Printf("服务器      %s\n", server)
+	lan := boolText(st.GetLanEnabled(), "开启", "关闭")
+	if st.GetLanBlocked() {
+		lan += "（被系统拦截，需要允许本地网络访问）"
+	}
+	fmt.Printf("局域网      %s\n", lan)
 	fmt.Printf("在线对端    %d\n", st.GetPeersOnline())
 	fmt.Printf("剪贴板授权  %s\n", st.GetClipboardPermission())
 	fmt.Printf("缓存占用    %s\n", humanBytes(st.GetCacheBytesUsed()))
@@ -433,7 +509,12 @@ func showConfig(ctx context.Context, c pb.DaemonServiceClient) error {
 		return err
 	}
 	fmt.Printf("设备名称      %s\n", cfg.GetDeviceName())
-	fmt.Printf("信令地址      %s\n", cfg.GetSignalingUrl())
+	server := cfg.GetSignalingUrl()
+	if server == "" {
+		server = "（未设置）"
+	}
+	fmt.Printf("信令地址      %s\n", server)
+	fmt.Printf("局域网发现    %v\n", !cfg.GetLanDisabled())
 	fmt.Printf("自动同步阈值  %s\n", humanBytes(cfg.GetAutoSyncThresholdBytes()))
 	fmt.Printf("历史保留      %s\n", time.Duration(cfg.GetHistoryTtlSeconds())*time.Second)
 	fmt.Printf("缓存保留      %s\n", time.Duration(cfg.GetCacheTtlSeconds())*time.Second)

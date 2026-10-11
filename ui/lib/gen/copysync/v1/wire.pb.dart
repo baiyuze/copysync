@@ -105,7 +105,7 @@ class Signed extends $pb.GeneratedMessage {
   void clearFromDeviceId() => $_clearField(3);
 }
 
-enum SignalMessage_Payload { offer, answer, candidate, ping, notSet }
+enum SignalMessage_Payload { offer, answer, candidate, ping, lanHello, notSet }
 
 class SignalMessage extends $pb.GeneratedMessage {
   factory SignalMessage({
@@ -116,6 +116,7 @@ class SignalMessage extends $pb.GeneratedMessage {
     SdpAnswer? answer,
     IceCandidate? candidate,
     Ping? ping,
+    LanHello? lanHello,
   }) {
     final result = SignalMessage._();
     if (timestampUnix != null) result.timestampUnix = timestampUnix;
@@ -125,6 +126,7 @@ class SignalMessage extends $pb.GeneratedMessage {
     if (answer != null) result.answer = answer;
     if (candidate != null) result.candidate = candidate;
     if (ping != null) result.ping = ping;
+    if (lanHello != null) result.lanHello = lanHello;
     return result;
   }
 
@@ -143,13 +145,14 @@ class SignalMessage extends $pb.GeneratedMessage {
     11: SignalMessage_Payload.answer,
     12: SignalMessage_Payload.candidate,
     13: SignalMessage_Payload.ping,
+    14: SignalMessage_Payload.lanHello,
     0: SignalMessage_Payload.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'SignalMessage',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
       createEmptyInstance: SignalMessage.$_createMessage)
-    ..oo(0, [10, 11, 12, 13])
+    ..oo(0, [10, 11, 12, 13, 14])
     ..aInt64(1, _omitFieldNames ? '' : 'timestampUnix')
     ..a<$core.List<$core.int>>(
         2, _omitFieldNames ? '' : 'nonce', $pb.PbFieldType.OY)
@@ -162,6 +165,8 @@ class SignalMessage extends $pb.GeneratedMessage {
         subBuilder: IceCandidate.$_createMessage)
     ..aOM<Ping>(13, _omitFieldNames ? '' : 'ping',
         subBuilder: Ping.$_createMessage)
+    ..aOM<LanHello>(14, _omitFieldNames ? '' : 'lanHello',
+        subBuilder: LanHello.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -190,12 +195,14 @@ class SignalMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(11)
   @$pb.TagNumber(12)
   @$pb.TagNumber(13)
+  @$pb.TagNumber(14)
   SignalMessage_Payload whichPayload() =>
       _SignalMessage_PayloadByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(10)
   @$pb.TagNumber(11)
   @$pb.TagNumber(12)
   @$pb.TagNumber(13)
+  @$pb.TagNumber(14)
   void clearPayload() => $_clearField($_whichOneof(0));
 
   /// 防重放：接收方拒绝时间戳过旧或 nonce 重复的消息
@@ -217,6 +224,7 @@ class SignalMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   void clearNonce() => $_clearField(2);
 
+  /// 接收方只收发给自己的消息：局域网里谁都能把截到的消息转发给第三台设备
   @$pb.TagNumber(3)
   $core.String get toDeviceId => $_getSZ(2);
   @$pb.TagNumber(3)
@@ -269,6 +277,17 @@ class SignalMessage extends $pb.GeneratedMessage {
   void clearPing() => $_clearField(13);
   @$pb.TagNumber(13)
   Ping ensurePing() => $_ensure(6);
+
+  @$pb.TagNumber(14)
+  LanHello get lanHello => $_getN(7);
+  @$pb.TagNumber(14)
+  set lanHello(LanHello value) => $_setField(14, value);
+  @$pb.TagNumber(14)
+  $core.bool hasLanHello() => $_has(7);
+  @$pb.TagNumber(14)
+  void clearLanHello() => $_clearField(14);
+  @$pb.TagNumber(14)
+  LanHello ensureLanHello() => $_ensure(7);
 }
 
 class SdpOffer extends $pb.GeneratedMessage {
@@ -1798,6 +1817,499 @@ class ServerError extends $pb.GeneratedMessage {
   $core.bool hasMessage() => $_has(1);
   @$pb.TagNumber(2)
   void clearMessage() => $_clearField(2);
+}
+
+enum LanPacket_Payload { signal, pairRequest, pairResponse, pairReject, notSet }
+
+class LanPacket extends $pb.GeneratedMessage {
+  factory LanPacket({
+    Signed? signal,
+    LanPairSigned? pairRequest,
+    LanPairSigned? pairResponse,
+    LanPairReject? pairReject,
+  }) {
+    final result = LanPacket._();
+    if (signal != null) result.signal = signal;
+    if (pairRequest != null) result.pairRequest = pairRequest;
+    if (pairResponse != null) result.pairResponse = pairResponse;
+    if (pairReject != null) result.pairReject = pairReject;
+    return result;
+  }
+
+  LanPacket._();
+
+  factory LanPacket.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPacket()..mergeFromBuffer(data, registry);
+  factory LanPacket.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPacket()..mergeFromJson(json, registry);
+
+  static const $core.Map<$core.int, LanPacket_Payload> _LanPacket_PayloadByTag =
+      {
+    1: LanPacket_Payload.signal,
+    2: LanPacket_Payload.pairRequest,
+    3: LanPacket_Payload.pairResponse,
+    4: LanPacket_Payload.pairReject,
+    0: LanPacket_Payload.notSet
+  };
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LanPacket',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LanPacket.$_createMessage)
+    ..oo(0, [1, 2, 3, 4])
+    ..aOM<Signed>(1, _omitFieldNames ? '' : 'signal',
+        subBuilder: Signed.$_createMessage)
+    ..aOM<LanPairSigned>(2, _omitFieldNames ? '' : 'pairRequest',
+        subBuilder: LanPairSigned.$_createMessage)
+    ..aOM<LanPairSigned>(3, _omitFieldNames ? '' : 'pairResponse',
+        subBuilder: LanPairSigned.$_createMessage)
+    ..aOM<LanPairReject>(4, _omitFieldNames ? '' : 'pairReject',
+        subBuilder: LanPairReject.$_createMessage)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPacket clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPacket copyWith(void Function(LanPacket) updates) =>
+      super.copyWith((message) => updates(message as LanPacket)) as LanPacket;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LanPacket() / LanPacket.new instead')
+  static LanPacket create() => LanPacket._();
+  static $pb.GeneratedMessage $_createMessage() => LanPacket._();
+  @$core.override
+  LanPacket createEmptyInstance() => LanPacket._();
+  @$core.pragma('dart2js:noInline')
+  static LanPacket getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<LanPacket>(LanPacket.$_createMessage);
+  static LanPacket? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
+  @$pb.TagNumber(3)
+  @$pb.TagNumber(4)
+  LanPacket_Payload whichPayload() => _LanPacket_PayloadByTag[$_whichOneof(0)]!;
+  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
+  @$pb.TagNumber(3)
+  @$pb.TagNumber(4)
+  void clearPayload() => $_clearField($_whichOneof(0));
+
+  @$pb.TagNumber(1)
+  Signed get signal => $_getN(0);
+  @$pb.TagNumber(1)
+  set signal(Signed value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSignal() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSignal() => $_clearField(1);
+  @$pb.TagNumber(1)
+  Signed ensureSignal() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  LanPairSigned get pairRequest => $_getN(1);
+  @$pb.TagNumber(2)
+  set pairRequest(LanPairSigned value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasPairRequest() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPairRequest() => $_clearField(2);
+  @$pb.TagNumber(2)
+  LanPairSigned ensurePairRequest() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  LanPairSigned get pairResponse => $_getN(2);
+  @$pb.TagNumber(3)
+  set pairResponse(LanPairSigned value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasPairResponse() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPairResponse() => $_clearField(3);
+  @$pb.TagNumber(3)
+  LanPairSigned ensurePairResponse() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  LanPairReject get pairReject => $_getN(3);
+  @$pb.TagNumber(4)
+  set pairReject(LanPairReject value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasPairReject() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearPairReject() => $_clearField(4);
+  @$pb.TagNumber(4)
+  LanPairReject ensurePairReject() => $_ensure(3);
+}
+
+/// 已配对设备之间的上线通知。还没连通时定期发，连通后低频保活。
+/// 两端都往对方发，有状态的防火墙（Windows）会放行对方的包。
+class LanHello extends $pb.GeneratedMessage {
+  factory LanHello({
+    $core.Iterable<$core.String>? addresses,
+    $core.bool? replyWanted,
+    $core.int? intervalSeconds,
+  }) {
+    final result = LanHello._();
+    if (addresses != null) result.addresses.addAll(addresses);
+    if (replyWanted != null) result.replyWanted = replyWanted;
+    if (intervalSeconds != null) result.intervalSeconds = intervalSeconds;
+    return result;
+  }
+
+  LanHello._();
+
+  factory LanHello.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanHello()..mergeFromBuffer(data, registry);
+  factory LanHello.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanHello()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LanHello',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LanHello.$_createMessage)
+    ..pPS(1, _omitFieldNames ? '' : 'addresses')
+    ..aOB(2, _omitFieldNames ? '' : 'replyWanted')
+    ..aI(3, _omitFieldNames ? '' : 'intervalSeconds',
+        fieldType: $pb.PbFieldType.OU3)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanHello clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanHello copyWith(void Function(LanHello) updates) =>
+      super.copyWith((message) => updates(message as LanHello)) as LanHello;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LanHello() / LanHello.new instead')
+  static LanHello create() => LanHello._();
+  static $pb.GeneratedMessage $_createMessage() => LanHello._();
+  @$core.override
+  LanHello createEmptyInstance() => LanHello._();
+  @$core.pragma('dart2js:noInline')
+  static LanHello getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<LanHello>(LanHello.$_createMessage);
+  static LanHello? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<$core.String> get addresses => $_getList(0);
+
+  @$pb.TagNumber(2)
+  $core.bool get replyWanted => $_getBF(1);
+  @$pb.TagNumber(2)
+  set replyWanted($core.bool value) => $_setBool(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasReplyWanted() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearReplyWanted() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get intervalSeconds => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set intervalSeconds($core.int value) => $_setUnsignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasIntervalSeconds() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearIntervalSeconds() => $_clearField(3);
+}
+
+/// payload 是序列化后的 LanPairInfo，signature 用 LanPairInfo.public_key 签名。
+class LanPairSigned extends $pb.GeneratedMessage {
+  factory LanPairSigned({
+    $core.List<$core.int>? payload,
+    $core.List<$core.int>? signature,
+  }) {
+    final result = LanPairSigned._();
+    if (payload != null) result.payload = payload;
+    if (signature != null) result.signature = signature;
+    return result;
+  }
+
+  LanPairSigned._();
+
+  factory LanPairSigned.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPairSigned()..mergeFromBuffer(data, registry);
+  factory LanPairSigned.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPairSigned()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LanPairSigned',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LanPairSigned.$_createMessage)
+    ..a<$core.List<$core.int>>(
+        1, _omitFieldNames ? '' : 'payload', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(
+        2, _omitFieldNames ? '' : 'signature', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPairSigned clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPairSigned copyWith(void Function(LanPairSigned) updates) =>
+      super.copyWith((message) => updates(message as LanPairSigned))
+          as LanPairSigned;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LanPairSigned() / LanPairSigned.new instead')
+  static LanPairSigned create() => LanPairSigned._();
+  static $pb.GeneratedMessage $_createMessage() => LanPairSigned._();
+  @$core.override
+  LanPairSigned createEmptyInstance() => LanPairSigned._();
+  @$core.pragma('dart2js:noInline')
+  static LanPairSigned getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LanPairSigned>(
+          LanPairSigned.$_createMessage);
+  static LanPairSigned? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.int> get payload => $_getN(0);
+  @$pb.TagNumber(1)
+  set payload($core.List<$core.int> value) => $_setBytes(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasPayload() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPayload() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get signature => $_getN(1);
+  @$pb.TagNumber(2)
+  set signature($core.List<$core.int> value) => $_setBytes(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasSignature() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearSignature() => $_clearField(2);
+}
+
+class LanPairInfo extends $pb.GeneratedMessage {
+  factory LanPairInfo({
+    $core.String? code,
+    $core.String? deviceId,
+    $core.String? deviceName,
+    $core.String? platform,
+    $core.List<$core.int>? publicKey,
+    $core.Iterable<$core.String>? addresses,
+    $fixnum.Int64? timestampUnix,
+    $core.List<$core.int>? nonce,
+    $core.List<$core.int>? requestNonce,
+  }) {
+    final result = LanPairInfo._();
+    if (code != null) result.code = code;
+    if (deviceId != null) result.deviceId = deviceId;
+    if (deviceName != null) result.deviceName = deviceName;
+    if (platform != null) result.platform = platform;
+    if (publicKey != null) result.publicKey = publicKey;
+    if (addresses != null) result.addresses.addAll(addresses);
+    if (timestampUnix != null) result.timestampUnix = timestampUnix;
+    if (nonce != null) result.nonce = nonce;
+    if (requestNonce != null) result.requestNonce = requestNonce;
+    return result;
+  }
+
+  LanPairInfo._();
+
+  factory LanPairInfo.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPairInfo()..mergeFromBuffer(data, registry);
+  factory LanPairInfo.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPairInfo()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LanPairInfo',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LanPairInfo.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'code')
+    ..aOS(2, _omitFieldNames ? '' : 'deviceId')
+    ..aOS(3, _omitFieldNames ? '' : 'deviceName')
+    ..aOS(4, _omitFieldNames ? '' : 'platform')
+    ..a<$core.List<$core.int>>(
+        5, _omitFieldNames ? '' : 'publicKey', $pb.PbFieldType.OY)
+    ..pPS(6, _omitFieldNames ? '' : 'addresses')
+    ..aInt64(7, _omitFieldNames ? '' : 'timestampUnix')
+    ..a<$core.List<$core.int>>(
+        8, _omitFieldNames ? '' : 'nonce', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(
+        9, _omitFieldNames ? '' : 'requestNonce', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPairInfo clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPairInfo copyWith(void Function(LanPairInfo) updates) =>
+      super.copyWith((message) => updates(message as LanPairInfo))
+          as LanPairInfo;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LanPairInfo() / LanPairInfo.new instead')
+  static LanPairInfo create() => LanPairInfo._();
+  static $pb.GeneratedMessage $_createMessage() => LanPairInfo._();
+  @$core.override
+  LanPairInfo createEmptyInstance() => LanPairInfo._();
+  @$core.pragma('dart2js:noInline')
+  static LanPairInfo getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LanPairInfo>(
+          LanPairInfo.$_createMessage);
+  static LanPairInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get code => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set code($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasCode() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearCode() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get deviceId => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set deviceId($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasDeviceId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDeviceId() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get deviceName => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set deviceName($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasDeviceName() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearDeviceName() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get platform => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set platform($core.String value) => $_setString(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasPlatform() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearPlatform() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.List<$core.int> get publicKey => $_getN(4);
+  @$pb.TagNumber(5)
+  set publicKey($core.List<$core.int> value) => $_setBytes(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasPublicKey() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearPublicKey() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $pb.PbList<$core.String> get addresses => $_getList(5);
+
+  @$pb.TagNumber(7)
+  $fixnum.Int64 get timestampUnix => $_getI64(6);
+  @$pb.TagNumber(7)
+  set timestampUnix($fixnum.Int64 value) => $_setInt64(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasTimestampUnix() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearTimestampUnix() => $_clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.List<$core.int> get nonce => $_getN(7);
+  @$pb.TagNumber(8)
+  set nonce($core.List<$core.int> value) => $_setBytes(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasNonce() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearNonce() => $_clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.List<$core.int> get requestNonce => $_getN(8);
+  @$pb.TagNumber(9)
+  set requestNonce($core.List<$core.int> value) => $_setBytes(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasRequestNonce() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearRequestNonce() => $_clearField(9);
+}
+
+class LanPairReject extends $pb.GeneratedMessage {
+  factory LanPairReject({
+    $core.List<$core.int>? requestNonce,
+    $core.String? reason,
+  }) {
+    final result = LanPairReject._();
+    if (requestNonce != null) result.requestNonce = requestNonce;
+    if (reason != null) result.reason = reason;
+    return result;
+  }
+
+  LanPairReject._();
+
+  factory LanPairReject.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPairReject()..mergeFromBuffer(data, registry);
+  factory LanPairReject.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPairReject()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LanPairReject',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LanPairReject.$_createMessage)
+    ..a<$core.List<$core.int>>(
+        1, _omitFieldNames ? '' : 'requestNonce', $pb.PbFieldType.OY)
+    ..aOS(2, _omitFieldNames ? '' : 'reason')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPairReject clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPairReject copyWith(void Function(LanPairReject) updates) =>
+      super.copyWith((message) => updates(message as LanPairReject))
+          as LanPairReject;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LanPairReject() / LanPairReject.new instead')
+  static LanPairReject create() => LanPairReject._();
+  static $pb.GeneratedMessage $_createMessage() => LanPairReject._();
+  @$core.override
+  LanPairReject createEmptyInstance() => LanPairReject._();
+  @$core.pragma('dart2js:noInline')
+  static LanPairReject getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LanPairReject>(
+          LanPairReject.$_createMessage);
+  static LanPairReject? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.int> get requestNonce => $_getN(0);
+  @$pb.TagNumber(1)
+  set requestNonce($core.List<$core.int> value) => $_setBytes(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasRequestNonce() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearRequestNonce() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get reason => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set reason($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasReason() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearReason() => $_clearField(2);
 }
 
 enum PeerMessage_Payload { offer, fetch, reject, header, done, link, notSet }

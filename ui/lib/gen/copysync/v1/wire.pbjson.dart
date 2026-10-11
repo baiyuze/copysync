@@ -103,6 +103,15 @@ const SignalMessage$json = {
       '9': 0,
       '10': 'ping'
     },
+    {
+      '1': 'lan_hello',
+      '3': 14,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.LanHello',
+      '9': 0,
+      '10': 'lanHello'
+    },
   ],
   '8': [
     {'1': 'payload'},
@@ -116,7 +125,8 @@ final $typed_data.Uint8List signalMessageDescriptor = $convert.base64Decode(
     'LQoFb2ZmZXIYCiABKAsyFS5jb3B5c3luYy52MS5TZHBPZmZlckgAUgVvZmZlchIwCgZhbnN3ZX'
     'IYCyABKAsyFi5jb3B5c3luYy52MS5TZHBBbnN3ZXJIAFIGYW5zd2VyEjkKCWNhbmRpZGF0ZRgM'
     'IAEoCzIZLmNvcHlzeW5jLnYxLkljZUNhbmRpZGF0ZUgAUgljYW5kaWRhdGUSJwoEcGluZxgNIA'
-    'EoCzIRLmNvcHlzeW5jLnYxLlBpbmdIAFIEcGluZ0IJCgdwYXlsb2Fk');
+    'EoCzIRLmNvcHlzeW5jLnYxLlBpbmdIAFIEcGluZxI0CglsYW5faGVsbG8YDiABKAsyFS5jb3B5'
+    'c3luYy52MS5MYW5IZWxsb0gAUghsYW5IZWxsb0IJCgdwYXlsb2Fk');
 
 @$core.Deprecated('Use sdpOfferDescriptor instead')
 const SdpOffer$json = {
@@ -512,6 +522,129 @@ const ServerError$json = {
 final $typed_data.Uint8List serverErrorDescriptor = $convert.base64Decode(
     'CgtTZXJ2ZXJFcnJvchISCgRjb2RlGAEgASgJUgRjb2RlEhgKB21lc3NhZ2UYAiABKAlSB21lc3'
     'NhZ2U=');
+
+@$core.Deprecated('Use lanPacketDescriptor instead')
+const LanPacket$json = {
+  '1': 'LanPacket',
+  '2': [
+    {
+      '1': 'signal',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.Signed',
+      '9': 0,
+      '10': 'signal'
+    },
+    {
+      '1': 'pair_request',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.LanPairSigned',
+      '9': 0,
+      '10': 'pairRequest'
+    },
+    {
+      '1': 'pair_response',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.LanPairSigned',
+      '9': 0,
+      '10': 'pairResponse'
+    },
+    {
+      '1': 'pair_reject',
+      '3': 4,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.LanPairReject',
+      '9': 0,
+      '10': 'pairReject'
+    },
+  ],
+  '8': [
+    {'1': 'payload'},
+  ],
+};
+
+/// Descriptor for `LanPacket`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lanPacketDescriptor = $convert.base64Decode(
+    'CglMYW5QYWNrZXQSLQoGc2lnbmFsGAEgASgLMhMuY29weXN5bmMudjEuU2lnbmVkSABSBnNpZ2'
+    '5hbBI/CgxwYWlyX3JlcXVlc3QYAiABKAsyGi5jb3B5c3luYy52MS5MYW5QYWlyU2lnbmVkSABS'
+    'C3BhaXJSZXF1ZXN0EkEKDXBhaXJfcmVzcG9uc2UYAyABKAsyGi5jb3B5c3luYy52MS5MYW5QYW'
+    'lyU2lnbmVkSABSDHBhaXJSZXNwb25zZRI9CgtwYWlyX3JlamVjdBgEIAEoCzIaLmNvcHlzeW5j'
+    'LnYxLkxhblBhaXJSZWplY3RIAFIKcGFpclJlamVjdEIJCgdwYXlsb2Fk');
+
+@$core.Deprecated('Use lanHelloDescriptor instead')
+const LanHello$json = {
+  '1': 'LanHello',
+  '2': [
+    {'1': 'addresses', '3': 1, '4': 3, '5': 9, '10': 'addresses'},
+    {'1': 'reply_wanted', '3': 2, '4': 1, '5': 8, '10': 'replyWanted'},
+    {'1': 'interval_seconds', '3': 3, '4': 1, '5': 13, '10': 'intervalSeconds'},
+  ],
+};
+
+/// Descriptor for `LanHello`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lanHelloDescriptor = $convert.base64Decode(
+    'CghMYW5IZWxsbxIcCglhZGRyZXNzZXMYASADKAlSCWFkZHJlc3NlcxIhCgxyZXBseV93YW50ZW'
+    'QYAiABKAhSC3JlcGx5V2FudGVkEikKEGludGVydmFsX3NlY29uZHMYAyABKA1SD2ludGVydmFs'
+    'U2Vjb25kcw==');
+
+@$core.Deprecated('Use lanPairSignedDescriptor instead')
+const LanPairSigned$json = {
+  '1': 'LanPairSigned',
+  '2': [
+    {'1': 'payload', '3': 1, '4': 1, '5': 12, '10': 'payload'},
+    {'1': 'signature', '3': 2, '4': 1, '5': 12, '10': 'signature'},
+  ],
+};
+
+/// Descriptor for `LanPairSigned`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lanPairSignedDescriptor = $convert.base64Decode(
+    'Cg1MYW5QYWlyU2lnbmVkEhgKB3BheWxvYWQYASABKAxSB3BheWxvYWQSHAoJc2lnbmF0dXJlGA'
+    'IgASgMUglzaWduYXR1cmU=');
+
+@$core.Deprecated('Use lanPairInfoDescriptor instead')
+const LanPairInfo$json = {
+  '1': 'LanPairInfo',
+  '2': [
+    {'1': 'code', '3': 1, '4': 1, '5': 9, '10': 'code'},
+    {'1': 'device_id', '3': 2, '4': 1, '5': 9, '10': 'deviceId'},
+    {'1': 'device_name', '3': 3, '4': 1, '5': 9, '10': 'deviceName'},
+    {'1': 'platform', '3': 4, '4': 1, '5': 9, '10': 'platform'},
+    {'1': 'public_key', '3': 5, '4': 1, '5': 12, '10': 'publicKey'},
+    {'1': 'addresses', '3': 6, '4': 3, '5': 9, '10': 'addresses'},
+    {'1': 'timestamp_unix', '3': 7, '4': 1, '5': 3, '10': 'timestampUnix'},
+    {'1': 'nonce', '3': 8, '4': 1, '5': 12, '10': 'nonce'},
+    {'1': 'request_nonce', '3': 9, '4': 1, '5': 12, '10': 'requestNonce'},
+  ],
+};
+
+/// Descriptor for `LanPairInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lanPairInfoDescriptor = $convert.base64Decode(
+    'CgtMYW5QYWlySW5mbxISCgRjb2RlGAEgASgJUgRjb2RlEhsKCWRldmljZV9pZBgCIAEoCVIIZG'
+    'V2aWNlSWQSHwoLZGV2aWNlX25hbWUYAyABKAlSCmRldmljZU5hbWUSGgoIcGxhdGZvcm0YBCAB'
+    'KAlSCHBsYXRmb3JtEh0KCnB1YmxpY19rZXkYBSABKAxSCXB1YmxpY0tleRIcCglhZGRyZXNzZX'
+    'MYBiADKAlSCWFkZHJlc3NlcxIlCg50aW1lc3RhbXBfdW5peBgHIAEoA1INdGltZXN0YW1wVW5p'
+    'eBIUCgVub25jZRgIIAEoDFIFbm9uY2USIwoNcmVxdWVzdF9ub25jZRgJIAEoDFIMcmVxdWVzdE'
+    '5vbmNl');
+
+@$core.Deprecated('Use lanPairRejectDescriptor instead')
+const LanPairReject$json = {
+  '1': 'LanPairReject',
+  '2': [
+    {'1': 'request_nonce', '3': 1, '4': 1, '5': 12, '10': 'requestNonce'},
+    {'1': 'reason', '3': 2, '4': 1, '5': 9, '10': 'reason'},
+  ],
+};
+
+/// Descriptor for `LanPairReject`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lanPairRejectDescriptor = $convert.base64Decode(
+    'Cg1MYW5QYWlyUmVqZWN0EiMKDXJlcXVlc3Rfbm9uY2UYASABKAxSDHJlcXVlc3ROb25jZRIWCg'
+    'ZyZWFzb24YAiABKAlSBnJlYXNvbg==');
 
 @$core.Deprecated('Use peerMessageDescriptor instead')
 const PeerMessage$json = {

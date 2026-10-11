@@ -1,8 +1,9 @@
-// 线上协议：客户端 ↔ 信令服务器，以及设备 ↔ 设备。
+// 线上协议：客户端 ↔ 信令服务器，同一局域网里的设备 ↔ 设备（UDP），
+// 以及连通之后的设备 ↔ 设备（DataChannel）。
 //
 // 信令服务器只转发、不解密内容，也不存用户——设备靠配对时交换的
-// Ed25519 公钥互相认证。所有经服务器中转的信令都带签名，
-// 防止服务器伪造 peer 身份做中间人。
+// Ed25519 公钥互相认证。所有经服务器或局域网转发的信令都带签名，
+// 防止服务器或同一网络里的其他人伪造 peer 身份做中间人。
 
 syntax = "proto3";
 
@@ -27,6 +28,7 @@ message SignalMessage {
   // 防重放：接收方拒绝时间戳过旧或 nonce 重复的消息
   int64 timestamp_unix = 1;
   bytes nonce = 2;
+  // 接收方只收发给自己的消息：局域网里谁都能把截到的消息转发给第三台设备
   string to_device_id = 3;
 
   oneof payload {
@@ -34,6 +36,7 @@ message SignalMessage {
     SdpAnswer answer = 11;
     IceCandidate candidate = 12;
     Ping ping = 13;
+    LanHello lan_hello = 14;        // 只走局域网，见下文
   }
 }
 
@@ -158,6 +161,55 @@ message ClientEnvelope {
 message ServerError {
   string code = 1;
   string message = 2;
+}
+
+// ═══════════════════ 局域网层（UDP 承载）═══════════════════
+//
+// 同一局域网里的设备不经服务器，用固定的 UDP 端口直接互发 LanPacket，
+// 每个包前面加 4 字节魔数 "CSL1"。设备靠 mDNS（_copysync._udp）互相发现。
+//
+// 已配对设备之间发的是与服务器转发时完全相同的 Signed，信任模型不变。
+// 配对请求与回复各自用发送方自带的公钥签名：这只能证明发送方持有那把私钥，
+// 防中间人仍然靠双方肉眼核对指纹——与经服务器配对时一样。
+
+message LanPacket {
+  oneof payload {
+    Signed signal = 1;
+    LanPairSigned pair_request = 2;
+    LanPairSigned pair_response = 3;
+    LanPairReject pair_reject = 4;
+  }
+}
+
+// 已配对设备之间的上线通知。还没连通时定期发，连通后低频保活。
+// 两端都往对方发，有状态的防火墙（Windows）会放行对方的包。
+message LanHello {
+  repeated string addresses = 1;    // 发送方本机的局域网地址，ip:port
+  bool reply_wanted = 2;            // 收到后回一条，让发送方也知道本端可达
+  uint32 interval_seconds = 3;      // 发送方多久发一次；超过三倍没收到即视为不可达
+}
+
+// payload 是序列化后的 LanPairInfo，signature 用 LanPairInfo.public_key 签名。
+message LanPairSigned {
+  bytes payload = 1;
+  bytes signature = 2;
+}
+
+message LanPairInfo {
+  string code = 1;                  // 请求里是用户输入的配对码；回复里为空
+  string device_id = 2;
+  string device_name = 3;
+  string platform = 4;
+  bytes public_key = 5;
+  repeated string addresses = 6;    // 发送方本机的局域网地址，ip:port
+  int64 timestamp_unix = 7;
+  bytes nonce = 8;
+  bytes request_nonce = 9;          // 回复里回显请求的 nonce，把回复绑定到这次请求
+}
+
+message LanPairReject {
+  bytes request_nonce = 1;
+  string reason = 2;                // wrong_code / closed / too_many_attempts
 }
 
 // ═══════════════════ 设备间协议（DataChannel 承载）═══════════════════

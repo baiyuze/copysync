@@ -174,6 +174,14 @@ CREATE TABLE IF NOT EXISTS devices (
     paired_at  INTEGER NOT NULL
 );
 
+-- 已配对设备在局域网里用过的地址，跨网段与重启后重新找到对方靠它
+CREATE TABLE IF NOT EXISTS device_addrs (
+    device_id TEXT NOT NULL REFERENCES devices(id) ON DELETE CASCADE,
+    addr      TEXT NOT NULL,
+    last_seen INTEGER NOT NULL,
+    PRIMARY KEY (device_id, addr)
+);
+
 CREATE TABLE IF NOT EXISTS meta (
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL
@@ -433,6 +441,51 @@ SELECT id, name, platform, public_key, paired_at FROM devices ORDER BY paired_at
 func (s *Store) DeleteDevice(id string) error {
 	_, err := s.db.Exec(`DELETE FROM devices WHERE id=?`, id)
 	return err
+}
+
+// MaxDeviceAddrs 是每台设备最多记住的局域网地址数，多出来的按最久没见过的先删。
+const MaxDeviceAddrs = 8
+
+// PutDeviceAddr 记下某台已配对设备的一个局域网地址（ip:port）。
+// 设备必须已经存在，否则外键约束会拒绝。
+func (s *Store) PutDeviceAddr(deviceID, addr string, seen time.Time) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	if _, err := tx.Exec(`
+INSERT INTO device_addrs (device_id, addr, last_seen) VALUES (?,?,?)
+ON CONFLICT(device_id, addr) DO UPDATE SET last_seen=max(last_seen, excluded.last_seen)`,
+		deviceID, addr, seen.Unix()); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(`
+DELETE FROM device_addrs WHERE device_id=? AND addr NOT IN (
+    SELECT addr FROM device_addrs WHERE device_id=? ORDER BY last_seen DESC, addr LIMIT ?)`,
+		deviceID, deviceID, MaxDeviceAddrs); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
+// DeviceAddrs 返回某台设备记住的地址，最近见过的在前。
+func (s *Store) DeviceAddrs(deviceID string) ([]string, error) {
+	rows, err := s.db.Query(`
+SELECT addr FROM device_addrs WHERE device_id=? ORDER BY last_seen DESC, addr`, deviceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []string
+	for rows.Next() {
+		var a string
+		if err := rows.Scan(&a); err != nil {
+			return nil, err
+		}
+		out = append(out, a)
+	}
+	return out, rows.Err()
 }
 
 // ─────────────────────────── meta ───────────────────────────

@@ -12,8 +12,12 @@ import (
 
 // Config 是用户可调的全部设置。字段与 proto 的 copysync.v1.Config 一一对应。
 type Config struct {
-	DeviceID     string `json:"device_id"`
-	DeviceName   string `json:"device_name"`
+	// Version 是配置文件的格式版本，见 migrate。
+	Version    int    `json:"config_version"`
+	DeviceID   string `json:"device_id"`
+	DeviceName string `json:"device_name"`
+	// SignalingURL 是信令服务器地址。可以为空：同一局域网里的设备不需要服务器，
+	// 只有跨网络同步时才要填。
 	SignalingURL string `json:"signaling_url"`
 
 	// 小于此值的内容在复制时自动推送给对端；大于则只同步元数据，
@@ -39,7 +43,20 @@ type Config struct {
 	// Language 是界面语言：空字符串跟随系统，否则为 "zh-Hans"、"en"、"ja" 之一。
 	// 托盘菜单（Windows）也按它显示
 	Language string `json:"language,omitempty"`
+
+	// LANDisabled 关掉局域网发现：不在局域网里广播和查找设备，也不接受局域网里的配对请求。
+	// 写成反向的，旧配置文件没有这一项时就是开启。
+	LANDisabled bool `json:"lan_disabled,omitempty"`
 }
+
+// CurrentVersion 是当前的配置格式版本。
+//
+// 版本 2（1.4.0）：服务器变成可选，默认地址从 ws://127.0.0.1:8787/signal 改为空。
+const CurrentVersion = 2
+
+// legacyDefaultURL 是 1.4.0 之前的默认服务器地址。没改过它的用户其实没有服务器，
+// 升级后应当直接进入局域网模式，而不是一直显示「服务器连不上」。
+const legacyDefaultURL = "ws://127.0.0.1:8787/signal"
 
 func Default() Config {
 	host, _ := os.Hostname()
@@ -47,8 +64,8 @@ func Default() Config {
 		host = "未命名设备"
 	}
 	return Config{
+		Version:                CurrentVersion,
 		DeviceName:             host,
-		SignalingURL:           "ws://127.0.0.1:8787/signal",
 		AutoSyncThresholdBytes: 50 << 20, // 50 MiB
 		HistoryTTL:             Duration(3 * 24 * time.Hour),
 		CacheTTL:               Duration(3 * 24 * time.Hour),
@@ -66,9 +83,6 @@ func (c *Config) Validate() {
 	d := Default()
 	if c.DeviceName == "" {
 		c.DeviceName = d.DeviceName
-	}
-	if c.SignalingURL == "" {
-		c.SignalingURL = d.SignalingURL
 	}
 	if c.AutoSyncThresholdBytes <= 0 {
 		c.AutoSyncThresholdBytes = d.AutoSyncThresholdBytes
@@ -171,11 +185,29 @@ func Load(p Paths) (Config, error) {
 	}
 
 	c := Default() // 以默认值打底，缺失字段自动继承
+	c.Version = 0  // 旧文件没有版本号，要能认出来
 	if err := json.Unmarshal(data, &c); err != nil {
 		return Config{}, fmt.Errorf("解析配置 %s: %w", p.Config, err)
 	}
+	migrated := c.migrate()
 	c.Validate()
+	if migrated {
+		// 存回去，免得用户之后特意填回旧默认地址时又被清掉
+		_ = Save(p, c)
+	}
 	return c, nil
+}
+
+// migrate 把旧格式的配置升级到 CurrentVersion，返回是否有改动。
+func (c *Config) migrate() bool {
+	if c.Version >= CurrentVersion {
+		return false
+	}
+	if c.Version < 2 && c.SignalingURL == legacyDefaultURL {
+		c.SignalingURL = ""
+	}
+	c.Version = CurrentVersion
+	return true
 }
 
 func Save(p Paths, c Config) error {

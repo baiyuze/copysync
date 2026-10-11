@@ -363,3 +363,48 @@ VALUES ('legacy', 2, 1, '<p>旧记录</p>', 1, 9999999999);`); err != nil {
 		s.Close()
 	}
 }
+
+// 地址簿：按最近见过排序、超过上限时删最旧的、随设备一起删除。
+func TestDeviceAddrs(t *testing.T) {
+	s := openTest(t)
+	if err := s.PutDevice(Device{ID: "dev-1", PublicKey: []byte("k"), PairedAt: time.Now()}); err != nil {
+		t.Fatal(err)
+	}
+	base := time.Unix(1_700_000_000, 0)
+	for i := 0; i < MaxDeviceAddrs+2; i++ {
+		addr := "192.168.1." + string(rune('a'+i)) + ":8788"
+		if err := s.PutDeviceAddr("dev-1", addr, base.Add(time.Duration(i)*time.Minute)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	// 再见到一个老地址，它应当排到最前面
+	if err := s.PutDeviceAddr("dev-1", "192.168.1.c:8788", base.Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	got, err := s.DeviceAddrs("dev-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != MaxDeviceAddrs {
+		t.Fatalf("应当只留 %d 个，得到 %d: %v", MaxDeviceAddrs, len(got), got)
+	}
+	if got[0] != "192.168.1.c:8788" {
+		t.Errorf("最近见过的应排第一，得到 %v", got)
+	}
+	for _, a := range got {
+		if a == "192.168.1.a:8788" || a == "192.168.1.b:8788" {
+			t.Errorf("最旧的地址应当被删掉，仍有 %s", a)
+		}
+	}
+
+	if err := s.PutDeviceAddr("unknown", "10.0.0.1:8788", base); err == nil {
+		t.Error("未配对设备的地址不该能写入")
+	}
+
+	if err := s.DeleteDevice("dev-1"); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := s.DeviceAddrs("dev-1"); len(got) != 0 {
+		t.Errorf("删除设备后地址应一并删除，仍有 %v", got)
+	}
+}

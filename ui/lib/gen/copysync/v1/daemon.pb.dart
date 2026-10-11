@@ -1225,10 +1225,12 @@ class CreatePairingCodeResponse extends $pb.GeneratedMessage {
   factory CreatePairingCodeResponse({
     $core.String? code,
     $fixnum.Int64? expiresAtUnix,
+    $core.Iterable<$core.String>? lanAddresses,
   }) {
     final result = CreatePairingCodeResponse._();
     if (code != null) result.code = code;
     if (expiresAtUnix != null) result.expiresAtUnix = expiresAtUnix;
+    if (lanAddresses != null) result.lanAddresses.addAll(lanAddresses);
     return result;
   }
 
@@ -1247,6 +1249,7 @@ class CreatePairingCodeResponse extends $pb.GeneratedMessage {
       createEmptyInstance: CreatePairingCodeResponse.$_createMessage)
     ..aOS(1, _omitFieldNames ? '' : 'code')
     ..aInt64(2, _omitFieldNames ? '' : 'expiresAtUnix')
+    ..pPS(3, _omitFieldNames ? '' : 'lanAddresses')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1292,14 +1295,23 @@ class CreatePairingCodeResponse extends $pb.GeneratedMessage {
   $core.bool hasExpiresAtUnix() => $_has(1);
   @$pb.TagNumber(2)
   void clearExpiresAtUnix() => $_clearField(2);
+
+  /// 本机的局域网地址，默认路由所在的网卡排第一。不在同一网段时，
+  /// 另一台要在输入配对码的同时输入其中一个。端口是默认值时省略端口。
+  @$pb.TagNumber(3)
+  $pb.PbList<$core.String> get lanAddresses => $_getList(2);
 }
 
+/// 在局域网和服务器上都找不到这个配对码时返回 NOT_FOUND；
+/// 找到了但配对码不对返回 INVALID_ARGUMENT；配对码已失效返回 FAILED_PRECONDITION。
 class RedeemPairingCodeRequest extends $pb.GeneratedMessage {
   factory RedeemPairingCodeRequest({
     $core.String? code,
+    $core.String? address,
   }) {
     final result = RedeemPairingCodeRequest._();
     if (code != null) result.code = code;
+    if (address != null) result.address = address;
     return result;
   }
 
@@ -1317,6 +1329,7 @@ class RedeemPairingCodeRequest extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
       createEmptyInstance: RedeemPairingCodeRequest.$_createMessage)
     ..aOS(1, _omitFieldNames ? '' : 'code')
+    ..aOS(2, _omitFieldNames ? '' : 'address')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1352,6 +1365,16 @@ class RedeemPairingCodeRequest extends $pb.GeneratedMessage {
   $core.bool hasCode() => $_has(0);
   @$pb.TagNumber(1)
   void clearCode() => $_clearField(1);
+
+  /// 可选：对方配对码下面显示的地址（ip 或 ip:port），不在同一网段时填写
+  @$pb.TagNumber(2)
+  $core.String get address => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set address($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasAddress() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAddress() => $_clearField(2);
 }
 
 class RedeemPairingCodeResponse extends $pb.GeneratedMessage {
@@ -1559,6 +1582,77 @@ class UnpairRequest extends $pb.GeneratedMessage {
   void clearDeviceId() => $_clearField(1);
 }
 
+class SetDeviceAddressRequest extends $pb.GeneratedMessage {
+  factory SetDeviceAddressRequest({
+    $core.String? deviceId,
+    $core.String? address,
+  }) {
+    final result = SetDeviceAddressRequest._();
+    if (deviceId != null) result.deviceId = deviceId;
+    if (address != null) result.address = address;
+    return result;
+  }
+
+  SetDeviceAddressRequest._();
+
+  factory SetDeviceAddressRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      SetDeviceAddressRequest()..mergeFromBuffer(data, registry);
+  factory SetDeviceAddressRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      SetDeviceAddressRequest()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SetDeviceAddressRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: SetDeviceAddressRequest.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'deviceId')
+    ..aOS(2, _omitFieldNames ? '' : 'address')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetDeviceAddressRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetDeviceAddressRequest copyWith(
+          void Function(SetDeviceAddressRequest) updates) =>
+      super.copyWith((message) => updates(message as SetDeviceAddressRequest))
+          as SetDeviceAddressRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated(
+      'Use SetDeviceAddressRequest() / SetDeviceAddressRequest.new instead')
+  static SetDeviceAddressRequest create() => SetDeviceAddressRequest._();
+  static $pb.GeneratedMessage $_createMessage() => SetDeviceAddressRequest._();
+  @$core.override
+  SetDeviceAddressRequest createEmptyInstance() => SetDeviceAddressRequest._();
+  @$core.pragma('dart2js:noInline')
+  static SetDeviceAddressRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SetDeviceAddressRequest>(
+          SetDeviceAddressRequest.$_createMessage);
+  static SetDeviceAddressRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get deviceId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set deviceId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasDeviceId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearDeviceId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get address => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set address($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasAddress() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAddress() => $_clearField(2);
+}
+
 class Config extends $pb.GeneratedMessage {
   factory Config({
     $fixnum.Int64? autoSyncThresholdBytes,
@@ -1574,6 +1668,7 @@ class Config extends $pb.GeneratedMessage {
     $core.String? signalingUrl,
     $core.bool? onlyOwnStun,
     $core.String? language,
+    $core.bool? lanDisabled,
   }) {
     final result = Config._();
     if (autoSyncThresholdBytes != null)
@@ -1591,6 +1686,7 @@ class Config extends $pb.GeneratedMessage {
     if (signalingUrl != null) result.signalingUrl = signalingUrl;
     if (onlyOwnStun != null) result.onlyOwnStun = onlyOwnStun;
     if (language != null) result.language = language;
+    if (lanDisabled != null) result.lanDisabled = lanDisabled;
     return result;
   }
 
@@ -1620,6 +1716,7 @@ class Config extends $pb.GeneratedMessage {
     ..aOS(11, _omitFieldNames ? '' : 'signalingUrl')
     ..aOB(12, _omitFieldNames ? '' : 'onlyOwnStun')
     ..aOS(13, _omitFieldNames ? '' : 'language')
+    ..aOB(14, _omitFieldNames ? '' : 'lanDisabled')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1764,6 +1861,17 @@ class Config extends $pb.GeneratedMessage {
   $core.bool hasLanguage() => $_has(12);
   @$pb.TagNumber(13)
   void clearLanguage() => $_clearField(13);
+
+  /// 不在局域网里查找设备、也不接受局域网里的配对请求。
+  /// 默认 false（即开启）：写成反向的，旧配置不用迁移。
+  @$pb.TagNumber(14)
+  $core.bool get lanDisabled => $_getBF(13);
+  @$pb.TagNumber(14)
+  set lanDisabled($core.bool value) => $_setBool(13, value);
+  @$pb.TagNumber(14)
+  $core.bool hasLanDisabled() => $_has(13);
+  @$pb.TagNumber(14)
+  void clearLanDisabled() => $_clearField(14);
 }
 
 /// 最近一轮网络出口探测的结果。
@@ -1774,6 +1882,7 @@ class NetworkInfo extends $pb.GeneratedMessage {
     $core.int? probed,
     $core.int? answered,
     $fixnum.Int64? probedAtUnix,
+    LanInfo? lan,
   }) {
     final result = NetworkInfo._();
     if (localPort != null) result.localPort = localPort;
@@ -1781,6 +1890,7 @@ class NetworkInfo extends $pb.GeneratedMessage {
     if (probed != null) result.probed = probed;
     if (answered != null) result.answered = answered;
     if (probedAtUnix != null) result.probedAtUnix = probedAtUnix;
+    if (lan != null) result.lan = lan;
     return result;
   }
 
@@ -1803,6 +1913,8 @@ class NetworkInfo extends $pb.GeneratedMessage {
     ..aI(3, _omitFieldNames ? '' : 'probed')
     ..aI(4, _omitFieldNames ? '' : 'answered')
     ..aInt64(5, _omitFieldNames ? '' : 'probedAtUnix')
+    ..aOM<LanInfo>(6, _omitFieldNames ? '' : 'lan',
+        subBuilder: LanInfo.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1865,6 +1977,231 @@ class NetworkInfo extends $pb.GeneratedMessage {
   $core.bool hasProbedAtUnix() => $_has(4);
   @$pb.TagNumber(5)
   void clearProbedAtUnix() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  LanInfo get lan => $_getN(5);
+  @$pb.TagNumber(6)
+  set lan(LanInfo value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasLan() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearLan() => $_clearField(6);
+  @$pb.TagNumber(6)
+  LanInfo ensureLan() => $_ensure(5);
+}
+
+/// 局域网直连的诊断信息，见 copysync-cli nat。
+class LanInfo extends $pb.GeneratedMessage {
+  factory LanInfo({
+    $core.bool? enabled,
+    $core.int? port,
+    $core.Iterable<$core.String>? localAddresses,
+    $core.int? discovered,
+    $core.Iterable<LanPeer>? peers,
+    $core.bool? blocked,
+  }) {
+    final result = LanInfo._();
+    if (enabled != null) result.enabled = enabled;
+    if (port != null) result.port = port;
+    if (localAddresses != null) result.localAddresses.addAll(localAddresses);
+    if (discovered != null) result.discovered = discovered;
+    if (peers != null) result.peers.addAll(peers);
+    if (blocked != null) result.blocked = blocked;
+    return result;
+  }
+
+  LanInfo._();
+
+  factory LanInfo.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanInfo()..mergeFromBuffer(data, registry);
+  factory LanInfo.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanInfo()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LanInfo',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LanInfo.$_createMessage)
+    ..aOB(1, _omitFieldNames ? '' : 'enabled')
+    ..aI(2, _omitFieldNames ? '' : 'port')
+    ..pPS(3, _omitFieldNames ? '' : 'localAddresses')
+    ..aI(4, _omitFieldNames ? '' : 'discovered')
+    ..pPM<LanPeer>(5, _omitFieldNames ? '' : 'peers',
+        subBuilder: LanPeer.$_createMessage)
+    ..aOB(6, _omitFieldNames ? '' : 'blocked')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanInfo clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanInfo copyWith(void Function(LanInfo) updates) =>
+      super.copyWith((message) => updates(message as LanInfo)) as LanInfo;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LanInfo() / LanInfo.new instead')
+  static LanInfo create() => LanInfo._();
+  static $pb.GeneratedMessage $_createMessage() => LanInfo._();
+  @$core.override
+  LanInfo createEmptyInstance() => LanInfo._();
+  @$core.pragma('dart2js:noInline')
+  static LanInfo getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<LanInfo>(LanInfo.$_createMessage);
+  static LanInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get enabled => $_getBF(0);
+  @$pb.TagNumber(1)
+  set enabled($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasEnabled() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearEnabled() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get port => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set port($core.int value) => $_setSignedInt32(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasPort() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPort() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $pb.PbList<$core.String> get localAddresses => $_getList(2);
+
+  @$pb.TagNumber(4)
+  $core.int get discovered => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set discovered($core.int value) => $_setSignedInt32(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasDiscovered() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearDiscovered() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $pb.PbList<LanPeer> get peers => $_getList(4);
+
+  @$pb.TagNumber(6)
+  $core.bool get blocked => $_getBF(5);
+  @$pb.TagNumber(6)
+  set blocked($core.bool value) => $_setBool(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasBlocked() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearBlocked() => $_clearField(6);
+}
+
+class LanPeer extends $pb.GeneratedMessage {
+  factory LanPeer({
+    $core.String? deviceId,
+    $core.String? deviceName,
+    $core.bool? reachable,
+    $core.String? address,
+    $core.Iterable<$core.String>? knownAddresses,
+    $fixnum.Int64? lastSeenUnix,
+  }) {
+    final result = LanPeer._();
+    if (deviceId != null) result.deviceId = deviceId;
+    if (deviceName != null) result.deviceName = deviceName;
+    if (reachable != null) result.reachable = reachable;
+    if (address != null) result.address = address;
+    if (knownAddresses != null) result.knownAddresses.addAll(knownAddresses);
+    if (lastSeenUnix != null) result.lastSeenUnix = lastSeenUnix;
+    return result;
+  }
+
+  LanPeer._();
+
+  factory LanPeer.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPeer()..mergeFromBuffer(data, registry);
+  factory LanPeer.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanPeer()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LanPeer',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LanPeer.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'deviceId')
+    ..aOS(2, _omitFieldNames ? '' : 'deviceName')
+    ..aOB(3, _omitFieldNames ? '' : 'reachable')
+    ..aOS(4, _omitFieldNames ? '' : 'address')
+    ..pPS(5, _omitFieldNames ? '' : 'knownAddresses')
+    ..aInt64(6, _omitFieldNames ? '' : 'lastSeenUnix')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPeer clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanPeer copyWith(void Function(LanPeer) updates) =>
+      super.copyWith((message) => updates(message as LanPeer)) as LanPeer;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LanPeer() / LanPeer.new instead')
+  static LanPeer create() => LanPeer._();
+  static $pb.GeneratedMessage $_createMessage() => LanPeer._();
+  @$core.override
+  LanPeer createEmptyInstance() => LanPeer._();
+  @$core.pragma('dart2js:noInline')
+  static LanPeer getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<LanPeer>(LanPeer.$_createMessage);
+  static LanPeer? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get deviceId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set deviceId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasDeviceId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearDeviceId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get deviceName => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set deviceName($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasDeviceName() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDeviceName() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.bool get reachable => $_getBF(2);
+  @$pb.TagNumber(3)
+  set reachable($core.bool value) => $_setBool(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasReachable() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearReachable() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get address => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set address($core.String value) => $_setString(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasAddress() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearAddress() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $pb.PbList<$core.String> get knownAddresses => $_getList(4);
+
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get lastSeenUnix => $_getI64(5);
+  @$pb.TagNumber(6)
+  set lastSeenUnix($fixnum.Int64 value) => $_setInt64(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasLastSeenUnix() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearLastSeenUnix() => $_clearField(6);
 }
 
 class NetworkEgress extends $pb.GeneratedMessage {
@@ -1963,6 +2300,9 @@ class Status extends $pb.GeneratedMessage {
     $fixnum.Int64? cacheBytesUsed,
     $core.int? peersOnline,
     $core.String? version,
+    $core.bool? serverConfigured,
+    $core.bool? lanEnabled,
+    $core.bool? lanBlocked,
   }) {
     final result = Status._();
     if (deviceId != null) result.deviceId = deviceId;
@@ -1974,6 +2314,9 @@ class Status extends $pb.GeneratedMessage {
     if (cacheBytesUsed != null) result.cacheBytesUsed = cacheBytesUsed;
     if (peersOnline != null) result.peersOnline = peersOnline;
     if (version != null) result.version = version;
+    if (serverConfigured != null) result.serverConfigured = serverConfigured;
+    if (lanEnabled != null) result.lanEnabled = lanEnabled;
+    if (lanBlocked != null) result.lanBlocked = lanBlocked;
     return result;
   }
 
@@ -1998,6 +2341,9 @@ class Status extends $pb.GeneratedMessage {
     ..aInt64(5, _omitFieldNames ? '' : 'cacheBytesUsed')
     ..aI(6, _omitFieldNames ? '' : 'peersOnline')
     ..aOS(7, _omitFieldNames ? '' : 'version')
+    ..aOB(8, _omitFieldNames ? '' : 'serverConfigured')
+    ..aOB(9, _omitFieldNames ? '' : 'lanEnabled')
+    ..aOB(10, _omitFieldNames ? '' : 'lanBlocked')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2082,6 +2428,35 @@ class Status extends $pb.GeneratedMessage {
   $core.bool hasVersion() => $_has(6);
   @$pb.TagNumber(7)
   void clearVersion() => $_clearField(7);
+
+  /// 设置里填了服务器地址。没填时只在局域网里同步，不算异常。
+  @$pb.TagNumber(8)
+  $core.bool get serverConfigured => $_getBF(7);
+  @$pb.TagNumber(8)
+  set serverConfigured($core.bool value) => $_setBool(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasServerConfigured() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearServerConfigured() => $_clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.bool get lanEnabled => $_getBF(8);
+  @$pb.TagNumber(9)
+  set lanEnabled($core.bool value) => $_setBool(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasLanEnabled() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearLanEnabled() => $_clearField(9);
+
+  /// 系统拦下了本机发往局域网的包：macOS 上是没允许「本地网络」权限
+  @$pb.TagNumber(10)
+  $core.bool get lanBlocked => $_getBF(9);
+  @$pb.TagNumber(10)
+  set lanBlocked($core.bool value) => $_setBool(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasLanBlocked() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearLanBlocked() => $_clearField(10);
 }
 
 class GetImagePreviewRequest extends $pb.GeneratedMessage {

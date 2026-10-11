@@ -4,6 +4,7 @@ package rpc
 import (
 	"context"
 	"crypto/subtle"
+	"errors"
 	"fmt"
 	"net"
 	"time"
@@ -15,7 +16,9 @@ import (
 
 	"github.com/baiyuze/copysync/client-core/internal/clipboard"
 	"github.com/baiyuze/copysync/client-core/internal/config"
+	"github.com/baiyuze/copysync/client-core/internal/peers"
 	"github.com/baiyuze/copysync/client-core/internal/store"
+	"github.com/baiyuze/copysync/client-core/internal/transport/lan"
 	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
 )
 
@@ -43,12 +46,18 @@ type Deps struct {
 	// Network 返回最近一轮网络出口探测的结果
 	Network            func() *pb.NetworkInfo
 	Devices            func() (self *pb.Device, peers []*pb.Device)
-	CreatePairingCode  func(ctx context.Context) (code string, expiresAt time.Time, err error)
-	RedeemPairingCode  func(ctx context.Context, code string) (*pb.Device, string, error)
+	CreatePairingCode  func(ctx context.Context) (code string, expiresAt time.Time, lanAddrs []string, err error)
+	RedeemPairingCode  func(ctx context.Context, code, address string) (*pb.Device, string, error)
 	ConfirmPairing     func(ctx context.Context, session string, accept bool) error
 	Unpair             func(ctx context.Context, deviceID string) error
+	SetDeviceAddress   func(ctx context.Context, deviceID, address string) error
 	SignalingConnected func() bool
-	CacheBytesUsed     func() int64
+	ServerConfigured   func() bool
+	LANEnabled         func() bool
+	LANBlocked         func() bool
+	// OpenLocalNetworkSettings 让系统放行局域网访问（macOS 打开设置面板，Windows 放行防火墙）
+	OpenLocalNetworkSettings func() error
+	CacheBytesUsed           func() int64
 }
 
 type Server struct {
@@ -274,6 +283,15 @@ func (s *Server) GetStatus(context.Context, *pb.Empty) (*pb.Status, error) {
 	if s.deps.SignalingConnected != nil {
 		st.SignalingConnected = s.deps.SignalingConnected()
 	}
+	if s.deps.ServerConfigured != nil {
+		st.ServerConfigured = s.deps.ServerConfigured()
+	}
+	if s.deps.LANEnabled != nil {
+		st.LanEnabled = s.deps.LANEnabled()
+	}
+	if s.deps.LANBlocked != nil {
+		st.LanBlocked = s.deps.LANBlocked()
+	}
 	if s.deps.CacheBytesUsed != nil {
 		st.CacheBytesUsed = s.deps.CacheBytesUsed()
 	}
@@ -305,7 +323,48 @@ func (s *Server) RequestClipboardPermission(context.Context, *pb.Empty) (*pb.Emp
 	return &pb.Empty{}, nil
 }
 
+func (s *Server) RequestLocalNetworkPermission(context.Context, *pb.Empty) (*pb.Empty, error) {
+	if s.deps.OpenLocalNetworkSettings == nil {
+		return nil, status.Error(codes.Unimplemented, "当前平台无需授权")
+	}
+	if err := s.deps.OpenLocalNetworkSettings(); err != nil {
+		if errors.Is(err, errors.ErrUnsupported) {
+			return nil, status.Error(codes.Unimplemented, "当前平台无需授权")
+		}
+		return nil, status.Errorf(codes.Internal, "放行局域网访问失败: %v", err)
+	}
+	return &pb.Empty{}, nil
+}
+
 // ─────────────────────────── 设备与配对 ───────────────────────────
+
+// 配对出错时，消息以「原因: 说明」开头，界面按原因显示本地化的提示，
+// 不认识的原因再直接显示说明：
+//
+//	not_found     局域网里没找到正在配对的设备，服务器也没连（界面会请用户输入对方地址）
+//	wrong_code    配对码不对（或服务器那边码不存在、已过期，服务器不区分）
+//	code_expired  配对码已失效，或输错次数太多
+//	bad_address   输入的地址无法识别
+//	no_channel    局域网发现已关闭，也没连服务器
+func pairingStatus(err error) error {
+	reason, code := "", codes.Internal
+	switch {
+	case errors.Is(err, lan.ErrNotFound):
+		reason, code = "not_found", codes.NotFound
+	case errors.Is(err, lan.ErrWrongCode), errors.Is(err, peers.ErrCodeRejected):
+		reason, code = "wrong_code", codes.InvalidArgument
+	case errors.Is(err, lan.ErrCodeClosed), errors.Is(err, lan.ErrTooManyAttempts):
+		reason, code = "code_expired", codes.FailedPrecondition
+	case errors.Is(err, lan.ErrBadAddress):
+		reason, code = "bad_address", codes.InvalidArgument
+	case errors.Is(err, peers.ErrNoChannel), errors.Is(err, lan.ErrDisabled):
+		reason, code = "no_channel", codes.FailedPrecondition
+	}
+	if reason == "" {
+		return status.Error(code, err.Error())
+	}
+	return status.Error(code, reason+": "+err.Error())
+}
 
 func (s *Server) ListDevices(context.Context, *pb.Empty) (*pb.ListDevicesResponse, error) {
 	if s.deps.Devices == nil {
@@ -320,11 +379,11 @@ func (s *Server) CreatePairingCode(ctx context.Context,
 	if s.deps.CreatePairingCode == nil {
 		return nil, status.Error(codes.Unimplemented, "配对尚未接入（M1）")
 	}
-	code, exp, err := s.deps.CreatePairingCode(ctx)
+	code, exp, addrs, err := s.deps.CreatePairingCode(ctx)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "生成配对码: %v", err)
+		return nil, pairingStatus(err)
 	}
-	return &pb.CreatePairingCodeResponse{Code: code, ExpiresAtUnix: exp.Unix()}, nil
+	return &pb.CreatePairingCodeResponse{Code: code, ExpiresAtUnix: exp.Unix(), LanAddresses: addrs}, nil
 }
 
 func (s *Server) RedeemPairingCode(ctx context.Context,
@@ -332,9 +391,9 @@ func (s *Server) RedeemPairingCode(ctx context.Context,
 	if s.deps.RedeemPairingCode == nil {
 		return nil, status.Error(codes.Unimplemented, "配对尚未接入（M1）")
 	}
-	peer, session, err := s.deps.RedeemPairingCode(ctx, req.GetCode())
+	peer, session, err := s.deps.RedeemPairingCode(ctx, req.GetCode(), req.GetAddress())
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "兑换配对码: %v", err)
+		return nil, pairingStatus(err)
 	}
 	return &pb.RedeemPairingCodeResponse{Peer: peer, PairingSession: session}, nil
 }
@@ -355,6 +414,19 @@ func (s *Server) Unpair(ctx context.Context, req *pb.UnpairRequest) (*pb.Empty, 
 	}
 	if err := s.deps.Unpair(ctx, req.GetDeviceId()); err != nil {
 		return nil, status.Errorf(codes.Internal, "解除配对: %v", err)
+	}
+	return &pb.Empty{}, nil
+}
+
+func (s *Server) SetDeviceAddress(ctx context.Context, req *pb.SetDeviceAddressRequest) (*pb.Empty, error) {
+	if s.deps.SetDeviceAddress == nil {
+		return nil, status.Error(codes.Unimplemented, "当前版本不支持手动输入地址")
+	}
+	if err := s.deps.SetDeviceAddress(ctx, req.GetDeviceId(), req.GetAddress()); err != nil {
+		if errors.Is(err, peers.ErrNotPaired) {
+			return nil, status.Error(codes.NotFound, err.Error())
+		}
+		return nil, pairingStatus(err)
 	}
 	return &pb.Empty{}, nil
 }

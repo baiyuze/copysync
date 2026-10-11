@@ -55,6 +55,7 @@ func configToProto(c config.Config) *pb.Config {
 		SignalingUrl:           c.SignalingURL,
 		OnlyOwnStun:            c.OnlyOwnSTUN,
 		Language:               c.Language,
+		LanDisabled:            c.LANDisabled,
 	}
 }
 
@@ -77,9 +78,6 @@ func configFromProto(in *pb.Config, base config.Config) config.Config {
 	if in.GetDeviceName() != "" {
 		c.DeviceName = in.GetDeviceName()
 	}
-	if in.GetSignalingUrl() != "" {
-		c.SignalingURL = in.GetSignalingUrl()
-	}
 	// 布尔项没有"未设置"语义，UI 每次都会带全量值，直接覆盖
 	c.SyncText = in.GetSyncText()
 	c.SyncHTML = in.GetSyncHtml()
@@ -90,6 +88,9 @@ func configFromProto(in *pb.Config, base config.Config) config.Config {
 	c.OnlyOwnSTUN = in.GetOnlyOwnStun()
 	// 空字符串就是「跟随系统」，与「没设置」同义，直接覆盖
 	c.Language = in.GetLanguage()
+	// 服务器地址同理：空字符串就是不用服务器
+	c.SignalingURL = in.GetSignalingUrl()
+	c.LANDisabled = in.GetLanDisabled()
 	return c
 }
 

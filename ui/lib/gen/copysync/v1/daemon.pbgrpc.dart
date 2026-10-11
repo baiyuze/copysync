@@ -116,6 +116,14 @@ class DaemonServiceClient extends $grpc.Client {
     return $createUnaryCall(_$unpair, request, options: options);
   }
 
+  /// 手动告诉后台服务某台设备的局域网地址：跨网段、或两边都换了地址时用
+  $grpc.ResponseFuture<$0.Empty> setDeviceAddress(
+    $0.SetDeviceAddressRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$setDeviceAddress, request, options: options);
+  }
+
   $grpc.ResponseFuture<$0.Config> getConfig(
     $0.Empty request, {
     $grpc.CallOptions? options,
@@ -143,6 +151,16 @@ class DaemonServiceClient extends $grpc.Client {
     $grpc.CallOptions? options,
   }) {
     return $createUnaryCall(_$requestClipboardPermission, request,
+        options: options);
+  }
+
+  /// 让系统放行局域网访问：macOS 打开「本地网络」设置面板；
+  /// Windows 申请管理员权限，在防火墙里放行后台服务。其他平台返回 UNIMPLEMENTED。
+  $grpc.ResponseFuture<$0.Empty> requestLocalNetworkPermission(
+    $0.Empty request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$requestLocalNetworkPermission, request,
         options: options);
   }
 
@@ -208,6 +226,11 @@ class DaemonServiceClient extends $grpc.Client {
       '/copysync.v1.DaemonService/Unpair',
       ($0.UnpairRequest value) => value.writeToBuffer(),
       $0.Empty.fromBuffer);
+  static final _$setDeviceAddress =
+      $grpc.ClientMethod<$0.SetDeviceAddressRequest, $0.Empty>(
+          '/copysync.v1.DaemonService/SetDeviceAddress',
+          ($0.SetDeviceAddressRequest value) => value.writeToBuffer(),
+          $0.Empty.fromBuffer);
   static final _$getConfig = $grpc.ClientMethod<$0.Empty, $0.Config>(
       '/copysync.v1.DaemonService/GetConfig',
       ($0.Empty value) => value.writeToBuffer(),
@@ -223,6 +246,11 @@ class DaemonServiceClient extends $grpc.Client {
   static final _$requestClipboardPermission =
       $grpc.ClientMethod<$0.Empty, $0.Empty>(
           '/copysync.v1.DaemonService/RequestClipboardPermission',
+          ($0.Empty value) => value.writeToBuffer(),
+          $0.Empty.fromBuffer);
+  static final _$requestLocalNetworkPermission =
+      $grpc.ClientMethod<$0.Empty, $0.Empty>(
+          '/copysync.v1.DaemonService/RequestLocalNetworkPermission',
           ($0.Empty value) => value.writeToBuffer(),
           $0.Empty.fromBuffer);
   static final _$getNetwork = $grpc.ClientMethod<$0.Empty, $0.NetworkInfo>(
@@ -322,6 +350,14 @@ abstract class DaemonServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.UnpairRequest.fromBuffer(value),
         ($0.Empty value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.SetDeviceAddressRequest, $0.Empty>(
+        'SetDeviceAddress',
+        setDeviceAddress_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.SetDeviceAddressRequest.fromBuffer(value),
+        ($0.Empty value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.Empty, $0.Config>(
         'GetConfig',
         getConfig_Pre,
@@ -346,6 +382,13 @@ abstract class DaemonServiceBase extends $grpc.Service {
     $addMethod($grpc.ServiceMethod<$0.Empty, $0.Empty>(
         'RequestClipboardPermission',
         requestClipboardPermission_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
+        ($0.Empty value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.Empty, $0.Empty>(
+        'RequestLocalNetworkPermission',
+        requestLocalNetworkPermission_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
@@ -449,6 +492,14 @@ abstract class DaemonServiceBase extends $grpc.Service {
   $async.Future<$0.Empty> unpair(
       $grpc.ServiceCall call, $0.UnpairRequest request);
 
+  $async.Future<$0.Empty> setDeviceAddress_Pre($grpc.ServiceCall $call,
+      $async.Future<$0.SetDeviceAddressRequest> $request) async {
+    return setDeviceAddress($call, await $request);
+  }
+
+  $async.Future<$0.Empty> setDeviceAddress(
+      $grpc.ServiceCall call, $0.SetDeviceAddressRequest request);
+
   $async.Future<$0.Config> getConfig_Pre(
       $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async {
     return getConfig($call, await $request);
@@ -477,6 +528,14 @@ abstract class DaemonServiceBase extends $grpc.Service {
   }
 
   $async.Future<$0.Empty> requestClipboardPermission(
+      $grpc.ServiceCall call, $0.Empty request);
+
+  $async.Future<$0.Empty> requestLocalNetworkPermission_Pre(
+      $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async {
+    return requestLocalNetworkPermission($call, await $request);
+  }
+
+  $async.Future<$0.Empty> requestLocalNetworkPermission(
       $grpc.ServiceCall call, $0.Empty request);
 
   $async.Future<$0.NetworkInfo> getNetwork_Pre(

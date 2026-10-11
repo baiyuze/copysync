@@ -441,27 +441,30 @@ const CreatePairingCodeResponse$json = {
   '2': [
     {'1': 'code', '3': 1, '4': 1, '5': 9, '10': 'code'},
     {'1': 'expires_at_unix', '3': 2, '4': 1, '5': 3, '10': 'expiresAtUnix'},
+    {'1': 'lan_addresses', '3': 3, '4': 3, '5': 9, '10': 'lanAddresses'},
   ],
 };
 
 /// Descriptor for `CreatePairingCodeResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List createPairingCodeResponseDescriptor =
-    $convert.base64Decode(
-        'ChlDcmVhdGVQYWlyaW5nQ29kZVJlc3BvbnNlEhIKBGNvZGUYASABKAlSBGNvZGUSJgoPZXhwaX'
-        'Jlc19hdF91bml4GAIgASgDUg1leHBpcmVzQXRVbml4');
+final $typed_data.Uint8List createPairingCodeResponseDescriptor = $convert.base64Decode(
+    'ChlDcmVhdGVQYWlyaW5nQ29kZVJlc3BvbnNlEhIKBGNvZGUYASABKAlSBGNvZGUSJgoPZXhwaX'
+    'Jlc19hdF91bml4GAIgASgDUg1leHBpcmVzQXRVbml4EiMKDWxhbl9hZGRyZXNzZXMYAyADKAlS'
+    'DGxhbkFkZHJlc3Nlcw==');
 
 @$core.Deprecated('Use redeemPairingCodeRequestDescriptor instead')
 const RedeemPairingCodeRequest$json = {
   '1': 'RedeemPairingCodeRequest',
   '2': [
     {'1': 'code', '3': 1, '4': 1, '5': 9, '10': 'code'},
+    {'1': 'address', '3': 2, '4': 1, '5': 9, '10': 'address'},
   ],
 };
 
 /// Descriptor for `RedeemPairingCodeRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List redeemPairingCodeRequestDescriptor =
     $convert.base64Decode(
-        'ChhSZWRlZW1QYWlyaW5nQ29kZVJlcXVlc3QSEgoEY29kZRgBIAEoCVIEY29kZQ==');
+        'ChhSZWRlZW1QYWlyaW5nQ29kZVJlcXVlc3QSEgoEY29kZRgBIAEoCVIEY29kZRIYCgdhZGRyZX'
+        'NzGAIgASgJUgdhZGRyZXNz');
 
 @$core.Deprecated('Use redeemPairingCodeResponseDescriptor instead')
 const RedeemPairingCodeResponse$json = {
@@ -510,6 +513,21 @@ const UnpairRequest$json = {
 final $typed_data.Uint8List unpairRequestDescriptor = $convert.base64Decode(
     'Cg1VbnBhaXJSZXF1ZXN0EhsKCWRldmljZV9pZBgBIAEoCVIIZGV2aWNlSWQ=');
 
+@$core.Deprecated('Use setDeviceAddressRequestDescriptor instead')
+const SetDeviceAddressRequest$json = {
+  '1': 'SetDeviceAddressRequest',
+  '2': [
+    {'1': 'device_id', '3': 1, '4': 1, '5': 9, '10': 'deviceId'},
+    {'1': 'address', '3': 2, '4': 1, '5': 9, '10': 'address'},
+  ],
+};
+
+/// Descriptor for `SetDeviceAddressRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List setDeviceAddressRequestDescriptor =
+    $convert.base64Decode(
+        'ChdTZXREZXZpY2VBZGRyZXNzUmVxdWVzdBIbCglkZXZpY2VfaWQYASABKAlSCGRldmljZUlkEh'
+        'gKB2FkZHJlc3MYAiABKAlSB2FkZHJlc3M=');
+
 @$core.Deprecated('Use configDescriptor instead')
 const Config$json = {
   '1': 'Config',
@@ -545,6 +563,7 @@ const Config$json = {
     {'1': 'signaling_url', '3': 11, '4': 1, '5': 9, '10': 'signalingUrl'},
     {'1': 'only_own_stun', '3': 12, '4': 1, '5': 8, '10': 'onlyOwnStun'},
     {'1': 'language', '3': 13, '4': 1, '5': 9, '10': 'language'},
+    {'1': 'lan_disabled', '3': 14, '4': 1, '5': 8, '10': 'lanDisabled'},
   ],
 };
 
@@ -559,7 +578,7 @@ final $typed_data.Uint8List configDescriptor = $convert.base64Decode(
     'JgoPbGF1bmNoX2F0X2xvZ2luGAkgASgIUg1sYXVuY2hBdExvZ2luEh8KC2RldmljZV9uYW1lGA'
     'ogASgJUgpkZXZpY2VOYW1lEiMKDXNpZ25hbGluZ191cmwYCyABKAlSDHNpZ25hbGluZ1VybBIi'
     'Cg1vbmx5X293bl9zdHVuGAwgASgIUgtvbmx5T3duU3R1bhIaCghsYW5ndWFnZRgNIAEoCVIIbG'
-    'FuZ3VhZ2U=');
+    'FuZ3VhZ2USIQoMbGFuX2Rpc2FibGVkGA4gASgIUgtsYW5EaXNhYmxlZA==');
 
 @$core.Deprecated('Use networkInfoDescriptor instead')
 const NetworkInfo$json = {
@@ -577,6 +596,14 @@ const NetworkInfo$json = {
     {'1': 'probed', '3': 3, '4': 1, '5': 5, '10': 'probed'},
     {'1': 'answered', '3': 4, '4': 1, '5': 5, '10': 'answered'},
     {'1': 'probed_at_unix', '3': 5, '4': 1, '5': 3, '10': 'probedAtUnix'},
+    {
+      '1': 'lan',
+      '3': 6,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.LanInfo',
+      '10': 'lan'
+    },
   ],
 };
 
@@ -585,7 +612,55 @@ final $typed_data.Uint8List networkInfoDescriptor = $convert.base64Decode(
     'CgtOZXR3b3JrSW5mbxIdCgpsb2NhbF9wb3J0GAEgASgFUglsb2NhbFBvcnQSNgoIZWdyZXNzZX'
     'MYAiADKAsyGi5jb3B5c3luYy52MS5OZXR3b3JrRWdyZXNzUghlZ3Jlc3NlcxIWCgZwcm9iZWQY'
     'AyABKAVSBnByb2JlZBIaCghhbnN3ZXJlZBgEIAEoBVIIYW5zd2VyZWQSJAoOcHJvYmVkX2F0X3'
-    'VuaXgYBSABKANSDHByb2JlZEF0VW5peA==');
+    'VuaXgYBSABKANSDHByb2JlZEF0VW5peBImCgNsYW4YBiABKAsyFC5jb3B5c3luYy52MS5MYW5J'
+    'bmZvUgNsYW4=');
+
+@$core.Deprecated('Use lanInfoDescriptor instead')
+const LanInfo$json = {
+  '1': 'LanInfo',
+  '2': [
+    {'1': 'enabled', '3': 1, '4': 1, '5': 8, '10': 'enabled'},
+    {'1': 'port', '3': 2, '4': 1, '5': 5, '10': 'port'},
+    {'1': 'local_addresses', '3': 3, '4': 3, '5': 9, '10': 'localAddresses'},
+    {'1': 'discovered', '3': 4, '4': 1, '5': 5, '10': 'discovered'},
+    {
+      '1': 'peers',
+      '3': 5,
+      '4': 3,
+      '5': 11,
+      '6': '.copysync.v1.LanPeer',
+      '10': 'peers'
+    },
+    {'1': 'blocked', '3': 6, '4': 1, '5': 8, '10': 'blocked'},
+  ],
+};
+
+/// Descriptor for `LanInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lanInfoDescriptor = $convert.base64Decode(
+    'CgdMYW5JbmZvEhgKB2VuYWJsZWQYASABKAhSB2VuYWJsZWQSEgoEcG9ydBgCIAEoBVIEcG9ydB'
+    'InCg9sb2NhbF9hZGRyZXNzZXMYAyADKAlSDmxvY2FsQWRkcmVzc2VzEh4KCmRpc2NvdmVyZWQY'
+    'BCABKAVSCmRpc2NvdmVyZWQSKgoFcGVlcnMYBSADKAsyFC5jb3B5c3luYy52MS5MYW5QZWVyUg'
+    'VwZWVycxIYCgdibG9ja2VkGAYgASgIUgdibG9ja2Vk');
+
+@$core.Deprecated('Use lanPeerDescriptor instead')
+const LanPeer$json = {
+  '1': 'LanPeer',
+  '2': [
+    {'1': 'device_id', '3': 1, '4': 1, '5': 9, '10': 'deviceId'},
+    {'1': 'device_name', '3': 2, '4': 1, '5': 9, '10': 'deviceName'},
+    {'1': 'reachable', '3': 3, '4': 1, '5': 8, '10': 'reachable'},
+    {'1': 'address', '3': 4, '4': 1, '5': 9, '10': 'address'},
+    {'1': 'known_addresses', '3': 5, '4': 3, '5': 9, '10': 'knownAddresses'},
+    {'1': 'last_seen_unix', '3': 6, '4': 1, '5': 3, '10': 'lastSeenUnix'},
+  ],
+};
+
+/// Descriptor for `LanPeer`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lanPeerDescriptor = $convert.base64Decode(
+    'CgdMYW5QZWVyEhsKCWRldmljZV9pZBgBIAEoCVIIZGV2aWNlSWQSHwoLZGV2aWNlX25hbWUYAi'
+    'ABKAlSCmRldmljZU5hbWUSHAoJcmVhY2hhYmxlGAMgASgIUglyZWFjaGFibGUSGAoHYWRkcmVz'
+    'cxgEIAEoCVIHYWRkcmVzcxInCg9rbm93bl9hZGRyZXNzZXMYBSADKAlSDmtub3duQWRkcmVzc2'
+    'VzEiQKDmxhc3Rfc2Vlbl91bml4GAYgASgDUgxsYXN0U2VlblVuaXg=');
 
 @$core.Deprecated('Use networkEgressDescriptor instead')
 const NetworkEgress$json = {
@@ -628,6 +703,15 @@ const Status$json = {
     {'1': 'cache_bytes_used', '3': 5, '4': 1, '5': 3, '10': 'cacheBytesUsed'},
     {'1': 'peers_online', '3': 6, '4': 1, '5': 5, '10': 'peersOnline'},
     {'1': 'version', '3': 7, '4': 1, '5': 9, '10': 'version'},
+    {
+      '1': 'server_configured',
+      '3': 8,
+      '4': 1,
+      '5': 8,
+      '10': 'serverConfigured'
+    },
+    {'1': 'lan_enabled', '3': 9, '4': 1, '5': 8, '10': 'lanEnabled'},
+    {'1': 'lan_blocked', '3': 10, '4': 1, '5': 8, '10': 'lanBlocked'},
   ],
 };
 
@@ -638,7 +722,9 @@ final $typed_data.Uint8List statusDescriptor = $convert.base64Decode(
     'b25uZWN0ZWQSUwoUY2xpcGJvYXJkX3Blcm1pc3Npb24YBCABKA4yIC5jb3B5c3luYy52MS5DbG'
     'lwYm9hcmRQZXJtaXNzaW9uUhNjbGlwYm9hcmRQZXJtaXNzaW9uEigKEGNhY2hlX2J5dGVzX3Vz'
     'ZWQYBSABKANSDmNhY2hlQnl0ZXNVc2VkEiEKDHBlZXJzX29ubGluZRgGIAEoBVILcGVlcnNPbm'
-    'xpbmUSGAoHdmVyc2lvbhgHIAEoCVIHdmVyc2lvbg==');
+    'xpbmUSGAoHdmVyc2lvbhgHIAEoCVIHdmVyc2lvbhIrChFzZXJ2ZXJfY29uZmlndXJlZBgIIAEo'
+    'CFIQc2VydmVyQ29uZmlndXJlZBIfCgtsYW5fZW5hYmxlZBgJIAEoCFIKbGFuRW5hYmxlZBIfCg'
+    'tsYW5fYmxvY2tlZBgKIAEoCFIKbGFuQmxvY2tlZA==');
 
 @$core.Deprecated('Use getImagePreviewRequestDescriptor instead')
 const GetImagePreviewRequest$json = {
