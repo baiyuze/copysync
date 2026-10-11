@@ -11,7 +11,7 @@ import 'package:copysync_ui/widgets/pairing_dialog.dart';
 
 class _DemoState extends AppState {
   @override
-  Future<String> createPairingCode() async => 'K7MP2X';
+  Future<PairingCode> createPairingCode() async => (code: 'K7MP2X', addresses: ['192.168.1.20']);
 }
 
 AppState _demo(String language, {LinkState link = LinkState.online, ServiceState? service}) =>

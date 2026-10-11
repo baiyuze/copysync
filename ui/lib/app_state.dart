@@ -12,6 +12,12 @@ import 'gen/copysync/v1/daemon.pbgrpc.dart' show DaemonServiceClient;
 /// daemon 连接的生命周期状态。
 enum LinkState { connecting, online, offline }
 
+/// 生成的配对码，以及本机的局域网地址（不在同一网段时对方要输入）。
+typedef PairingCode = ({String code, List<String> addresses});
+
+/// 配对失败的原因。后台服务把原因写在错误消息开头（见 rpc/server.go 的 pairingStatus）。
+enum PairingFailure { notFound, wrongCode, codeExpired, badAddress, noChannel, other }
+
 /// 应用的单一状态源。
 ///
 /// 所有与 daemon 的交互都经过这里：页面只读状态、调方法，不直接碰 gRPC。
@@ -59,6 +65,13 @@ class AppState extends ChangeNotifier {
 
   bool get isOnline => _link == LinkState.online;
   int get onlinePeerCount => _peers.where((p) => p.online).length;
+
+  /// 设置里填了服务器地址。没填时只在局域网里同步，不算异常。
+  bool get serverConfigured => _status?.serverConfigured ?? false;
+  bool get lanEnabled => _status?.lanEnabled ?? false;
+
+  /// macOS 拦下了发往局域网的包：用户还没允许「本地网络」权限。
+  bool get lanBlocked => _status?.lanBlocked ?? false;
 
   @override
   void dispose() {
@@ -307,15 +320,18 @@ class AppState extends ChangeNotifier {
     return c.client;
   }
 
-  Future<String> createPairingCode() async {
+  Future<PairingCode> createPairingCode() async {
     final resp = await _client.createPairingCode(Empty());
-    return resp.code;
+    return (code: resp.code, addresses: resp.lanAddresses.toList());
   }
 
   /// 兑换配对码，返回待核对指纹的对端信息。
-  Future<Device> redeemPairingCode(String code) async {
+  /// [address] 是对方配对码下面显示的地址，不在同一网段时才需要。
+  Future<Device> redeemPairingCode(String code, {String address = ''}) async {
     final resp = await _client.redeemPairingCode(
-      RedeemPairingCodeRequest(code: code.trim().toUpperCase()),
+      RedeemPairingCodeRequest(code: code.trim().toUpperCase(), address: address.trim()),
+      // 在局域网里找对方要几秒，找不到再去服务器上兑换
+      options: CallOptions(timeout: const Duration(seconds: 30)),
     );
     final peer = resp.peer..pairingSession = resp.pairingSession;
     _setPendingPairing(peer);
@@ -345,6 +361,13 @@ class AppState extends ChangeNotifier {
     if (_pendingPairing?.pairingSession == handled) _pendingPairing = null;
     notifyListeners();
   }
+
+  /// 手动告诉后台服务某台设备的地址：跨网段、或两边都换了地址时用。
+  Future<void> setDeviceAddress(String deviceId, String address) =>
+      _client.setDeviceAddress(SetDeviceAddressRequest(deviceId: deviceId, address: address.trim()));
+
+  /// macOS 打开「本地网络」设置；Windows 申请管理员权限放行防火墙。
+  Future<void> requestLocalNetworkPermission() => _client.requestLocalNetworkPermission(Empty());
 
   Future<void> unpair(String deviceId) async {
     await _client.unpair(UnpairRequest(deviceId: deviceId));
@@ -400,4 +423,18 @@ class AppState extends ChangeNotifier {
   }
 
   static String describeError(Object e) => _describe(e);
+
+  /// 从配对出错的消息里取出原因。
+  static PairingFailure pairingFailure(Object e) {
+    if (e is! GrpcError) return PairingFailure.other;
+    final reason = (e.message ?? '').split(':').first.trim();
+    return switch (reason) {
+      'not_found' => PairingFailure.notFound,
+      'wrong_code' => PairingFailure.wrongCode,
+      'code_expired' => PairingFailure.codeExpired,
+      'bad_address' => PairingFailure.badAddress,
+      'no_channel' => PairingFailure.noChannel,
+      _ => PairingFailure.other,
+    };
+  }
 }

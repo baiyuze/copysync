@@ -130,11 +130,29 @@ abstract class AppLocalizations {
   /// **'Service not running'**
   String get linkServiceNotRunning;
 
-  /// No description provided for @linkNoServer.
+  /// No description provided for @linkLanMode.
   ///
   /// In en, this message translates to:
-  /// **'No server connection'**
-  String get linkNoServer;
+  /// **'Looking for devices on this network'**
+  String get linkLanMode;
+
+  /// No description provided for @linkServerUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t reach the server; syncing on this network'**
+  String get linkServerUnreachable;
+
+  /// No description provided for @linkNothingOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Local network discovery is off and no server is set'**
+  String get linkNothingOn;
+
+  /// No description provided for @linkLanBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS is blocking the local network'**
+  String get linkLanBlocked;
 
   /// No description provided for @linkOnlinePeers.
   ///
@@ -637,14 +655,8 @@ abstract class AppLocalizations {
   /// No description provided for @noDevicesBody.
   ///
   /// In en, this message translates to:
-  /// **'Open CopySync on your other computer and link the two with a 6-character pairing code.'**
+  /// **'Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, nothing else is needed.'**
   String get noDevicesBody;
-
-  /// No description provided for @noDevicesNeedServer.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect to a signaling server in Settings before pairing.'**
-  String get noDevicesNeedServer;
 
   /// No description provided for @pairedDevices.
   ///
@@ -730,6 +742,42 @@ abstract class AppLocalizations {
   /// **'Unpaired'**
   String get unpaired;
 
+  /// No description provided for @enterAddressEllipsis.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter its address…'**
+  String get enterAddressEllipsis;
+
+  /// No description provided for @setAddressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Address of “{name}”'**
+  String setAddressTitle(String name);
+
+  /// No description provided for @setAddressBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this when the two devices are on different subnets, or both changed addresses. Enter the address shown on “{name}” under Add device → Show a code.'**
+  String setAddressBody(String name);
+
+  /// No description provided for @addressSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for it at that address'**
+  String get addressSaved;
+
+  /// No description provided for @lanBlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS is blocking the local network'**
+  String get lanBlockedTitle;
+
+  /// No description provided for @lanBlockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, {device} can\'t connect to devices on this network.'**
+  String lanBlockedBody(String device);
+
   /// No description provided for @generateCode.
   ///
   /// In en, this message translates to:
@@ -777,6 +825,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A pairing code is 6 letters or digits'**
   String get codeInvalid;
+
+  /// No description provided for @localAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get localAddress;
+
+  /// No description provided for @addressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'On a different subnet? Enter this address on the other device as well.'**
+  String get addressHint;
+
+  /// No description provided for @addressCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Address copied'**
+  String get addressCopied;
+
+  /// No description provided for @differentSubnet.
+  ///
+  /// In en, this message translates to:
+  /// **'On a different subnet?'**
+  String get differentSubnet;
+
+  /// No description provided for @peerAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address shown under the code'**
+  String get peerAddress;
+
+  /// No description provided for @pairNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t find that device. If it\'s on a different subnet, enter the address shown under its code.'**
+  String get pairNotFound;
+
+  /// No description provided for @pairNotFoundAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered at that address. Check the address and that the other device is still showing its code. A firewall on that device may also be blocking it.'**
+  String get pairNotFoundAddress;
+
+  /// No description provided for @codeWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'That code isn\'t right, or it has expired'**
+  String get codeWrong;
+
+  /// No description provided for @codeExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has expired. Show a new one on the other device.'**
+  String get codeExpired;
+
+  /// No description provided for @addressInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That address isn\'t valid. Enter something like 192.168.1.20.'**
+  String get addressInvalid;
+
+  /// No description provided for @pairNoChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on local network discovery or set a server in Settings first.'**
+  String get pairNoChannel;
 
   /// No description provided for @enterCodeShown.
   ///
@@ -829,13 +943,13 @@ abstract class AppLocalizations {
   /// No description provided for @server.
   ///
   /// In en, this message translates to:
-  /// **'Server'**
+  /// **'Server (optional)'**
   String get server;
 
   /// No description provided for @serverFootnote.
   ///
   /// In en, this message translates to:
-  /// **'The server only helps devices find each other and set up a direct connection. It can\'t see what they send.'**
+  /// **'Only needed to sync between different networks, such as home and office. Devices on the same network connect without it. The server only helps devices find each other and can\'t see what they send.'**
   String get serverFootnote;
 
   /// No description provided for @signalingUrl.
@@ -847,7 +961,7 @@ abstract class AppLocalizations {
   /// No description provided for @signalingUrlDesc.
   ///
   /// In en, this message translates to:
-  /// **'Press Return to save; it reconnects right away'**
+  /// **'Press Return to save. Leave it empty to sync on this network only.'**
   String get signalingUrlDesc;
 
   /// No description provided for @signalingUrlPlaceholder.
@@ -897,6 +1011,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not connected'**
   String get notConnected;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @notSetDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing with devices on this network only'**
+  String get notSetDesc;
+
+  /// No description provided for @serverCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Server removed. Syncing on this network only.'**
+  String get serverCleared;
+
+  /// No description provided for @localNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Local network'**
+  String get localNetwork;
+
+  /// No description provided for @lanFootnote.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses UDP port 8788. If the devices are on different subnets, enter the other device\'s address when pairing.'**
+  String get lanFootnote;
+
+  /// No description provided for @lanDiscovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Find devices on this network'**
+  String get lanDiscovery;
+
+  /// No description provided for @lanDiscoveryDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair and sync without a server. Others on the network only see an anonymous entry that changes daily.'**
+  String get lanDiscoveryDesc;
+
+  /// No description provided for @macLocalNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Network access'**
+  String get macLocalNetwork;
+
+  /// No description provided for @macLocalNetworkDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS asks once whether CopySync may connect to devices on your network. If you declined, turn on CopySync Daemon there.'**
+  String get macLocalNetworkDesc;
+
+  /// No description provided for @allowLan.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows Firewall'**
+  String get allowLan;
+
+  /// No description provided for @allowLanDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow this when other devices can\'t reach this one, for example when pairing from another subnet. Asks for administrator approval once.'**
+  String get allowLanDesc;
+
+  /// No description provided for @allow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get allow;
+
+  /// No description provided for @allowLanDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed. Other devices can now reach this one.'**
+  String get allowLanDone;
 
   /// No description provided for @deviceName.
   ///

@@ -286,12 +286,17 @@ class _ConnectionFooter extends StatelessWidget {
     final online = state.onlinePeerCount;
     final l = context.l10n;
 
+    // 服务器是可选的：没填地址时只在局域网里同步，是正常状态，不用警示色
     final (color, label) = switch (state.link) {
       LinkState.connecting => (p.textFaint, l.linkConnecting),
       LinkState.offline => (p.danger, state.error ?? l.linkServiceNotRunning),
-      LinkState.online when !signaling => (p.warning, l.linkNoServer),
+      LinkState.online when state.lanBlocked => (p.warning, l.linkLanBlocked),
       LinkState.online when online > 0 => (p.online, l.linkOnlinePeers(online)),
-      LinkState.online => (p.online, l.linkServerConnected),
+      LinkState.online when state.serverConfigured && !signaling =>
+        (p.warning, state.lanEnabled ? l.linkServerUnreachable : l.notConnected),
+      LinkState.online when state.serverConfigured => (p.online, l.linkServerConnected),
+      LinkState.online when state.lanEnabled => (p.textFaint, l.linkLanMode),
+      LinkState.online => (p.warning, l.linkNothingOn),
     };
 
     return Container(

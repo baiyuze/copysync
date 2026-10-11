@@ -6,6 +6,7 @@ import 'package:copysync_ui/main.dart';
 import 'package:copysync_ui/widgets/pairing_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:grpc/grpc.dart';
 
 Device pendingPeer([String session = 'session-1']) => Device(
   id: 'peer',
@@ -17,11 +18,14 @@ Device pendingPeer([String session = 'session-1']) => Device(
 class PairingState extends AppState {
   final redemption = Completer<Device>();
   final confirmations = <(String, bool)>[];
+  final redeemedWith = <(String, String)>[];
+  Object? nextRedeemFailure;
   bool failConfirmation = false;
 
+  // 没有服务器、只开着局域网：这是新装的默认状态，照样能配对
   PairingState() {
     debugSeed(
-      status: Status(signalingConnected: true),
+      status: Status(lanEnabled: true),
       config: Config(),
       self: Device(
         id: 'self',
@@ -34,10 +38,16 @@ class PairingState extends AppState {
   void receive(Device peer) => debugEvent(Event(deviceChanged: peer));
 
   @override
-  Future<String> createPairingCode() async => 'ABC123';
+  Future<PairingCode> createPairingCode() async => (code: 'ABC123', addresses: ['192.168.1.20']);
 
   @override
-  Future<Device> redeemPairingCode(String code) async {
+  Future<Device> redeemPairingCode(String code, {String address = ''}) async {
+    redeemedWith.add((code, address));
+    final failure = nextRedeemFailure;
+    if (failure != null) {
+      nextRedeemFailure = null;
+      throw failure;
+    }
     final peer = await redemption.future;
     receive(peer);
     return peer;
@@ -159,5 +169,80 @@ void main() {
     state.dismissPendingPairing('session-1');
     state.receive(pendingPeer());
     expect(state.pendingPairing?.pairingSession, 'session-2');
+  });
+
+  testWidgets('生成配对码时显示本机地址，跨网段时对方要输入它', (tester) async {
+    final state = PairingState();
+    addTearDown(state.dispose);
+    await openSetup(tester, state);
+    expect(find.text('ABC123'), findsOneWidget);
+    expect(find.textContaining('192.168.1.20', findRichText: true), findsOneWidget);
+    expect(find.text('不在同一网段时，另一台还要输入这个地址'), findsOneWidget);
+  });
+
+  testWidgets('局域网里找不到对方时展开地址框，带上地址重试', (tester) async {
+    final state = PairingState()
+      ..nextRedeemFailure = GrpcError.notFound('not_found: 没在局域网里找到正在配对的设备');
+    addTearDown(state.dispose);
+    await openSetup(tester, state);
+    await tester.tap(find.text('输入配对码'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'abc123');
+    await tester.tap(find.text('继续'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('没找到那台设备。不在同一网段时，请输入它配对码下面显示的地址。'), findsOneWidget);
+    final fields = find.byType(TextField);
+    expect(fields, findsNWidgets(2));
+    await tester.enterText(fields.last, '192.168.1.20');
+    await tester.tap(find.text('继续'));
+    state.redemption.complete(pendingPeer());
+    await tester.pumpAndSettle();
+
+    expect(state.redeemedWith, [('ABC123', ''), ('ABC123', '192.168.1.20')]);
+    expectSingleConfirmation();
+  });
+
+  testWidgets('配对码不对时给出本地化的原因', (tester) async {
+    final state = PairingState()
+      ..nextRedeemFailure = GrpcError.invalidArgument('wrong_code: 配对码不对');
+    addTearDown(state.dispose);
+    await openSetup(tester, state);
+    await tester.tap(find.text('输入配对码'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'ABC123');
+    await tester.tap(find.text('继续'));
+    await tester.pumpAndSettle();
+    expect(find.text('配对码不对，或者已经失效'), findsOneWidget);
+    // 不是「找不到」，地址框保持收起
+    expect(find.byType(TextField), findsOneWidget);
+  });
+
+  group('侧边栏的连接状态', () {
+    Future<void> pumpWith(WidgetTester tester, Status status) async {
+      final state = PairingState();
+      addTearDown(state.dispose);
+      state.debugSeed(status: status, config: Config(), self: Device(id: 'self', name: '本机'));
+      await tester.pumpWidget(CopySyncApp(state: state));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('没设置服务器时是局域网模式，不算异常', (tester) async {
+      await pumpWith(tester, Status(lanEnabled: true));
+      expect(find.text('在局域网中查找设备'), findsOneWidget);
+    });
+
+    testWidgets('设置了服务器但连不上时提示仍在局域网里同步', (tester) async {
+      await pumpWith(tester, Status(lanEnabled: true, serverConfigured: true));
+      expect(find.text('连不上服务器，局域网内照常同步'), findsOneWidget);
+    });
+
+    testWidgets('macOS 拦下局域网时在设备页给出处理办法', (tester) async {
+      await pumpWith(tester, Status(lanEnabled: true, lanBlocked: true));
+      await tester.tap(find.text('设备').first);
+      await tester.pumpAndSettle();
+      expect(find.text('macOS 阻止了局域网访问'), findsWidgets);
+      expect(find.text('打开系统设置'), findsOneWidget);
+    });
   });
 }

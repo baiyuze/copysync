@@ -5,7 +5,10 @@
   "navSettings": "Settings",
   "linkConnecting": "Connecting…",
   "linkServiceNotRunning": "Service not running",
-  "linkNoServer": "No server connection",
+  "linkLanMode": "Looking for devices on this network",
+  "linkServerUnreachable": "Can't reach the server; syncing on this network",
+  "linkNothingOn": "Local network discovery is off and no server is set",
+  "linkLanBlocked": "macOS is blocking the local network",
   "linkOnlinePeers": "{count, plural, =1{1 device online} other{{count} devices online}}",
   "@linkOnlinePeers": {
     "placeholders": {
@@ -237,8 +240,7 @@
     }
   },
   "noDevicesTitle": "No paired devices yet",
-  "noDevicesBody": "Open CopySync on your other computer and link the two with a 6-character pairing code.",
-  "noDevicesNeedServer": "Connect to a signaling server in Settings before pairing.",
+  "noDevicesBody": "Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, nothing else is needed.",
   "pairedDevices": "Paired devices",
   "pairedFootnote": "Direct: data goes straight between the two devices. Relay: when the network blocks a direct path, data goes through your server and stays end-to-end encrypted.",
   "offline": "Offline",
@@ -260,6 +262,33 @@
   "unpairBody": "The two devices will stop syncing. To sync again, you'll need to pair them and check the fingerprints again.",
   "unpair": "Unpair",
   "unpaired": "Unpaired",
+  "enterAddressEllipsis": "Enter its address…",
+  "setAddressTitle": "Address of “{name}”",
+  "@setAddressTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "setAddressBody": "Use this when the two devices are on different subnets, or both changed addresses. Enter the address shown on “{name}” under Add device → Show a code.",
+  "@setAddressBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "addressSaved": "Looking for it at that address",
+  "lanBlockedTitle": "macOS is blocking the local network",
+  "lanBlockedBody": "Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, {device} can't connect to devices on this network.",
+  "@lanBlockedBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "generateCode": "Show a code",
   "enterCode": "Enter a code",
   "codeFailedTitle": "Couldn't create a pairing code",
@@ -275,6 +304,17 @@
     }
   },
   "codeInvalid": "A pairing code is 6 letters or digits",
+  "localAddress": "Address",
+  "addressHint": "On a different subnet? Enter this address on the other device as well.",
+  "addressCopied": "Address copied",
+  "differentSubnet": "On a different subnet?",
+  "peerAddress": "Address shown under the code",
+  "pairNotFound": "Couldn't find that device. If it's on a different subnet, enter the address shown under its code.",
+  "pairNotFoundAddress": "Nothing answered at that address. Check the address and that the other device is still showing its code. A firewall on that device may also be blocking it.",
+  "codeWrong": "That code isn't right, or it has expired",
+  "codeExpired": "This code has expired. Show a new one on the other device.",
+  "addressInvalid": "That address isn't valid. Enter something like 192.168.1.20.",
+  "pairNoChannel": "Turn on local network discovery or set a server in Settings first.",
   "enterCodeShown": "Enter the code shown on your other device",
   "pairingDone": "Paired",
   "pairingRejected": "Pairing declined",
@@ -297,10 +337,10 @@
   },
   "rejectMismatch": "Mismatch, decline",
   "confirmMatch": "They match, pair",
-  "server": "Server",
-  "serverFootnote": "The server only helps devices find each other and set up a direct connection. It can't see what they send.",
+  "server": "Server (optional)",
+  "serverFootnote": "Only needed to sync between different networks, such as home and office. Devices on the same network connect without it. The server only helps devices find each other and can't see what they send.",
   "signalingUrl": "Signaling server",
-  "signalingUrlDesc": "Press Return to save; it reconnects right away",
+  "signalingUrlDesc": "Press Return to save. Leave it empty to sync on this network only.",
   "signalingUrlPlaceholder": "ws://server-address:8787/signal",
   "publicStun": "Probe with public servers",
   "publicStunDesc": "On networks with several uplinks, such as offices with two ISPs, this finds more direct paths. Public servers only see your public IP.",
@@ -309,6 +349,19 @@
   "disconnectedDesc": "Can't reach the server. Check the address and that the server is running.",
   "connected": "Connected",
   "notConnected": "Not connected",
+  "notSet": "Not set",
+  "notSetDesc": "Syncing with devices on this network only",
+  "serverCleared": "Server removed. Syncing on this network only.",
+  "localNetwork": "Local network",
+  "lanFootnote": "Uses UDP port 8788. If the devices are on different subnets, enter the other device's address when pairing.",
+  "lanDiscovery": "Find devices on this network",
+  "lanDiscoveryDesc": "Pair and sync without a server. Others on the network only see an anonymous entry that changes daily.",
+  "macLocalNetwork": "Local Network access",
+  "macLocalNetworkDesc": "macOS asks once whether CopySync may connect to devices on your network. If you declined, turn on CopySync Daemon there.",
+  "allowLan": "Windows Firewall",
+  "allowLanDesc": "Allow this when other devices can't reach this one, for example when pairing from another subnet. Asks for administrator approval once.",
+  "allow": "Allow",
+  "allowLanDone": "Allowed. Other devices can now reach this one.",
   "deviceName": "Device name",
   "deviceNameDesc": "Shown in the list on your other devices",
   "language": "Language",

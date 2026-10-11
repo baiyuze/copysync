@@ -34,7 +34,7 @@ final _cjk = _lang == 'ja' ? const ['Hiragino', 'PingFang'] : const ['PingFang']
 /// 生成配对码不走后台服务，直接给一个固定值。
 class _DemoState extends AppState {
   @override
-  Future<String> createPairingCode() async => 'K7MP2X';
+  Future<PairingCode> createPairingCode() async => (code: 'K7MP2X', addresses: ['192.168.1.20']);
 }
 
 Future<void> _loadFonts() async {
@@ -97,9 +97,11 @@ AppState _demo({LinkState link = LinkState.online,
     serviceState: service,
     pendingPairing: pending,
     status: Status(
-      version: '1.3.0',
+      version: '1.4.0',
       deviceName: 'MacBook Pro',
-      signalingConnected: link == LinkState.online,
+      signalingConnected: link == LinkState.online && server.isNotEmpty,
+      serverConfigured: server.isNotEmpty,
+      lanEnabled: true,
       clipboardPermission: ClipboardPermission.CLIPBOARD_PERMISSION_ALWAYS_ALLOW,
       cacheBytesUsed: Int64(412 * _mb),
       peersOnline: 2,

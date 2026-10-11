@@ -24,7 +24,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get linkServiceNotRunning => 'サービス停止中';
 
   @override
-  String get linkNoServer => 'サーバーに未接続';
+  String get linkLanMode => 'このネットワークでデバイスを探しています';
+
+  @override
+  String get linkServerUnreachable => 'サーバーに接続できません。このネットワーク内では同期します';
+
+  @override
+  String get linkNothingOn => 'ローカルネットワークの検出がオフで、サーバーも未設定です';
+
+  @override
+  String get linkLanBlocked => 'macOS がローカルネットワークをブロックしています';
 
   @override
   String linkOnlinePeers(int count) {
@@ -316,10 +325,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noDevicesTitle => 'ペアリングしたデバイスはまだありません';
 
   @override
-  String get noDevicesBody => 'もう一台のコンピューターで CopySync を開き、6 桁のペアリングコードでつなげます。';
-
-  @override
-  String get noDevicesNeedServer => 'ペアリングの前に、「設定」でシグナリングサーバーに接続してください。';
+  String get noDevicesBody =>
+      'もう一台のコンピューターで CopySync を開き、6 桁のペアリングコードでつなげます。同じネットワーク内なら、ほかに準備はいりません。';
 
   @override
   String get pairedDevices => 'ペアリング済みのデバイス';
@@ -368,6 +375,30 @@ class AppLocalizationsJa extends AppLocalizations {
   String get unpaired => 'ペアリングを解除しました';
 
   @override
+  String get enterAddressEllipsis => 'アドレスを入力…';
+
+  @override
+  String setAddressTitle(String name) {
+    return '「$name」のアドレス';
+  }
+
+  @override
+  String setAddressBody(String name) {
+    return '2 台が別のサブネットにある場合や、どちらもアドレスが変わった場合に使います。「$name」の「デバイスを追加 → コードを表示」に表示されるアドレスを入力してください。';
+  }
+
+  @override
+  String get addressSaved => 'そのアドレスで探しています';
+
+  @override
+  String get lanBlockedTitle => 'macOS がローカルネットワークへのアクセスをブロックしています';
+
+  @override
+  String lanBlockedBody(String device) {
+    return '「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにしてください。オンにするまで、$deviceは同じネットワークのデバイスに接続できません。';
+  }
+
+  @override
   String get generateCode => 'コードを表示';
 
   @override
@@ -392,6 +423,41 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get codeInvalid => 'ペアリングコードは 6 桁の英数字です';
+
+  @override
+  String get localAddress => 'アドレス';
+
+  @override
+  String get addressHint => '別のサブネットにある場合は、もう一台でこのアドレスも入力します';
+
+  @override
+  String get addressCopied => 'アドレスをコピーしました';
+
+  @override
+  String get differentSubnet => '別のサブネットにありますか？';
+
+  @override
+  String get peerAddress => 'コードの下に表示されたアドレス';
+
+  @override
+  String get pairNotFound =>
+      'そのデバイスが見つかりません。別のサブネットにある場合は、コードの下に表示されたアドレスを入力してください。';
+
+  @override
+  String get pairNotFoundAddress =>
+      'そのアドレスから応答がありません。アドレスと、相手がまだコードを表示しているかを確認してください。相手のファイアウォールがブロックしている可能性もあります。';
+
+  @override
+  String get codeWrong => 'コードが違うか、有効期限が切れています';
+
+  @override
+  String get codeExpired => 'このコードは無効になりました。もう一台で新しいコードを表示してください。';
+
+  @override
+  String get addressInvalid => 'アドレスの形式が正しくありません。192.168.1.20 のように入力してください。';
+
+  @override
+  String get pairNoChannel => '先に「設定」でローカルネットワークの検出をオンにするか、サーバーを設定してください。';
 
   @override
   String get enterCodeShown => 'もう一台のデバイスに表示されたコードを入力してください';
@@ -422,16 +488,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get confirmMatch => '一致、ペアリング';
 
   @override
-  String get server => 'サーバー';
+  String get server => 'サーバー（任意）';
 
   @override
-  String get serverFootnote => 'サーバーはデバイス同士を見つけ、直接接続を取り持つだけです。やり取りする内容は見えません。';
+  String get serverFootnote =>
+      '家と会社のように、別々のネットワーク間で同期するときだけ必要です。同じネットワーク内のデバイスはサーバーなしで直接つながります。サーバーはデバイス同士を引き合わせるだけで、やり取りする内容は見えません。';
 
   @override
   String get signalingUrl => 'シグナリングサーバー';
 
   @override
-  String get signalingUrlDesc => 'Enter で保存し、すぐに再接続します';
+  String get signalingUrlDesc => 'Enter で保存。空欄にするとこのネットワーク内だけで同期します';
 
   @override
   String get signalingUrlPlaceholder => 'ws://サーバーアドレス:8787/signal';
@@ -457,6 +524,49 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get notConnected => '未接続';
+
+  @override
+  String get notSet => '未設定';
+
+  @override
+  String get notSetDesc => '同じネットワークのデバイスとだけ同期します';
+
+  @override
+  String get serverCleared => 'サーバーを削除しました。このネットワーク内だけで同期します';
+
+  @override
+  String get localNetwork => 'ローカルネットワーク';
+
+  @override
+  String get lanFootnote =>
+      'UDP ポート 8788 を使います。2 台が別のサブネットにある場合は、ペアリング時に相手のアドレスを入力します。';
+
+  @override
+  String get lanDiscovery => 'このネットワークでデバイスを探す';
+
+  @override
+  String get lanDiscoveryDesc =>
+      'サーバーなしでペアリングと同期ができます。ネットワーク上の他の人には、毎日変わる匿名の識別子しか見えません';
+
+  @override
+  String get macLocalNetwork => 'ローカルネットワークへのアクセス';
+
+  @override
+  String get macLocalNetworkDesc =>
+      'CopySync がネットワーク上のデバイスに接続してよいか、macOS が一度だけ確認します。拒否した場合は、そこで CopySync Daemon をオンにしてください';
+
+  @override
+  String get allowLan => 'Windows ファイアウォール';
+
+  @override
+  String get allowLanDesc =>
+      '他のデバイスからこのデバイスに接続できないとき（別のサブネットからのペアリングなど）に許可します。管理者の承認を 1 回求めます';
+
+  @override
+  String get allow => '許可';
+
+  @override
+  String get allowLanDone => '許可しました。他のデバイスからこのデバイスに接続できます。';
 
   @override
   String get deviceName => 'デバイス名';

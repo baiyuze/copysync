@@ -17,7 +17,8 @@ class DevicesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
-    final canPair = state.isOnline && (state.status?.signalingConnected ?? false);
+    // 同一网络里不需要服务器，后台服务在运行就能配对；连不上对方时由配对框给出原因
+    final canPair = state.isOnline;
     final l = context.l10n;
 
     return Column(
@@ -36,6 +37,11 @@ class DevicesPage extends StatelessWidget {
             ),
           ],
         ),
+        if (state.lanBlocked)
+          const Padding(
+            padding: EdgeInsets.fromLTRB(Insets.xl, 0, Insets.xl, Insets.md),
+            child: LanBlockedNotice(),
+          ),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(Insets.xl, 0, Insets.xl, Insets.xl),
@@ -52,7 +58,7 @@ class DevicesPage extends StatelessWidget {
                   child: EmptyState(
                     icon: AppIcons.deviceLaptop,
                     title: l.noDevicesTitle,
-                    description: canPair ? l.noDevicesBody : l.noDevicesNeedServer,
+                    description: l.noDevicesBody,
                     action: canPair
                         ? FilledButton(
                             onPressed: () => _startPairing(context),
@@ -153,13 +159,20 @@ class _DeviceMenu extends StatelessWidget {
       position: PopupMenuPosition.under,
       itemBuilder: (ctx) => [
         PopupMenuItem(value: 'copy', height: 34, child: Text(l.copyFingerprint)),
+        // 局域网里找不到对方时（跨网段、两边都换了地址），手动告诉后台服务去哪里找
+        if (!device.online)
+          PopupMenuItem(value: 'address', height: 34, child: Text(l.enterAddressEllipsis)),
         PopupMenuItem(
           value: 'unpair',
           height: 34,
           child: Text(l.unpairEllipsis, style: TextStyle(color: ctx.palette.danger)),
         ),
       ],
-      onSelected: (v) => v == 'copy' ? _copy(context) : _unpair(context),
+      onSelected: (v) => switch (v) {
+        'copy' => _copy(context),
+        'address' => _setAddress(context),
+        _ => _unpair(context),
+      },
       child: IgnorePointer(
         child: IconAction(icon: AppIcons.ellipsis, tooltip: ''),
       ),
@@ -169,6 +182,58 @@ class _DeviceMenu extends StatelessWidget {
   Future<void> _copy(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: device.publicKeyFingerprint));
     if (context.mounted) showToast(context, context.l10n.fingerprintCopied);
+  }
+
+  Future<void> _setAddress(BuildContext context) async {
+    final state = AppScope.read(context);
+    final l = context.l10n;
+    final controller = TextEditingController();
+    final address = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.setAddressTitle(device.name)),
+        content: SizedBox(
+          width: 360,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l.setAddressBody(device.name)),
+              const SizedBox(height: Insets.lg),
+              TextField(
+                controller: controller,
+                autofocus: true,
+                style: const TextStyle(fontFamily: monoFamily, fontSize: 14),
+                decoration: const InputDecoration(hintText: '192.168.1.20'),
+                onSubmitted: (v) => Navigator.pop(ctx, v),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          OutlinedButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
+          FilledButton(onPressed: () => Navigator.pop(ctx, controller.text), child: Text(l.save)),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (address == null || address.trim().isEmpty) return;
+    try {
+      await state.setDeviceAddress(device.id, address);
+      if (context.mounted) showToast(context, l.addressSaved);
+    } catch (e) {
+      if (!context.mounted) return;
+      final failure = AppState.pairingFailure(e);
+      showToast(
+        context,
+        switch (failure) {
+          PairingFailure.badAddress => l.addressInvalid,
+          PairingFailure.noChannel => l.pairNoChannel,
+          _ => AppState.describeError(e),
+        },
+        error: true,
+      );
+    }
   }
 
   Future<void> _unpair(BuildContext context) async {
@@ -196,5 +261,29 @@ class _DeviceMenu extends StatelessWidget {
     } catch (e) {
       if (context.mounted) showToast(context, AppState.describeError(e), error: true);
     }
+  }
+}
+
+/// macOS 拦下了发往局域网的包。不放行的话，同一网络里的设备连不上这台。
+class LanBlockedNotice extends StatelessWidget {
+  const LanBlockedNotice({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return Notice(
+      title: l.lanBlockedTitle,
+      message: l.lanBlockedBody(Wording.thisDeviceInText),
+      action: OutlinedButton(
+        onPressed: () async {
+          try {
+            await AppScope.read(context).requestLocalNetworkPermission();
+          } catch (e) {
+            if (context.mounted) showToast(context, AppState.describeError(e), error: true);
+          }
+        },
+        child: Text(l.openSystemSettings),
+      ),
+    );
   }
 }

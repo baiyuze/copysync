@@ -71,7 +71,7 @@ class _PairingDialogState extends State<PairingDialog> {
               onChanged: (t) => setState(() => _tab = t),
             ),
             SizedBox(
-              height: 272,
+              height: 312,
               // IndexedStack 让两页都常驻：来回切换不会重新生成配对码
               child: IndexedStack(
                 index: _tab,
@@ -94,6 +94,7 @@ class _GenerateTab extends StatefulWidget {
 
 class _GenerateTabState extends State<_GenerateTab> {
   String? _code;
+  List<String> _addresses = const [];
   String? _error;
   bool _loading = false;
 
@@ -109,10 +110,19 @@ class _GenerateTabState extends State<_GenerateTab> {
       _error = null;
     });
     try {
-      final code = await AppScope.read(context).createPairingCode();
-      if (mounted) setState(() => _code = code);
+      final got = await AppScope.read(context).createPairingCode();
+      if (mounted) {
+        setState(() {
+          _code = got.code;
+          _addresses = got.addresses;
+        });
+      }
     } catch (e) {
-      if (mounted) setState(() => _error = AppState.describeError(e));
+      if (!mounted) return;
+      final l = context.l10n;
+      setState(() => _error = AppState.pairingFailure(e) == PairingFailure.noChannel
+          ? l.pairNoChannel
+          : AppState.describeError(e));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -175,6 +185,11 @@ class _GenerateTabState extends State<_GenerateTab> {
             ),
             const SizedBox(height: Insets.sm),
             Text(l.codeHint, style: context.text.labelSmall),
+            if (_addresses.isNotEmpty) ...[
+              const SizedBox(height: Insets.lg),
+              _AddressLine(addresses: _addresses),
+            ],
+            const SizedBox(height: Insets.lg),
             const Spacer(),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,6 +211,44 @@ class _GenerateTabState extends State<_GenerateTab> {
   }
 }
 
+/// 配对码下面的本机地址。同一网段时用不上；跨网段时对方要连同配对码一起输入。
+class _AddressLine extends StatelessWidget {
+  const _AddressLine({required this.addresses});
+
+  final List<String> addresses;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final l = context.l10n;
+    return Column(
+      children: [
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(text: addresses.first));
+              if (context.mounted) showToast(context, l.addressCopied);
+            },
+            child: Text.rich(
+              TextSpan(children: [
+                TextSpan(text: '${l.localAddress}  ', style: context.text.bodySmall),
+                TextSpan(
+                  text: addresses.join('  ·  '),
+                  style: TextStyle(fontFamily: monoFamily, fontSize: 13, color: p.text),
+                ),
+              ]),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(l.addressHint, style: context.text.labelSmall, textAlign: TextAlign.center),
+      ],
+    );
+  }
+}
+
 class _JoinTab extends StatefulWidget {
   const _JoinTab();
 
@@ -205,22 +258,28 @@ class _JoinTab extends StatefulWidget {
 
 class _JoinTabState extends State<_JoinTab> {
   final _controller = TextEditingController();
+  final _addressController = TextEditingController();
   bool _busy = false;
+  // 地址框默认收起：同一网段时用不上，找不到对方时再自动展开
+  bool _showAddress = false;
   String? _error;
 
   @override
   void dispose() {
     _controller.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
     if (_busy) return;
+    final l = context.l10n;
     final code = _controller.text.trim();
     if (code.length != 6) {
-      setState(() => _error = context.l10n.codeInvalid);
+      setState(() => _error = l.codeInvalid);
       return;
     }
+    final address = _showAddress ? _addressController.text.trim() : '';
     setState(() {
       _busy = true;
       _error = null;
@@ -228,9 +287,21 @@ class _JoinTabState extends State<_JoinTab> {
     try {
       // Shell 统一响应 pendingPairing，生成方和输入方都只有一个确认入口。
       // 事件可能先于 RPC 返回，因此这里也不能 pop 最上层路由。
-      await AppScope.read(context).redeemPairingCode(code);
+      await AppScope.read(context).redeemPairingCode(code, address: address);
     } catch (e) {
-      if (mounted) setState(() => _error = AppState.describeError(e));
+      if (!mounted) return;
+      final failure = AppState.pairingFailure(e);
+      setState(() {
+        if (failure == PairingFailure.notFound) _showAddress = true;
+        _error = switch (failure) {
+          PairingFailure.notFound => address.isEmpty ? l.pairNotFound : l.pairNotFoundAddress,
+          PairingFailure.wrongCode => l.codeWrong,
+          PairingFailure.codeExpired => l.codeExpired,
+          PairingFailure.badAddress => l.addressInvalid,
+          PairingFailure.noChannel => l.pairNoChannel,
+          PairingFailure.other => AppState.describeError(e),
+        };
+      });
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -274,6 +345,26 @@ class _JoinTabState extends State<_JoinTab> {
               ),
               onSubmitted: (_) => _submit(),
             ),
+            const SizedBox(height: Insets.sm),
+            if (_showAddress)
+              TextField(
+                controller: _addressController,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontFamily: monoFamily, fontSize: 14),
+                decoration: InputDecoration(
+                  labelText: l.peerAddress,
+                  hintText: '192.168.1.20',
+                  hintStyle: TextStyle(color: p.textFaint),
+                ),
+                onSubmitted: (_) => _submit(),
+              )
+            else
+              Center(
+                child: TextButton(
+                  onPressed: () => setState(() => _showAddress = true),
+                  child: Text(l.differentSubnet),
+                ),
+              ),
             if (_error != null) ...[
               const SizedBox(height: Insets.sm),
               Text(
@@ -282,6 +373,7 @@ class _JoinTabState extends State<_JoinTab> {
                 textAlign: TextAlign.center,
               ),
             ],
+            const SizedBox(height: Insets.lg),
             const Spacer(),
             FilledButton(
               onPressed: _busy ? null : _submit,

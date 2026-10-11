@@ -24,7 +24,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get linkServiceNotRunning => '后台服务未运行';
 
   @override
-  String get linkNoServer => '未连接服务器';
+  String get linkLanMode => '在局域网中查找设备';
+
+  @override
+  String get linkServerUnreachable => '连不上服务器，局域网内照常同步';
+
+  @override
+  String get linkNothingOn => '局域网发现已关闭，也没有设置服务器';
+
+  @override
+  String get linkLanBlocked => 'macOS 阻止了局域网访问';
 
   @override
   String linkOnlinePeers(int count) {
@@ -315,10 +324,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noDevicesTitle => '还没有配对的设备';
 
   @override
-  String get noDevicesBody => '在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。';
-
-  @override
-  String get noDevicesNeedServer => '先在「设置」里连接信令服务器，才能配对设备。';
+  String get noDevicesBody =>
+      '在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。两台在同一个网络里时，不需要别的准备。';
 
   @override
   String get pairedDevices => '已配对的设备';
@@ -366,6 +373,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get unpaired => '已解除配对';
 
   @override
+  String get enterAddressEllipsis => '输入它的地址…';
+
+  @override
+  String setAddressTitle(String name) {
+    return '「$name」的地址';
+  }
+
+  @override
+  String setAddressBody(String name) {
+    return '两台不在同一网段、或者都换了地址时用。输入「$name」上「添加设备 → 生成配对码」下面显示的地址。';
+  }
+
+  @override
+  String get addressSaved => '已记下，正在那个地址上找它';
+
+  @override
+  String get lanBlockedTitle => 'macOS 阻止了局域网访问';
+
+  @override
+  String lanBlockedBody(String device) {
+    return '在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。打开之前，$device连不上同一网络里的设备。';
+  }
+
+  @override
   String get generateCode => '生成配对码';
 
   @override
@@ -390,6 +421,40 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get codeInvalid => '配对码是 6 位字母或数字';
+
+  @override
+  String get localAddress => '本机地址';
+
+  @override
+  String get addressHint => '不在同一网段时，另一台还要输入这个地址';
+
+  @override
+  String get addressCopied => '地址已拷贝';
+
+  @override
+  String get differentSubnet => '不在同一网段？';
+
+  @override
+  String get peerAddress => '对方配对码下面显示的地址';
+
+  @override
+  String get pairNotFound => '没找到那台设备。不在同一网段时，请输入它配对码下面显示的地址。';
+
+  @override
+  String get pairNotFoundAddress =>
+      '那个地址上没有回应。检查地址是否正确、对方是否还停在配对码页面；对方的防火墙也可能拦住了。';
+
+  @override
+  String get codeWrong => '配对码不对，或者已经失效';
+
+  @override
+  String get codeExpired => '配对码已失效，请在另一台上重新生成';
+
+  @override
+  String get addressInvalid => '地址格式不对，应当像 192.168.1.20 这样';
+
+  @override
+  String get pairNoChannel => '请先在「设置」里开启局域网发现，或者填写服务器地址。';
 
   @override
   String get enterCodeShown => '输入另一台设备上显示的配对码';
@@ -420,16 +485,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get confirmMatch => '一致，确认配对';
 
   @override
-  String get server => '服务器';
+  String get server => '服务器（可选）';
 
   @override
-  String get serverFootnote => '服务器只负责让设备找到彼此、协商直连。设备之间传输的内容它看不到。';
+  String get serverFootnote =>
+      '只在不同网络之间同步时需要，比如家里和公司；同一网络里的设备不用服务器也能直接连上。服务器只负责让设备找到彼此，看不到传输的内容。';
 
   @override
   String get signalingUrl => '信令服务器地址';
 
   @override
-  String get signalingUrlDesc => '按回车保存，保存后立即重新连接';
+  String get signalingUrlDesc => '按回车保存。留空表示只在局域网里同步';
 
   @override
   String get signalingUrlPlaceholder => 'ws://服务器地址:8787/signal';
@@ -454,6 +520,46 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get notConnected => '未连接';
+
+  @override
+  String get notSet => '未设置';
+
+  @override
+  String get notSetDesc => '只与同一网络里的设备同步';
+
+  @override
+  String get serverCleared => '已清除服务器地址，只在局域网里同步';
+
+  @override
+  String get localNetwork => '局域网';
+
+  @override
+  String get lanFootnote => '使用 UDP 端口 8788。两台不在同一网段时，配对时输入对方的地址。';
+
+  @override
+  String get lanDiscovery => '在局域网中查找设备';
+
+  @override
+  String get lanDiscoveryDesc => '不用服务器就能配对和同步。网络里的其他人只能看到一个每天都变的匿名标识';
+
+  @override
+  String get macLocalNetwork => '本地网络权限';
+
+  @override
+  String get macLocalNetworkDesc =>
+      'macOS 会问一次是否允许 CopySync 连接网络里的设备。拒绝过的话，到那里打开 CopySync Daemon';
+
+  @override
+  String get allowLan => 'Windows 防火墙';
+
+  @override
+  String get allowLanDesc => '其他设备连不上这台时放行，比如从别的网段配对。会请求一次管理员权限';
+
+  @override
+  String get allow => '放行';
+
+  @override
+  String get allowLanDone => '已放行，其他设备现在可以连到这台了';
 
   @override
   String get deviceName => '设备名称';

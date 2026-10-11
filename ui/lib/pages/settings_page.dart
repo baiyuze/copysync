@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -59,6 +61,12 @@ class _SettingsPageState extends State<SettingsPage> {
     final p = context.palette;
     final l = context.l10n;
     final connected = state.status?.signalingConnected == true;
+    // 服务器是可选的：没填地址不是故障，用中性色
+    final (Color statusColor, String statusLabel, String statusDesc) = switch ((state.serverConfigured, connected)) {
+      (false, _) => (p.textFaint, l.notSet, l.notSetDesc),
+      (true, true) => (p.online, l.connected, l.connectedDesc),
+      (true, false) => (p.danger, l.notConnected, l.disconnectedDesc),
+    };
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -105,12 +113,41 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   SettingRow(
                     title: l.connectionStatus,
-                    description: connected ? l.connectedDesc : l.disconnectedDesc,
-                    child: StatusDot(
-                      color: connected ? p.online : p.danger,
-                      label: connected ? l.connected : l.notConnected,
+                    description: statusDesc,
+                    child: StatusDot(color: statusColor, label: statusLabel),
+                  ),
+                ]),
+              ),
+              GroupSection(
+                title: l.localNetwork,
+                footnote: l.lanFootnote,
+                child: GroupBox(children: [
+                  SettingRow(
+                    title: l.lanDiscovery,
+                    description: l.lanDiscoveryDesc,
+                    child: SmallSwitch(
+                      value: !cfg.lanDisabled,
+                      onChanged: (v) => _update(state, cfg..lanDisabled = !v),
                     ),
                   ),
+                  if (Platform.isMacOS)
+                    SettingRow(
+                      title: l.macLocalNetwork,
+                      description: l.macLocalNetworkDesc,
+                      child: OutlinedButton(
+                        onPressed: () => _allowLocalNetwork(state, null),
+                        child: Text(l.openSystemSettings),
+                      ),
+                    ),
+                  if (Platform.isWindows)
+                    SettingRow(
+                      title: l.allowLan,
+                      description: l.allowLanDesc,
+                      child: OutlinedButton(
+                        onPressed: () => _allowLocalNetwork(state, l.allowLanDone),
+                        child: Text(l.allow),
+                      ),
+                    ),
                 ]),
               ),
               GroupSection(
@@ -310,14 +347,26 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _saveServer(AppState state, Config cfg) async {
+    final l = context.l10n;
     final url = _serverController.text.trim();
-    if (!url.startsWith('ws://') && !url.startsWith('wss://')) {
-      showToast(context, context.l10n.urlMustBeWs, error: true);
+    // 留空就是不用服务器，只在局域网里同步
+    if (url.isNotEmpty && !url.startsWith('ws://') && !url.startsWith('wss://')) {
+      showToast(context, l.urlMustBeWs, error: true);
       return;
     }
     setState(() => _serverDirty = false);
     _lastLoadedServer = url;
-    await _update(state, cfg..signalingUrl = url, message: context.l10n.serverUpdated);
+    await _update(state, cfg..signalingUrl = url, message: url.isEmpty ? l.serverCleared : l.serverUpdated);
+  }
+
+  /// macOS 打开「本地网络」设置面板；Windows 弹出 UAC，在防火墙里放行后台服务。
+  Future<void> _allowLocalNetwork(AppState state, String? doneMessage) async {
+    try {
+      await state.requestLocalNetworkPermission();
+      if (mounted && doneMessage != null) showToast(context, doneMessage);
+    } catch (e) {
+      if (mounted) showToast(context, AppState.describeError(e), error: true);
+    }
   }
 
   Future<void> _saveName(AppState state, Config cfg) async {

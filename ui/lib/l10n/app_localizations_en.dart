@@ -24,7 +24,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get linkServiceNotRunning => 'Service not running';
 
   @override
-  String get linkNoServer => 'No server connection';
+  String get linkLanMode => 'Looking for devices on this network';
+
+  @override
+  String get linkServerUnreachable =>
+      'Can\'t reach the server; syncing on this network';
+
+  @override
+  String get linkNothingOn =>
+      'Local network discovery is off and no server is set';
+
+  @override
+  String get linkLanBlocked => 'macOS is blocking the local network';
 
   @override
   String linkOnlinePeers(int count) {
@@ -376,11 +387,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noDevicesBody =>
-      'Open CopySync on your other computer and link the two with a 6-character pairing code.';
-
-  @override
-  String get noDevicesNeedServer =>
-      'Connect to a signaling server in Settings before pairing.';
+      'Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, nothing else is needed.';
 
   @override
   String get pairedDevices => 'Paired devices';
@@ -429,6 +436,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unpaired => 'Unpaired';
 
   @override
+  String get enterAddressEllipsis => 'Enter its address…';
+
+  @override
+  String setAddressTitle(String name) {
+    return 'Address of “$name”';
+  }
+
+  @override
+  String setAddressBody(String name) {
+    return 'Use this when the two devices are on different subnets, or both changed addresses. Enter the address shown on “$name” under Add device → Show a code.';
+  }
+
+  @override
+  String get addressSaved => 'Looking for it at that address';
+
+  @override
+  String get lanBlockedTitle => 'macOS is blocking the local network';
+
+  @override
+  String lanBlockedBody(String device) {
+    return 'Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, $device can\'t connect to devices on this network.';
+  }
+
+  @override
   String get generateCode => 'Show a code';
 
   @override
@@ -453,6 +484,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get codeInvalid => 'A pairing code is 6 letters or digits';
+
+  @override
+  String get localAddress => 'Address';
+
+  @override
+  String get addressHint =>
+      'On a different subnet? Enter this address on the other device as well.';
+
+  @override
+  String get addressCopied => 'Address copied';
+
+  @override
+  String get differentSubnet => 'On a different subnet?';
+
+  @override
+  String get peerAddress => 'Address shown under the code';
+
+  @override
+  String get pairNotFound =>
+      'Couldn\'t find that device. If it\'s on a different subnet, enter the address shown under its code.';
+
+  @override
+  String get pairNotFoundAddress =>
+      'Nothing answered at that address. Check the address and that the other device is still showing its code. A firewall on that device may also be blocking it.';
+
+  @override
+  String get codeWrong => 'That code isn\'t right, or it has expired';
+
+  @override
+  String get codeExpired =>
+      'This code has expired. Show a new one on the other device.';
+
+  @override
+  String get addressInvalid =>
+      'That address isn\'t valid. Enter something like 192.168.1.20.';
+
+  @override
+  String get pairNoChannel =>
+      'Turn on local network discovery or set a server in Settings first.';
 
   @override
   String get enterCodeShown => 'Enter the code shown on your other device';
@@ -483,18 +553,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmMatch => 'They match, pair';
 
   @override
-  String get server => 'Server';
+  String get server => 'Server (optional)';
 
   @override
   String get serverFootnote =>
-      'The server only helps devices find each other and set up a direct connection. It can\'t see what they send.';
+      'Only needed to sync between different networks, such as home and office. Devices on the same network connect without it. The server only helps devices find each other and can\'t see what they send.';
 
   @override
   String get signalingUrl => 'Signaling server';
 
   @override
   String get signalingUrlDesc =>
-      'Press Return to save; it reconnects right away';
+      'Press Return to save. Leave it empty to sync on this network only.';
 
   @override
   String get signalingUrlPlaceholder => 'ws://server-address:8787/signal';
@@ -521,6 +591,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notConnected => 'Not connected';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
+  String get notSetDesc => 'Syncing with devices on this network only';
+
+  @override
+  String get serverCleared => 'Server removed. Syncing on this network only.';
+
+  @override
+  String get localNetwork => 'Local network';
+
+  @override
+  String get lanFootnote =>
+      'Uses UDP port 8788. If the devices are on different subnets, enter the other device\'s address when pairing.';
+
+  @override
+  String get lanDiscovery => 'Find devices on this network';
+
+  @override
+  String get lanDiscoveryDesc =>
+      'Pair and sync without a server. Others on the network only see an anonymous entry that changes daily.';
+
+  @override
+  String get macLocalNetwork => 'Local Network access';
+
+  @override
+  String get macLocalNetworkDesc =>
+      'macOS asks once whether CopySync may connect to devices on your network. If you declined, turn on CopySync Daemon there.';
+
+  @override
+  String get allowLan => 'Windows Firewall';
+
+  @override
+  String get allowLanDesc =>
+      'Allow this when other devices can\'t reach this one, for example when pairing from another subnet. Asks for administrator approval once.';
+
+  @override
+  String get allow => 'Allow';
+
+  @override
+  String get allowLanDone => 'Allowed. Other devices can now reach this one.';
 
   @override
   String get deviceName => 'Device name';
