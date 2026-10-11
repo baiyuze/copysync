@@ -458,15 +458,58 @@ func TestRediscoverAfterUnblock(t *testing.T) {
 	if got := d.starts.Load(); got != 1 {
 		t.Fatalf("启动时应当启动一次发现，实际 %d 次", got)
 	}
-	n.t.tick()
+	time.Sleep(tickInterval + 500*time.Millisecond)
 	if got := d.starts.Load(); got != 1 {
 		t.Fatalf("没有拦截解除时不该重启发现，实际启动了 %d 次", got)
 	}
 	n.t.mu.Lock()
 	n.t.rediscover = true
 	n.t.mu.Unlock()
-	n.t.tick()
+	deadline := time.Now().Add(2*tickInterval + time.Second)
+	for d.starts.Load() < 2 {
+		if time.Now().After(deadline) {
+			t.Fatal("拦截解除后没有重启发现")
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
+	time.Sleep(tickInterval + 500*time.Millisecond)
 	if got := d.starts.Load(); got != 2 {
-		t.Fatalf("拦截解除后应当重启发现，实际启动了 %d 次", got)
+		t.Fatalf("只应重启一次，实际启动了 %d 次", got)
+	}
+}
+
+// flakyDiscovery 前几次 Start 失败，像网卡刚换地址、还没拿到新地址时那样。
+type flakyDiscovery struct {
+	countingDiscovery
+	failures int32
+}
+
+func (f *flakyDiscovery) Start(ctx context.Context, name string, port int, text map[string]string, found func(Instance)) error {
+	if f.starts.Add(1) <= f.failures {
+		return errors.New("no usable interfaces found for mDNS")
+	}
+	return f.Discovery.Start(ctx, name, port, text, found)
+}
+
+// mDNS 启动失败后过一会儿重试，直到成功；成功之后不再重启。
+func TestDiscoveryRetriesAfterFailure(t *testing.T) {
+	d := &flakyDiscovery{countingDiscovery: countingDiscovery{Discovery: NewMemoryNetwork().Discovery()}, failures: 2}
+	n := newNodeWith(t, d)
+	deadline := time.Now().Add(10 * time.Second)
+	for d.starts.Load() < 3 {
+		if time.Now().After(deadline) {
+			t.Fatalf("mDNS 启动失败后没有重试到成功，只启动了 %d 次", d.starts.Load())
+		}
+		// 不等 5 秒：把重试时间提前，交给后台的 tick
+		n.t.mu.Lock()
+		if !n.t.discoveryRetry.IsZero() {
+			n.t.discoveryRetry = time.Now()
+		}
+		n.t.mu.Unlock()
+		time.Sleep(50 * time.Millisecond)
+	}
+	time.Sleep(tickInterval + 500*time.Millisecond)
+	if got := d.starts.Load(); got != 3 {
+		t.Fatalf("启动成功后不该再重启，实际启动了 %d 次", got)
 	}
 }

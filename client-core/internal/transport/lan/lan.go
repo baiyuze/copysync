@@ -51,6 +51,8 @@ const (
 	blockGrace    = 30 * time.Second
 	instanceTTL   = 5 * time.Minute
 	saveAddrEvery = 10 * time.Minute
+	// mDNS 启动失败后的重试间隔。网络刚变化时网卡可能还没拿到地址，这时启动会失败
+	discoveryRetryEvery = 5 * time.Second
 	// 本地网络权限的探测间隔（只有 macOS 探测）：被拦着时勤一些，用户一允许就能很快撤掉提示。
 	// 刚被拦的宽限期里每一轮都探测：新程序启动时的拦截一解除就要重启 mDNS，见 rediscover
 	probeEvery        = 10 * time.Minute
@@ -171,6 +173,8 @@ type Transport struct {
 	// pion/mdns 启动时在哪块网卡上加入组播失败，就再也不用那块网卡；
 	// 被拦期间启动的 mDNS 会漏掉局域网网卡，拦截解除后也不会自己恢复
 	rediscover bool
+	// discoveryRetry 不为零表示 mDNS 没启动起来，到这个时间再试一次
+	discoveryRetry time.Time
 
 	// reach 是各设备可达状态的副本，由叶子锁保护：peers 层会在持有自己的锁时查询它，
 	// 不能让它去等 t.mu（t.mu 持有期间可能回调 peers 层）
@@ -657,6 +661,7 @@ func (t *Transport) tick() {
 	probe := !now.Before(t.nextProbe)
 	rediscover := t.rediscover
 	t.rediscover = false
+	retryDiscovery := !t.discoveryRetry.IsZero() && !now.Before(t.discoveryRetry)
 	blocked := t.blockedLocked(now)
 	blockedChanged := blocked != t.reportedBlocked
 	t.reportedBlocked = blocked
@@ -731,6 +736,9 @@ func (t *Transport) tick() {
 		t.startDiscovery(ctx)
 	case rediscover:
 		t.log.Info("系统放行了发往局域网的包，重新开始局域网发现")
+		t.discovery.Stop()
+		t.startDiscovery(ctx)
+	case retryDiscovery:
 		t.discovery.Stop()
 		t.startDiscovery(ctx)
 	case dayChanged || pairingExpired:
@@ -827,9 +835,24 @@ func (t *Transport) startDiscovery(ctx context.Context) {
 	port := t.port
 	text := t.advertTextLocked()
 	t.mu.Unlock()
-	if err := t.discovery.Start(ctx, t.instance, port, text, t.found); err != nil {
-		// 没有 mDNS 也能用：输入地址、地址簿里的地址照样能连
-		t.log.Warn("局域网发现启动失败", "err", err)
+	err := t.discovery.Start(ctx, t.instance, port, text, t.found)
+
+	t.mu.Lock()
+	failedBefore := !t.discoveryRetry.IsZero()
+	if err != nil {
+		t.discoveryRetry = time.Now().Add(discoveryRetryEvery)
+	} else {
+		t.discoveryRetry = time.Time{}
+	}
+	t.mu.Unlock()
+	switch {
+	case err != nil && !failedBefore:
+		// 没有 mDNS 也能用：输入地址、地址簿里的地址照样能连。过一会儿再试
+		t.log.Warn("局域网发现启动失败，稍后重试", "err", err)
+	case err != nil:
+		t.log.Debug("局域网发现仍然启动失败", "err", err)
+	case failedBefore:
+		t.log.Info("局域网发现已启动")
 	}
 }
 
