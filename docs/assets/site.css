@@ -1114,32 +1114,30 @@ td {
   margin-top: 1.5rem;
 }
 
-/* 服务器一栏：先是不需要公网 IP 的两种做法，再是云服务器 */
-.install .stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1rem;
+/* 服务器一栏：三种部署方式并列，各一行说明 */
+.install .opts {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.95rem;
 }
 
-.install .stack .button {
-  margin-top: 0;
-  min-height: 2.6rem;
-  padding: 0 1.1rem;
-  font-size: 0.92rem;
+.install .opts li {
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--rule-strong);
 }
 
-.install h4 {
-  margin: 2rem 0 0;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--rule);
-  font-size: 1rem;
-  font-weight: 650;
-  scroll-margin-top: 5rem;
+.install .opts a {
+  display: block;
+  font-weight: 600;
 }
 
-.install h4 + .small {
-  margin-top: 0.4rem;
+.install .opts span {
+  display: block;
+  color: var(--dim);
+  font-size: 0.88rem;
 }
 
 .install table {
@@ -1975,7 +1973,7 @@ td {
   }
 }
 
-/* ── 三种部署方式的卡片：首页与快速开始共用 ── */
+/* ── 三种部署方式：首页的卡片、快速开始里的分页 ── */
 
 .paths {
   display: grid;
@@ -2017,24 +2015,7 @@ td {
   overflow: visible;
 }
 
-.path-tag {
-  align-self: flex-start;
-  padding: 0.1rem 0.6rem;
-  border-radius: 999px;
-  background: var(--blue-wash);
-  color: var(--blue-hi);
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-/* 需要公网 IP 的那一种不用蓝色，免得三个看起来一样推荐 */
-.path:last-child .path-tag {
-  background: var(--surface-2);
-  color: var(--dim);
-}
-
 .path-when {
-  margin-top: 0.9rem;
   color: var(--dim);
   font-size: 0.85rem;
 }
@@ -2074,12 +2055,13 @@ td {
   stroke-dasharray: 4 4;
 }
 
+/* Tailscale 的虚拟局域网：和网络边界同色，用点线区分 */
 .p-ts {
-  fill: var(--blue-wash);
-  stroke: var(--blue);
+  fill: none;
+  stroke: var(--dim);
   stroke-width: 1.5;
-  stroke-dasharray: 6 5;
-  opacity: 0.85;
+  stroke-dasharray: 1.5 4;
+  stroke-linecap: round;
 }
 
 .p-sig {
@@ -2107,14 +2089,6 @@ td {
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-}
-
-/* 首屏引言下面的一句提示 */
-.hero-aside {
-  margin: 1.1rem auto 0;
-  max-width: var(--text);
-  color: var(--ink-2);
-  font-size: 0.98rem;
 }
 
 .qs-grid {
@@ -2170,53 +2144,6 @@ td {
   margin: 0;
 }
 
-/* 局域网教程末尾：离开家也想同步，引到 Tailscale 教程 */
-.callout {
-  display: grid;
-  gap: 1.75rem;
-  align-items: center;
-  max-width: 60rem;
-  margin: 0 auto;
-  padding: clamp(1.75rem, 4vw, 2.75rem);
-  border-radius: 22px;
-  background: var(--surface);
-  box-shadow: inset 0 0 0 1px var(--rule);
-}
-
-.callout svg {
-  display: block;
-  width: 100%;
-  max-width: 16rem;
-  height: auto;
-  margin: 0 auto;
-  overflow: visible;
-}
-
-.callout h2 {
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(1.5rem, 3.4vw, 2rem);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-.callout p {
-  margin: 0.75rem 0 0;
-  color: var(--dim);
-  text-wrap: pretty;
-}
-
-.callout .button {
-  margin-top: 1.4rem;
-}
-
-@media (min-width: 52rem) {
-  .callout {
-    grid-template-columns: 15rem minmax(0, 1fr);
-    gap: 2.75rem;
-  }
-}
-
 /* Tailscale 示意图里的虚拟局域网边界 */
 .d-ts {
   fill: rgba(61, 139, 234, 0.05);
@@ -2231,42 +2158,42 @@ td {
   font: 14px var(--sans);
 }
 
-/* Tailscale 管理后台设备列表的示意 */
-.browser.machines {
+/* 表格类网页的示意：Tailscale 的设备列表、云服务器的安全组规则 */
+.browser.listing {
   max-width: none;
   margin: 0;
 }
 
-.machines table {
+.listing table {
   font-size: 0.85rem;
 }
 
-.machines th,
-.machines td {
+.listing th,
+.listing td {
   padding: 0.7rem 1rem;
   border-bottom-color: #222226;
 }
 
-.machines tbody tr:last-child td {
+.listing tbody tr:last-child td {
   border-bottom: 0;
 }
 
-.machines td:nth-child(2) {
+.listing td:nth-child(2) {
   font-family: var(--mono);
   font-size: 0.8rem;
 }
 
-.machines tr.hl td {
+.listing tr.hl td {
   background: var(--blue-wash);
   color: var(--ink);
 }
 
-.machines tr.hl td:nth-child(2) {
+.listing tr.hl td:nth-child(2) {
   color: var(--blue-hi);
   font-weight: 600;
 }
 
-.machines em {
+.listing em {
   margin-left: 0.4rem;
   padding: 0.05rem 0.45rem;
   border-radius: 999px;
@@ -2274,6 +2201,68 @@ td {
   color: var(--blue-hi);
   font-style: normal;
   font-size: 0.72rem;
+}
+
+/* 快速开始第 2 步：左边步骤，右边一张卡片写适合谁、要准备什么、要注意什么 */
+.plan-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.plan-grid > * {
+  min-width: 0;
+}
+
+@media (min-width: 62rem) {
+  .plan-grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 3.5rem;
+    align-items: start;
+  }
+}
+
+.plan-address {
+  margin: 1.6rem 0 0 2.6rem;
+  color: var(--dim);
+  font-size: 0.95rem;
+}
+
+.plan-grid .button {
+  margin: 1.25rem 0 0 2.6rem;
+}
+
+.plan-card {
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.plan-card svg {
+  display: block;
+  width: 100%;
+  max-width: 14rem;
+  height: auto;
+  margin: 0 auto 1.25rem;
+  overflow: visible;
+}
+
+.plan-card dl {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+}
+
+.plan-card dt {
+  color: var(--dim);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.plan-card dd {
+  margin: 0.15rem 0 0;
+  color: var(--ink-2);
+  font-size: 0.93rem;
 }
 
 .server-notes {
@@ -2318,8 +2307,18 @@ td {
 
 @media (max-width: 34rem) {
   .qs-app .button,
-  .qs-grid .os-steps > .button {
+  .qs-grid .os-steps > .button,
+  .plan-address,
+  .plan-grid .button {
     margin-left: 0;
+  }
+}
+
+/* 手机上分段控件放不下三个长名字，收紧一点 */
+@media (max-width: 30rem) {
+  .tablist button {
+    padding-inline: 0.75rem;
+    font-size: 0.86rem;
   }
 }
 

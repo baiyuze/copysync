@@ -33,7 +33,7 @@
         <a href="../start/">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
-        <a href="./" aria-current="page">部署服务器</a>
+        <a href="../start/#server" aria-current="true">部署服务器</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../en/server/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="../ja/server/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -44,16 +44,14 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href=".././">CopySync</a> / 部署服务器</p>
+        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">部署服务器</a></p>
         <h1 class="display">在局域网里部署服务器</h1>
         <p class="lede">家里或办公室的电脑在同一个网络里，就不需要云服务器。找一台常开的电脑，下载、运行一个脚本，再把它显示的地址填进每台电脑的 CopySync 里。</p>
-        <p class="hero-aside">两台电脑不在同一个网络，又没有公网 IP？看<a href="../tailscale/">用 Tailscale 跨网络使用</a>。</p>
         <ol class="guide-toc">
           <li><a href="#prepare">准备</a></li>
           <li><a href="#install">安装服务器</a></li>
           <li><a href="#check">检查</a></li>
           <li><a href="#clients">填地址</a></li>
-          <li><a href="#away">离开家也想用</a></li>
           <li><a href="#faq">常见问题</a></li>
         </ol>
       </div>
@@ -109,7 +107,7 @@
           <div><dt>一台常开的电脑</dt><dd>Windows 10、11，macOS 13 及以上，或者任意 Linux 都行，两台电脑中的一台也可以。它关机或睡眠时同步会暂停，醒来后自动恢复。NAS、软路由、Mac mini 这类一直开着的设备最合适，内存只占约 15 MB。</dd></div>
           <div><dt>一个固定的地址</dt><dd>在路由器的「DHCP 静态分配」（也叫「地址保留」「IP 与 MAC 绑定」）里给这台电脑固定一个地址。不然路由器换了地址，每台电脑都要重新填。</dd></div>
           <div><dt>在同一个网络里</dt><dd>设备连同一个 Wi‑Fi 或有线网络就行。访客网络、开了「AP 隔离」的 Wi‑Fi 不让设备互相访问，需要换个网络或关掉隔离。</dd></div>
-          <div><dt>离开这个网络也想同步</dt><dd>服务器只在局域网里访问得到。笔记本带出门也想同步，给每台电脑装上 Tailscale 就行，不需要公网 IP，见<a href="../tailscale/">Tailscale 教程</a>。</dd></div>
+          <div><dt>离开这个网络就不同步</dt><dd>服务器只在局域网里访问得到，笔记本带出门后，回来才会继续同步。</dd></div>
         </dl>
       </div>
     </section>
@@ -118,7 +116,7 @@
       <div class="wrap">
         <h2 id="install-title">安装服务器</h2>
         <p class="intro">选服务器所在电脑的系统。安装脚本会自动找到本机的局域网地址，把服务器设成开机自动运行，最后显示客户端要填的地址。</p>
-        <div class="os-tabs" data-tabs>
+        <div class="os-tabs" data-tabs="os">
           <div class="tablist" role="tablist" aria-label="服务器所在电脑的系统" hidden>
             <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
             <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
@@ -334,19 +332,6 @@ sudo ./install.sh</code></pre>
       </div>
     </section>
 
-    <section class="section" id="away" aria-labelledby="away-title">
-      <div class="wrap">
-        <div class="callout">
-          <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-          <div>
-            <h2 id="away-title">离开家，也想同步？</h2>
-            <p>给每台电脑装上 Tailscale，服务器用它分配的地址，在公司、在外面都能连回家里的服务器，就像在同一个局域网里。不需要公网 IP，也不用改路由器。</p>
-            <a class="button" href="../tailscale/">用 Tailscale 跨网络使用</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="section" id="faq" aria-labelledby="faq-title">
       <div class="wrap">
         <h2 id="faq-title">常见问题</h2>
@@ -365,11 +350,7 @@ sudo ./install.sh</code></pre>
           </details>
           <details>
             <summary>离开局域网以后还能同步吗？</summary>
-            <div class="answer"><p>能，加上 Tailscale 就行：每台电脑装上 Tailscale、登录同一个账号，服务器用 Tailscale 地址安装，客户端也填这个地址，不需要公网 IP。步骤见<a href="../tailscale/">用 Tailscale 跨网络使用</a>。</p><p>有公网 IP 的话，也可以把服务器部署到云服务器上，见<a href=".././#cloud">首页的部署步骤</a>。</p></div>
-          </details>
-          <details>
-            <summary>用国内的云服务器，填域名连不上、填 IP 却能连？</summary>
-            <div class="answer"><p>域名没有备案时，国内的云厂商会拦截访问它的明文 HTTP 请求，返回一个跳转到拦截页的响应，实测 8787 这样的非常用端口也一样。WebSocket 握手也是一个 HTTP 请求，所以同样被拦，客户端就显示未连接。</p><p>服务器地址里直接填 IP 就行，比如 <code>ws://服务器IP:8787/signal</code>；或者给域名备案。</p></div>
+            <div class="answer"><p>不能，服务器只在局域网里访问得到。要在别的网络里也能同步，换成另外两种部署方式之一：<a href="../cloud/">公网服务器</a>，或者<a href="../tailscale/">局域网 + Tailscale</a>。</p></div>
           </details>
           <details>
             <summary>服务器所在的那台电脑也要用 CopySync，地址填什么？</summary>

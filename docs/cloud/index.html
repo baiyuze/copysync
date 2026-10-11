@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>把 CopySync 服务器部署到公网：云服务器图文教程</title>
+  <meta name="description" content="一台有公网 IP 的 Linux 云主机，运行一个脚本就能装好 CopySync 的信令与 TURN 服务器。每台电脑直接连它，在家、在公司、在外面都能同步剪贴板。含安全组放行、检查、客户端设置与国内域名备案的说明。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/cloud/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/cloud/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/cloud/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/cloud/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="把 CopySync 服务器部署到公网：云服务器图文教程">
+  <meta property="og:description" content="一台有公网 IP 的 Linux 云主机，运行一个脚本就能装好 CopySync 的信令与 TURN 服务器。每台电脑直接连它，在家、在公司、在外面都能同步剪贴板。含安全组放行、检查、客户端设置与国内域名备案的说明。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/cloud/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href=".././" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="页面导航">
+        <a href="../start/">快速开始</a>
+        <a class="wide" href=".././#how">工作原理</a>
+        <a class="wide" href=".././#faq">常见问题</a>
+        <a href="../start/#server" aria-current="true">部署服务器</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../en/cloud/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/cloud/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">部署服务器</a></p>
+        <h1 class="display">部署到公网服务器</h1>
+        <p class="lede">一台有公网 IP 的 Linux 云主机，最低配置就够。每台电脑直接连它，在家、在公司、在外面都能同步，不用另装软件。</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">准备</a></li>
+          <li><a href="#ports">放行端口</a></li>
+          <li><a href="#install">安装服务器</a></li>
+          <li><a href="#check">检查</a></li>
+          <li><a href="#clients">填地址</a></li>
+          <li><a href="#faq">常见问题</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">所有电脑都直接连它</h2>
+        <p class="intro">服务器在公网上，每台电脑不管在哪个网络里，都能直接连上。复制的内容优先在两台电脑之间直连传输；打不通直连时经服务器中转，内容依然加密。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 460" role="img" aria-labelledby="cloud-title cloud-desc">
+            <title id="cloud-title">通过公网服务器使用 CopySync</title>
+            <desc id="cloud-desc">公网服务器的地址是 203.0.113.10。Mac 在公司网络里，Windows 在家里的网络里，两台电脑都通过信令连接到服务器；复制的内容在两台电脑之间直连传输，打不通直连时经服务器中转。</desc>
+            <rect class="d-box" x="340" y="24" width="280" height="118" rx="14"/>
+            <text class="d-title" x="480" y="62" text-anchor="middle">公网服务器</text>
+            <text class="d-sub" x="480" y="90" text-anchor="middle">云主机，有公网 IP</text>
+            <text class="d-ip" x="480" y="124" text-anchor="middle">203.0.113.10</text>
+            <rect class="d-lan" x="8" y="196" width="412" height="212" rx="22"/>
+            <text class="d-lan-label" x="32" y="228">公司网络</text>
+            <rect class="d-lan" x="540" y="196" width="412" height="212" rx="22"/>
+            <text class="d-lan-label" x="564" y="228">家里的网络</text>
+            <path class="d-sig" d="M150 250V68H340"/>
+            <path class="d-sig" d="M810 250V68H620"/>
+            <path class="d-relay" d="M210 250V112H340"/>
+            <path class="d-relay" d="M750 250V112H620"/>
+            <text class="d-note" x="164" y="58">信令 TCP 8787</text>
+            <text class="d-note" x="224" y="170">中转 UDP，打不通直连时</text>
+            <rect class="d-box" x="60" y="250" width="240" height="120" rx="14"/>
+            <text class="d-title" x="180" y="302" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="180" y="330" text-anchor="middle">装着 CopySync</text>
+            <rect class="d-box" x="660" y="250" width="240" height="120" rx="14"/>
+            <text class="d-title" x="780" y="302" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="780" y="330" text-anchor="middle">装着 CopySync</text>
+            <path class="d-direct" d="M300 316H660"/>
+            <text class="d-label" x="480" y="302" text-anchor="middle">直连</text>
+            <g class="d-legend" transform="translate(40 444)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">数据（直连）</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">数据（中转，备用）</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">信令</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>信令，TCP 8787。</strong>每台电脑一直连着它，用来发现对方、配对、交换连接信息。</li>
+          <li><strong>直连。</strong>两台电脑在不同网络里时，靠 NAT 打洞直接相连，大多数家庭和公司网络都能打通。</li>
+          <li><strong>中转，UDP 3478 与中转端口。</strong>打不通直连时经服务器转发，内容依然加密，速度受服务器带宽限制。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">开始之前</h2>
+        <dl class="fallbacks">
+          <div><dt>一台云主机</dt><dd>Linux，x86_64 或 ARM64 都行，最低配置就够，服务器只占约 15 MB 内存。需要 root 权限。</dd></div>
+          <div><dt>一个公网 IP</dt><dd>云主机自带的公网 IP 就行，最好是固定的（弹性 IP）。地址变了，每台电脑都要重新填。</dd></div>
+          <div><dt>能登录它</dt><dd>能用 ssh 登录，或者用云厂商网页上的远程终端。</dd></div>
+          <div><dt>国内的云主机</dt><dd>域名没有备案时，客户端里要直接填 IP，不能填域名，原因见下面的<a href="#faq">常见问题</a>。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="ports" aria-labelledby="ports-title">
+      <div class="wrap">
+        <p class="eyebrow">第 1 步</p>
+        <h2 id="ports-title">在安全组里放行端口</h2>
+        <p class="intro">在云厂商的控制台里，给这台云主机的安全组添加下面三条入站规则。</p>
+        <div class="os-grid qs-grid">
+          <div class="os-figures">
+            <figure class="browser listing" role="img" aria-label="云服务器安全组的入站规则（示意）：TCP 8787 信令，UDP 3478 用于 STUN 与 TURN，UDP 32768-60999 是中转端口，来源都是 0.0.0.0/0">
+              <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">云服务器控制台 › 安全组 › 入站规则</span></div>
+              <table>
+                <thead><tr><th scope="col">协议</th><th scope="col">端口范围</th><th scope="col">来源</th><th scope="col">用途</th></tr></thead>
+                <tbody>
+                <tr><td>TCP</td><td>8787</td><td>0.0.0.0/0</td><td>信令</td></tr>
+                <tr><td>UDP</td><td>3478</td><td>0.0.0.0/0</td><td>STUN 与 TURN</td></tr>
+                <tr><td>UDP</td><td>32768-60999</td><td>0.0.0.0/0</td><td>中转端口</td></tr>
+                </tbody>
+              </table>
+            </figure>
+          </div>
+          <ul class="points">
+            <li><strong>叫法不一样：</strong>有的云厂商叫「防火墙」或「网络 ACL」，都是这一项。</li>
+            <li><strong>中转端口</strong>由系统随机分配，范围以服务器为准：运行 <code>cat /proc/sys/net/ipv4/ip_local_port_range</code> 查看，安装脚本最后也会打印出来。</li>
+            <li><strong>系统防火墙：</strong>开着 ufw 或 firewalld 的话，这三条也要放行，安装脚本最后会给出命令。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <p class="eyebrow">第 2 步</p>
+        <h2 id="install-title">运行安装脚本</h2>
+        <p class="intro">把公网 IP 带给安装脚本，它会装好服务器、注册为开机自启的 systemd 服务，最后显示客户端要填的地址。</p>
+        <div class="os-grid qs-grid">
+          <div class="os-steps">
+            <ol class="steps">
+              <li>用 ssh 登录服务器，比如 <code>ssh root@203.0.113.10</code>（换成你的公网 IP）。</li>
+              <li>逐行运行，最后一行换成你的公网 IP：<span class="aside">ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。</span>
+                <div class="code">
+                  <button class="copy" type="button" data-done="已复制">复制</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh 203.0.113.10</code></pre>
+                </div></li>
+              <li>最后显示的 <code>ws://203.0.113.10:8787/signal</code> 就是客户端要填的地址。</li>
+            </ol>
+            <ul class="points">
+              <li><strong>注册为 systemd 服务，</strong>开机自动运行，配置在 <code>/etc/copysync/server.env</code>。</li>
+              <li><strong>升级：</strong>下载新版本，解压后再运行 <code>sudo ./install.sh</code>，原来的配置保留。</li>
+              <li><strong>也可以用 Docker：</strong>见<a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">服务器部署说明</a>。</li>
+            </ul>
+          </div>
+          <div class="os-figures">
+            <figure class="term" role="img" aria-label="运行 sudo ./install.sh 203.0.113.10 的输出：安装、写入 systemd 单元、生成配置、启动，最后显示客户端要填的地址 ws://203.0.113.10:8787/signal">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh root@203.0.113.10</span></div>
+<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 203.0.113.10
+<span class="t-step">▶ 安装二进制到 /usr/local/bin</span>
+<span class="t-step">▶ 写入 systemd 单元</span>
+<span class="t-step">▶ 生成配置 /etc/copysync/server.env（中转地址 203.0.113.10）</span>
+<span class="t-step">▶ 启动</span>
+  ✓ 已启动
+
+安装完成：copysync-server 1.3.3
+在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+
+    <span class="t-url">ws://203.0.113.10:8787/signal</span>
+
+  配置   /etc/copysync/server.env
+  日志   journalctl -u copysync-server -f
+  重启   systemctl restart copysync-server
+  卸载   sudo ./install.sh uninstall
+
+防火墙需放行：TCP 8787（信令）、UDP 3478（STUN 与 TURN）、UDP 32768-60999（中转端口，系统随机分配）</pre>
+              </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <p class="eyebrow">第 3 步</p>
+        <h2 id="check-title">检查能不能访问到它</h2>
+        <p class="intro">在任意一台电脑的浏览器里打开 <code>http://203.0.113.10:8787/healthz</code>（换成你的公网 IP），看到下面这一行就通了。</p>
+        <figure class="browser" role="img" aria-label="浏览器打开 http://203.0.113.10:8787/healthz，页面显示服务器的状态 ok 与版本号">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://203.0.113.10:8787/healthz</span></div>
+          <pre class="b-body">{"status":"ok","version":"1.3.3"}</pre>
+        </figure>
+        <p class="note">打不开的话，看下面的<a href="#faq">常见问题</a>。</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <p class="eyebrow">第 4 步</p>
+        <h2 id="clients-title">在每台电脑上填地址</h2>
+        <ol class="flow">
+          <li><h3>打开设置</h3><p>在每台电脑上打开 CopySync，进入「设置」。</p></li>
+          <li><h3>填公网地址</h3><p>在「信令服务器地址」里填 <code>ws://203.0.113.10:8787/signal</code>（换成你的公网 IP），按回车保存。</p></li>
+          <li><h3>看连接状态</h3><p>「连接状态」变成绿色的「已连接」就好了。还没配对的话，在「设备」里配对。</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../assets/screenshots/settings-cloud-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的设置页：信令服务器地址填着 ws://203.0.113.10:8787/signal，连接状态显示已连接">
+        </figure>
+        <p class="note">还没装 App？见<a href="../start/">快速开始</a>。</p>
+        <div class="table-scroll">
+                <table class="manage">
+                  <caption>以后会用到的</caption>
+                  <tbody>
+                  <tr><th scope="row">状态</th><td><code>systemctl status copysync-server</code></td></tr>
+                  <tr><th scope="row">日志</th><td><code>journalctl -u copysync-server -f</code></td></tr>
+                  <tr><th scope="row">重启</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
+                  <tr><th scope="row">配置</th><td><code>/etc/copysync/server.env</code>，改完重启服务</td></tr>
+                  <tr><th scope="row">升级</th><td>下载新版本，解压后再运行 <code>sudo ./install.sh</code>，原来的配置保留</td></tr>
+                  <tr><th scope="row">卸载</th><td><code>sudo ./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">常见问题</h2>
+        <div class="faq">
+          <details>
+            <summary>填域名连不上、填 IP 却能连？</summary>
+            <div class="answer"><p>域名没有备案时，国内的云厂商会拦截访问它的明文 HTTP 请求，返回一个跳转到拦截页的响应，实测 8787 这样的非常用端口也一样。WebSocket 握手也是一个 HTTP 请求，所以同样被拦，客户端就显示未连接。</p><p>服务器地址里直接填 IP 就行，比如 <code>ws://服务器IP:8787/signal</code>；或者给域名备案。</p></div>
+          </details>
+          <details>
+            <summary>要多大的配置？</summary>
+            <div class="answer"><p>最低配置就够。服务器只占约 15 MB 内存，平时只转发很少的信令消息。复制的内容能直连时不经过它；只有打不通直连、走中转时，速度才受它的出口带宽限制。</p></div>
+          </details>
+          <details>
+            <summary>设备之间显示「中转」，不是「直连」？</summary>
+            <div class="answer"><p>刚连上时显示中转、过一会儿变成直连是正常的：先用中转保证能用，空闲时再换直连。一直是中转，说明两台电脑之间打不通，常见于端口随机分配的 NAT 或严格的防火墙。内容同样加密，只是速度受服务器带宽限制。</p></div>
+          </details>
+          <details>
+            <summary>想用 HTTPS（wss://）？</summary>
+            <div class="answer"><p>可以放在 HTTPS 反向代理后面，客户端填 <code>wss://</code> 开头的地址，代理需要支持 WebSocket 升级。国内的域名需要备案。STUN 与 TURN 走 UDP，不经过反向代理，安全组照样要放行。</p></div>
+          </details>
+          <details>
+            <summary>家里宽带有公网 IP，能当公网服务器用吗？</summary>
+            <div class="answer"><p>可以，但比云主机麻烦：要在路由器上把 TCP 8787、UDP 3478 和一大段中转用的 UDP 端口转发到那台电脑，家里的公网 IP 也可能会变。电脑都在家里时用<a href="../server/">局域网</a>更简单；要跨网络又不想折腾端口转发，可以用<a href="../tailscale/">局域网 + Tailscale</a>。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">一台云主机，<br>在哪儿都能同步。</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
+        </div>
+        <p class="note">版本 1.3.3，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
+        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">服务器的完整部署说明（含 Docker 与全部参数）</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync 以 GNU AGPL-3.0 开源，另提供商业授权。</p>
+      <nav aria-label="页脚链接">
+        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商业授权</a>
+        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+      </nav>
+      <nav aria-label="语言">
+        <a href="../cloud/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>
+        <a href="../en/cloud/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/cloud/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

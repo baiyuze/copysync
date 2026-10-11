@@ -33,7 +33,7 @@
         <a href="./" aria-current="page">Quick start</a>
         <a class="wide" href="../../en/#how">How it works</a>
         <a class="wide" href="../../en/#faq">FAQ</a>
-        <a href="../../en/server/">Self-host</a>
+        <a href="#server">Self-host</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../../start/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../../ja/start/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -92,34 +92,83 @@
       <div class="wrap">
         <p class="eyebrow">Step 2</p>
         <h2 id="server-title">Set up a server</h2>
-        <p class="intro">Your computers find each other through it; nothing you copy is stored there. There's no public server, so pick the option that fits:</p>
-        <div class="paths">
-          <a class="path" href="../../en/server/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
-            <span class="path-tag">No public IP needed</span>
-            <span class="path-when">Both computers on one network</span>
-            <h3>On your LAN</h3>
-            <p>At home or in the office, on the same Wi‑Fi or wired network. Run the server on one of your always-on Windows, Mac or Linux computers with a single script.</p>
-            <span class="path-go">LAN guide →</span>
-          </a>
-          <a class="path" href="../../en/tailscale/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-            <span class="path-tag">No public IP needed</span>
-            <span class="path-when">One at home, one at the office</span>
-            <h3>LAN + Tailscale</h3>
-            <p>The server stays at home. Install Tailscale on each computer and they act as if they shared a LAN, so your laptop keeps syncing wherever you take it.</p>
-            <span class="path-go">Tailscale guide →</span>
-          </a>
-          <a class="path" href="../../en/#cloud">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
-            <span class="path-tag">Needs a public IP</span>
-            <span class="path-when">You have a public server</span>
-            <h3>Cloud server</h3>
-            <p>A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly, with nothing else to install.</p>
-            <span class="path-go">Setup steps →</span>
-          </a>
+        <p class="intro">Your computers find each other through it; nothing you copy is stored there. There's no public server, and there are three ways to run your own. Pick the one that fits.</p>
+        <div class="os-tabs" data-tabs="plan">
+          <div class="tablist" role="tablist" aria-label="Ways to run the server" hidden>
+            <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">Public server</button>
+            <button type="button" role="tab" id="tab-plan-lan" aria-controls="plan-lan">LAN</button>
+            <button type="button" role="tab" id="tab-plan-ts" aria-controls="plan-ts">LAN + Tailscale</button>
+          </div>
+
+          <section class="os" id="plan-cloud" role="tabpanel" aria-labelledby="tab-plan-cloud">
+            <h3 class="os-title">Public server</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>In your cloud provider's security group, open TCP 8787, UDP 3478 and UDP 32768–60999.</li>
+                  <li>Log in with ssh, download the install script and run it with the public IP: <code>sudo ./install.sh PUBLIC_IP</code>.</li>
+                  <li>Open <code>http://PUBLIC_IP:8787/healthz</code> in a browser; ok means it's running.</li>
+                </ol>
+                <p class="plan-address">Address for every computer: <code>ws://PUBLIC_IP:8787/signal</code></p>
+                <a class="button quiet" href="../../en/cloud/">Public server guide →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+                <dl>
+                  <div><dt>Best for</dt><dd>Computers spread across networks that should sync from anywhere. The simplest way across networks.</dd></div>
+                  <div><dt>You need</dt><dd>A Linux VM with a public IP, as root; the smallest one is enough.</dd></div>
+                  <div><dt>Keep in mind</dt><dd>The VM costs money. When a direct connection fails, the relay is limited by the server's bandwidth. In mainland China, use the IP unless the domain has an ICP filing.</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="plan-lan" role="tabpanel" aria-labelledby="tab-plan-lan">
+            <h3 class="os-title">LAN</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>Reserve an address for the server computer in your router.</li>
+                  <li>Download the server for its system and run the install script: double-click <code>install.cmd</code> on <a href="../../en/server/#windows">Windows</a>, run <code>./install.sh</code> on <a href="../../en/server/#macos">macOS</a> or <a href="../../en/server/#linux">Linux</a>.</li>
+                  <li>The script finds the computer's LAN address and prints the address for the apps.</li>
+                </ol>
+                <p class="plan-address">Address for every computer: <code>ws://LAN_ADDRESS:8787/signal</code>, for example <code>ws://192.168.1.20:8787/signal</code></p>
+                <a class="button quiet" href="../../en/server/">LAN guide →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
+                <dl>
+                  <div><dt>Best for</dt><dd>Computers on the same Wi‑Fi or wired network, such as at home or in the office.</dd></div>
+                  <div><dt>You need</dt><dd>An always-on Windows, Mac or Linux computer; one of the computers you sync is fine.</dd></div>
+                  <div><dt>Keep in mind</dt><dd>No sync away from that network; it resumes when you're back. Sync also pauses while the server computer is off or asleep.</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="plan-ts" role="tabpanel" aria-labelledby="tab-plan-ts">
+            <h3 class="os-title">LAN + Tailscale</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>Install Tailscale on each computer and sign in to the same account.</li>
+                  <li>On the server computer, run <code>tailscale ip -4</code> and note the address starting with 100.</li>
+                  <li>Install the server with that address, as in <code>install.cmd 100.101.102.103</code> or <code>./install.sh 100.101.102.103</code>.</li>
+                </ol>
+                <p class="plan-address">Address for every computer: <code>ws://TAILSCALE_ADDRESS:8787/signal</code></p>
+                <a class="button quiet" href="../../en/tailscale/">Tailscale guide →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
+                <dl>
+                  <div><dt>Best for</dt><dd>Computers on different networks, without a public server.</dd></div>
+                  <div><dt>You need</dt><dd>An always-on computer for the server, and Tailscale on every computer under one account.</dd></div>
+                  <div><dt>Keep in mind</dt><dd>Every computer that runs CopySync needs Tailscale, and the one at home stays on. When Tailscale can't connect peer to peer it relays through DERP servers, which can be slow.</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
         </div>
-        <p class="note">When it's installed, the script prints an address like <code>ws://192.168.1.20:8787/signal</code>. You'll need it in the next step.</p>
       </div>
     </section>
 

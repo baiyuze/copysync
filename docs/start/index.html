@@ -33,7 +33,7 @@
         <a href="./" aria-current="page">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
-        <a href="../server/">部署服务器</a>
+        <a href="#server">部署服务器</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../en/start/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="../ja/start/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -92,34 +92,83 @@
       <div class="wrap">
         <p class="eyebrow">第 2 步</p>
         <h2 id="server-title">准备一台服务器</h2>
-        <p class="intro">两台电脑靠它找到彼此，复制的内容不会存在上面。CopySync 不提供公共服务器，按你的情况选一种：</p>
-        <div class="paths">
-          <a class="path" href="../server/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
-            <span class="path-tag">不需要公网 IP</span>
-            <span class="path-when">两台电脑在同一个网络里</span>
-            <h3>局域网部署</h3>
-            <p>家里或办公室，连着同一个 Wi‑Fi 或有线网络。服务器装在其中一台常开的 Windows、Mac 或 Linux 电脑上，运行一个脚本就好。</p>
-            <span class="path-go">局域网部署教程 →</span>
-          </a>
-          <a class="path" href="../tailscale/">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-            <span class="path-tag">不需要公网 IP</span>
-            <span class="path-when">一台在家，一台在公司</span>
-            <h3>局域网部署 + Tailscale</h3>
-            <p>服务器照样放在家里。每台电脑装上 Tailscale，就像在同一个局域网里：笔记本带到哪儿，复制都能同步。</p>
-            <span class="path-go">Tailscale 教程 →</span>
-          </a>
-          <a class="path" href=".././#cloud">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
-            <span class="path-tag">需要公网 IP</span>
-            <span class="path-when">有一台公网服务器</span>
-            <h3>云服务器部署</h3>
-            <p>一台有公网 IP 的 Linux 云主机，最低配置就够。所有电脑直接连它，不用另装组网工具。</p>
-            <span class="path-go">部署步骤 →</span>
-          </a>
+        <p class="intro">两台电脑靠它找到彼此，复制的内容不会存在上面。CopySync 不提供公共服务器，有三种部署方式，选一种适合你的。</p>
+        <div class="os-tabs" data-tabs="plan">
+          <div class="tablist" role="tablist" aria-label="部署方式" hidden>
+            <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">公网服务器</button>
+            <button type="button" role="tab" id="tab-plan-lan" aria-controls="plan-lan">局域网</button>
+            <button type="button" role="tab" id="tab-plan-ts" aria-controls="plan-ts">局域网 + Tailscale</button>
+          </div>
+
+          <section class="os" id="plan-cloud" role="tabpanel" aria-labelledby="tab-plan-cloud">
+            <h3 class="os-title">公网服务器</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>在云厂商的安全组里放行 TCP 8787、UDP 3478 和 UDP 32768–60999。</li>
+                  <li>ssh 登录服务器，下载并运行安装脚本，带上它的公网 IP：<code>sudo ./install.sh 公网IP</code>。</li>
+                  <li>在浏览器里打开 <code>http://公网IP:8787/healthz</code>，能看到 ok 就装好了。</li>
+                </ol>
+                <p class="plan-address">每台电脑要填的地址：<code>ws://公网IP:8787/signal</code></p>
+                <a class="button quiet" href="../cloud/">公网服务器部署教程 →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+                <dl>
+                  <div><dt>适合</dt><dd>电脑分散在不同的网络里，想在哪儿都能同步。跨网络时最省心。</dd></div>
+                  <div><dt>要准备</dt><dd>一台有公网 IP 的 Linux 云主机，最低配置就够，需要 root。</dd></div>
+                  <div><dt>要注意</dt><dd>云主机要花钱。打不通直连时走中转，速度受服务器带宽限制。国内域名没有备案时，客户端要填 IP。</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="plan-lan" role="tabpanel" aria-labelledby="tab-plan-lan">
+            <h3 class="os-title">局域网</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>在路由器里给当服务器的电脑固定一个地址。</li>
+                  <li>下载对应系统的服务器，运行安装脚本：<a href="../server/#windows">Windows</a> 上双击 <code>install.cmd</code>，<a href="../server/#macos">macOS</a> 与 <a href="../server/#linux">Linux</a> 上运行 <code>./install.sh</code>。</li>
+                  <li>脚本会找到本机的局域网地址，最后显示客户端要填的地址。</li>
+                </ol>
+                <p class="plan-address">每台电脑要填的地址：<code>ws://局域网地址:8787/signal</code>，比如 <code>ws://192.168.1.20:8787/signal</code></p>
+                <a class="button quiet" href="../server/">局域网部署教程 →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
+                <dl>
+                  <div><dt>适合</dt><dd>电脑都在同一个 Wi‑Fi 或有线网络里，比如家里或办公室。</dd></div>
+                  <div><dt>要准备</dt><dd>一台常开的 Windows、Mac 或 Linux 电脑，要同步的电脑之一也行。</dd></div>
+                  <div><dt>要注意</dt><dd>离开这个网络就不同步，回来后自动恢复。那台电脑关机或睡眠时同步也会暂停。</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="plan-ts" role="tabpanel" aria-labelledby="tab-plan-ts">
+            <h3 class="os-title">局域网 + Tailscale</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>每台电脑装上 Tailscale，登录同一个账号。</li>
+                  <li>在当服务器的电脑上运行 <code>tailscale ip -4</code>，记下 100 开头的地址。</li>
+                  <li>带上这个地址安装服务器，比如 <code>install.cmd 100.101.102.103</code> 或 <code>./install.sh 100.101.102.103</code>。</li>
+                </ol>
+                <p class="plan-address">每台电脑要填的地址：<code>ws://Tailscale 地址:8787/signal</code></p>
+                <a class="button quiet" href="../tailscale/">Tailscale 教程 →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
+                <dl>
+                  <div><dt>适合</dt><dd>电脑在不同的网络里，又没有公网服务器。</dd></div>
+                  <div><dt>要准备</dt><dd>一台常开的电脑当服务器；每台电脑都装 Tailscale，登录同一个账号。</dd></div>
+                  <div><dt>要注意</dt><dd>所有用 CopySync 的电脑都要装 Tailscale，家里那台要一直开着。Tailscale 自己打不通时经境外中转，在国内会慢。</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
         </div>
-        <p class="note">装好后，安装脚本最后会显示一个地址，形如 <code>ws://192.168.1.20:8787/signal</code>，下一步要用。</p>
       </div>
     </section>
 

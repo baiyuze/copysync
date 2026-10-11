@@ -47,6 +47,27 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/start/"/>
   </url>
   <url>
+    <loc>https://baiyuze.github.io/copysync/cloud/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/cloud/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/cloud/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/cloud/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/en/cloud/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/cloud/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/cloud/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/cloud/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/ja/cloud/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/cloud/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/cloud/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/cloud/"/>
+  </url>
+  <url>
     <loc>https://baiyuze.github.io/copysync/server/</loc>
     <lastmod>2026-10-11</lastmod>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/"/>

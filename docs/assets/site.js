@@ -1,4 +1,5 @@
-// 首屏动画、代码块的「复制」按钮、部署教程的系统分页、记住选过的语言。没有脚本时页面照样完整：动画停在复制完成的样子。
+// 首屏动画、代码块的「复制」按钮、分页（部署教程按系统分页、快速开始按部署方式分页）、记住选过的语言。
+// 没有脚本时页面照样完整：动画停在复制完成的样子，分页的内容依次排开。
 (function () {
   var stage = document.querySelector("[data-play]");
 
@@ -72,7 +73,8 @@
     });
   });
 
-  // 部署教程按系统分页。链接里带了 #windows 之类就打开那一页，否则按访问者的系统；没有脚本时三个系统依次排开
+  // 分页。链接里带了 #windows、#plan-lan 之类就打开那一页；否则按系统分页（data-tabs="os"）的按访问者的系统，
+  // 按部署方式分页（data-tabs="plan"）的打开第一页
   document.querySelectorAll("[data-tabs]").forEach(function (box) {
     var list = box.querySelector("[role=tablist]");
     var tabs = Array.prototype.slice.call(list.querySelectorAll("[role=tab]"));
@@ -104,7 +106,9 @@
     var ids = panels.map(function (p) { return p.id; });
     var pick = ids.indexOf(location.hash.slice(1));
     var linked = pick >= 0;
-    if (!linked) {
+    if (!linked && box.dataset.tabs !== "os") {
+      pick = 0;
+    } else if (!linked) {
       var ua = navigator.userAgent;
       pick = /Windows/.test(ua) ? 0 : /Macintosh/.test(ua) ? 1 : /Linux|X11/.test(ua) && !/Android/.test(ua) ? 2 : 0;
     }

@@ -327,6 +327,13 @@ void main() {
         section: Section.settings, brightness: Brightness.dark);
   });
 
+  // 网站「部署到公网服务器」：服务器地址填公网 IP（文档专用的示例地址段）
+  testWidgets('settings-cloud-dark', (tester) async {
+    await _shoot(tester, 'settings-cloud-dark',
+        state: _demo(server: 'ws://203.0.113.10:8787/signal'),
+        section: Section.settings, brightness: Brightness.dark);
+  });
+
   // 网站「快速开始」：第一次打开、生成配对码，深色界面配深色网页
   testWidgets('welcome-dark', (tester) async {
     final state = _demo(link: LinkState.offline, service: ServiceState.notInstalled, empty: true);

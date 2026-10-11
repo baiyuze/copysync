@@ -1,5 +1,5 @@
-"""生成官网：docs/index.html（简体中文）、docs/en/、docs/ja/，每种语言下还有快速开始（start/）、
-局域网部署（server/）、用 Tailscale 跨网络使用（tailscale/）三个教程页面，以及 docs/design/ 下的技术方案页面。
+"""生成官网：docs/index.html（简体中文）、docs/en/、docs/ja/，每种语言下还有快速开始（start/）与三种部署方式的教程——
+公网服务器（cloud/）、局域网（server/）、局域网 + Tailscale（tailscale/），以及 docs/design/ 下的技术方案页面。
 
     python3 tools/site/build.py
 
@@ -35,11 +35,14 @@ LANGS = {
 ANALYTICS = ("  <script type=\"module\" src=\"https://static.cloudflareinsights.com/beacon.min.js\" "
              "data-cf-beacon='{\"token\": \"7ee226baf4a949a397c4bfd69a9e7461\"}'></script>\n")
 
-# 教程页面，每种语言目录下各一份：在局域网里部署服务器、快速开始、用 Tailscale 跨网络使用
-GUIDE = "server/"
+# 教程页面，每种语言目录下各一份：快速开始，以及三种部署方式各一篇——
+# 公网服务器、局域网、局域网 + Tailscale。三种方式地位相同，在快速开始里由用户自己选
 START = "start/"
+CLOUD = "cloud/"
+GUIDE = "server/"
 TAILSCALE = "tailscale/"
-SUBPAGES = [START, GUIDE, TAILSCALE]
+SUBPAGES = [START, CLOUD, GUIDE, TAILSCALE]
+DEPLOY_PAGES = [CLOUD, GUIDE, TAILSCALE]
 
 # 放到网站上的技术方案：文件名 → 网页名。其他 design/*.md 链接到 GitHub
 DESIGN_DOCS = {"nat-traversal.md": "nat-traversal", "windows-client.md": "windows-client"}
@@ -142,27 +145,30 @@ def cta(c: dict, start: str = "") -> str:
 
 
 def header(c: dict, code: str, up: str, sub: str = "") -> str:
-    """顶栏。sub 是当前的教程页面（START、GUIDE 等），首页为空。窄屏只留不带 wide 的几项。"""
+    """顶栏。sub 是当前的教程页面（START、GUIDE 等），首页为空。窄屏只留不带 wide 的几项。
+    「部署服务器」指向快速开始里三种部署方式的选择，在三篇部署教程里显示为当前所在的栏目。"""
     path = LANGS[code][0]
     if sub:
         home = up + (path or "./")
         base = up + path  # 语言根目录，教程页面互相链接用
     else:
         home, base = "", ""
-
-    def page(target: str, label: str) -> str:
-        if target == sub:
-            return f'<a href="./" aria-current="page">{label}</a>'
-        return f'<a href="{base}{target}">{label}</a>'
+    if sub == START:
+        start = '<a href="./" aria-current="page">'
+        deploy = '<a href="#server">'
+    else:
+        start = f'<a href="{base}{START}">'
+        current = ' aria-current="true"' if sub in DEPLOY_PAGES else ""
+        deploy = f'<a href="{base}{START}#server"{current}>'
 
     return f"""  <header class="bar">
     <div class="wrap">
       <a class="brand" href="{home or "./"}" aria-label="{c["home_label"]}"><img src="{up}assets/icon.svg" alt="" width="26" height="26">CopySync</a>
       <nav aria-label="{c["nav_label"]}">
-        {page(START, c["nav_start"])}
+        {start}{c["nav_start"]}</a>
         <a class="wide" href="{home}#how">{c["nav_how"]}</a>
         <a class="wide" href="{home}#faq">{c["nav_faq"]}</a>
-        {page(GUIDE, c["nav_server"])}
+        {deploy}{c["nav_server"]}</a>
         <a class="wide" href="{REPO}">GitHub</a>
         {lang_links(code, up, sub)}
       </nav>
@@ -181,45 +187,82 @@ def _server(x: int, y: int) -> str:
             f'<rect class="p-dev" x="{x}" y="{y + 15}" width="44" height="12" rx="3"/>')
 
 
-PATH_ART = {
-    # 同一个局域网：一个网络里，服务器在上，两台电脑在下
-    "lan": ('<rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/>'
-            + _server(98, 16)
-            + '<path class="p-sig" d="M58 66V30h40M182 66V30h-40"/>'
-            + '<path class="p-data" d="M82 82h76"/>'
-            + _laptop(34, 66) + _laptop(158, 66)),
-    # 局域网 + Tailscale：家与公司是两个网络，蓝色虚线框把它们连成一个虚拟局域网
-    "ts": ('<rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/>'
-           '<rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/>'
-           '<rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/>'
-           + _server(39, 20)
-           + '<path class="p-sig" d="M180 64V54H61v-7M61 64V54"/>'
-           + '<path class="p-data" d="M85 80h71"/>'
-           + _laptop(37, 64) + _laptop(156, 64)),
-    # 云服务器：服务器在两个网络之外，两边都直接连它
-    "cloud": (_server(98, 8)
-              + '<rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/>'
-              + '<rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/>'
-              + '<path class="p-sig" d="M56 64V22h42M184 64V22h-42"/>'
-              + '<path class="p-data" d="M80 80h80"/>'
-              + _laptop(32, 64) + _laptop(160, 64)),
-}
+# 三种部署方式，按这个顺序出现在首页、快速开始与安装一节：(文案里的键, 教程页面, 插图)
+PLANS = [
+    # 公网服务器：服务器在两个网络之外，两边都直接连它
+    ("cloud", CLOUD, _server(98, 8)
+     + '<rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/>'
+     + '<rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/>'
+     + '<path class="p-sig" d="M56 64V22h42M184 64V22h-42"/>'
+     + '<path class="p-data" d="M80 80h80"/>'
+     + _laptop(32, 64) + _laptop(160, 64)),
+    # 局域网：一个网络里，服务器在上，两台电脑在下
+    ("lan", GUIDE, '<rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/>'
+     + _server(98, 16)
+     + '<path class="p-sig" d="M58 66V30h40M182 66V30h-40"/>'
+     + '<path class="p-data" d="M82 82h76"/>'
+     + _laptop(34, 66) + _laptop(158, 66)),
+    # 局域网 + Tailscale：家与公司是两个网络，外面一圈点线把它们连成一个虚拟局域网
+    ("ts", TAILSCALE, '<rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/>'
+     '<rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/>'
+     '<rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/>'
+     + _server(39, 20)
+     + '<path class="p-sig" d="M180 64V54H61v-7M61 64V54"/>'
+     + '<path class="p-data" d="M85 80h71"/>'
+     + _laptop(37, 64) + _laptop(156, 64)),
+]
 
 
-def paths(c: dict, base: str, home: str) -> str:
-    """三种部署方式的卡片。base 是语言根目录（教程页面在它下面），home 是首页地址（首页上为空）。"""
-    hrefs = [base + GUIDE, base + TAILSCALE, home + "#cloud"]
+def paths(c: dict, base: str) -> str:
+    """首页上三种部署方式的卡片，样式相同、不分主次。base 是语言根目录（教程页面在它下面）。"""
     cards = []
-    for (tag, when, title, text, go), href, art in zip(c["paths"], hrefs, PATH_ART.values()):
-        cards.append(f"""          <a class="path" href="{href}">
+    for key, page, art in PLANS:
+        p = c["plans"][key]
+        cards.append(f"""          <a class="path" href="{base}{page}">
             <svg viewBox="0 0 240 112" aria-hidden="true">{art}</svg>
-            <span class="path-tag">{tag}</span>
-            <span class="path-when">{when}</span>
-            <h3>{title}</h3>
-            <p>{text}</p>
-            <span class="path-go">{go}</span>
+            <span class="path-when">{p["fit"]}</span>
+            <h3>{p["name"]}</h3>
+            <p>{p["summary"]}</p>
+            <span class="path-go">{p["go"]}</span>
           </a>""")
     return '<div class="paths">\n' + "\n".join(cards) + "\n        </div>"
+
+
+def plan_tabs(c: dict, base: str) -> str:
+    """快速开始第 2 步：三种部署方式分页，由用户自己选。每页是适合谁、要准备什么、要注意什么，
+    精简的步骤，最后要填的地址，以及完整教程的链接。"""
+    links = {"cloud": base + CLOUD, "server": base + GUIDE, "ts": base + TAILSCALE}
+    tabs, panels = [], []
+    for key, page, art in PLANS:
+        p = c["plans"][key]
+        tabs.append(f'            <button type="button" role="tab" id="tab-plan-{key}" aria-controls="plan-{key}">{p["name"]}</button>')
+        facts = "\n".join(f"                  <div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in p["facts"])
+        steps = "\n".join(f"                  <li>{fill(x, links)}</li>" for x in p["steps"])
+        panels.append(f"""          <section class="os" id="plan-{key}" role="tabpanel" aria-labelledby="tab-plan-{key}">
+            <h3 class="os-title">{p["name"]}</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+{steps}
+                </ol>
+                <p class="plan-address">{p["address"]}</p>
+                <a class="button quiet" href="{base}{page}">{p["go"]}</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true">{art}</svg>
+                <dl>
+{facts}
+                </dl>
+              </div>
+            </div>
+          </section>""")
+    return f"""<div class="os-tabs" data-tabs="plan">
+          <div class="tablist" role="tablist" aria-label="{c["plans_label"]}" hidden>
+{chr(10).join(tabs)}
+          </div>
+
+{(chr(10) + chr(10)).join(panels)}
+        </div>"""
 
 
 def jsonld(c: dict, code: str, path: str, shots: str) -> str:
@@ -284,9 +327,11 @@ def home(code: str) -> str:
     fallbacks = "\n".join(f"          <div><dt>{t}</dt><dd>{d}</dd></div>" for t, d in c["fallbacks"])
     mac_steps = "\n".join(f"              <li>{s}</li>" for s in c["mac_steps"])
     win_steps = "\n".join(f"              <li>{s}</li>" for s in c["win_steps"])
-    ports = "\n".join(f"                <tr><td>{p}</td><td>{u}</td></tr>" for p, u in c["ports"])
+    opts = "\n".join(
+        f'              <li><a href="{page}">{c["plans"][key]["name"]}</a><span>{c["plans"][key]["fit"]}</span></li>'
+        for key, page, _ in PLANS)
     specs = "\n".join(f'            <tr><th scope="row">{k}</th><td>{v}</td></tr>' for k, v in c["specs"])
-    links = {"server": GUIDE, "ts": TAILSCALE, "start": START}
+    links = {"cloud": CLOUD, "server": GUIDE, "ts": TAILSCALE, "start": START}
     faq = faq_list(c["faq"], links)
     d = c["diagram"]
 
@@ -360,7 +405,7 @@ def home(code: str) -> str:
       <div class="wrap">
         <h2 id="deploy-title">{c["paths_h2"]}</h2>
         <p class="intro">{c["paths_intro"]}</p>
-        {paths(c, "", "")}
+        {paths(c, "")}
         <p class="note">{fill(c["paths_after"], links)}</p>
       </div>
     </section>
@@ -516,28 +561,11 @@ def home(code: str) -> str:
           </div>
           <div>
             <h3>{SERVER}{c["server_h3"]}</h3>
-            <p class="small">{c["server_lan"]}</p>
-            <div class="stack">
-              <a class="button" href="{GUIDE}">{c["server_guide"]}</a>
-              <a class="button quiet" href="{TAILSCALE}">{c["server_ts"]}</a>
-            </div>
-            <h4 id="cloud">{c["server_cloud"]}</h4>
             <p class="small">{c["server_intro"]}</p>
-            <div class="code">
-              <button class="copy" type="button" data-done="{c["copied"]}">{c["copy"]}</button>
-<pre><code>curl -LO {DL}copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
-sudo ./install.sh {c["public_ip"]}</code></pre>
-            </div>
-            <p class="small">{c["server_after"]}</p>
-            <table>
-              <thead><tr><th scope="col">{c["ports_cols"][0]}</th><th scope="col">{c["ports_cols"][1]}</th></tr></thead>
-              <tbody>
-{ports}
-              </tbody>
-            </table>
-            <p class="small">{c["server_docker"]}</p>
+            <ul class="opts">
+{opts}
+            </ul>
+            <a class="button quiet" href="{START}#server">{c["server_compare"]}</a>
           </div>
         </div>
         <p class="pairing">{c["pairing"]}</p>
@@ -762,6 +790,11 @@ def toc_list(toc: list[tuple[str, str]]) -> str:
     return "\n".join(f'          <li><a href="#{anchor}">{label}</a></li>' for anchor, label in toc)
 
 
+def crumb(c: dict, home: str, base: str) -> str:
+    """部署教程顶部的面包屑：CopySync / 部署服务器，后者回到快速开始里三种方式的选择。"""
+    return f'<p class="crumb"><a href="{home}">CopySync</a> / <a href="{base}{START}#server">{c["nav_server"]}</a></p>'
+
+
 def page_top(c: dict, code: str, sub: str, title: str, description: str) -> str:
     """教程页面从 <!doctype> 到顶栏的部分。sub 是页面目录（GUIDE、START 等）。"""
     path, hl, locale, _ = LANGS[code]
@@ -839,7 +872,7 @@ cd copysync-server-macos
         explorer.append(f'                  <li{cls}><span class="f-icon {kind}" aria-hidden="true"></span>'
                         f'<span class="f-name">{name}</span>{mark}</li>')
     explorer = "\n".join(explorer)
-    links = {"home": home_href, "ts": base + TAILSCALE, "start": base + START}
+    links = {"home": home_href, "cloud": base + CLOUD, "ts": base + TAILSCALE, "start": base + START}
     prep = "\n".join(f"          <div><dt>{h}</dt><dd>{fill(p, links)}</dd></div>" for h, p in g["prep"])
     d = g["diagram"]
 
@@ -847,10 +880,9 @@ cd copysync-server-macos
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="{home_href}">CopySync</a> / {c["nav_server"]}</p>
+        {crumb(c, home_href, base)}
         <h1 class="display">{g["h1"]}</h1>
         <p class="lede">{g["lede"]}</p>
-        <p class="hero-aside">{fill(g["hero_aside"], links)}</p>
         <ol class="guide-toc">
 {toc_list(g["toc"])}
         </ol>
@@ -911,7 +943,7 @@ cd copysync-server-macos
       <div class="wrap">
         <h2 id="install-title">{g["install_h2"]}</h2>
         <p class="intro">{g["install_intro"]}</p>
-        <div class="os-tabs" data-tabs>
+        <div class="os-tabs" data-tabs="os">
           <div class="tablist" role="tablist" aria-label="{g["os_label"]}" hidden>
             <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
             <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
@@ -1011,19 +1043,6 @@ cd copysync-server-macos
       </div>
     </section>
 
-    <section class="section" id="away" aria-labelledby="away-title">
-      <div class="wrap">
-        <div class="callout">
-          <svg viewBox="0 0 240 112" aria-hidden="true">{PATH_ART["ts"]}</svg>
-          <div>
-            <h2 id="away-title">{g["away_h2"]}</h2>
-            <p>{g["away_text"]}</p>
-            <a class="button" href="{links["ts"]}">{g["away_button"]}</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="section" id="faq" aria-labelledby="faq-title">
       <div class="wrap">
         <h2 id="faq-title">{g["faq_h2"]}</h2>
@@ -1043,6 +1062,196 @@ cd copysync-server-macos
 """ + page_bottom(c, code, GUIDE)
 
 
+# ─────────────────────────── 部署到公网服务器 ───────────────────────────
+
+# 教程里的公网 IP：RFC 5737 留给文档用的地址段，不会是任何人真实的服务器
+CLOUD_IP = "203.0.113.10"
+
+
+def cloud_page(code: str) -> str:
+    c = load(code)
+    g = c["guide"]
+    cl = c["cloud"]
+    path = LANGS[code][0]
+    up = "../" * (path + CLOUD).count("/")
+    home_href = up + (path or "./")
+    base = up + path
+    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    t = TRANSCRIPTS["zh" if code == "zh" else "en"]
+    links = {"home": home_href, "server": base + GUIDE, "ts": base + TAILSCALE, "start": base + START,
+             "deploy": f"{REPO}/blob/main/server/deploy/README.md"}
+    d = cl["diagram"]
+    install = f"""curl -LO {DL}copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh {CLOUD_IP}"""
+    rules = "\n".join(
+        "                <tr>" + "".join(f"<td>{x}</td>" for x in row) + "</tr>" for row in cl["rules"])
+    cols = "".join(f'<th scope="col">{h}</th>' for h in cl["rules_cols"])
+
+    def step(n: int) -> str:
+        return f'<p class="eyebrow">{cl["step"].format(n=n)}</p>'
+
+    return page_top(c, code, CLOUD, cl["title"], cl["description"]) + f"""
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        {crumb(c, home_href, base)}
+        <h1 class="display">{cl["h1"]}</h1>
+        <p class="lede">{cl["lede"]}</p>
+        <ol class="guide-toc">
+{toc_list(cl["toc"])}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">{cl["overview_h2"]}</h2>
+        <p class="intro">{cl["overview_intro"]}</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 460" role="img" aria-labelledby="cloud-title cloud-desc">
+            <title id="cloud-title">{d["title"]}</title>
+            <desc id="cloud-desc">{d["desc"]}</desc>
+            <rect class="d-box" x="340" y="24" width="280" height="118" rx="14"/>
+            <text class="d-title" x="480" y="62" text-anchor="middle">{d["server"]}</text>
+            <text class="d-sub" x="480" y="90" text-anchor="middle">{d["server_sub"]}</text>
+            <text class="d-ip" x="480" y="124" text-anchor="middle">{CLOUD_IP}</text>
+            <rect class="d-lan" x="8" y="196" width="412" height="212" rx="22"/>
+            <text class="d-lan-label" x="32" y="228">{d["office"]}</text>
+            <rect class="d-lan" x="540" y="196" width="412" height="212" rx="22"/>
+            <text class="d-lan-label" x="564" y="228">{d["home"]}</text>
+            <path class="d-sig" d="M150 250V68H340"/>
+            <path class="d-sig" d="M810 250V68H620"/>
+            <path class="d-relay" d="M210 250V112H340"/>
+            <path class="d-relay" d="M750 250V112H620"/>
+            <text class="d-note" x="164" y="58">{d["sig_note"]}</text>
+            <text class="d-note" x="224" y="170">{d["relay_note"]}</text>
+            <rect class="d-box" x="60" y="250" width="240" height="120" rx="14"/>
+            <text class="d-title" x="180" y="302" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="180" y="330" text-anchor="middle">{d["client"]}</text>
+            <rect class="d-box" x="660" y="250" width="240" height="120" rx="14"/>
+            <text class="d-title" x="780" y="302" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="780" y="330" text-anchor="middle">{d["client"]}</text>
+            <path class="d-direct" d="M300 316H660"/>
+            <text class="d-label" x="480" y="302" text-anchor="middle">{d["direct"]}</text>
+            <g class="d-legend" transform="translate(40 444)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">{g["diagram"]["legend_direct"]}</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">{g["diagram"]["legend_relay"]}</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">{g["diagram"]["legend_sig"]}</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+{items(cl["overview_points"], "          ")}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">{g["prep_h2"]}</h2>
+        <dl class="fallbacks">
+{chr(10).join(f"          <div><dt>{h}</dt><dd>{fill(p, links)}</dd></div>" for h, p in cl["prep"])}
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="ports" aria-labelledby="ports-title">
+      <div class="wrap">
+        {step(1)}
+        <h2 id="ports-title">{cl["ports_h2"]}</h2>
+        <p class="intro">{cl["ports_intro"]}</p>
+        <div class="os-grid qs-grid">
+          <div class="os-figures">
+            <figure class="browser listing" role="img" aria-label="{esc(cl["rules_label"])}">
+              <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">{cl["rules_url"]}</span></div>
+              <table>
+                <thead><tr>{cols}</tr></thead>
+                <tbody>
+{rules}
+                </tbody>
+              </table>
+            </figure>
+          </div>
+          <ul class="points">
+{items(cl["ports_notes"], "            ")}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        {step(2)}
+        <h2 id="install-title">{cl["install_h2"]}</h2>
+        <p class="intro">{cl["install_intro"]}</p>
+        <div class="os-grid qs-grid">
+          <div class="os-steps">
+            <ol class="steps">
+              <li>{cl["install_steps"][0]}</li>
+              <li>{cl["install_steps"][1]}
+                {code_block(c, install)}</li>
+{items(cl["install_steps"][2:], "              ")}
+            </ol>
+            <ul class="points">
+{items([fill(x, links) for x in cl["install_notes"]], "              ")}
+            </ul>
+          </div>
+          <div class="os-figures">
+            {term("mac", f"ssh root@{CLOUD_IP}", transcript(t["linux"], "$", f"sudo ./install.sh {CLOUD_IP}", CLOUD_IP), cl["term_label"])}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        {step(3)}
+        <h2 id="check-title">{cl["check_h2"]}</h2>
+        <p class="intro">{cl["check_intro"]}</p>
+        <figure class="browser" role="img" aria-label="{esc(cl["check_label"])}">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://{CLOUD_IP}:8787/healthz</span></div>
+          <pre class="b-body">{{"status":"ok","version":"{VERSION}"}}</pre>
+        </figure>
+        <p class="note">{g["check_after"]}</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        {step(4)}
+        <h2 id="clients-title">{g["clients_h2"]}</h2>
+        <ol class="flow">
+{chr(10).join(f"          <li><h3>{h}</h3><p>{p}</p></li>" for h, p in cl["clients_steps"])}
+        </ol>
+        <figure class="shot">
+          <img src="{shots}settings-cloud-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(cl["clients_alt"])}">
+        </figure>
+        <p class="note">{fill(g["clients_after"], links)}</p>
+        {manage(g["manage_caption"], g["linux"]["manage"])}
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">{g["faq_h2"]}</h2>
+        <div class="faq">
+{faq_list(cl["faq"], links)}
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">{cl["closing"]}</h2>{cta(c)}
+        <a class="source" href="{links["deploy"]}">{cl["source"]}</a>
+      </div>
+    </section>
+  </main>
+""" + page_bottom(c, code, CLOUD)
+
+
 # ─────────────────────────── 快速开始 ───────────────────────────
 
 
@@ -1054,7 +1263,8 @@ def start_page(code: str) -> str:
     home_href = up + (path or "./")
     base = up + path
     shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
-    links = {"home": home_href, "server": base + GUIDE, "ts": base + TAILSCALE, "issues": REPO + "/issues"}
+    links = {"home": home_href, "cloud": base + CLOUD, "server": base + GUIDE, "ts": base + TAILSCALE,
+             "issues": REPO + "/issues"}
 
     def step(n: int) -> str:
         return f'<p class="eyebrow">{s["step"].format(n=n)}</p>'
@@ -1106,8 +1316,7 @@ def start_page(code: str) -> str:
         {step(2)}
         <h2 id="server-title">{s["server_h2"]}</h2>
         <p class="intro">{s["server_intro"]}</p>
-        {paths(c, base, home_href)}
-        <p class="note">{s["server_after"]}</p>
+        {plan_tabs(c, base)}
       </div>
     </section>
 
@@ -1177,7 +1386,7 @@ def tailscale_page(code: str) -> str:
     base = up + path
     shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
     t = TRANSCRIPTS["zh" if code == "zh" else "en"]
-    links = {"home": home_href, "server": base + GUIDE, "start": base + START}
+    links = {"home": home_href, "cloud": base + CLOUD, "server": base + GUIDE, "start": base + START}
     d = ts["diagram"]
     w, m, l = ts["win"], ts["mac"], ts["linux"]
 
@@ -1207,7 +1416,7 @@ sudo systemctl restart copysync-server"""
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="{home_href}">CopySync</a> / <a href="{links["server"]}">{c["nav_server"]}</a> / Tailscale</p>
+        {crumb(c, home_href, base)}
         <h1 class="display">{ts["h1"]}</h1>
         <p class="lede">{ts["lede"]}</p>
         <ol class="guide-toc">
@@ -1282,7 +1491,7 @@ sudo systemctl restart copysync-server"""
             <a class="button" href="https://tailscale.com/download">{DOWN}{ts["join_download"]}</a>
           </div>
           <div class="os-figures">
-            <figure class="browser machines" role="img" aria-label="{esc(ts["machines_label"])}">
+            <figure class="browser listing" role="img" aria-label="{esc(ts["machines_label"])}">
               <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">login.tailscale.com/admin/machines</span></div>
               <table>
                 <thead><tr>{cols}</tr></thead>
@@ -1319,7 +1528,7 @@ sudo systemctl restart copysync-server"""
         <p class="eyebrow">{ts["step"].format(n=3)}</p>
         <h2 id="install-title">{ts["install_h2"]}</h2>
         <p class="intro">{fill(ts["install_intro"], links)}</p>
-        <div class="os-tabs" data-tabs>
+        <div class="os-tabs" data-tabs="os">
           <div class="tablist" role="tablist" aria-label="{g["os_label"]}" hidden>
             <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
             <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
@@ -1627,7 +1836,7 @@ def design_page(md_name: str, page: str) -> str:
       <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
       <nav aria-label="页面导航">
         <a href="../{START}">{zh["nav_start"]}</a>
-        <a href="../{GUIDE}">{zh["nav_server"]}</a>
+        <a href="../{START}#server">{zh["nav_server"]}</a>
         <a class="wide" href="{REPO}/blob/main/design/{md_name}">在 GitHub 上查看</a>
         <a class="wide" href="{REPO}">GitHub</a>
       </nav>
@@ -1708,6 +1917,7 @@ def main() -> None:
         write(DOCS / path / "index.html", home(code))
         write(DOCS / path / GUIDE / "index.html", server_page(code))
         write(DOCS / path / START / "index.html", start_page(code))
+        write(DOCS / path / CLOUD / "index.html", cloud_page(code))
         write(DOCS / path / TAILSCALE / "index.html", tailscale_page(code))
     for md_name, page in DESIGN_DOCS.items():
         write(DOCS / "design" / f"{page}.html", design_page(md_name, page))

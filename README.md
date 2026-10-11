@@ -65,17 +65,17 @@ With CopySync you pair two computers once. After that, copy on one and paste on 
 
 ## Get started
 
-New here? The **[quick start](https://baiyuze.github.io/copysync/en/start/)** walks through it with screenshots. You need **the app on each computer** and **a server both can reach**. It doesn't need a public IP: most people run it on an always-on computer at home.
+New here? The **[quick start](https://baiyuze.github.io/copysync/en/start/)** walks through it with screenshots. You need **the app on each computer** and **a server both can reach**.
 
-**1. Run the server.** Pick what fits:
+**1. Run the server.** There are three ways; pick the one that fits. Each has a step-by-step guide:
 
-| Your situation | What to do | Public IP |
-|---|---|:-:|
-| Both computers on one network (home or office) | Run the server on any always-on Windows, Mac or Linux computer there with one install script. **[LAN guide](https://baiyuze.github.io/copysync/en/server/)** | Not needed |
-| One at home, one at the office | Same server at home, plus [Tailscale](https://tailscale.com) on every computer; install the server on its Tailscale address. **[Tailscale guide](https://baiyuze.github.io/copysync/en/tailscale/)** | Not needed |
-| You have a server with a public IP | Linux, as root; see below | Needed |
+| Way | Best for | You need |
+|---|---|---|
+| **[Public server](https://baiyuze.github.io/copysync/en/cloud/)** | Computers on different networks that should sync from anywhere | A Linux VM with a public IP; the smallest is enough |
+| **[LAN](https://baiyuze.github.io/copysync/en/server/)** | All computers on one network (home or office) | One always-on Windows, Mac or Linux computer there |
+| **[LAN + Tailscale](https://baiyuze.github.io/copysync/en/tailscale/)** | Across networks without a public server | An always-on computer, and [Tailscale](https://tailscale.com) on every computer |
 
-On a server with a public IP:
+On a public server:
 
 ```bash
 curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
@@ -100,7 +100,7 @@ Open TCP 8787, UDP 3478 and UDP 32768–60999. Docker and all options: [server d
 
 - [How it works](guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned
 - [Troubleshooting](guide/troubleshooting.md) and known limitations
-- [Quick start](https://baiyuze.github.io/copysync/en/start/) · [LAN guide](https://baiyuze.github.io/copysync/en/server/) · [Across networks with Tailscale](https://baiyuze.github.io/copysync/en/tailscale/), all with screenshots
+- [Quick start](https://baiyuze.github.io/copysync/en/start/) · [Public server](https://baiyuze.github.io/copysync/en/cloud/) · [LAN](https://baiyuze.github.io/copysync/en/server/) · [LAN + Tailscale](https://baiyuze.github.io/copysync/en/tailscale/), all with screenshots
 - [Server deployment](server/deploy/README.md): Windows, macOS, Linux, Docker, Tailscale
 - [Building from source](guide/building.md)
 - Design notes (Chinese): [NAT traversal on multi-uplink networks](design/nat-traversal.md), [Windows client](design/windows-client.md)

@@ -33,7 +33,7 @@
         <a href="../../en/start/">Quick start</a>
         <a class="wide" href="../../en/#how">How it works</a>
         <a class="wide" href="../../en/#faq">FAQ</a>
-        <a href="../../en/server/">Self-host</a>
+        <a href="../../en/start/#server" aria-current="true">Self-host</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../../ja/tailscale/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -44,7 +44,7 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/server/">Self-host</a> / Tailscale</p>
+        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/start/#server">Self-host</a></p>
         <h1 class="display">Across networks with Tailscale</h1>
         <p class="lede">Sync between home and the office without a public IP. The server stays at home; with Tailscale on each computer, they act as if they shared a LAN. No router settings, no cloud server.</p>
         <ol class="guide-toc">
@@ -131,7 +131,7 @@
             <a class="button" href="https://tailscale.com/download"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download Tailscale</a>
           </div>
           <div class="os-figures">
-            <figure class="browser machines" role="img" aria-label="The machine list in the Tailscale admin console (illustration): mac-mini is the server at 100.101.102.103, macbook-pro is 100.88.20.5 and home-pc is 100.92.41.17">
+            <figure class="browser listing" role="img" aria-label="The machine list in the Tailscale admin console (illustration): mac-mini is the server at 100.101.102.103, macbook-pro is 100.88.20.5 and home-pc is 100.92.41.17">
               <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">login.tailscale.com/admin/machines</span></div>
               <table>
                 <thead><tr><th scope="col">Machine</th><th scope="col">Tailscale address</th><th scope="col">OS</th></tr></thead>
@@ -176,7 +176,7 @@
         <p class="eyebrow">Step 3</p>
         <h2 id="install-title">Install the server on that address</h2>
         <p class="intro">The install scripts use the LAN address by default. Pass the Tailscale address instead so computers elsewhere can use the server's relay. Already installed it with the <a href="../../en/server/">LAN guide</a>? Run the script again with the address; your settings are kept.</p>
-        <div class="os-tabs" data-tabs>
+        <div class="os-tabs" data-tabs="os">
           <div class="tablist" role="tablist" aria-label="System of the server computer" hidden>
             <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
             <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
@@ -382,7 +382,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
           </details>
           <details>
             <summary>I have a public IP. Do I need Tailscale?</summary>
-            <div class="answer"><p>No. Run the server on the machine with the public IP and enter that address on every computer; see the <a href="../../en/#cloud">steps on the home page</a>.</p></div>
+            <div class="answer"><p>No. Run the server on the machine with the public IP and enter that address on every computer; see the <a href="../../en/cloud/">public server guide</a>.</p></div>
           </details>
         </div>
       </div>

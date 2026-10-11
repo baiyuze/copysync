@@ -33,7 +33,7 @@
         <a href="../../en/start/">Quick start</a>
         <a class="wide" href="../../en/#how">How it works</a>
         <a class="wide" href="../../en/#faq">FAQ</a>
-        <a href="./" aria-current="page">Self-host</a>
+        <a href="../../en/start/#server" aria-current="true">Self-host</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../../ja/server/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -44,16 +44,14 @@
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../en/">CopySync</a> / Self-host</p>
+        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/start/#server">Self-host</a></p>
         <h1 class="display">Run the server on your LAN</h1>
         <p class="lede">If your computers are on the same home or office network, you don't need a cloud server. Pick a computer that stays on, download and run one script, then enter the address it prints into CopySync on each computer.</p>
-        <p class="hero-aside">Not on the same network, and no public IP? See <a href="../../en/tailscale/">Use it across networks with Tailscale</a>.</p>
         <ol class="guide-toc">
           <li><a href="#prepare">Before you start</a></li>
           <li><a href="#install">Install</a></li>
           <li><a href="#check">Check</a></li>
           <li><a href="#clients">Set up the apps</a></li>
-          <li><a href="#away">Away from home</a></li>
           <li><a href="#faq">Questions</a></li>
         </ol>
       </div>
@@ -109,7 +107,7 @@
           <div><dt>A computer that stays on</dt><dd>Windows 10 or 11, macOS 13 or later, or any Linux, including one of the two computers you sync. Sync pauses while it's off or asleep and resumes when it wakes. A NAS, home router or Mac mini is ideal; the server uses about 15 MB of RAM.</dd></div>
           <div><dt>A fixed address</dt><dd>Reserve an address for it in your router's DHCP settings (often called DHCP reservation or static lease). Otherwise, when the router hands out a new address, every computer has to be updated.</dd></div>
           <div><dt>The same network</dt><dd>Devices just need to be on the same Wi‑Fi or wired network. Guest networks and Wi‑Fi with client (AP) isolation block devices from reaching each other; use another network or turn isolation off.</dd></div>
-          <div><dt>Syncing away from it</dt><dd>The server is only reachable on your LAN. To keep a laptop syncing when you take it out, install Tailscale on each computer; no public IP needed. See the <a href="../../en/tailscale/">Tailscale guide</a>.</dd></div>
+          <div><dt>No sync away from it</dt><dd>The server is only reachable on your LAN, so a laptop taken elsewhere catches up when it's back.</dd></div>
         </dl>
       </div>
     </section>
@@ -118,7 +116,7 @@
       <div class="wrap">
         <h2 id="install-title">Install the server</h2>
         <p class="intro">Choose the system of the computer that will run the server. The script finds the computer's LAN address, sets the server to start automatically, and prints the address to enter in the apps.</p>
-        <div class="os-tabs" data-tabs>
+        <div class="os-tabs" data-tabs="os">
           <div class="tablist" role="tablist" aria-label="System of the server computer" hidden>
             <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
             <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
@@ -334,19 +332,6 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
       </div>
     </section>
 
-    <section class="section" id="away" aria-labelledby="away-title">
-      <div class="wrap">
-        <div class="callout">
-          <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-          <div>
-            <h2 id="away-title">Want to sync away from home?</h2>
-            <p>Install Tailscale on each computer and run the server on its Tailscale address. From the office or anywhere else, your computers reach the server at home as if they were on the same LAN. No public IP, no router settings.</p>
-            <a class="button" href="../../en/tailscale/">Use it across networks with Tailscale</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="section" id="faq" aria-labelledby="faq-title">
       <div class="wrap">
         <h2 id="faq-title">Questions</h2>
@@ -365,11 +350,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
           </details>
           <details>
             <summary>Does it sync away from the LAN?</summary>
-            <div class="answer"><p>Yes, with Tailscale: install it on each computer under the same account, install the server with its Tailscale address and enter that address in the apps. No public IP needed. See <a href="../../en/tailscale/">Use it across networks with Tailscale</a>.</p><p>If you have a public IP, you can also run the server in the cloud; see the <a href="../../en/#cloud">steps on the home page</a>.</p></div>
-          </details>
-          <details>
-            <summary>A cloud server in mainland China works by IP but not by domain</summary>
-            <div class="answer"><p>Cloud providers in mainland China intercept plain HTTP requests for domains without an ICP filing and answer with a redirect to a block page; in our tests that included non-standard ports such as 8787. The WebSocket handshake is an HTTP request too, so it is intercepted and the app shows Not connected.</p><p>Enter the server's IP instead, as in <code>ws://server-ip:8787/signal</code>, or file the domain.</p></div>
+            <div class="answer"><p>No, the server is only reachable on your LAN. To sync from other networks, switch to one of the other two ways: a <a href="../../en/cloud/">public server</a>, or <a href="../../en/tailscale/">LAN + Tailscale</a>.</p></div>
           </details>
           <details>
             <summary>The server computer also runs CopySync. Which address?</summary>

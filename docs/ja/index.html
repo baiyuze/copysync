@@ -107,7 +107,7 @@
             "name": "サーバーは自分で用意する必要がありますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。ただしグローバル IP は不要で、自宅で電源を入れたままの Windows・Mac・Linux で十分です（LAN での設置手順）。別のネットワークにあるコンピューターは Tailscale でつながります（Tailscale での手順）。グローバル IP があれば、最小構成のクラウドサーバーに置くこともできます。"
+              "text": "はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。置き方は 3 通りです。公開サーバーは最小構成のクラウドサーバーで足り、どこからでも同期できます。LAN はすべてのコンピューターが同じネットワークにあるとき、電源を入れたままの 1 台に置きます。LAN ＋ Tailscale は公開サーバーなしでネットワークをまたぐときに使います。"
             }
           },
           {
@@ -115,7 +115,7 @@
             "name": "自宅にグローバル IP がありません。自宅と会社のあいだで同期できますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "できます。自宅で電源を入れたままのコンピューターでサーバーを動かし、自宅と会社のコンピューターに Tailscale を入れて同じアカウントでサインインし、サーバーのアドレスに Tailscale のアドレスを使います。同じ LAN にあるのと同じように扱え、コピーした内容は 2 台のあいだを直接流れます。手順はTailscale でネットワークをまたいで使うをご覧ください。"
+              "text": "できます。方法は 2 つあります。公開サーバーがあれば、そこにサーバーを置いて両方のコンピューターから直接つなぎます（公開サーバーでの手順）。なければ、自宅で電源を入れたままのコンピューターでサーバーを動かし、すべてのコンピューターに Tailscale を入れて同じアカウントでサインインし、サーバーのアドレスに Tailscale のアドレスを使います（LAN ＋ Tailscale）。"
             }
           },
           {
@@ -166,7 +166,7 @@
         <a href="start/">はじめかた</a>
         <a class="wide" href="#how">しくみ</a>
         <a class="wide" href="#faq">よくある質問</a>
-        <a href="server/">サーバーの設置</a>
+        <a href="start/#server">サーバーの設置</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
@@ -214,35 +214,32 @@
 
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
-        <h2 id="deploy-title">グローバル IP がなくても使える</h2>
-        <p class="intro">2 台のコンピューターはサーバーを通じてお互いを見つけます。ただしサーバーはインターネットに公開されている必要はありません。多くの家庭の回線にはグローバル IP がありませんが、家で電源を入れたままのコンピューターで十分です。</p>
+        <h2 id="deploy-title">サーバーをどこに置くか</h2>
+        <p class="intro">2 台はサーバーを通じてお互いを見つけます。コピーした内容がそこに保存されることはありません。公開サーバーはないので、3 通りの置き方から状況に合うものを選んでください。</p>
         <div class="paths">
+          <a class="path" href="cloud/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-when">どこからでも同期</span>
+            <h3>公開サーバー</h3>
+            <p>グローバル IP を持つ Linux のクラウドサーバー。最小構成で足ります。各コンピューターが直接つながり、自宅でも会社でも外出先でも、ほかに入れるものはありません。</p>
+            <span class="path-go">公開サーバーでの手順 →</span>
+          </a>
           <a class="path" href="server/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
-            <span class="path-tag">グローバル IP 不要</span>
-            <span class="path-when">2 台が同じネットワークにある</span>
-            <h3>LAN に置く</h3>
-            <p>家や会社で、同じ Wi‑Fi か有線ネットワークにつながっている場合。電源を入れたままの Windows・Mac・Linux のどれか 1 台で、スクリプトをひとつ実行するだけです。</p>
+            <span class="path-when">全部が同じネットワークにある</span>
+            <h3>LAN</h3>
+            <p>家や会社で、同じ Wi‑Fi か有線ネットワークにつながっている場合。電源を入れたままの Windows・Mac・Linux のどれか 1 台で、スクリプトをひとつ実行するだけ。費用はかかりません。</p>
             <span class="path-go">LAN での設置手順 →</span>
           </a>
           <a class="path" href="tailscale/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-            <span class="path-tag">グローバル IP 不要</span>
-            <span class="path-when">1 台は自宅、1 台は会社</span>
+            <span class="path-when">ネットワークをまたぐ、公開サーバーなし</span>
             <h3>LAN ＋ Tailscale</h3>
-            <p>サーバーは自宅に置いたまま。各コンピューターに Tailscale を入れれば同じ LAN にあるのと同じように扱えて、ノートパソコンを持ち出しても同期が続きます。</p>
+            <p>サーバーは自宅で電源を入れたままのコンピューターに置き、各コンピューターに Tailscale を入れて同じアカウントでサインインします。同じ LAN にあるのと同じように扱えます。</p>
             <span class="path-go">Tailscale での手順 →</span>
           </a>
-          <a class="path" href="#cloud">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
-            <span class="path-tag">グローバル IP が必要</span>
-            <span class="path-when">公開サーバーがある</span>
-            <h3>クラウドに置く</h3>
-            <p>グローバル IP を持つ Linux のクラウドサーバー。最小構成で足ります。すべてのコンピューターが直接つながり、ほかに入れるものはありません。</p>
-            <span class="path-go">設置手順 →</span>
-          </a>
         </div>
-        <p class="note">迷ったら<a href="start/">はじめかた</a>に沿って進めてください。</p>
+        <p class="note">迷ったら<a href="start/#server">はじめかた</a>で 3 通りを比べられます。</p>
       </div>
     </section>
 
@@ -416,7 +413,7 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">インストール</h2>
-        <p class="intro">それぞれのコンピューターにアプリを入れ、サーバーを 1 台用意します。グローバル IP は要りません。自宅で電源を入れたままのコンピューターでサーバーを動かし、同じ LAN ならそのまま、別のネットワークからは Tailscale を加えて使います。はじめての方は<a href="start/">はじめかた</a>をどうぞ。</p>
+        <p class="intro">それぞれのコンピューターにアプリを入れ、両方からアクセスできるサーバーを 1 台用意します。はじめての方は<a href="start/">はじめかた</a>をどうぞ。</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
@@ -439,30 +436,13 @@
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>サーバー</h3>
-            <p class="small"><strong>グローバル IP は不要です。</strong>家や会社で電源を入れたままの Windows・Mac・Linux で、スクリプトをひとつ実行するだけ。別のネットワークにあるコンピューターは Tailscale でつながります。</p>
-            <div class="stack">
-              <a class="button" href="server/">LAN での設置手順</a>
-              <a class="button quiet" href="tailscale/">Tailscale でネットワークをまたぐ</a>
-            </div>
-            <h4 id="cloud">グローバル IP を持つサーバーに置く</h4>
-            <p class="small">グローバル IP を持つ Linux サーバー、root 権限が必要です。ARM の場合は <code>amd64</code> を <code>arm64</code> に置き換えます。</p>
-            <div class="code">
-              <button class="copy" type="button" data-done="コピーしました">コピー</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
-sudo ./install.sh グローバルIP</code></pre>
-            </div>
-            <p class="small">スクリプトは起動時に立ち上がる systemd サービスを登録し、最後にアプリへ入力するアドレスを表示します。ファイアウォールやセキュリティグループで次のポートを開けてください。</p>
-            <table>
-              <thead><tr><th scope="col">ポート</th><th scope="col">用途</th></tr></thead>
-              <tbody>
-                <tr><td>8787/tcp</td><td>シグナリング</td></tr>
-                <tr><td>3478/udp</td><td>STUN と TURN</td></tr>
-                <tr><td>32768–60999/udp</td><td>中継用ポート</td></tr>
-              </tbody>
-            </table>
-            <p class="small">Docker でも動かせます。<a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">サーバーの構築手順</a>（英語）をご覧ください。</p>
+            <p class="small">置き方は 3 通り。状況に合うものを選んでください。どれにも手順のページがあります：</p>
+            <ul class="opts">
+              <li><a href="cloud/">公開サーバー</a><span>どこからでも同期</span></li>
+              <li><a href="server/">LAN</a><span>全部が同じネットワークにある</span></li>
+              <li><a href="tailscale/">LAN ＋ Tailscale</a><span>ネットワークをまたぐ、公開サーバーなし</span></li>
+            </ul>
+            <a class="button quiet" href="start/#server">3 通りを比べる</a>
           </div>
         </div>
         <p class="pairing"><strong>ペアリング：</strong>一台で「デバイス → デバイスを追加」を開いて 6 桁のコードを表示し、もう一台で入力します。両方の画面に同じ 2 行の指紋が表示されたら確定します。Mac と Windows、Windows 同士でも同じ手順です。</p>
@@ -517,11 +497,11 @@ sudo ./install.sh グローバルIP</code></pre>
           </details>
           <details>
             <summary>サーバーは自分で用意する必要がありますか？</summary>
-            <div class="answer"><p>はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。ただしグローバル IP は不要で、自宅で電源を入れたままの Windows・Mac・Linux で十分です（<a href="server/">LAN での設置手順</a>）。別のネットワークにあるコンピューターは Tailscale でつながります（<a href="tailscale/">Tailscale での手順</a>）。グローバル IP があれば、最小構成のクラウドサーバーに置くこともできます。</p></div>
+            <div class="answer"><p>はい。CopySync は公開サーバーを提供しません。だから誰のデータも他人のマシンを通りません。置き方は 3 通りです。<a href="cloud/">公開サーバー</a>は最小構成のクラウドサーバーで足り、どこからでも同期できます。<a href="server/">LAN</a> はすべてのコンピューターが同じネットワークにあるとき、電源を入れたままの 1 台に置きます。<a href="tailscale/">LAN ＋ Tailscale</a> は公開サーバーなしでネットワークをまたぐときに使います。</p></div>
           </details>
           <details>
             <summary>自宅にグローバル IP がありません。自宅と会社のあいだで同期できますか？</summary>
-            <div class="answer"><p>できます。自宅で電源を入れたままのコンピューターでサーバーを動かし、自宅と会社のコンピューターに Tailscale を入れて同じアカウントでサインインし、サーバーのアドレスに Tailscale のアドレスを使います。同じ LAN にあるのと同じように扱え、コピーした内容は 2 台のあいだを直接流れます。手順は<a href="tailscale/">Tailscale でネットワークをまたいで使う</a>をご覧ください。</p></div>
+            <div class="answer"><p>できます。方法は 2 つあります。公開サーバーがあれば、そこにサーバーを置いて両方のコンピューターから直接つなぎます（<a href="cloud/">公開サーバーでの手順</a>）。なければ、自宅で電源を入れたままのコンピューターでサーバーを動かし、すべてのコンピューターに Tailscale を入れて同じアカウントでサインインし、サーバーのアドレスに Tailscale のアドレスを使います（<a href="tailscale/">LAN ＋ Tailscale</a>）。</p></div>
           </details>
           <details>
             <summary>Windows に対応していますか？iPhone は？</summary>

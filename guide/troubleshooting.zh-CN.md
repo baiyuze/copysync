@@ -6,7 +6,7 @@
 先核对地址：以 `ws://` 开头、端口 8787、以 `/signal` 结尾；再在这台电脑的浏览器里打开 `http://<服务器地址>:8787/healthz`。打不开说明到服务器的网络不通：服务器没在运行、那台电脑睡眠了、被防火墙拦住了，或者它的地址变了。Windows 与 Linux 的安装脚本会给出需要的防火墙命令，见[服务器部署说明](../server/deploy/README.md)与[局域网部署教程](https://baiyuze.github.io/copysync/server/)。
 
 **国内云服务器：填域名连不上，填 IP 能连**
-域名没有备案时，国内云厂商会拦截访问它的明文 HTTP 请求，任何端口都一样，返回一个跳转到拦截页的响应。WebSocket 握手就是明文 HTTP 请求，所以同样被拦。地址里直接填 IP（`ws://<服务器IP>:8787/signal`），或者给域名备案。
+域名没有备案时，国内云厂商会拦截访问它的明文 HTTP 请求，任何端口都一样，返回一个跳转到拦截页的响应。WebSocket 握手就是明文 HTTP 请求，所以同样被拦。地址里直接填 IP（`ws://<服务器IP>:8787/signal`），或者给域名备案。见[公网服务器部署教程](https://baiyuze.github.io/copysync/cloud/)。
 
 **用 Tailscale 时显示「直连」，传输却很慢**
 「直连」指两台电脑在 Tailscale 的虚拟网里直接相连。Tailscale 自己打不通两台电脑时，会经它在境外的中转服务器（DERP）转发，在国内用就会慢。运行 `tailscale ping <对方>`：显示 via DERP 说明 Tailscale 在中转，显示 via <IP>:<端口> 才是点对点。另外确认服务器是用 Tailscale 地址安装的，每台电脑填的都是 `ws://<Tailscale 地址>:8787/signal`，见 [Tailscale 教程](https://baiyuze.github.io/copysync/tailscale/)。

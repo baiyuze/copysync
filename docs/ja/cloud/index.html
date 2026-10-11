@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CopySync のサーバーを公開サーバーに置く：クラウドサーバーの手順</title>
+  <meta name="description" content="グローバル IP を持つ Linux のクラウドサーバーに、スクリプトひとつで CopySync のシグナリング兼 TURN サーバーを入れます。各コンピューターが直接つながり、自宅でも会社でも外出先でもクリップボードを同期できます。セキュリティグループ、確認、アプリの設定、中国本土のドメインについて。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/cloud/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/cloud/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/cloud/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/cloud/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="CopySync のサーバーを公開サーバーに置く：クラウドサーバーの手順">
+  <meta property="og:description" content="グローバル IP を持つ Linux のクラウドサーバーに、スクリプトひとつで CopySync のシグナリング兼 TURN サーバーを入れます。各コンピューターが直接つながり、自宅でも会社でも外出先でもクリップボードを同期できます。セキュリティグループ、確認、アプリの設定、中国本土のドメインについて。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/cloud/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../ja/" aria-label="CopySync ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="ページ内の移動">
+        <a href="../../ja/start/">はじめかた</a>
+        <a class="wide" href="../../ja/#how">しくみ</a>
+        <a class="wide" href="../../ja/#faq">よくある質問</a>
+        <a href="../../ja/start/#server" aria-current="true">サーバーの設置</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../cloud/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/cloud/" hreflang="en" lang="en" data-lang="en">English</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/start/#server">サーバーの設置</a></p>
+        <h1 class="display">公開サーバーに置く</h1>
+        <p class="lede">グローバル IP を持つ Linux のクラウドサーバー。最小構成で足ります。各コンピューターが直接つながり、自宅でも会社でも外出先でも同期でき、ほかに入れるものはありません。</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">準備</a></li>
+          <li><a href="#ports">ポートを開ける</a></li>
+          <li><a href="#install">インストール</a></li>
+          <li><a href="#check">確認</a></li>
+          <li><a href="#clients">アドレスの入力</a></li>
+          <li><a href="#faq">よくある質問</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">すべてのコンピューターが直接つながる</h2>
+        <p class="intro">サーバーはインターネット上にあるので、各コンピューターはどのネットワークからでも直接つながります。コピーした内容はできるかぎり 2 台のあいだを直接流れ、直接つながらないときはサーバーで中継します。その場合も暗号化されたままです。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 460" role="img" aria-labelledby="cloud-title cloud-desc">
+            <title id="cloud-title">公開サーバーを使う CopySync</title>
+            <desc id="cloud-desc">公開サーバーのアドレスは 203.0.113.10。会社のネットワークの Mac と自宅のネットワークの Windows PC が、どちらもシグナリングでサーバーに接続します。コピーした内容は 2 台のあいだを直接流れ、直接つながらないときはサーバーで中継します。</desc>
+            <rect class="d-box" x="340" y="24" width="280" height="118" rx="14"/>
+            <text class="d-title" x="480" y="62" text-anchor="middle">公開サーバー</text>
+            <text class="d-sub" x="480" y="90" text-anchor="middle">グローバル IP のクラウドサーバー</text>
+            <text class="d-ip" x="480" y="124" text-anchor="middle">203.0.113.10</text>
+            <rect class="d-lan" x="8" y="196" width="412" height="212" rx="22"/>
+            <text class="d-lan-label" x="32" y="228">会社のネットワーク</text>
+            <rect class="d-lan" x="540" y="196" width="412" height="212" rx="22"/>
+            <text class="d-lan-label" x="564" y="228">自宅のネットワーク</text>
+            <path class="d-sig" d="M150 250V68H340"/>
+            <path class="d-sig" d="M810 250V68H620"/>
+            <path class="d-relay" d="M210 250V112H340"/>
+            <path class="d-relay" d="M750 250V112H620"/>
+            <text class="d-note" x="164" y="58">シグナリング TCP 8787</text>
+            <text class="d-note" x="224" y="170">中継 UDP（直接不可のとき）</text>
+            <rect class="d-box" x="60" y="250" width="240" height="120" rx="14"/>
+            <text class="d-title" x="180" y="302" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="180" y="330" text-anchor="middle">CopySync を使用</text>
+            <rect class="d-box" x="660" y="250" width="240" height="120" rx="14"/>
+            <text class="d-title" x="780" y="302" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="780" y="330" text-anchor="middle">CopySync を使用</text>
+            <path class="d-direct" d="M300 316H660"/>
+            <text class="d-label" x="480" y="302" text-anchor="middle">直接接続</text>
+            <g class="d-legend" transform="translate(40 444)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">データ（直接）</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">データ（中継、予備）</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">シグナリング</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>シグナリング、TCP 8787。</strong>各コンピューターが常に接続し、相手の発見、ペアリング、接続情報の交換に使います。</li>
+          <li><strong>直接接続。</strong>別々のネットワークにある 2 台は NAT 穴あけで直接つながります。ほとんどの家庭と会社のネットワークで成功します。</li>
+          <li><strong>中継、UDP 3478 と中継用ポート。</strong>直接つながらないときはサーバーが転送します。暗号化されたままで、速度はサーバーの帯域に左右されます。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">始める前に</h2>
+        <dl class="fallbacks">
+          <div><dt>クラウドサーバー</dt><dd>Linux（x86_64 または ARM64）。サーバーのメモリは約 15 MB なので最小構成で足ります。root 権限が必要です。</dd></div>
+          <div><dt>グローバル IP</dt><dd>クラウドサーバーに付いているもので構いません。固定（Elastic IP など）が理想です。変わると全部のコンピューターで入れ直しになります。</dd></div>
+          <div><dt>ログインの手段</dt><dd>ssh、またはクラウドのコンソールにある Web ターミナル。</dd></div>
+          <div><dt>中国本土のクラウドサーバー</dt><dd>ICP 登録のないドメインは使えないので、アプリにはドメインではなく IP を入力します（<a href="#faq">よくある質問</a>）。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="ports" aria-labelledby="ports-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 1</p>
+        <h2 id="ports-title">セキュリティグループでポートを開ける</h2>
+        <p class="intro">クラウドのコンソールで、このサーバーのセキュリティグループに次の 3 つのインバウンドルールを追加します。</p>
+        <div class="os-grid qs-grid">
+          <div class="os-figures">
+            <figure class="browser listing" role="img" aria-label="クラウドのセキュリティグループのインバウンドルール（イメージ）：TCP 8787 はシグナリング、UDP 3478 は STUN と TURN、UDP 32768-60999 は中継用ポート、ソースはすべて 0.0.0.0/0">
+              <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">クラウドのコンソール › セキュリティグループ › インバウンドルール</span></div>
+              <table>
+                <thead><tr><th scope="col">プロトコル</th><th scope="col">ポート範囲</th><th scope="col">ソース</th><th scope="col">用途</th></tr></thead>
+                <tbody>
+                <tr><td>TCP</td><td>8787</td><td>0.0.0.0/0</td><td>シグナリング</td></tr>
+                <tr><td>UDP</td><td>3478</td><td>0.0.0.0/0</td><td>STUN と TURN</td></tr>
+                <tr><td>UDP</td><td>32768-60999</td><td>0.0.0.0/0</td><td>中継用ポート</td></tr>
+                </tbody>
+              </table>
+            </figure>
+          </div>
+          <ul class="points">
+            <li><strong>呼び名の違い：</strong>事業者によって「ファイアウォール」「ネットワーク ACL」などと呼ばれますが、同じ設定です。</li>
+            <li><strong>中継用ポート</strong>は OS が割り当て、範囲はサーバーによって異なります。<code>cat /proc/sys/net/ipv4/ip_local_port_range</code> で確認でき、インストールスクリプトも最後に表示します。</li>
+            <li><strong>OS のファイアウォール：</strong>ufw や firewalld が有効なら同じポートを開けます。コマンドはスクリプトの最後に表示されます。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 2</p>
+        <h2 id="install-title">インストールスクリプトを実行</h2>
+        <p class="intro">スクリプトにグローバル IP を渡すと、サーバーをインストールし、起動時に立ち上がる systemd サービスを登録して、最後にアプリへ入力するアドレスを表示します。</p>
+        <div class="os-grid qs-grid">
+          <div class="os-steps">
+            <ol class="steps">
+              <li>ssh でログインします（例：<code>ssh root@203.0.113.10</code>、あなたのグローバル IP に置き換え）。</li>
+              <li>次の行を順に実行します。最後の行はあなたのグローバル IP に置き換えます：<span class="aside">ARM では <code>amd64</code> を <code>arm64</code> に置き換えます。</span>
+                <div class="code">
+                  <button class="copy" type="button" data-done="コピーしました">コピー</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh 203.0.113.10</code></pre>
+                </div></li>
+              <li>最後に表示される <code>ws://203.0.113.10:8787/signal</code> がアプリに入力するアドレスです。</li>
+            </ol>
+            <ul class="points">
+              <li><strong>systemd サービスとして登録</strong>され、起動時に立ち上がります。設定は <code>/etc/copysync/server.env</code>。</li>
+              <li><strong>更新：</strong>新しいバージョンをダウンロードして展開し、もう一度 <code>sudo ./install.sh</code> を実行。設定は引き継がれます。</li>
+              <li><strong>Docker でも動かせます：</strong><a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">サーバーの構築手順</a>（英語・中国語）をご覧ください。</li>
+            </ul>
+          </div>
+          <div class="os-figures">
+            <figure class="term" role="img" aria-label="sudo ./install.sh 203.0.113.10 の出力：インストール、systemd ユニットと設定の作成、起動のあと、アドレス ws://203.0.113.10:8787/signal を表示">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh root@203.0.113.10</span></div>
+<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 203.0.113.10
+<span class="t-step">▶ Installing the binary to /usr/local/bin</span>
+<span class="t-step">▶ Writing the systemd unit</span>
+<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 203.0.113.10)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://203.0.113.10:8787/signal</span>
+
+  Config     /etc/copysync/server.env
+  Logs       journalctl -u copysync-server -f
+  Restart    systemctl restart copysync-server
+  Uninstall  sudo ./install.sh uninstall
+
+Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
+              </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 3</p>
+        <h2 id="check-title">つながるか確認</h2>
+        <p class="intro">どのコンピューターでもよいので、ブラウザーで <code>http://203.0.113.10:8787/healthz</code>（あなたのグローバル IP）を開きます。次の 1 行が表示されれば成功です。</p>
+        <figure class="browser" role="img" aria-label="ブラウザーで http://203.0.113.10:8787/healthz を開くと、サーバーの状態 ok とバージョンが表示される">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://203.0.113.10:8787/healthz</span></div>
+          <pre class="b-body">{"status":"ok","version":"1.3.3"}</pre>
+        </figure>
+        <p class="note">開けない場合は、下の<a href="#faq">よくある質問</a>をご覧ください。</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <p class="eyebrow">ステップ 4</p>
+        <h2 id="clients-title">各コンピューターにアドレスを入力</h2>
+        <ol class="flow">
+          <li><h3>設定を開く</h3><p>各コンピューターで CopySync を開き、「設定」に進みます。</p></li>
+          <li><h3>公開アドレスを入力</h3><p>「シグナリングサーバー」に <code>ws://203.0.113.10:8787/signal</code>（あなたのグローバル IP）を入力し、Return か Enter を押します。</p></li>
+          <li><h3>状態を確認</h3><p>「接続状態」が緑の「接続済み」になれば完了です。まだペアリングしていなければ「デバイス」でペアリングします。</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../../assets/screenshots/ja/settings-cloud-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync の設定画面：シグナリングサーバーは ws://203.0.113.10:8787/signal、接続状態は接続済み">
+        </figure>
+        <p class="note">アプリがまだなら、<a href="../../ja/start/">はじめかた</a>をご覧ください。</p>
+        <div class="table-scroll">
+                <table class="manage">
+                  <caption>あとで使うもの</caption>
+                  <tbody>
+                  <tr><th scope="row">状態</th><td><code>systemctl status copysync-server</code></td></tr>
+                  <tr><th scope="row">ログ</th><td><code>journalctl -u copysync-server -f</code></td></tr>
+                  <tr><th scope="row">再起動</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
+                  <tr><th scope="row">設定</th><td><code>/etc/copysync/server.env</code>。編集したらサービスを再起動</td></tr>
+                  <tr><th scope="row">更新</th><td>新しいバージョンをダウンロードして展開し、もう一度 <code>sudo ./install.sh</code> を実行。設定は引き継がれます</td></tr>
+                  <tr><th scope="row">アンインストール</th><td><code>sudo ./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">よくある質問</h2>
+        <div class="faq">
+          <details>
+            <summary>ドメインではつながらず、IP ならつながる</summary>
+            <div class="answer"><p>ICP 登録（备案）のないドメインへの平文 HTTP リクエストは、中国本土のクラウド事業者に横取りされ、ブロックページへのリダイレクトが返されます。テストでは 8787 のような一般的でないポートでも同じでした。WebSocket のハンドシェイクも HTTP リクエストなので同じく止められ、アプリは未接続になります。</p><p>アドレスには <code>ws://サーバーのIP:8787/signal</code> のように IP を直接入力するか、ドメインを登録してください。</p></div>
+          </details>
+          <details>
+            <summary>どのくらいの性能が必要ですか？</summary>
+            <div class="answer"><p>最小構成で十分です。サーバーのメモリは約 15 MB で、ふだんは少しのシグナリングメッセージを転送するだけです。コピーした内容は直接つながればサーバーを通らず、中継になったときだけ速度がサーバーの帯域に左右されます。</p></div>
+          </details>
+          <details>
+            <summary>デバイスが「直接」ではなく「中継」になる</summary>
+            <div class="answer"><p>つながった直後は中継、少しして直接に変わるのは正常です。まず中継で使えるようにし、アイドル時に直接接続に切り替えます。ずっと中継のままなら、2 台のあいだで直接つながっていません。ポートをランダムに割り当てる NAT や厳しいファイアウォールが原因です。暗号化はそのままで、速度がサーバーの帯域に左右されるだけです。</p></div>
+          </details>
+          <details>
+            <summary>HTTPS（wss://）で使えますか？</summary>
+            <div class="answer"><p>WebSocket のアップグレードに対応した HTTPS のリバースプロキシの後ろに置けば使えます。アドレスは <code>wss://</code> で始めます。中国本土のドメインには ICP 登録が必要です。STUN と TURN は UDP でプロキシを通らないので、そのポートは開けたままにします。</p></div>
+          </details>
+          <details>
+            <summary>自宅の回線にグローバル IP があります。それで代わりになりますか？</summary>
+            <div class="answer"><p>なりますが、クラウドサーバーより手間がかかります。ルーターで TCP 8787、UDP 3478、中継用の広い範囲の UDP ポートをそのコンピューターに転送する必要があり、自宅のグローバル IP は変わることもあります。全部が自宅にあるなら <a href="../../ja/server/">LAN</a> のほうが簡単で、ポート転送なしでネットワークをまたぐなら <a href="../../ja/tailscale/">LAN ＋ Tailscale</a> があります。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">クラウドサーバー 1 台で、<br>どこからでも同期。</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+        </div>
+        <p class="note">バージョン 1.3.3、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">サーバーの詳しい構築手順（Docker とすべてのオプション、英語・中国語）</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync は GNU AGPL-3.0 のオープンソースです。商用ライセンスもあります。</p>
+      <nav aria-label="フッターのリンク">
+        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>
+        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+      </nav>
+      <nav aria-label="言語">
+        <a href="../../cloud/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/cloud/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/cloud/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

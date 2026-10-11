@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Run the CopySync server on a public server: cloud VM guide</title>
+  <meta name="description" content="One script installs CopySync&#x27;s signaling and TURN server on a Linux VM with a public IP. Every computer connects to it directly, so the clipboard syncs at home, at the office and anywhere else. Covers the security group, checking, app setup and domains in mainland China.">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/en/cloud/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/cloud/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/cloud/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/cloud/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="Run the CopySync server on a public server: cloud VM guide">
+  <meta property="og:description" content="One script installs CopySync&#x27;s signaling and TURN server on a Linux VM with a public IP. Every computer connects to it directly, so the clipboard syncs at home, at the office and anywhere else. Covers the security group, checking, app setup and domains in mainland China.">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/en/cloud/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../en/" aria-label="CopySync home"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="Page">
+        <a href="../../en/start/">Quick start</a>
+        <a class="wide" href="../../en/#how">How it works</a>
+        <a class="wide" href="../../en/#faq">FAQ</a>
+        <a href="../../en/start/#server" aria-current="true">Self-host</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a href="../../cloud/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../ja/cloud/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/start/#server">Self-host</a></p>
+        <h1 class="display">Run it on a public server</h1>
+        <p class="lede">A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly and syncs at home, at the office or anywhere else, with nothing extra to install.</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">Before you start</a></li>
+          <li><a href="#ports">Open ports</a></li>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#check">Check</a></li>
+          <li><a href="#clients">Set up the apps</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">Every computer connects to it</h2>
+        <p class="intro">The server is on the public internet, so every computer can reach it from whatever network it's on. What you copy goes directly between the two computers when possible; when that fails, it's relayed through the server, still encrypted.</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 460" role="img" aria-labelledby="cloud-title cloud-desc">
+            <title id="cloud-title">CopySync with a public server</title>
+            <desc id="cloud-desc">The public server is at 203.0.113.10. A Mac on an office network and a Windows PC on a home network both connect to it for signaling; copied content goes directly between them, and through the server's relay if that fails.</desc>
+            <rect class="d-box" x="340" y="24" width="280" height="118" rx="14"/>
+            <text class="d-title" x="480" y="62" text-anchor="middle">Public server</text>
+            <text class="d-sub" x="480" y="90" text-anchor="middle">Cloud VM with a public IP</text>
+            <text class="d-ip" x="480" y="124" text-anchor="middle">203.0.113.10</text>
+            <rect class="d-lan" x="8" y="196" width="412" height="212" rx="22"/>
+            <text class="d-lan-label" x="32" y="228">Office network</text>
+            <rect class="d-lan" x="540" y="196" width="412" height="212" rx="22"/>
+            <text class="d-lan-label" x="564" y="228">Home network</text>
+            <path class="d-sig" d="M150 250V68H340"/>
+            <path class="d-sig" d="M810 250V68H620"/>
+            <path class="d-relay" d="M210 250V112H340"/>
+            <path class="d-relay" d="M750 250V112H620"/>
+            <text class="d-note" x="164" y="58">Signaling, TCP 8787</text>
+            <text class="d-note" x="224" y="170">Relay over UDP, if direct fails</text>
+            <rect class="d-box" x="60" y="250" width="240" height="120" rx="14"/>
+            <text class="d-title" x="180" y="302" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="180" y="330" text-anchor="middle">Running CopySync</text>
+            <rect class="d-box" x="660" y="250" width="240" height="120" rx="14"/>
+            <text class="d-title" x="780" y="302" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="780" y="330" text-anchor="middle">Running CopySync</text>
+            <path class="d-direct" d="M300 316H660"/>
+            <text class="d-label" x="480" y="302" text-anchor="middle">Direct</text>
+            <g class="d-legend" transform="translate(40 444)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">Data (direct)</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">Data (relay, fallback)</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">Signaling</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>Signaling, TCP 8787.</strong> Every computer stays connected to it to find the others, pair and exchange connection details.</li>
+          <li><strong>Direct.</strong> Computers on different networks connect directly through NAT hole punching, which works on most home and office networks.</li>
+          <li><strong>Relay, UDP 3478 and relay ports.</strong> When a direct path fails, the server forwards the traffic, still encrypted and limited by its bandwidth.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">Before you start</h2>
+        <dl class="fallbacks">
+          <div><dt>A cloud VM</dt><dd>Linux on x86_64 or ARM64; the smallest size is enough, as the server uses about 15 MB of RAM. You need root.</dd></div>
+          <div><dt>A public IP</dt><dd>The VM's own public IP works; a static (elastic) one is best. If it changes, every computer has to be updated.</dd></div>
+          <div><dt>A way in</dt><dd>ssh, or the web terminal in your provider's console.</dd></div>
+          <div><dt>VMs in mainland China</dt><dd>Without an ICP filing for the domain, enter the IP in the apps, not the domain; see the <a href="#faq">questions</a>.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="ports" aria-labelledby="ports-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 1</p>
+        <h2 id="ports-title">Open the ports in the security group</h2>
+        <p class="intro">In your cloud provider's console, add these three inbound rules to the VM's security group.</p>
+        <div class="os-grid qs-grid">
+          <div class="os-figures">
+            <figure class="browser listing" role="img" aria-label="Inbound rules in a cloud security group (illustration): TCP 8787 for signaling, UDP 3478 for STUN and TURN, UDP 32768-60999 for relay ports, all from 0.0.0.0/0">
+              <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">Cloud console › Security group › Inbound rules</span></div>
+              <table>
+                <thead><tr><th scope="col">Protocol</th><th scope="col">Port range</th><th scope="col">Source</th><th scope="col">Purpose</th></tr></thead>
+                <tbody>
+                <tr><td>TCP</td><td>8787</td><td>0.0.0.0/0</td><td>Signaling</td></tr>
+                <tr><td>UDP</td><td>3478</td><td>0.0.0.0/0</td><td>STUN and TURN</td></tr>
+                <tr><td>UDP</td><td>32768-60999</td><td>0.0.0.0/0</td><td>Relay ports</td></tr>
+                </tbody>
+              </table>
+            </figure>
+          </div>
+          <ul class="points">
+            <li><strong>Different names:</strong> some providers call it a firewall or a network ACL; it's the same setting.</li>
+            <li><strong>Relay ports</strong> are assigned by the OS; the range depends on the server. Run <code>cat /proc/sys/net/ipv4/ip_local_port_range</code> to see it; the install script prints it too.</li>
+            <li><strong>System firewall:</strong> if ufw or firewalld is active, open the same ports there; the install script prints the commands.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 2</p>
+        <h2 id="install-title">Run the install script</h2>
+        <p class="intro">Give the script the public IP. It installs the server, registers a systemd service that starts on boot, and prints the address to enter in the apps.</p>
+        <div class="os-grid qs-grid">
+          <div class="os-steps">
+            <ol class="steps">
+              <li>Log in with ssh, for example <code>ssh root@203.0.113.10</code> with your public IP.</li>
+              <li>Run these lines, with your public IP on the last one:<span class="aside">On ARM, replace <code>amd64</code> with <code>arm64</code>.</span>
+                <div class="code">
+                  <button class="copy" type="button" data-done="Copied">Copy</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh 203.0.113.10</code></pre>
+                </div></li>
+              <li>The <code>ws://203.0.113.10:8787/signal</code> address at the end is what you enter in the apps.</li>
+            </ol>
+            <ul class="points">
+              <li><strong>Registers a systemd service</strong> that starts on boot; the config is <code>/etc/copysync/server.env</code>.</li>
+              <li><strong>Upgrade:</strong> download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept.</li>
+              <li><strong>Docker works too:</strong> see the <a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">server deployment guide</a>.</li>
+            </ul>
+          </div>
+          <div class="os-figures">
+            <figure class="term" role="img" aria-label="Output of sudo ./install.sh 203.0.113.10: it installs, writes the systemd unit and config and starts the server, then prints the address ws://203.0.113.10:8787/signal">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh root@203.0.113.10</span></div>
+<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 203.0.113.10
+<span class="t-step">▶ Installing the binary to /usr/local/bin</span>
+<span class="t-step">▶ Writing the systemd unit</span>
+<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 203.0.113.10)</span>
+<span class="t-step">▶ Starting</span>
+  ✓ Running
+
+Installed: copysync-server 1.3.3
+In CopySync on each computer, set Settings → Signaling server to:
+
+    <span class="t-url">ws://203.0.113.10:8787/signal</span>
+
+  Config     /etc/copysync/server.env
+  Logs       journalctl -u copysync-server -f
+  Restart    systemctl restart copysync-server
+  Uninstall  sudo ./install.sh uninstall
+
+Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
+              </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 3</p>
+        <h2 id="check-title">Check that it's reachable</h2>
+        <p class="intro">Open <code>http://203.0.113.10:8787/healthz</code> (with your public IP) in a browser on any computer. If you see this line, it works.</p>
+        <figure class="browser" role="img" aria-label="A browser showing http://203.0.113.10:8787/healthz, with the server&#x27;s status ok and its version">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://203.0.113.10:8787/healthz</span></div>
+          <pre class="b-body">{"status":"ok","version":"1.3.3"}</pre>
+        </figure>
+        <p class="note">If it doesn't load, see the <a href="#faq">questions</a> below.</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <p class="eyebrow">Step 4</p>
+        <h2 id="clients-title">Enter the address on each computer</h2>
+        <ol class="flow">
+          <li><h3>Open Settings</h3><p>Open CopySync on each computer and go to Settings.</p></li>
+          <li><h3>Enter the public address</h3><p>Under Signaling server, enter <code>ws://203.0.113.10:8787/signal</code> with your public IP and press Return or Enter.</p></li>
+          <li><h3>Check the status</h3><p>When Connection shows a green Connected, you're set. If you haven't paired yet, pair under Devices.</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../../assets/screenshots/en/settings-cloud-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync Settings: the signaling server is ws://203.0.113.10:8787/signal and the connection status shows Connected">
+        </figure>
+        <p class="note">Haven't installed the app yet? See the <a href="../../en/start/">quick start</a>.</p>
+        <div class="table-scroll">
+                <table class="manage">
+                  <caption>For later</caption>
+                  <tbody>
+                  <tr><th scope="row">Status</th><td><code>systemctl status copysync-server</code></td></tr>
+                  <tr><th scope="row">Logs</th><td><code>journalctl -u copysync-server -f</code></td></tr>
+                  <tr><th scope="row">Restart</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
+                  <tr><th scope="row">Config</th><td><code>/etc/copysync/server.env</code>; restart the service after editing</td></tr>
+                  <tr><th scope="row">Upgrade</th><td>Download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept</td></tr>
+                  <tr><th scope="row">Uninstall</th><td><code>sudo ./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">Questions</h2>
+        <div class="faq">
+          <details>
+            <summary>It works by IP but not by domain</summary>
+            <div class="answer"><p>Cloud providers in mainland China intercept plain HTTP requests for domains without an ICP filing and answer with a redirect to a block page; in our tests that included non-standard ports such as 8787. The WebSocket handshake is an HTTP request too, so it is intercepted and the app shows Not connected.</p><p>Enter the server's IP instead, as in <code>ws://server-ip:8787/signal</code>, or file the domain.</p></div>
+          </details>
+          <details>
+            <summary>How big a server do I need?</summary>
+            <div class="answer"><p>The smallest one. The server uses about 15 MB of RAM and normally forwards only a few signaling messages. Content goes directly between computers when possible; only relayed transfers are limited by the server's bandwidth.</p></div>
+          </details>
+          <details>
+            <summary>Devices show Relay instead of Direct</summary>
+            <div class="answer"><p>Relay right after connecting, then Direct a little later, is normal: the relay gets you going and the direct path takes over while idle. Staying on Relay means the two computers can't reach each other directly, usually because of a NAT that randomizes ports or a strict firewall. It's still encrypted, just limited by the server's bandwidth.</p></div>
+          </details>
+          <details>
+            <summary>Can I use HTTPS (wss://)?</summary>
+            <div class="answer"><p>Yes, behind an HTTPS reverse proxy that supports WebSocket upgrades; enter an address starting with <code>wss://</code>. Domains in mainland China need an ICP filing. STUN and TURN use UDP and bypass the proxy, so keep those ports open.</p></div>
+          </details>
+          <details>
+            <summary>My home connection has a public IP. Can I use that?</summary>
+            <div class="answer"><p>Yes, but it's more work than a VM: forward TCP 8787, UDP 3478 and a large range of UDP relay ports to that computer, and a home IP may change. If all your computers are at home, the <a href="../../en/server/">LAN</a> setup is simpler; to sync across networks without port forwarding, see <a href="../../en/tailscale/">LAN + Tailscale</a>.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">One cloud VM,<br>sync from anywhere.</h2>
+        <div class="cta">
+          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
+          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
+        </div>
+        <p class="note">Version 1.3.3, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">Full server guide, including Docker and every option</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync is open source under the GNU AGPL-3.0, with commercial licenses available.</p>
+      <nav aria-label="Footer">
+        <a href="https://github.com/baiyuze/copysync/releases">All releases</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">Commercial license</a>
+        <a href="https://github.com/baiyuze/copysync/issues">Report an issue</a>
+      </nav>
+      <nav aria-label="Language">
+        <a href="../../cloud/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../en/cloud/" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a>
+        <a href="../../ja/cloud/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

@@ -65,17 +65,17 @@ CopySync 的做法是：两台电脑配对一次，之后在一台上复制，�
 
 ## 开始使用
 
-第一次用？跟着**[快速开始](https://baiyuze.github.io/copysync/start/)**一步步来，有截图。需要**每台电脑装一个 App**，再加**一台两端都能访问到的服务器**。服务器不需要公网 IP：大多数人放在家里一台常开的电脑上就行。
+第一次用？跟着**[快速开始](https://baiyuze.github.io/copysync/start/)**一步步来，有截图。需要**每台电脑装一个 App**，再加**一台两端都能访问到的服务器**。
 
-**1. 部署服务器。**按你的情况选一种：
+**1. 部署服务器。**三种方式，按你的情况选一种，每种都有图文教程：
 
-| 你的情况 | 做法 | 公网 IP |
-|---|---|:-:|
-| 两台电脑在同一个网络里（家里或办公室） | 服务器放在其中一台常开的 Windows、Mac 或 Linux 电脑上，运行一个安装脚本。**[局域网部署教程](https://baiyuze.github.io/copysync/server/)** | 不需要 |
-| 一台在家，一台在公司 | 服务器照样放在家里，每台电脑装上 [Tailscale](https://tailscale.com)，服务器用它的 Tailscale 地址安装。**[Tailscale 教程](https://baiyuze.github.io/copysync/tailscale/)** | 不需要 |
-| 有一台公网服务器 | Linux，需要 root，见下面 | 需要 |
+| 方式 | 适合 | 要准备 |
+|---|---|---|
+| **[公网服务器](https://baiyuze.github.io/copysync/cloud/)** | 电脑分散在不同网络里，想在哪儿都能同步 | 一台有公网 IP 的 Linux 云主机，最低配置就够 |
+| **[局域网](https://baiyuze.github.io/copysync/server/)** | 电脑都在同一个网络里（家里或办公室） | 其中一台常开的 Windows、Mac 或 Linux 电脑 |
+| **[局域网 + Tailscale](https://baiyuze.github.io/copysync/tailscale/)** | 要跨网络，但没有公网服务器 | 一台常开的电脑，每台电脑都装 [Tailscale](https://tailscale.com) |
 
-有公网 IP 的服务器：
+公网服务器上的安装命令：
 
 ```bash
 curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
@@ -100,7 +100,7 @@ sudo ./install.sh <服务器公网IP>
 
 - [工作原理](guide/how-it-works.zh-CN.md)：架构、NAT 打洞、安全模型、兜底、踩过的坑
 - [排障](guide/troubleshooting.zh-CN.md)与已知限制
-- [快速开始](https://baiyuze.github.io/copysync/start/) · [局域网部署](https://baiyuze.github.io/copysync/server/) · [用 Tailscale 跨网络使用](https://baiyuze.github.io/copysync/tailscale/)，都是图文教程
+- [快速开始](https://baiyuze.github.io/copysync/start/) · [公网服务器](https://baiyuze.github.io/copysync/cloud/) · [局域网](https://baiyuze.github.io/copysync/server/) · [局域网 + Tailscale](https://baiyuze.github.io/copysync/tailscale/)，都是图文教程
 - [服务器部署说明](server/deploy/README.md)：Windows、macOS、Linux、Docker、Tailscale
 - [从源码构建](guide/building.zh-CN.md)
 - 技术方案：[多出口网络的 NAT 打洞](design/nat-traversal.md)、[Windows 客户端](design/windows-client.md)

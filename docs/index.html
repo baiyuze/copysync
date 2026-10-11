@@ -127,7 +127,7 @@
             "name": "必须自己准备服务器吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。但它不需要公网 IP：放在家里一台常开的 Windows、Mac 或 Linux 电脑上就行，见局域网部署教程；不在同一个网络的电脑，装上 Tailscale 就能连回来，见Tailscale 教程。有公网 IP 的话，也可以部署在云服务器上，最低配置就够。"
+              "text": "是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。有三种部署方式：公网服务器，最低配置的云主机就够，在哪儿都能同步；局域网，电脑都在同一个网络里时，放在其中一台常开的电脑上；局域网 + Tailscale，要跨网络又没有公网服务器时用。"
             }
           },
           {
@@ -135,7 +135,7 @@
             "name": "家里没有公网 IP，能在家和公司之间同步吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "能。服务器装在家里一台常开的电脑上，家里和公司的电脑都装上 Tailscale、登录同一个账号，服务器地址填它的 Tailscale 地址。它们就像在同一个局域网里，复制的内容照样在两台电脑之间直接传输。步骤见用 Tailscale 跨网络使用。"
+              "text": "能，有两种做法。有一台公网服务器的话，把服务器部署在上面，家里和公司的电脑都直接连它，见公网服务器部署。没有的话，服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale、登录同一个账号，服务器地址填它的 Tailscale 地址，见局域网 + Tailscale。"
             }
           },
           {
@@ -186,7 +186,7 @@
         <a href="start/">快速开始</a>
         <a class="wide" href="#how">工作原理</a>
         <a class="wide" href="#faq">常见问题</a>
-        <a href="server/">部署服务器</a>
+        <a href="start/#server">部署服务器</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="en/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -234,35 +234,32 @@
 
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
-        <h2 id="deploy-title">没有公网 IP，也能用</h2>
-        <p class="intro">两台电脑要靠一台服务器找到彼此。这台服务器不必在公网上：大多数人家里没有公网 IP，放在家里一台常开的电脑上就行。</p>
+        <h2 id="deploy-title">服务器放在哪</h2>
+        <p class="intro">两台电脑靠一台服务器找到彼此，复制的内容不会存在上面。CopySync 不提供公共服务器，有三种部署方式，按你的情况选一种。</p>
         <div class="paths">
+          <a class="path" href="cloud/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-when">在哪儿都能同步</span>
+            <h3>公网服务器</h3>
+            <p>一台有公网 IP 的 Linux 云主机，最低配置就够。每台电脑直接连它，在家、在公司、在外面都能用，不用另装软件。</p>
+            <span class="path-go">公网服务器部署教程 →</span>
+          </a>
           <a class="path" href="server/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><rect class="p-dev" x="98" y="16" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="31" width="44" height="12" rx="3"/><path class="p-sig" d="M58 66V30h40M182 66V30h-40"/><path class="p-data" d="M82 82h76"/><rect class="p-dev" x="39" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M34 95h48"/><rect class="p-dev" x="163" y="66" width="38" height="24" rx="3"/><path class="p-dev" d="M158 95h48"/></svg>
-            <span class="path-tag">不需要公网 IP</span>
-            <span class="path-when">两台电脑在同一个网络里</span>
-            <h3>局域网部署</h3>
-            <p>家里或办公室，连着同一个 Wi‑Fi 或有线网络。服务器装在其中一台常开的 Windows、Mac 或 Linux 电脑上，运行一个脚本就好。</p>
+            <span class="path-when">电脑都在同一个网络里</span>
+            <h3>局域网</h3>
+            <p>家里或办公室，连着同一个 Wi‑Fi 或有线网络。服务器装在其中一台常开的 Windows、Mac 或 Linux 电脑上，运行一个脚本，不花钱。</p>
             <span class="path-go">局域网部署教程 →</span>
           </a>
           <a class="path" href="tailscale/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><rect class="p-dev" x="39" y="20" width="44" height="12" rx="3"/><rect class="p-dev" x="39" y="35" width="44" height="12" rx="3"/><path class="p-sig" d="M180 64V54H61v-7M61 64V54"/><path class="p-data" d="M85 80h71"/><rect class="p-dev" x="42" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M37 93h48"/><rect class="p-dev" x="161" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M156 93h48"/></svg>
-            <span class="path-tag">不需要公网 IP</span>
-            <span class="path-when">一台在家，一台在公司</span>
-            <h3>局域网部署 + Tailscale</h3>
-            <p>服务器照样放在家里。每台电脑装上 Tailscale，就像在同一个局域网里：笔记本带到哪儿，复制都能同步。</p>
+            <span class="path-when">要跨网络，没有公网服务器</span>
+            <h3>局域网 + Tailscale</h3>
+            <p>服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale、登录同一个账号，就像在同一个局域网里。</p>
             <span class="path-go">Tailscale 教程 →</span>
           </a>
-          <a class="path" href="#cloud">
-            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
-            <span class="path-tag">需要公网 IP</span>
-            <span class="path-when">有一台公网服务器</span>
-            <h3>云服务器部署</h3>
-            <p>一台有公网 IP 的 Linux 云主机，最低配置就够。所有电脑直接连它，不用另装组网工具。</p>
-            <span class="path-go">部署步骤 →</span>
-          </a>
         </div>
-        <p class="note">拿不准选哪个？跟着<a href="start/">快速开始</a>一步步来。</p>
+        <p class="note">拿不准？<a href="start/#server">快速开始</a>里有三种方式的对比。</p>
       </div>
     </section>
 
@@ -436,7 +433,7 @@
     <section class="section" id="install" aria-labelledby="install-title">
       <div class="wrap">
         <h2 id="install-title">安装</h2>
-        <p class="intro">每台电脑装一个 App，再准备一台服务器。不需要公网 IP：服务器放在家里一台常开的电脑上，同一个局域网直接用，不在同一个网络就加上 Tailscale。第一次装可以跟着<a href="start/">快速开始</a>。</p>
+        <p class="intro">每台电脑装一个 App，再准备一台两边都能访问到的服务器。第一次装可以跟着<a href="start/">快速开始</a>。</p>
         <div class="install">
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
@@ -459,30 +456,13 @@
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>服务器</h3>
-            <p class="small"><strong>没有公网 IP 也行。</strong>服务器装在家里或办公室一台常开的 Windows、Mac 或 Linux 电脑上，运行一个脚本。不在同一个网络的电脑，装上 Tailscale 就能连回来。</p>
-            <div class="stack">
-              <a class="button" href="server/">局域网部署教程</a>
-              <a class="button quiet" href="tailscale/">用 Tailscale 跨网络</a>
-            </div>
-            <h4 id="cloud">有公网 IP 的服务器</h4>
-            <p class="small">一台有公网 IP 的 Linux 服务器，需要 root。ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。</p>
-            <div class="code">
-              <button class="copy" type="button" data-done="已复制">复制</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
-sudo ./install.sh 你的公网IP</code></pre>
-            </div>
-            <p class="small">脚本会注册开机自启的 systemd 服务，最后打印出 App 里要填的地址。防火墙或云安全组需要放行：</p>
-            <table>
-              <thead><tr><th scope="col">端口</th><th scope="col">用途</th></tr></thead>
-              <tbody>
-                <tr><td>8787/tcp</td><td>信令</td></tr>
-                <tr><td>3478/udp</td><td>STUN 与 TURN</td></tr>
-                <tr><td>32768–60999/udp</td><td>中转端口</td></tr>
-              </tbody>
-            </table>
-            <p class="small">也可以用 Docker 部署，见<a href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">服务器部署说明</a>。</p>
+            <p class="small">三种部署方式，按你的情况选一种，每种都有图文教程：</p>
+            <ul class="opts">
+              <li><a href="cloud/">公网服务器</a><span>在哪儿都能同步</span></li>
+              <li><a href="server/">局域网</a><span>电脑都在同一个网络里</span></li>
+              <li><a href="tailscale/">局域网 + Tailscale</a><span>要跨网络，没有公网服务器</span></li>
+            </ul>
+            <a class="button quiet" href="start/#server">对比三种方式</a>
           </div>
         </div>
         <p class="pairing"><strong>配对：</strong>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。Mac 与 Windows 之间、两台 Windows 之间都一样。</p>
@@ -537,11 +517,11 @@ sudo ./install.sh 你的公网IP</code></pre>
           </details>
           <details>
             <summary>必须自己准备服务器吗？</summary>
-            <div class="answer"><p>是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。但它不需要公网 IP：放在家里一台常开的 Windows、Mac 或 Linux 电脑上就行，见<a href="server/">局域网部署教程</a>；不在同一个网络的电脑，装上 Tailscale 就能连回来，见<a href="tailscale/">Tailscale 教程</a>。有公网 IP 的话，也可以部署在云服务器上，最低配置就够。</p></div>
+            <div class="answer"><p>是的，CopySync 不提供公共服务器，这样就不会有任何人的数据经过别人的机器。有三种部署方式：<a href="cloud/">公网服务器</a>，最低配置的云主机就够，在哪儿都能同步；<a href="server/">局域网</a>，电脑都在同一个网络里时，放在其中一台常开的电脑上；<a href="tailscale/">局域网 + Tailscale</a>，要跨网络又没有公网服务器时用。</p></div>
           </details>
           <details>
             <summary>家里没有公网 IP，能在家和公司之间同步吗？</summary>
-            <div class="answer"><p>能。服务器装在家里一台常开的电脑上，家里和公司的电脑都装上 Tailscale、登录同一个账号，服务器地址填它的 Tailscale 地址。它们就像在同一个局域网里，复制的内容照样在两台电脑之间直接传输。步骤见<a href="tailscale/">用 Tailscale 跨网络使用</a>。</p></div>
+            <div class="answer"><p>能，有两种做法。有一台公网服务器的话，把服务器部署在上面，家里和公司的电脑都直接连它，见<a href="cloud/">公网服务器部署</a>。没有的话，服务器放在家里一台常开的电脑上，每台电脑装上 Tailscale、登录同一个账号，服务器地址填它的 Tailscale 地址，见<a href="tailscale/">局域网 + Tailscale</a>。</p></div>
           </details>
           <details>
             <summary>支持 Windows 吗？iPhone 呢？</summary>

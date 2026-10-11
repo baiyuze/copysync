@@ -35,26 +35,75 @@ C = {
     "stage_arc": "Direct, end-to-end encrypted",
     "replay": "Play again",
 
-    # Three ways to run the server: (requirement, situation, approach, text, link). Links go to the LAN guide,
-    # the Tailscale guide and the cloud steps on the home page, in that order.
-    "paths_h2": "No public IP? No problem",
-    "paths_intro": "Your computers find each other through a server, but it doesn't have to be on the public internet. "
-                   "Most home connections have no public IP, and an always-on computer at home works fine.",
-    "paths": [
-        ("No public IP needed", "Both computers on one network", "On your LAN",
-         "At home or in the office, on the same Wi‑Fi or wired network. Run the server on one of your always-on Windows, "
-         "Mac or Linux computers with a single script.",
-         "LAN guide →"),
-        ("No public IP needed", "One at home, one at the office", "LAN + Tailscale",
-         "The server stays at home. Install Tailscale on each computer and they act as if they shared a LAN, so your "
-         "laptop keeps syncing wherever you take it.",
-         "Tailscale guide →"),
-        ("Needs a public IP", "You have a public server", "Cloud server",
-         "A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly, with nothing "
-         "else to install.",
-         "Setup steps →"),
-    ],
-    "paths_after": "Not sure which? Follow the <a href=\"{start}\">quick start</a>.",
+    # Three ways to run the server, on equal footing; the reader picks one. Home cards use name, fit, summary, go;
+    # the quick start tabs use name, facts, steps, address, go; the install section uses name, fit.
+    # {cloud}, {server} and {ts} in steps become links to the matching guide.
+    "paths_h2": "Where to run the server",
+    "paths_intro": "Your computers find each other through a server; nothing you copy is stored on it. There's no public server, "
+                   "so pick one of three ways to run your own.",
+    "paths_after": "Not sure? The <a href=\"{start}#server\">quick start</a> compares all three.",
+    "plans_label": "Ways to run the server",
+    "plans": {
+        "cloud": {
+            "name": "Public server",
+            "fit": "Syncs from anywhere",
+            "summary": "A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly, at home, "
+                       "at the office or anywhere else, with nothing extra to install.",
+            "go": "Public server guide →",
+            "facts": [
+                ("Best for", "Computers spread across networks that should sync from anywhere. The simplest way across networks."),
+                ("You need", "A Linux VM with a public IP, as root; the smallest one is enough."),
+                ("Keep in mind", "The VM costs money. When a direct connection fails, the relay is limited by the server's "
+                                 "bandwidth. In mainland China, use the IP unless the domain has an ICP filing."),
+            ],
+            "steps": [
+                "In your cloud provider's security group, open TCP 8787, UDP 3478 and UDP 32768–60999.",
+                "Log in with ssh, download the install script and run it with the public IP: <code>sudo ./install.sh PUBLIC_IP</code>.",
+                "Open <code>http://PUBLIC_IP:8787/healthz</code> in a browser; ok means it's running.",
+            ],
+            "address": "Address for every computer: <code>ws://PUBLIC_IP:8787/signal</code>",
+        },
+        "lan": {
+            "name": "LAN",
+            "fit": "All computers on one network",
+            "summary": "At home or in the office, on the same Wi‑Fi or wired network. Run the server on one of your always-on "
+                       "Windows, Mac or Linux computers with one script. Free.",
+            "go": "LAN guide →",
+            "facts": [
+                ("Best for", "Computers on the same Wi‑Fi or wired network, such as at home or in the office."),
+                ("You need", "An always-on Windows, Mac or Linux computer; one of the computers you sync is fine."),
+                ("Keep in mind", "No sync away from that network; it resumes when you're back. Sync also pauses while the "
+                                 "server computer is off or asleep."),
+            ],
+            "steps": [
+                "Reserve an address for the server computer in your router.",
+                "Download the server for its system and run the install script: double-click <code>install.cmd</code> on "
+                "<a href=\"{server}#windows\">Windows</a>, run <code>./install.sh</code> on <a href=\"{server}#macos\">macOS</a> "
+                "or <a href=\"{server}#linux\">Linux</a>.",
+                "The script finds the computer's LAN address and prints the address for the apps.",
+            ],
+            "address": "Address for every computer: <code>ws://LAN_ADDRESS:8787/signal</code>, for example <code>ws://192.168.1.20:8787/signal</code>",
+        },
+        "ts": {
+            "name": "LAN + Tailscale",
+            "fit": "Across networks, no public server",
+            "summary": "Run the server on an always-on computer at home, then install Tailscale on each computer under the same "
+                       "account. They act as if they shared a LAN.",
+            "go": "Tailscale guide →",
+            "facts": [
+                ("Best for", "Computers on different networks, without a public server."),
+                ("You need", "An always-on computer for the server, and Tailscale on every computer under one account."),
+                ("Keep in mind", "Every computer that runs CopySync needs Tailscale, and the one at home stays on. When "
+                                 "Tailscale can't connect peer to peer it relays through DERP servers, which can be slow."),
+            ],
+            "steps": [
+                "Install Tailscale on each computer and sign in to the same account.",
+                "On the server computer, run <code>tailscale ip -4</code> and note the address starting with 100.",
+                "Install the server with that address, as in <code>install.cmd 100.101.102.103</code> or <code>./install.sh 100.101.102.103</code>.",
+            ],
+            "address": "Address for every computer: <code>ws://TAILSCALE_ADDRESS:8787/signal</code>",
+        },
+    },
 
     "history_h2": "Everything you copied, on every computer",
     "history_intro": "History keeps the last 3 days, ready to go back on the clipboard; click an image to preview it. "
@@ -171,9 +220,8 @@ C = {
     ],
 
     "install_h2": "Install",
-    "install_intro": "Install the app on each computer and set up a server. No public IP needed: run the server on an always-on "
-                     "computer at home, use it directly on your LAN, and add Tailscale for computers elsewhere. "
-                     "First time? Follow the <a href=\"{start}\">quick start</a>.",
+    "install_intro": "Install the app on each computer, and set up a server both of them can reach. First time? Follow the "
+                     "<a href=\"{start}\">quick start</a>.",
     "mac_steps": [
         "Download CopySync.dmg, open it and drag CopySync into Applications.",
         "Open it from Applications.<span class=\"aside\">The first time, macOS says it can't verify the developer: CopySync "
@@ -190,20 +238,10 @@ C = {
         "In Settings, enter your server address and press Enter. Allow it if Windows Firewall asks.",
     ],
     "server_h3": "Server",
-    "server_lan": "<strong>No public IP needed.</strong> Run the server on an always-on Windows, Mac or Linux computer at home "
-                  "or in the office with one script. Computers on other networks reach it through Tailscale.",
-    "server_ts": "Across networks with Tailscale",
-    "server_cloud": "On a server with a public IP",
-    "server_intro": "A Linux server with a public IP, as root. On ARM, replace <code>amd64</code> with <code>arm64</code>.",
+    "server_intro": "Three ways to run it; pick the one that fits. Each has a step-by-step guide:",
+    "server_compare": "Compare the three",
     "copy": "Copy",
     "copied": "Copied",
-    "public_ip": "YOUR_PUBLIC_IP",
-    "server_after": "The script registers a systemd service that starts on boot and prints the address to enter in the app. "
-                    "Open these ports in your firewall or security group:",
-    "ports_cols": ["Port", "Purpose"],
-    "ports": [("8787/tcp", "Signaling"), ("3478/udp", "STUN and TURN"), ("32768–60999/udp", "Relay ports")],
-    "server_docker": f'Docker works too; see the <a href="{REPO}/blob/main/server/deploy/README.md">server deployment guide</a>.',
-    "server_guide": "LAN setup guide",
     "pairing": "<strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on "
                "the other, and confirm once both screens show the same two fingerprints. Mac with Windows, or two Windows PCs, "
                "works the same way.",
@@ -249,15 +287,16 @@ C = {
             "back to the relay.",
         ]),
         ("Do I need my own server?", [
-            "Yes. There is no public server, so nobody's data passes through anyone else's machine. But it doesn't need a public IP: "
-            "an always-on Windows, Mac or Linux computer at home will do; see the <a href=\"{server}\">LAN guide</a>. Computers on "
-            "other networks reach it through Tailscale; see the <a href=\"{ts}\">Tailscale guide</a>. If you have a public IP, a "
-            "cloud server works too, and the smallest VM is enough.",
+            "Yes. There is no public server, so nobody's data passes through anyone else's machine. There are three ways to run it: "
+            "a <a href=\"{cloud}\">public server</a>, where the smallest VM is enough and sync works from anywhere; "
+            "your <a href=\"{server}\">LAN</a>, on an always-on computer when all your computers share a network; "
+            "or <a href=\"{ts}\">LAN + Tailscale</a>, across networks without a public server.",
         ]),
         ("No public IP at home. Can I sync between home and the office?", [
-            "Yes. Run the server on an always-on computer at home, install Tailscale on your home and office computers under the "
-            "same account, and use the server's Tailscale address. They behave as if they shared a LAN, and what you copy still "
-            "goes directly between the two computers. See <a href=\"{ts}\">Use it across networks with Tailscale</a>.",
+            "Yes, in two ways. With a public server, run CopySync's server there and connect both computers to it; see the "
+            "<a href=\"{cloud}\">public server guide</a>. Without one, run the server on an always-on computer at home, install "
+            "Tailscale on every computer under the same account, and use the server's Tailscale address; see "
+            "<a href=\"{ts}\">LAN + Tailscale</a>.",
         ]),
         ("Windows? iPhone?", [
             "Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you "
@@ -302,9 +341,7 @@ C = {
         "h1": "Run the server on your LAN",
         "lede": "If your computers are on the same home or office network, you don't need a cloud server. Pick a computer that stays on, "
                 "download and run one script, then enter the address it prints into CopySync on each computer.",
-        "hero_aside": "Not on the same network, and no public IP? See <a href=\"{ts}\">Use it across networks with Tailscale</a>.",
-        "toc": [("prepare", "Before you start"), ("install", "Install"), ("check", "Check"), ("clients", "Set up the apps"),
-                ("away", "Away from home"), ("faq", "Questions")],
+        "toc": [("prepare", "Before you start"), ("install", "Install"), ("check", "Check"), ("clients", "Set up the apps"), ("faq", "Questions")],
 
         "overview_h2": "The server only introduces devices",
         "overview_intro": "Each computer stays connected to the server, which is how they find each other and exchange connection details. "
@@ -340,8 +377,7 @@ C = {
                                 "Otherwise, when the router hands out a new address, every computer has to be updated."),
             ("The same network", "Devices just need to be on the same Wi‑Fi or wired network. Guest networks and Wi‑Fi with client "
                                  "(AP) isolation block devices from reaching each other; use another network or turn isolation off."),
-            ("Syncing away from it", "The server is only reachable on your LAN. To keep a laptop syncing when you take it out, "
-                                     "install Tailscale on each computer; no public IP needed. See the <a href=\"{ts}\">Tailscale guide</a>."),
+            ("No sync away from it", "The server is only reachable on your LAN, so a laptop taken elsewhere catches up when it's back."),
         ],
 
         "install_h2": "Install the server",
@@ -434,11 +470,6 @@ C = {
         "clients_alt": "CopySync Settings: the signaling server is ws://192.168.1.20:8787/signal and the connection status shows Connected",
         "clients_after": 'Haven\'t installed the app yet? See the <a href="{start}">quick start</a>.',
 
-        "away_h2": "Want to sync away from home?",
-        "away_text": "Install Tailscale on each computer and run the server on its Tailscale address. From the office or anywhere "
-                     "else, your computers reach the server at home as if they were on the same LAN. No public IP, no router settings.",
-        "away_button": "Use it across networks with Tailscale",
-
         "faq_h2": "Questions",
         "faq": [
             ("The status stays at Not connected", [
@@ -460,15 +491,8 @@ C = {
                 "Reserving the address in your router avoids this.",
             ]),
             ("Does it sync away from the LAN?", [
-                "Yes, with Tailscale: install it on each computer under the same account, install the server with its Tailscale "
-                "address and enter that address in the apps. No public IP needed. See <a href=\"{ts}\">Use it across networks with Tailscale</a>.",
-                "If you have a public IP, you can also run the server in the cloud; see the <a href=\"{home}#cloud\">steps on the home page</a>.",
-            ]),
-            ("A cloud server in mainland China works by IP but not by domain", [
-                "Cloud providers in mainland China intercept plain HTTP requests for domains without an ICP filing and answer with a "
-                "redirect to a block page; in our tests that included non-standard ports such as 8787. The WebSocket handshake is an "
-                "HTTP request too, so it is intercepted and the app shows Not connected.",
-                "Enter the server's IP instead, as in <code>ws://server-ip:8787/signal</code>, or file the domain.",
+                "No, the server is only reachable on your LAN. To sync from other networks, switch to one of the other two ways: "
+                "a <a href=\"{cloud}\">public server</a>, or <a href=\"{ts}\">LAN + Tailscale</a>.",
             ]),
             ("The server computer also runs CopySync. Which address?", [
                 "The same LAN address works, and so does <code>ws://127.0.0.1:8787/signal</code>. The server and the app don't interfere.",
@@ -477,6 +501,123 @@ C = {
 
         "closing": "One computer that stays on is enough.",
         "source": "Full server guide, including public servers and Docker",
+    },
+
+    # ── Run it on a public server (cloud/ page) ──
+    "cloud": {
+        "title": "Run the CopySync server on a public server: cloud VM guide",
+        "description": "One script installs CopySync's signaling and TURN server on a Linux VM with a public IP. Every computer "
+                       "connects to it directly, so the clipboard syncs at home, at the office and anywhere else. Covers the "
+                       "security group, checking, app setup and domains in mainland China.",
+        "h1": "Run it on a public server",
+        "lede": "A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly and syncs at "
+                "home, at the office or anywhere else, with nothing extra to install.",
+        "toc": [("prepare", "Before you start"), ("ports", "Open ports"), ("install", "Install"), ("check", "Check"),
+                ("clients", "Set up the apps"), ("faq", "Questions")],
+        "step": "Step {n}",
+
+        "overview_h2": "Every computer connects to it",
+        "overview_intro": "The server is on the public internet, so every computer can reach it from whatever network it's on. "
+                          "What you copy goes directly between the two computers when possible; when that fails, it's relayed "
+                          "through the server, still encrypted.",
+        "diagram": {
+            "title": "CopySync with a public server",
+            "desc": "The public server is at 203.0.113.10. A Mac on an office network and a Windows PC on a home network both "
+                    "connect to it for signaling; copied content goes directly between them, and through the server's relay if that fails.",
+            "server": "Public server",
+            "server_sub": "Cloud VM with a public IP",
+            "office": "Office network",
+            "home": "Home network",
+            "client": "Running CopySync",
+            "sig_note": "Signaling, TCP 8787",
+            "relay_note": "Relay over UDP, if direct fails",
+            "direct": "Direct",
+        },
+        "overview_points": [
+            "<strong>Signaling, TCP 8787.</strong> Every computer stays connected to it to find the others, pair and exchange connection details.",
+            "<strong>Direct.</strong> Computers on different networks connect directly through NAT hole punching, which works on most home and office networks.",
+            "<strong>Relay, UDP 3478 and relay ports.</strong> When a direct path fails, the server forwards the traffic, still encrypted and limited by its bandwidth.",
+        ],
+
+        "prep": [
+            ("A cloud VM", "Linux on x86_64 or ARM64; the smallest size is enough, as the server uses about 15 MB of RAM. You need root."),
+            ("A public IP", "The VM's own public IP works; a static (elastic) one is best. If it changes, every computer has to be updated."),
+            ("A way in", "ssh, or the web terminal in your provider's console."),
+            ("VMs in mainland China", "Without an ICP filing for the domain, enter the IP in the apps, not the domain; see the <a href=\"#faq\">questions</a>."),
+        ],
+
+        "ports_h2": "Open the ports in the security group",
+        "ports_intro": "In your cloud provider's console, add these three inbound rules to the VM's security group.",
+        "rules_url": "Cloud console › Security group › Inbound rules",
+        "rules_cols": ["Protocol", "Port range", "Source", "Purpose"],
+        "rules": [
+            ("TCP", "8787", "0.0.0.0/0", "Signaling"),
+            ("UDP", "3478", "0.0.0.0/0", "STUN and TURN"),
+            ("UDP", "32768-60999", "0.0.0.0/0", "Relay ports"),
+        ],
+        "rules_label": "Inbound rules in a cloud security group (illustration): TCP 8787 for signaling, UDP 3478 for STUN and TURN, UDP 32768-60999 for relay ports, all from 0.0.0.0/0",
+        "ports_notes": [
+            "<strong>Different names:</strong> some providers call it a firewall or a network ACL; it's the same setting.",
+            "<strong>Relay ports</strong> are assigned by the OS; the range depends on the server. Run <code>cat /proc/sys/net/ipv4/ip_local_port_range</code> "
+            "to see it; the install script prints it too.",
+            "<strong>System firewall:</strong> if ufw or firewalld is active, open the same ports there; the install script prints the commands.",
+        ],
+
+        "install_h2": "Run the install script",
+        "install_intro": "Give the script the public IP. It installs the server, registers a systemd service that starts on boot, "
+                         "and prints the address to enter in the apps.",
+        "install_steps": [
+            "Log in with ssh, for example <code>ssh root@203.0.113.10</code> with your public IP.",
+            "Run these lines, with your public IP on the last one:<span class=\"aside\">On ARM, replace <code>amd64</code> with <code>arm64</code>.</span>",
+            "The <code>ws://203.0.113.10:8787/signal</code> address at the end is what you enter in the apps.",
+        ],
+        "install_notes": [
+            "<strong>Registers a systemd service</strong> that starts on boot; the config is <code>/etc/copysync/server.env</code>.",
+            "<strong>Upgrade:</strong> download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept.",
+            "<strong>Docker works too:</strong> see the <a href=\"{deploy}\">server deployment guide</a>.",
+        ],
+        "term_label": "Output of sudo ./install.sh 203.0.113.10: it installs, writes the systemd unit and config and starts the server, then prints the address ws://203.0.113.10:8787/signal",
+
+        "check_h2": "Check that it's reachable",
+        "check_intro": "Open <code>http://203.0.113.10:8787/healthz</code> (with your public IP) in a browser on any computer. If you see this line, it works.",
+        "check_label": "A browser showing http://203.0.113.10:8787/healthz, with the server's status ok and its version",
+
+        "clients_steps": [
+            ("Open Settings", "Open CopySync on each computer and go to Settings."),
+            ("Enter the public address", "Under Signaling server, enter <code>ws://203.0.113.10:8787/signal</code> with your public IP and press Return or Enter."),
+            ("Check the status", "When Connection shows a green Connected, you're set. If you haven't paired yet, pair under Devices."),
+        ],
+        "clients_alt": "CopySync Settings: the signaling server is ws://203.0.113.10:8787/signal and the connection status shows Connected",
+
+        "faq": [
+            ("It works by IP but not by domain", [
+                "Cloud providers in mainland China intercept plain HTTP requests for domains without an ICP filing and answer with a "
+                "redirect to a block page; in our tests that included non-standard ports such as 8787. The WebSocket handshake is an "
+                "HTTP request too, so it is intercepted and the app shows Not connected.",
+                "Enter the server's IP instead, as in <code>ws://server-ip:8787/signal</code>, or file the domain.",
+            ]),
+            ("How big a server do I need?", [
+                "The smallest one. The server uses about 15 MB of RAM and normally forwards only a few signaling messages. Content "
+                "goes directly between computers when possible; only relayed transfers are limited by the server's bandwidth.",
+            ]),
+            ("Devices show Relay instead of Direct", [
+                "Relay right after connecting, then Direct a little later, is normal: the relay gets you going and the direct path "
+                "takes over while idle. Staying on Relay means the two computers can't reach each other directly, usually because "
+                "of a NAT that randomizes ports or a strict firewall. It's still encrypted, just limited by the server's bandwidth.",
+            ]),
+            ("Can I use HTTPS (wss://)?", [
+                "Yes, behind an HTTPS reverse proxy that supports WebSocket upgrades; enter an address starting with <code>wss://</code>. "
+                "Domains in mainland China need an ICP filing. STUN and TURN use UDP and bypass the proxy, so keep those ports open.",
+            ]),
+            ("My home connection has a public IP. Can I use that?", [
+                "Yes, but it's more work than a VM: forward TCP 8787, UDP 3478 and a large range of UDP relay ports to that computer, "
+                "and a home IP may change. If all your computers are at home, the <a href=\"{server}\">LAN</a> setup is simpler; to sync "
+                "across networks without port forwarding, see <a href=\"{ts}\">LAN + Tailscale</a>.",
+            ]),
+        ],
+
+        "closing": "One cloud VM,<br>sync from anywhere.",
+        "source": "Full server guide, including Docker and every option",
     },
 
     # ── Quick start (start/ page) ──
@@ -508,9 +649,7 @@ C = {
 
         "server_h2": "Set up a server",
         "server_intro": "Your computers find each other through it; nothing you copy is stored there. There's no public server, "
-                        "so pick the option that fits:",
-        "server_after": "When it's installed, the script prints an address like <code>ws://192.168.1.20:8787/signal</code>. "
-                        "You'll need it in the next step.",
+                        "and there are three ways to run your own. Pick the one that fits.",
 
         "connect_h2": "Enter the server address on each computer",
         "connect_steps": [
@@ -710,7 +849,7 @@ C = {
             ]),
             ("I have a public IP. Do I need Tailscale?", [
                 "No. Run the server on the machine with the public IP and enter that address on every computer; see the "
-                "<a href=\"{home}#cloud\">steps on the home page</a>.",
+                "<a href=\"{cloud}\">public server guide</a>.",
             ]),
         ],
 
