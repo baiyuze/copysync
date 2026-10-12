@@ -1401,6 +1401,163 @@ func (x *ConfirmPairingRequest) GetAccept() bool {
 	return false
 }
 
+// 附近一台打开了「搜索附近设备」窗口的设备。
+type NearbyDevice struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // 对方这次启动的 mDNS 实例名，用来发起配对
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Platform      string                 `protobuf:"bytes,3,opt,name=platform,proto3" json:"platform,omitempty"` // darwin / windows
+	Paired        bool                   `protobuf:"varint,4,opt,name=paired,proto3" json:"paired,omitempty"`    // 已经与本机配对
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NearbyDevice) Reset() {
+	*x = NearbyDevice{}
+	mi := &file_copysync_v1_daemon_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NearbyDevice) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NearbyDevice) ProtoMessage() {}
+
+func (x *NearbyDevice) ProtoReflect() protoreflect.Message {
+	mi := &file_copysync_v1_daemon_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NearbyDevice.ProtoReflect.Descriptor instead.
+func (*NearbyDevice) Descriptor() ([]byte, []int) {
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *NearbyDevice) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *NearbyDevice) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *NearbyDevice) GetPlatform() string {
+	if x != nil {
+		return x.Platform
+	}
+	return ""
+}
+
+func (x *NearbyDevice) GetPaired() bool {
+	if x != nil {
+		return x.Paired
+	}
+	return false
+}
+
+type NearbyDevices struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Devices       []*NearbyDevice        `protobuf:"bytes,1,rep,name=devices,proto3" json:"devices,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NearbyDevices) Reset() {
+	*x = NearbyDevices{}
+	mi := &file_copysync_v1_daemon_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NearbyDevices) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NearbyDevices) ProtoMessage() {}
+
+func (x *NearbyDevices) ProtoReflect() protoreflect.Message {
+	mi := &file_copysync_v1_daemon_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NearbyDevices.ProtoReflect.Descriptor instead.
+func (*NearbyDevices) Descriptor() ([]byte, []int) {
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *NearbyDevices) GetDevices() []*NearbyDevice {
+	if x != nil {
+		return x.Devices
+	}
+	return nil
+}
+
+type PairNearbyRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PairNearbyRequest) Reset() {
+	*x = PairNearbyRequest{}
+	mi := &file_copysync_v1_daemon_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PairNearbyRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PairNearbyRequest) ProtoMessage() {}
+
+func (x *PairNearbyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_copysync_v1_daemon_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PairNearbyRequest.ProtoReflect.Descriptor instead.
+func (*PairNearbyRequest) Descriptor() ([]byte, []int) {
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *PairNearbyRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 type UnpairRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DeviceId      string                 `protobuf:"bytes,1,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
@@ -1410,7 +1567,7 @@ type UnpairRequest struct {
 
 func (x *UnpairRequest) Reset() {
 	*x = UnpairRequest{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[17]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1422,7 +1579,7 @@ func (x *UnpairRequest) String() string {
 func (*UnpairRequest) ProtoMessage() {}
 
 func (x *UnpairRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[17]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1435,7 +1592,7 @@ func (x *UnpairRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnpairRequest.ProtoReflect.Descriptor instead.
 func (*UnpairRequest) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{17}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *UnpairRequest) GetDeviceId() string {
@@ -1455,7 +1612,7 @@ type SetDeviceAddressRequest struct {
 
 func (x *SetDeviceAddressRequest) Reset() {
 	*x = SetDeviceAddressRequest{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[18]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1467,7 +1624,7 @@ func (x *SetDeviceAddressRequest) String() string {
 func (*SetDeviceAddressRequest) ProtoMessage() {}
 
 func (x *SetDeviceAddressRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[18]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1480,7 +1637,7 @@ func (x *SetDeviceAddressRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetDeviceAddressRequest.ProtoReflect.Descriptor instead.
 func (*SetDeviceAddressRequest) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{18}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *SetDeviceAddressRequest) GetDeviceId() string {
@@ -1527,7 +1684,7 @@ type Config struct {
 
 func (x *Config) Reset() {
 	*x = Config{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[19]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1539,7 +1696,7 @@ func (x *Config) String() string {
 func (*Config) ProtoMessage() {}
 
 func (x *Config) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[19]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1552,7 +1709,7 @@ func (x *Config) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config.ProtoReflect.Descriptor instead.
 func (*Config) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{19}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *Config) GetAutoSyncThresholdBytes() int64 {
@@ -1668,7 +1825,7 @@ type NetworkInfo struct {
 
 func (x *NetworkInfo) Reset() {
 	*x = NetworkInfo{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[20]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1680,7 +1837,7 @@ func (x *NetworkInfo) String() string {
 func (*NetworkInfo) ProtoMessage() {}
 
 func (x *NetworkInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[20]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1693,7 +1850,7 @@ func (x *NetworkInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NetworkInfo.ProtoReflect.Descriptor instead.
 func (*NetworkInfo) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{20}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *NetworkInfo) GetLocalPort() int32 {
@@ -1753,7 +1910,7 @@ type LanInfo struct {
 
 func (x *LanInfo) Reset() {
 	*x = LanInfo{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[21]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1765,7 +1922,7 @@ func (x *LanInfo) String() string {
 func (*LanInfo) ProtoMessage() {}
 
 func (x *LanInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[21]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1778,7 +1935,7 @@ func (x *LanInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LanInfo.ProtoReflect.Descriptor instead.
 func (*LanInfo) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{21}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *LanInfo) GetEnabled() bool {
@@ -1837,7 +1994,7 @@ type LanPeer struct {
 
 func (x *LanPeer) Reset() {
 	*x = LanPeer{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[22]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1849,7 +2006,7 @@ func (x *LanPeer) String() string {
 func (*LanPeer) ProtoMessage() {}
 
 func (x *LanPeer) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[22]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1862,7 +2019,7 @@ func (x *LanPeer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LanPeer.ProtoReflect.Descriptor instead.
 func (*LanPeer) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{22}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *LanPeer) GetDeviceId() string {
@@ -1919,7 +2076,7 @@ type NetworkEgress struct {
 
 func (x *NetworkEgress) Reset() {
 	*x = NetworkEgress{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[23]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1931,7 +2088,7 @@ func (x *NetworkEgress) String() string {
 func (*NetworkEgress) ProtoMessage() {}
 
 func (x *NetworkEgress) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[23]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1944,7 +2101,7 @@ func (x *NetworkEgress) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NetworkEgress.ProtoReflect.Descriptor instead.
 func (*NetworkEgress) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{23}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *NetworkEgress) GetAddress() string {
@@ -1995,7 +2152,7 @@ type Status struct {
 
 func (x *Status) Reset() {
 	*x = Status{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[24]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2007,7 +2164,7 @@ func (x *Status) String() string {
 func (*Status) ProtoMessage() {}
 
 func (x *Status) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[24]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2020,7 +2177,7 @@ func (x *Status) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Status.ProtoReflect.Descriptor instead.
 func (*Status) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{24}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *Status) GetDeviceId() string {
@@ -2103,7 +2260,7 @@ type GetImagePreviewRequest struct {
 
 func (x *GetImagePreviewRequest) Reset() {
 	*x = GetImagePreviewRequest{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[25]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2115,7 +2272,7 @@ func (x *GetImagePreviewRequest) String() string {
 func (*GetImagePreviewRequest) ProtoMessage() {}
 
 func (x *GetImagePreviewRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[25]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2128,7 +2285,7 @@ func (x *GetImagePreviewRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetImagePreviewRequest.ProtoReflect.Descriptor instead.
 func (*GetImagePreviewRequest) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{25}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GetImagePreviewRequest) GetClipId() string {
@@ -2156,7 +2313,7 @@ type GetImagePreviewResponse struct {
 
 func (x *GetImagePreviewResponse) Reset() {
 	*x = GetImagePreviewResponse{}
-	mi := &file_copysync_v1_daemon_proto_msgTypes[26]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2168,7 +2325,7 @@ func (x *GetImagePreviewResponse) String() string {
 func (*GetImagePreviewResponse) ProtoMessage() {}
 
 func (x *GetImagePreviewResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_daemon_proto_msgTypes[26]
+	mi := &file_copysync_v1_daemon_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2181,7 +2338,7 @@ func (x *GetImagePreviewResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetImagePreviewResponse.ProtoReflect.Descriptor instead.
 func (*GetImagePreviewResponse) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{26}
+	return file_copysync_v1_daemon_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GetImagePreviewResponse) GetPath() string {
@@ -2294,7 +2451,16 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x0fpairing_session\x18\x02 \x01(\tR\x0epairingSession\"X\n" +
 	"\x15ConfirmPairingRequest\x12'\n" +
 	"\x0fpairing_session\x18\x01 \x01(\tR\x0epairingSession\x12\x16\n" +
-	"\x06accept\x18\x02 \x01(\bR\x06accept\",\n" +
+	"\x06accept\x18\x02 \x01(\bR\x06accept\"f\n" +
+	"\fNearbyDevice\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
+	"\bplatform\x18\x03 \x01(\tR\bplatform\x12\x16\n" +
+	"\x06paired\x18\x04 \x01(\bR\x06paired\"D\n" +
+	"\rNearbyDevices\x123\n" +
+	"\adevices\x18\x01 \x03(\v2\x19.copysync.v1.NearbyDeviceR\adevices\"#\n" +
+	"\x11PairNearbyRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\",\n" +
 	"\rUnpairRequest\x12\x1b\n" +
 	"\tdevice_id\x18\x01 \x01(\tR\bdeviceId\"P\n" +
 	"\x17SetDeviceAddressRequest\x12\x1b\n" +
@@ -2395,8 +2561,7 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x1cCLIPBOARD_PERMISSION_DEFAULT\x10\x02\x12\x1c\n" +
 	"\x18CLIPBOARD_PERMISSION_ASK\x10\x03\x12%\n" +
 	"!CLIPBOARD_PERMISSION_ALWAYS_ALLOW\x10\x04\x12$\n" +
-	" CLIPBOARD_PERMISSION_ALWAYS_DENY\x10\x052\x8c\n" +
-	"\n" +
+	" CLIPBOARD_PERMISSION_ALWAYS_DENY\x10\x052\xa3\v\n" +
 	"\rDaemonService\x12@\n" +
 	"\tSubscribe\x12\x1d.copysync.v1.SubscribeRequest\x1a\x12.copysync.v1.Event0\x01\x12P\n" +
 	"\vListHistory\x12\x1f.copysync.v1.ListHistoryRequest\x1a .copysync.v1.ListHistoryResponse\x12F\n" +
@@ -2409,7 +2574,10 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x11RedeemPairingCode\x12%.copysync.v1.RedeemPairingCodeRequest\x1a&.copysync.v1.RedeemPairingCodeResponse\x12H\n" +
 	"\x0eConfirmPairing\x12\".copysync.v1.ConfirmPairingRequest\x1a\x12.copysync.v1.Empty\x128\n" +
 	"\x06Unpair\x12\x1a.copysync.v1.UnpairRequest\x1a\x12.copysync.v1.Empty\x12L\n" +
-	"\x10SetDeviceAddress\x12$.copysync.v1.SetDeviceAddressRequest\x1a\x12.copysync.v1.Empty\x124\n" +
+	"\x10SetDeviceAddress\x12$.copysync.v1.SetDeviceAddressRequest\x1a\x12.copysync.v1.Empty\x12?\n" +
+	"\vWatchNearby\x12\x12.copysync.v1.Empty\x1a\x1a.copysync.v1.NearbyDevices0\x01\x12T\n" +
+	"\n" +
+	"PairNearby\x12\x1e.copysync.v1.PairNearbyRequest\x1a&.copysync.v1.RedeemPairingCodeResponse\x124\n" +
 	"\tGetConfig\x12\x12.copysync.v1.Empty\x1a\x13.copysync.v1.Config\x128\n" +
 	"\fUpdateConfig\x12\x13.copysync.v1.Config\x1a\x13.copysync.v1.Config\x124\n" +
 	"\tGetStatus\x12\x12.copysync.v1.Empty\x1a\x13.copysync.v1.Status\x12D\n" +
@@ -2431,7 +2599,7 @@ func file_copysync_v1_daemon_proto_rawDescGZIP() []byte {
 }
 
 var file_copysync_v1_daemon_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_copysync_v1_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
+var file_copysync_v1_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_copysync_v1_daemon_proto_goTypes = []any{
 	(ClipKind)(0),                     // 0: copysync.v1.ClipKind
 	(ClipStatus)(0),                   // 1: copysync.v1.ClipStatus
@@ -2454,16 +2622,19 @@ var file_copysync_v1_daemon_proto_goTypes = []any{
 	(*RedeemPairingCodeRequest)(nil),  // 18: copysync.v1.RedeemPairingCodeRequest
 	(*RedeemPairingCodeResponse)(nil), // 19: copysync.v1.RedeemPairingCodeResponse
 	(*ConfirmPairingRequest)(nil),     // 20: copysync.v1.ConfirmPairingRequest
-	(*UnpairRequest)(nil),             // 21: copysync.v1.UnpairRequest
-	(*SetDeviceAddressRequest)(nil),   // 22: copysync.v1.SetDeviceAddressRequest
-	(*Config)(nil),                    // 23: copysync.v1.Config
-	(*NetworkInfo)(nil),               // 24: copysync.v1.NetworkInfo
-	(*LanInfo)(nil),                   // 25: copysync.v1.LanInfo
-	(*LanPeer)(nil),                   // 26: copysync.v1.LanPeer
-	(*NetworkEgress)(nil),             // 27: copysync.v1.NetworkEgress
-	(*Status)(nil),                    // 28: copysync.v1.Status
-	(*GetImagePreviewRequest)(nil),    // 29: copysync.v1.GetImagePreviewRequest
-	(*GetImagePreviewResponse)(nil),   // 30: copysync.v1.GetImagePreviewResponse
+	(*NearbyDevice)(nil),              // 21: copysync.v1.NearbyDevice
+	(*NearbyDevices)(nil),             // 22: copysync.v1.NearbyDevices
+	(*PairNearbyRequest)(nil),         // 23: copysync.v1.PairNearbyRequest
+	(*UnpairRequest)(nil),             // 24: copysync.v1.UnpairRequest
+	(*SetDeviceAddressRequest)(nil),   // 25: copysync.v1.SetDeviceAddressRequest
+	(*Config)(nil),                    // 26: copysync.v1.Config
+	(*NetworkInfo)(nil),               // 27: copysync.v1.NetworkInfo
+	(*LanInfo)(nil),                   // 28: copysync.v1.LanInfo
+	(*LanPeer)(nil),                   // 29: copysync.v1.LanPeer
+	(*NetworkEgress)(nil),             // 30: copysync.v1.NetworkEgress
+	(*Status)(nil),                    // 31: copysync.v1.Status
+	(*GetImagePreviewRequest)(nil),    // 32: copysync.v1.GetImagePreviewRequest
+	(*GetImagePreviewResponse)(nil),   // 33: copysync.v1.GetImagePreviewResponse
 }
 var file_copysync_v1_daemon_proto_depIdxs = []int32{
 	0,  // 0: copysync.v1.ClipRecord.kind:type_name -> copysync.v1.ClipKind
@@ -2475,57 +2646,62 @@ var file_copysync_v1_daemon_proto_depIdxs = []int32{
 	8,  // 6: copysync.v1.Event.progress:type_name -> copysync.v1.TransferProgress
 	9,  // 7: copysync.v1.Event.device_changed:type_name -> copysync.v1.Device
 	3,  // 8: copysync.v1.Event.permission_changed:type_name -> copysync.v1.ClipboardPermission
-	28, // 9: copysync.v1.Event.status_changed:type_name -> copysync.v1.Status
+	31, // 9: copysync.v1.Event.status_changed:type_name -> copysync.v1.Status
 	0,  // 10: copysync.v1.ListHistoryRequest.kind_filter:type_name -> copysync.v1.ClipKind
 	6,  // 11: copysync.v1.ListHistoryResponse.records:type_name -> copysync.v1.ClipRecord
 	9,  // 12: copysync.v1.ListDevicesResponse.self:type_name -> copysync.v1.Device
 	9,  // 13: copysync.v1.ListDevicesResponse.peers:type_name -> copysync.v1.Device
 	9,  // 14: copysync.v1.RedeemPairingCodeResponse.peer:type_name -> copysync.v1.Device
-	27, // 15: copysync.v1.NetworkInfo.egresses:type_name -> copysync.v1.NetworkEgress
-	25, // 16: copysync.v1.NetworkInfo.lan:type_name -> copysync.v1.LanInfo
-	26, // 17: copysync.v1.LanInfo.peers:type_name -> copysync.v1.LanPeer
-	3,  // 18: copysync.v1.Status.clipboard_permission:type_name -> copysync.v1.ClipboardPermission
-	7,  // 19: copysync.v1.DaemonService.Subscribe:input_type -> copysync.v1.SubscribeRequest
-	11, // 20: copysync.v1.DaemonService.ListHistory:input_type -> copysync.v1.ListHistoryRequest
-	13, // 21: copysync.v1.DaemonService.DeleteHistory:input_type -> copysync.v1.DeleteHistoryRequest
-	14, // 22: copysync.v1.DaemonService.Fetch:input_type -> copysync.v1.FetchRequest
-	15, // 23: copysync.v1.DaemonService.ApplyToClipboard:input_type -> copysync.v1.ApplyToClipboardRequest
-	29, // 24: copysync.v1.DaemonService.GetImagePreview:input_type -> copysync.v1.GetImagePreviewRequest
-	4,  // 25: copysync.v1.DaemonService.ListDevices:input_type -> copysync.v1.Empty
-	4,  // 26: copysync.v1.DaemonService.CreatePairingCode:input_type -> copysync.v1.Empty
-	18, // 27: copysync.v1.DaemonService.RedeemPairingCode:input_type -> copysync.v1.RedeemPairingCodeRequest
-	20, // 28: copysync.v1.DaemonService.ConfirmPairing:input_type -> copysync.v1.ConfirmPairingRequest
-	21, // 29: copysync.v1.DaemonService.Unpair:input_type -> copysync.v1.UnpairRequest
-	22, // 30: copysync.v1.DaemonService.SetDeviceAddress:input_type -> copysync.v1.SetDeviceAddressRequest
-	4,  // 31: copysync.v1.DaemonService.GetConfig:input_type -> copysync.v1.Empty
-	23, // 32: copysync.v1.DaemonService.UpdateConfig:input_type -> copysync.v1.Config
-	4,  // 33: copysync.v1.DaemonService.GetStatus:input_type -> copysync.v1.Empty
-	4,  // 34: copysync.v1.DaemonService.RequestClipboardPermission:input_type -> copysync.v1.Empty
-	4,  // 35: copysync.v1.DaemonService.RequestLocalNetworkPermission:input_type -> copysync.v1.Empty
-	4,  // 36: copysync.v1.DaemonService.GetNetwork:input_type -> copysync.v1.Empty
-	10, // 37: copysync.v1.DaemonService.Subscribe:output_type -> copysync.v1.Event
-	12, // 38: copysync.v1.DaemonService.ListHistory:output_type -> copysync.v1.ListHistoryResponse
-	4,  // 39: copysync.v1.DaemonService.DeleteHistory:output_type -> copysync.v1.Empty
-	4,  // 40: copysync.v1.DaemonService.Fetch:output_type -> copysync.v1.Empty
-	4,  // 41: copysync.v1.DaemonService.ApplyToClipboard:output_type -> copysync.v1.Empty
-	30, // 42: copysync.v1.DaemonService.GetImagePreview:output_type -> copysync.v1.GetImagePreviewResponse
-	16, // 43: copysync.v1.DaemonService.ListDevices:output_type -> copysync.v1.ListDevicesResponse
-	17, // 44: copysync.v1.DaemonService.CreatePairingCode:output_type -> copysync.v1.CreatePairingCodeResponse
-	19, // 45: copysync.v1.DaemonService.RedeemPairingCode:output_type -> copysync.v1.RedeemPairingCodeResponse
-	4,  // 46: copysync.v1.DaemonService.ConfirmPairing:output_type -> copysync.v1.Empty
-	4,  // 47: copysync.v1.DaemonService.Unpair:output_type -> copysync.v1.Empty
-	4,  // 48: copysync.v1.DaemonService.SetDeviceAddress:output_type -> copysync.v1.Empty
-	23, // 49: copysync.v1.DaemonService.GetConfig:output_type -> copysync.v1.Config
-	23, // 50: copysync.v1.DaemonService.UpdateConfig:output_type -> copysync.v1.Config
-	28, // 51: copysync.v1.DaemonService.GetStatus:output_type -> copysync.v1.Status
-	4,  // 52: copysync.v1.DaemonService.RequestClipboardPermission:output_type -> copysync.v1.Empty
-	4,  // 53: copysync.v1.DaemonService.RequestLocalNetworkPermission:output_type -> copysync.v1.Empty
-	24, // 54: copysync.v1.DaemonService.GetNetwork:output_type -> copysync.v1.NetworkInfo
-	37, // [37:55] is the sub-list for method output_type
-	19, // [19:37] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	21, // 15: copysync.v1.NearbyDevices.devices:type_name -> copysync.v1.NearbyDevice
+	30, // 16: copysync.v1.NetworkInfo.egresses:type_name -> copysync.v1.NetworkEgress
+	28, // 17: copysync.v1.NetworkInfo.lan:type_name -> copysync.v1.LanInfo
+	29, // 18: copysync.v1.LanInfo.peers:type_name -> copysync.v1.LanPeer
+	3,  // 19: copysync.v1.Status.clipboard_permission:type_name -> copysync.v1.ClipboardPermission
+	7,  // 20: copysync.v1.DaemonService.Subscribe:input_type -> copysync.v1.SubscribeRequest
+	11, // 21: copysync.v1.DaemonService.ListHistory:input_type -> copysync.v1.ListHistoryRequest
+	13, // 22: copysync.v1.DaemonService.DeleteHistory:input_type -> copysync.v1.DeleteHistoryRequest
+	14, // 23: copysync.v1.DaemonService.Fetch:input_type -> copysync.v1.FetchRequest
+	15, // 24: copysync.v1.DaemonService.ApplyToClipboard:input_type -> copysync.v1.ApplyToClipboardRequest
+	32, // 25: copysync.v1.DaemonService.GetImagePreview:input_type -> copysync.v1.GetImagePreviewRequest
+	4,  // 26: copysync.v1.DaemonService.ListDevices:input_type -> copysync.v1.Empty
+	4,  // 27: copysync.v1.DaemonService.CreatePairingCode:input_type -> copysync.v1.Empty
+	18, // 28: copysync.v1.DaemonService.RedeemPairingCode:input_type -> copysync.v1.RedeemPairingCodeRequest
+	20, // 29: copysync.v1.DaemonService.ConfirmPairing:input_type -> copysync.v1.ConfirmPairingRequest
+	24, // 30: copysync.v1.DaemonService.Unpair:input_type -> copysync.v1.UnpairRequest
+	25, // 31: copysync.v1.DaemonService.SetDeviceAddress:input_type -> copysync.v1.SetDeviceAddressRequest
+	4,  // 32: copysync.v1.DaemonService.WatchNearby:input_type -> copysync.v1.Empty
+	23, // 33: copysync.v1.DaemonService.PairNearby:input_type -> copysync.v1.PairNearbyRequest
+	4,  // 34: copysync.v1.DaemonService.GetConfig:input_type -> copysync.v1.Empty
+	26, // 35: copysync.v1.DaemonService.UpdateConfig:input_type -> copysync.v1.Config
+	4,  // 36: copysync.v1.DaemonService.GetStatus:input_type -> copysync.v1.Empty
+	4,  // 37: copysync.v1.DaemonService.RequestClipboardPermission:input_type -> copysync.v1.Empty
+	4,  // 38: copysync.v1.DaemonService.RequestLocalNetworkPermission:input_type -> copysync.v1.Empty
+	4,  // 39: copysync.v1.DaemonService.GetNetwork:input_type -> copysync.v1.Empty
+	10, // 40: copysync.v1.DaemonService.Subscribe:output_type -> copysync.v1.Event
+	12, // 41: copysync.v1.DaemonService.ListHistory:output_type -> copysync.v1.ListHistoryResponse
+	4,  // 42: copysync.v1.DaemonService.DeleteHistory:output_type -> copysync.v1.Empty
+	4,  // 43: copysync.v1.DaemonService.Fetch:output_type -> copysync.v1.Empty
+	4,  // 44: copysync.v1.DaemonService.ApplyToClipboard:output_type -> copysync.v1.Empty
+	33, // 45: copysync.v1.DaemonService.GetImagePreview:output_type -> copysync.v1.GetImagePreviewResponse
+	16, // 46: copysync.v1.DaemonService.ListDevices:output_type -> copysync.v1.ListDevicesResponse
+	17, // 47: copysync.v1.DaemonService.CreatePairingCode:output_type -> copysync.v1.CreatePairingCodeResponse
+	19, // 48: copysync.v1.DaemonService.RedeemPairingCode:output_type -> copysync.v1.RedeemPairingCodeResponse
+	4,  // 49: copysync.v1.DaemonService.ConfirmPairing:output_type -> copysync.v1.Empty
+	4,  // 50: copysync.v1.DaemonService.Unpair:output_type -> copysync.v1.Empty
+	4,  // 51: copysync.v1.DaemonService.SetDeviceAddress:output_type -> copysync.v1.Empty
+	22, // 52: copysync.v1.DaemonService.WatchNearby:output_type -> copysync.v1.NearbyDevices
+	19, // 53: copysync.v1.DaemonService.PairNearby:output_type -> copysync.v1.RedeemPairingCodeResponse
+	26, // 54: copysync.v1.DaemonService.GetConfig:output_type -> copysync.v1.Config
+	26, // 55: copysync.v1.DaemonService.UpdateConfig:output_type -> copysync.v1.Config
+	31, // 56: copysync.v1.DaemonService.GetStatus:output_type -> copysync.v1.Status
+	4,  // 57: copysync.v1.DaemonService.RequestClipboardPermission:output_type -> copysync.v1.Empty
+	4,  // 58: copysync.v1.DaemonService.RequestLocalNetworkPermission:output_type -> copysync.v1.Empty
+	27, // 59: copysync.v1.DaemonService.GetNetwork:output_type -> copysync.v1.NetworkInfo
+	40, // [40:60] is the sub-list for method output_type
+	20, // [20:40] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_copysync_v1_daemon_proto_init() }
@@ -2548,7 +2724,7 @@ func file_copysync_v1_daemon_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_copysync_v1_daemon_proto_rawDesc), len(file_copysync_v1_daemon_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   27,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -183,11 +183,12 @@ func NewManager(opts Options) (*Manager, error) {
 		DeviceInfo: func() (string, string) {
 			return m.loadConfig().DeviceName, runtime.GOOS
 		},
-		OnSignal:    m.handleSignal,
-		OnReachable: m.handleLANReachable,
-		OnRestarted: m.handlePeerRestarted,
-		AcceptPair:  m.acceptLANPair,
-		OnChange:    m.notifyStatus,
+		OnSignal:     m.handleSignal,
+		OnReachable:  m.handleLANReachable,
+		OnRestarted:  m.handlePeerRestarted,
+		AcceptPair:   m.acceptLANPair,
+		AcceptNearby: m.acceptNearby,
+		OnChange:     m.notifyStatus,
 	})
 
 	m.client = signaling.New(signaling.Options{
@@ -640,6 +641,27 @@ func (m *Manager) acceptLANPair(peer lan.PeerInfo) bool {
 	return err == nil
 }
 
+// acceptNearby：有人在「搜索附近设备」里点了本机。弹出核对指纹的确认，由用户决定接不接受。
+// 对方没收到回复会接着重发，同一台设备的请求只弹一次。
+func (m *Manager) acceptNearby(peer lan.PeerInfo) bool {
+	m.mu.RLock()
+	for _, p := range m.pending {
+		if p.initiated && p.peer.ID == peer.ID {
+			m.mu.RUnlock()
+			return true
+		}
+	}
+	m.mu.RUnlock()
+
+	_, err := m.addPending(store.Device{
+		ID:        peer.ID,
+		Name:      peer.Name,
+		Platform:  peer.Platform,
+		PublicKey: peer.PublicKey,
+	}, true, peer.Addrs)
+	return err == nil
+}
+
 // ErrBadPeerID 表示对方的 device_id 与公钥对不上：有人在转发途中改了它。
 var ErrBadPeerID = errors.New("对方的设备 ID 与公钥不匹配")
 
@@ -836,6 +858,47 @@ func (m *Manager) redeemViaServer(ctx context.Context, code string) (*pb.Device,
 		drop()
 		return nil, "", ErrCodeRejected
 	}
+}
+
+// ShowNearby 在「搜索附近设备」窗口打开期间公开本机，窗口关掉时调用返回的函数。见 lan.Transport.ShowNearby。
+func (m *Manager) ShowNearby() (hide func()) { return m.lan.ShowNearby() }
+
+// Nearby 返回附近同样打开了「搜索附近设备」窗口的设备。
+func (m *Manager) Nearby() []*pb.NearbyDevice {
+	list := m.lan.Nearby()
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	out := make([]*pb.NearbyDevice, 0, len(list))
+	for _, n := range list {
+		_, paired := m.known[n.PeerID]
+		out = append(out, &pb.NearbyDevice{
+			Id:       n.ID,
+			Name:     n.Name,
+			Platform: n.Platform,
+			Paired:   n.PeerID != "" && paired,
+		})
+	}
+	return out
+}
+
+// PairNearby 向附近的一台设备发起配对，返回待用户核对的对端信息与会话 ID。
+// 与 RedeemPairingCode 一样，此时尚未建立互信——必须再调 ConfirmPairing。
+func (m *Manager) PairNearby(ctx context.Context, id string) (*pb.Device, string, error) {
+	if !m.lan.Running() {
+		return nil, "", ErrNoChannel
+	}
+	lctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	peer, err := m.lan.PairNearby(lctx, id)
+	cancel()
+	if err != nil {
+		return nil, "", err
+	}
+	dev := store.Device{ID: peer.ID, Name: peer.Name, Platform: peer.Platform, PublicKey: peer.PublicKey}
+	session, err := m.addPending(dev, false, peer.Addrs)
+	if err != nil {
+		return nil, "", err
+	}
+	return m.toProto(dev, false, session), session, nil
 }
 
 // ConfirmPairing 在用户核对指纹后落库，正式建立互信。

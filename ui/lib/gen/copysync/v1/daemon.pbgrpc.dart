@@ -124,6 +124,25 @@ class DaemonServiceClient extends $grpc.Client {
     return $createUnaryCall(_$setDeviceAddress, request, options: options);
   }
 
+  /// 「搜索附近设备」窗口打开期间保持这个调用，窗口关掉时取消。期间本机在局域网里公开设备名，
+  /// 并在附近同样打开了这个窗口的设备有变化时推送最新的列表
+  $grpc.ResponseStream<$0.NearbyDevices> watchNearby(
+    $0.Empty request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createStreamingCall(
+        _$watchNearby, $async.Stream.fromIterable([request]),
+        options: options);
+  }
+
+  /// 向附近的一台设备发起配对。之后与 RedeemPairingCode 一样，双方核对指纹后各自 ConfirmPairing
+  $grpc.ResponseFuture<$0.RedeemPairingCodeResponse> pairNearby(
+    $0.PairNearbyRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$pairNearby, request, options: options);
+  }
+
   $grpc.ResponseFuture<$0.Config> getConfig(
     $0.Empty request, {
     $grpc.CallOptions? options,
@@ -231,6 +250,15 @@ class DaemonServiceClient extends $grpc.Client {
           '/copysync.v1.DaemonService/SetDeviceAddress',
           ($0.SetDeviceAddressRequest value) => value.writeToBuffer(),
           $0.Empty.fromBuffer);
+  static final _$watchNearby = $grpc.ClientMethod<$0.Empty, $0.NearbyDevices>(
+      '/copysync.v1.DaemonService/WatchNearby',
+      ($0.Empty value) => value.writeToBuffer(),
+      $0.NearbyDevices.fromBuffer);
+  static final _$pairNearby =
+      $grpc.ClientMethod<$0.PairNearbyRequest, $0.RedeemPairingCodeResponse>(
+          '/copysync.v1.DaemonService/PairNearby',
+          ($0.PairNearbyRequest value) => value.writeToBuffer(),
+          $0.RedeemPairingCodeResponse.fromBuffer);
   static final _$getConfig = $grpc.ClientMethod<$0.Empty, $0.Config>(
       '/copysync.v1.DaemonService/GetConfig',
       ($0.Empty value) => value.writeToBuffer(),
@@ -358,6 +386,22 @@ abstract class DaemonServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.SetDeviceAddressRequest.fromBuffer(value),
         ($0.Empty value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.Empty, $0.NearbyDevices>(
+        'WatchNearby',
+        watchNearby_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
+        ($0.NearbyDevices value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.PairNearbyRequest, $0.RedeemPairingCodeResponse>(
+            'PairNearby',
+            pairNearby_Pre,
+            false,
+            false,
+            ($core.List<$core.int> value) =>
+                $0.PairNearbyRequest.fromBuffer(value),
+            ($0.RedeemPairingCodeResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.Empty, $0.Config>(
         'GetConfig',
         getConfig_Pre,
@@ -499,6 +543,23 @@ abstract class DaemonServiceBase extends $grpc.Service {
 
   $async.Future<$0.Empty> setDeviceAddress(
       $grpc.ServiceCall call, $0.SetDeviceAddressRequest request);
+
+  $async.Stream<$0.NearbyDevices> watchNearby_Pre(
+      $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async* {
+    yield* watchNearby($call, await $request);
+  }
+
+  $async.Stream<$0.NearbyDevices> watchNearby(
+      $grpc.ServiceCall call, $0.Empty request);
+
+  $async.Future<$0.RedeemPairingCodeResponse> pairNearby_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.PairNearbyRequest> $request) async {
+    return pairNearby($call, await $request);
+  }
+
+  $async.Future<$0.RedeemPairingCodeResponse> pairNearby(
+      $grpc.ServiceCall call, $0.PairNearbyRequest request);
 
   $async.Future<$0.Config> getConfig_Pre(
       $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async {

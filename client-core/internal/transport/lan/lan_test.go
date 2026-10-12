@@ -26,6 +26,7 @@ type node struct {
 	known     map[string]ed25519.PublicKey
 	book      map[string][]string
 	accepted  []PeerInfo
+	nearbyReq []PeerInfo // 从「搜索附近设备」发来的配对请求
 	signals   chan *pb.SignalMessage
 	reach     chan string
 	restarted chan string
@@ -75,6 +76,12 @@ func newNodeWith(t *testing.T, d Discovery) *node {
 			n.mu.Lock()
 			defer n.mu.Unlock()
 			n.accepted = append(n.accepted, p)
+			return true
+		},
+		AcceptNearby: func(p PeerInfo) bool {
+			n.mu.Lock()
+			defer n.mu.Unlock()
+			n.nearbyReq = append(n.nearbyReq, p)
 			return true
 		},
 	})

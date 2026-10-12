@@ -1525,6 +1525,209 @@ class ConfirmPairingRequest extends $pb.GeneratedMessage {
   void clearAccept() => $_clearField(2);
 }
 
+/// 附近一台打开了「搜索附近设备」窗口的设备。
+class NearbyDevice extends $pb.GeneratedMessage {
+  factory NearbyDevice({
+    $core.String? id,
+    $core.String? name,
+    $core.String? platform,
+    $core.bool? paired,
+  }) {
+    final result = NearbyDevice._();
+    if (id != null) result.id = id;
+    if (name != null) result.name = name;
+    if (platform != null) result.platform = platform;
+    if (paired != null) result.paired = paired;
+    return result;
+  }
+
+  NearbyDevice._();
+
+  factory NearbyDevice.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NearbyDevice()..mergeFromBuffer(data, registry);
+  factory NearbyDevice.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NearbyDevice()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'NearbyDevice',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: NearbyDevice.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'name')
+    ..aOS(3, _omitFieldNames ? '' : 'platform')
+    ..aOB(4, _omitFieldNames ? '' : 'paired')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NearbyDevice clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NearbyDevice copyWith(void Function(NearbyDevice) updates) =>
+      super.copyWith((message) => updates(message as NearbyDevice))
+          as NearbyDevice;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use NearbyDevice() / NearbyDevice.new instead')
+  static NearbyDevice create() => NearbyDevice._();
+  static $pb.GeneratedMessage $_createMessage() => NearbyDevice._();
+  @$core.override
+  NearbyDevice createEmptyInstance() => NearbyDevice._();
+  @$core.pragma('dart2js:noInline')
+  static NearbyDevice getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<NearbyDevice>(
+          NearbyDevice.$_createMessage);
+  static NearbyDevice? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get name => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set name($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasName() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearName() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get platform => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set platform($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasPlatform() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPlatform() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.bool get paired => $_getBF(3);
+  @$pb.TagNumber(4)
+  set paired($core.bool value) => $_setBool(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasPaired() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearPaired() => $_clearField(4);
+}
+
+class NearbyDevices extends $pb.GeneratedMessage {
+  factory NearbyDevices({
+    $core.Iterable<NearbyDevice>? devices,
+  }) {
+    final result = NearbyDevices._();
+    if (devices != null) result.devices.addAll(devices);
+    return result;
+  }
+
+  NearbyDevices._();
+
+  factory NearbyDevices.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NearbyDevices()..mergeFromBuffer(data, registry);
+  factory NearbyDevices.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NearbyDevices()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'NearbyDevices',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: NearbyDevices.$_createMessage)
+    ..pPM<NearbyDevice>(1, _omitFieldNames ? '' : 'devices',
+        subBuilder: NearbyDevice.$_createMessage)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NearbyDevices clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NearbyDevices copyWith(void Function(NearbyDevices) updates) =>
+      super.copyWith((message) => updates(message as NearbyDevices))
+          as NearbyDevices;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use NearbyDevices() / NearbyDevices.new instead')
+  static NearbyDevices create() => NearbyDevices._();
+  static $pb.GeneratedMessage $_createMessage() => NearbyDevices._();
+  @$core.override
+  NearbyDevices createEmptyInstance() => NearbyDevices._();
+  @$core.pragma('dart2js:noInline')
+  static NearbyDevices getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<NearbyDevices>(
+          NearbyDevices.$_createMessage);
+  static NearbyDevices? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<NearbyDevice> get devices => $_getList(0);
+}
+
+class PairNearbyRequest extends $pb.GeneratedMessage {
+  factory PairNearbyRequest({
+    $core.String? id,
+  }) {
+    final result = PairNearbyRequest._();
+    if (id != null) result.id = id;
+    return result;
+  }
+
+  PairNearbyRequest._();
+
+  factory PairNearbyRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      PairNearbyRequest()..mergeFromBuffer(data, registry);
+  factory PairNearbyRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      PairNearbyRequest()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'PairNearbyRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: PairNearbyRequest.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  PairNearbyRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  PairNearbyRequest copyWith(void Function(PairNearbyRequest) updates) =>
+      super.copyWith((message) => updates(message as PairNearbyRequest))
+          as PairNearbyRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use PairNearbyRequest() / PairNearbyRequest.new instead')
+  static PairNearbyRequest create() => PairNearbyRequest._();
+  static $pb.GeneratedMessage $_createMessage() => PairNearbyRequest._();
+  @$core.override
+  PairNearbyRequest createEmptyInstance() => PairNearbyRequest._();
+  @$core.pragma('dart2js:noInline')
+  static PairNearbyRequest getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PairNearbyRequest>(
+          PairNearbyRequest.$_createMessage);
+  static PairNearbyRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+}
+
 class UnpairRequest extends $pb.GeneratedMessage {
   factory UnpairRequest({
     $core.String? deviceId,

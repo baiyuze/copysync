@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/baiyuze/copysync/client-core/internal/clipboard"
 	"github.com/baiyuze/copysync/client-core/internal/config"
@@ -44,13 +45,17 @@ type Deps struct {
 	Permission             func() clipboard.Permission
 	OpenPermissionSettings func() error
 	// Network 返回最近一轮网络出口探测的结果
-	Network            func() *pb.NetworkInfo
-	Devices            func() (self *pb.Device, peers []*pb.Device)
-	CreatePairingCode  func(ctx context.Context) (code string, expiresAt time.Time, lanAddrs []string, err error)
-	RedeemPairingCode  func(ctx context.Context, code, address string) (*pb.Device, string, error)
-	ConfirmPairing     func(ctx context.Context, session string, accept bool) error
-	Unpair             func(ctx context.Context, deviceID string) error
-	SetDeviceAddress   func(ctx context.Context, deviceID, address string) error
+	Network           func() *pb.NetworkInfo
+	Devices           func() (self *pb.Device, peers []*pb.Device)
+	CreatePairingCode func(ctx context.Context) (code string, expiresAt time.Time, lanAddrs []string, err error)
+	RedeemPairingCode func(ctx context.Context, code, address string) (*pb.Device, string, error)
+	ConfirmPairing    func(ctx context.Context, session string, accept bool) error
+	Unpair            func(ctx context.Context, deviceID string) error
+	SetDeviceAddress  func(ctx context.Context, deviceID, address string) error
+	// ShowNearby / Nearby / PairNearby 是「搜索附近设备」，见 lan/nearby.go
+	ShowNearby         func() (hide func())
+	Nearby             func() []*pb.NearbyDevice
+	PairNearby         func(ctx context.Context, id string) (*pb.Device, string, error)
 	SignalingConnected func() bool
 	ServerConfigured   func() bool
 	LANEnabled         func() bool
@@ -429,4 +434,43 @@ func (s *Server) SetDeviceAddress(ctx context.Context, req *pb.SetDeviceAddressR
 		return nil, pairingStatus(err)
 	}
 	return &pb.Empty{}, nil
+}
+
+// WatchNearby 在调用期间公开本机（界面上「搜索附近设备」的窗口开着），
+// 附近的设备有变化时推送最新的列表。窗口关掉、界面退出时调用随之结束，本机也随之撤下。
+func (s *Server) WatchNearby(_ *pb.Empty, stream grpc.ServerStreamingServer[pb.NearbyDevices]) error {
+	if s.deps.ShowNearby == nil || s.deps.Nearby == nil {
+		return status.Error(codes.Unimplemented, "当前版本不支持搜索附近设备")
+	}
+	hide := s.deps.ShowNearby()
+	defer hide()
+
+	tk := time.NewTicker(time.Second)
+	defer tk.Stop()
+	var last *pb.NearbyDevices
+	for {
+		cur := &pb.NearbyDevices{Devices: s.deps.Nearby()}
+		if last == nil || !proto.Equal(cur, last) {
+			if err := stream.Send(cur); err != nil {
+				return err
+			}
+			last = cur
+		}
+		select {
+		case <-stream.Context().Done():
+			return nil
+		case <-tk.C:
+		}
+	}
+}
+
+func (s *Server) PairNearby(ctx context.Context, req *pb.PairNearbyRequest) (*pb.RedeemPairingCodeResponse, error) {
+	if s.deps.PairNearby == nil {
+		return nil, status.Error(codes.Unimplemented, "当前版本不支持搜索附近设备")
+	}
+	peer, session, err := s.deps.PairNearby(ctx, req.GetId())
+	if err != nil {
+		return nil, pairingStatus(err)
+	}
+	return &pb.RedeemPairingCodeResponse{Peer: peer, PairingSession: session}, nil
 }

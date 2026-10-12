@@ -36,6 +36,8 @@ const (
 	DaemonService_ConfirmPairing_FullMethodName                = "/copysync.v1.DaemonService/ConfirmPairing"
 	DaemonService_Unpair_FullMethodName                        = "/copysync.v1.DaemonService/Unpair"
 	DaemonService_SetDeviceAddress_FullMethodName              = "/copysync.v1.DaemonService/SetDeviceAddress"
+	DaemonService_WatchNearby_FullMethodName                   = "/copysync.v1.DaemonService/WatchNearby"
+	DaemonService_PairNearby_FullMethodName                    = "/copysync.v1.DaemonService/PairNearby"
 	DaemonService_GetConfig_FullMethodName                     = "/copysync.v1.DaemonService/GetConfig"
 	DaemonService_UpdateConfig_FullMethodName                  = "/copysync.v1.DaemonService/UpdateConfig"
 	DaemonService_GetStatus_FullMethodName                     = "/copysync.v1.DaemonService/GetStatus"
@@ -66,6 +68,11 @@ type DaemonServiceClient interface {
 	Unpair(ctx context.Context, in *UnpairRequest, opts ...grpc.CallOption) (*Empty, error)
 	// 手动告诉后台服务某台设备的局域网地址：跨网段、或两边都换了地址时用
 	SetDeviceAddress(ctx context.Context, in *SetDeviceAddressRequest, opts ...grpc.CallOption) (*Empty, error)
+	// 「搜索附近设备」窗口打开期间保持这个调用，窗口关掉时取消。期间本机在局域网里公开设备名，
+	// 并在附近同样打开了这个窗口的设备有变化时推送最新的列表
+	WatchNearby(ctx context.Context, in *Empty, opts ...grpc.CallOption) (grpc.ServerStreamingClient[NearbyDevices], error)
+	// 向附近的一台设备发起配对。之后与 RedeemPairingCode 一样，双方核对指纹后各自 ConfirmPairing
+	PairNearby(ctx context.Context, in *PairNearbyRequest, opts ...grpc.CallOption) (*RedeemPairingCodeResponse, error)
 	GetConfig(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Config, error)
 	UpdateConfig(ctx context.Context, in *Config, opts ...grpc.CallOption) (*Config, error)
 	GetStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Status, error)
@@ -215,6 +222,35 @@ func (c *daemonServiceClient) SetDeviceAddress(ctx context.Context, in *SetDevic
 	return out, nil
 }
 
+func (c *daemonServiceClient) WatchNearby(ctx context.Context, in *Empty, opts ...grpc.CallOption) (grpc.ServerStreamingClient[NearbyDevices], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &DaemonService_ServiceDesc.Streams[1], DaemonService_WatchNearby_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[Empty, NearbyDevices]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type DaemonService_WatchNearbyClient = grpc.ServerStreamingClient[NearbyDevices]
+
+func (c *daemonServiceClient) PairNearby(ctx context.Context, in *PairNearbyRequest, opts ...grpc.CallOption) (*RedeemPairingCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RedeemPairingCodeResponse)
+	err := c.cc.Invoke(ctx, DaemonService_PairNearby_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *daemonServiceClient) GetConfig(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Config, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Config)
@@ -297,6 +333,11 @@ type DaemonServiceServer interface {
 	Unpair(context.Context, *UnpairRequest) (*Empty, error)
 	// 手动告诉后台服务某台设备的局域网地址：跨网段、或两边都换了地址时用
 	SetDeviceAddress(context.Context, *SetDeviceAddressRequest) (*Empty, error)
+	// 「搜索附近设备」窗口打开期间保持这个调用，窗口关掉时取消。期间本机在局域网里公开设备名，
+	// 并在附近同样打开了这个窗口的设备有变化时推送最新的列表
+	WatchNearby(*Empty, grpc.ServerStreamingServer[NearbyDevices]) error
+	// 向附近的一台设备发起配对。之后与 RedeemPairingCode 一样，双方核对指纹后各自 ConfirmPairing
+	PairNearby(context.Context, *PairNearbyRequest) (*RedeemPairingCodeResponse, error)
 	GetConfig(context.Context, *Empty) (*Config, error)
 	UpdateConfig(context.Context, *Config) (*Config, error)
 	GetStatus(context.Context, *Empty) (*Status, error)
@@ -352,6 +393,12 @@ func (UnimplementedDaemonServiceServer) Unpair(context.Context, *UnpairRequest) 
 }
 func (UnimplementedDaemonServiceServer) SetDeviceAddress(context.Context, *SetDeviceAddressRequest) (*Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetDeviceAddress not implemented")
+}
+func (UnimplementedDaemonServiceServer) WatchNearby(*Empty, grpc.ServerStreamingServer[NearbyDevices]) error {
+	return status.Error(codes.Unimplemented, "method WatchNearby not implemented")
+}
+func (UnimplementedDaemonServiceServer) PairNearby(context.Context, *PairNearbyRequest) (*RedeemPairingCodeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method PairNearby not implemented")
 }
 func (UnimplementedDaemonServiceServer) GetConfig(context.Context, *Empty) (*Config, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetConfig not implemented")
@@ -601,6 +648,35 @@ func _DaemonService_SetDeviceAddress_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DaemonService_WatchNearby_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(DaemonServiceServer).WatchNearby(m, &grpc.GenericServerStream[Empty, NearbyDevices]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type DaemonService_WatchNearbyServer = grpc.ServerStreamingServer[NearbyDevices]
+
+func _DaemonService_PairNearby_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PairNearbyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).PairNearby(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_PairNearby_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).PairNearby(ctx, req.(*PairNearbyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DaemonService_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
@@ -761,6 +837,10 @@ var DaemonService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DaemonService_SetDeviceAddress_Handler,
 		},
 		{
+			MethodName: "PairNearby",
+			Handler:    _DaemonService_PairNearby_Handler,
+		},
+		{
 			MethodName: "GetConfig",
 			Handler:    _DaemonService_GetConfig_Handler,
 		},
@@ -789,6 +869,11 @@ var DaemonService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "Subscribe",
 			Handler:       _DaemonService_Subscribe_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "WatchNearby",
+			Handler:       _DaemonService_WatchNearby_Handler,
 			ServerStreams: true,
 		},
 	},

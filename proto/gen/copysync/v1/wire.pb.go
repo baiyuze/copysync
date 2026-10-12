@@ -1537,6 +1537,8 @@ type LanPacket struct {
 	//	*LanPacket_PairRequest
 	//	*LanPacket_PairResponse
 	//	*LanPacket_PairReject
+	//	*LanPacket_NearbyRequest
+	//	*LanPacket_NearbyPing
 	Payload       isLanPacket_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1615,6 +1617,24 @@ func (x *LanPacket) GetPairReject() *LanPairReject {
 	return nil
 }
 
+func (x *LanPacket) GetNearbyRequest() *LanPairSigned {
+	if x != nil {
+		if x, ok := x.Payload.(*LanPacket_NearbyRequest); ok {
+			return x.NearbyRequest
+		}
+	}
+	return nil
+}
+
+func (x *LanPacket) GetNearbyPing() *LanNearbyPing {
+	if x != nil {
+		if x, ok := x.Payload.(*LanPacket_NearbyPing); ok {
+			return x.NearbyPing
+		}
+	}
+	return nil
+}
+
 type isLanPacket_Payload interface {
 	isLanPacket_Payload()
 }
@@ -1635,6 +1655,14 @@ type LanPacket_PairReject struct {
 	PairReject *LanPairReject `protobuf:"bytes,4,opt,name=pair_reject,json=pairReject,proto3,oneof"`
 }
 
+type LanPacket_NearbyRequest struct {
+	NearbyRequest *LanPairSigned `protobuf:"bytes,5,opt,name=nearby_request,json=nearbyRequest,proto3,oneof"`
+}
+
+type LanPacket_NearbyPing struct {
+	NearbyPing *LanNearbyPing `protobuf:"bytes,6,opt,name=nearby_ping,json=nearbyPing,proto3,oneof"`
+}
+
 func (*LanPacket_Signal) isLanPacket_Payload() {}
 
 func (*LanPacket_PairRequest) isLanPacket_Payload() {}
@@ -1642,6 +1670,10 @@ func (*LanPacket_PairRequest) isLanPacket_Payload() {}
 func (*LanPacket_PairResponse) isLanPacket_Payload() {}
 
 func (*LanPacket_PairReject) isLanPacket_Payload() {}
+
+func (*LanPacket_NearbyRequest) isLanPacket_Payload() {}
+
+func (*LanPacket_NearbyPing) isLanPacket_Payload() {}
 
 // 已配对设备之间的上线通知。还没连通时定期发，连通后低频保活。
 // 两端都往对方发，有状态的防火墙（Windows）会放行对方的包。
@@ -1928,6 +1960,50 @@ func (x *LanPairReject) GetReason() string {
 	return ""
 }
 
+type LanNearbyPing struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Instance      string                 `protobuf:"bytes,1,opt,name=instance,proto3" json:"instance,omitempty"` // 发送方的 mDNS 实例名
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LanNearbyPing) Reset() {
+	*x = LanNearbyPing{}
+	mi := &file_copysync_v1_wire_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LanNearbyPing) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LanNearbyPing) ProtoMessage() {}
+
+func (x *LanNearbyPing) ProtoReflect() protoreflect.Message {
+	mi := &file_copysync_v1_wire_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LanNearbyPing.ProtoReflect.Descriptor instead.
+func (*LanNearbyPing) Descriptor() ([]byte, []int) {
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *LanNearbyPing) GetInstance() string {
+	if x != nil {
+		return x.Instance
+	}
+	return ""
+}
+
 // 控制通道消息
 type PeerMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -1946,7 +2022,7 @@ type PeerMessage struct {
 
 func (x *PeerMessage) Reset() {
 	*x = PeerMessage{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[24]
+	mi := &file_copysync_v1_wire_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1958,7 +2034,7 @@ func (x *PeerMessage) String() string {
 func (*PeerMessage) ProtoMessage() {}
 
 func (x *PeerMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[24]
+	mi := &file_copysync_v1_wire_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1971,7 +2047,7 @@ func (x *PeerMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PeerMessage.ProtoReflect.Descriptor instead.
 func (*PeerMessage) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{24}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *PeerMessage) GetPayload() isPeerMessage_Payload {
@@ -2087,7 +2163,7 @@ type LinkInfo struct {
 
 func (x *LinkInfo) Reset() {
 	*x = LinkInfo{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[25]
+	mi := &file_copysync_v1_wire_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2099,7 +2175,7 @@ func (x *LinkInfo) String() string {
 func (*LinkInfo) ProtoMessage() {}
 
 func (x *LinkInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[25]
+	mi := &file_copysync_v1_wire_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2112,7 +2188,7 @@ func (x *LinkInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkInfo.ProtoReflect.Descriptor instead.
 func (*LinkInfo) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{25}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *LinkInfo) GetRelayed() bool {
@@ -2145,7 +2221,7 @@ type ClipOffer struct {
 
 func (x *ClipOffer) Reset() {
 	*x = ClipOffer{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[26]
+	mi := &file_copysync_v1_wire_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2157,7 +2233,7 @@ func (x *ClipOffer) String() string {
 func (*ClipOffer) ProtoMessage() {}
 
 func (x *ClipOffer) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[26]
+	mi := &file_copysync_v1_wire_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2170,7 +2246,7 @@ func (x *ClipOffer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClipOffer.ProtoReflect.Descriptor instead.
 func (*ClipOffer) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{26}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *ClipOffer) GetClipId() string {
@@ -2246,7 +2322,7 @@ type PeerFetch struct {
 
 func (x *PeerFetch) Reset() {
 	*x = PeerFetch{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[27]
+	mi := &file_copysync_v1_wire_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2258,7 +2334,7 @@ func (x *PeerFetch) String() string {
 func (*PeerFetch) ProtoMessage() {}
 
 func (x *PeerFetch) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[27]
+	mi := &file_copysync_v1_wire_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2271,7 +2347,7 @@ func (x *PeerFetch) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PeerFetch.ProtoReflect.Descriptor instead.
 func (*PeerFetch) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{27}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *PeerFetch) GetClipId() string {
@@ -2291,7 +2367,7 @@ type FetchReject struct {
 
 func (x *FetchReject) Reset() {
 	*x = FetchReject{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[28]
+	mi := &file_copysync_v1_wire_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2303,7 +2379,7 @@ func (x *FetchReject) String() string {
 func (*FetchReject) ProtoMessage() {}
 
 func (x *FetchReject) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[28]
+	mi := &file_copysync_v1_wire_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2316,7 +2392,7 @@ func (x *FetchReject) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FetchReject.ProtoReflect.Descriptor instead.
 func (*FetchReject) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{28}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *FetchReject) GetClipId() string {
@@ -2347,7 +2423,7 @@ type TransferHeader struct {
 
 func (x *TransferHeader) Reset() {
 	*x = TransferHeader{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[29]
+	mi := &file_copysync_v1_wire_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2359,7 +2435,7 @@ func (x *TransferHeader) String() string {
 func (*TransferHeader) ProtoMessage() {}
 
 func (x *TransferHeader) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[29]
+	mi := &file_copysync_v1_wire_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2372,7 +2448,7 @@ func (x *TransferHeader) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransferHeader.ProtoReflect.Descriptor instead.
 func (*TransferHeader) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{29}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *TransferHeader) GetClipId() string {
@@ -2423,7 +2499,7 @@ type TransferDone struct {
 
 func (x *TransferDone) Reset() {
 	*x = TransferDone{}
-	mi := &file_copysync_v1_wire_proto_msgTypes[30]
+	mi := &file_copysync_v1_wire_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2435,7 +2511,7 @@ func (x *TransferDone) String() string {
 func (*TransferDone) ProtoMessage() {}
 
 func (x *TransferDone) ProtoReflect() protoreflect.Message {
-	mi := &file_copysync_v1_wire_proto_msgTypes[30]
+	mi := &file_copysync_v1_wire_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2448,7 +2524,7 @@ func (x *TransferDone) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransferDone.ProtoReflect.Descriptor instead.
 func (*TransferDone) Descriptor() ([]byte, []int) {
-	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{30}
+	return file_copysync_v1_wire_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *TransferDone) GetClipId() string {
@@ -2592,13 +2668,16 @@ const file_copysync_v1_wire_proto_rawDesc = "" +
 	"\apayload\";\n" +
 	"\vServerError\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\x88\x02\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x8c\x03\n" +
 	"\tLanPacket\x12-\n" +
 	"\x06signal\x18\x01 \x01(\v2\x13.copysync.v1.SignedH\x00R\x06signal\x12?\n" +
 	"\fpair_request\x18\x02 \x01(\v2\x1a.copysync.v1.LanPairSignedH\x00R\vpairRequest\x12A\n" +
 	"\rpair_response\x18\x03 \x01(\v2\x1a.copysync.v1.LanPairSignedH\x00R\fpairResponse\x12=\n" +
 	"\vpair_reject\x18\x04 \x01(\v2\x1a.copysync.v1.LanPairRejectH\x00R\n" +
-	"pairRejectB\t\n" +
+	"pairReject\x12C\n" +
+	"\x0enearby_request\x18\x05 \x01(\v2\x1a.copysync.v1.LanPairSignedH\x00R\rnearbyRequest\x12=\n" +
+	"\vnearby_ping\x18\x06 \x01(\v2\x1a.copysync.v1.LanNearbyPingH\x00R\n" +
+	"nearbyPingB\t\n" +
 	"\apayload\"\x8a\x01\n" +
 	"\bLanHello\x12\x1c\n" +
 	"\taddresses\x18\x01 \x03(\tR\taddresses\x12!\n" +
@@ -2622,7 +2701,9 @@ const file_copysync_v1_wire_proto_rawDesc = "" +
 	"\rrequest_nonce\x18\t \x01(\fR\frequestNonce\"L\n" +
 	"\rLanPairReject\x12#\n" +
 	"\rrequest_nonce\x18\x01 \x01(\fR\frequestNonce\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\tR\x06reason\"\xc1\x02\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason\"+\n" +
+	"\rLanNearbyPing\x12\x1a\n" +
+	"\binstance\x18\x01 \x01(\tR\binstance\"\xc1\x02\n" +
 	"\vPeerMessage\x12.\n" +
 	"\x05offer\x18\x01 \x01(\v2\x16.copysync.v1.ClipOfferH\x00R\x05offer\x12.\n" +
 	"\x05fetch\x18\x02 \x01(\v2\x16.copysync.v1.PeerFetchH\x00R\x05fetch\x122\n" +
@@ -2685,7 +2766,7 @@ func file_copysync_v1_wire_proto_rawDescGZIP() []byte {
 }
 
 var file_copysync_v1_wire_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_copysync_v1_wire_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
+var file_copysync_v1_wire_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_copysync_v1_wire_proto_goTypes = []any{
 	(Compression)(0),              // 0: copysync.v1.Compression
 	(Packaging)(0),                // 1: copysync.v1.Packaging
@@ -2713,15 +2794,16 @@ var file_copysync_v1_wire_proto_goTypes = []any{
 	(*LanPairSigned)(nil),         // 23: copysync.v1.LanPairSigned
 	(*LanPairInfo)(nil),           // 24: copysync.v1.LanPairInfo
 	(*LanPairReject)(nil),         // 25: copysync.v1.LanPairReject
-	(*PeerMessage)(nil),           // 26: copysync.v1.PeerMessage
-	(*LinkInfo)(nil),              // 27: copysync.v1.LinkInfo
-	(*ClipOffer)(nil),             // 28: copysync.v1.ClipOffer
-	(*PeerFetch)(nil),             // 29: copysync.v1.PeerFetch
-	(*FetchReject)(nil),           // 30: copysync.v1.FetchReject
-	(*TransferHeader)(nil),        // 31: copysync.v1.TransferHeader
-	(*TransferDone)(nil),          // 32: copysync.v1.TransferDone
-	(ClipKind)(0),                 // 33: copysync.v1.ClipKind
-	(*ClipItem)(nil),              // 34: copysync.v1.ClipItem
+	(*LanNearbyPing)(nil),         // 26: copysync.v1.LanNearbyPing
+	(*PeerMessage)(nil),           // 27: copysync.v1.PeerMessage
+	(*LinkInfo)(nil),              // 28: copysync.v1.LinkInfo
+	(*ClipOffer)(nil),             // 29: copysync.v1.ClipOffer
+	(*PeerFetch)(nil),             // 30: copysync.v1.PeerFetch
+	(*FetchReject)(nil),           // 31: copysync.v1.FetchReject
+	(*TransferHeader)(nil),        // 32: copysync.v1.TransferHeader
+	(*TransferDone)(nil),          // 33: copysync.v1.TransferDone
+	(ClipKind)(0),                 // 34: copysync.v1.ClipKind
+	(*ClipItem)(nil),              // 35: copysync.v1.ClipItem
 }
 var file_copysync_v1_wire_proto_depIdxs = []int32{
 	4,  // 0: copysync.v1.SignalMessage.offer:type_name -> copysync.v1.SdpOffer
@@ -2747,21 +2829,23 @@ var file_copysync_v1_wire_proto_depIdxs = []int32{
 	23, // 20: copysync.v1.LanPacket.pair_request:type_name -> copysync.v1.LanPairSigned
 	23, // 21: copysync.v1.LanPacket.pair_response:type_name -> copysync.v1.LanPairSigned
 	25, // 22: copysync.v1.LanPacket.pair_reject:type_name -> copysync.v1.LanPairReject
-	28, // 23: copysync.v1.PeerMessage.offer:type_name -> copysync.v1.ClipOffer
-	29, // 24: copysync.v1.PeerMessage.fetch:type_name -> copysync.v1.PeerFetch
-	30, // 25: copysync.v1.PeerMessage.reject:type_name -> copysync.v1.FetchReject
-	31, // 26: copysync.v1.PeerMessage.header:type_name -> copysync.v1.TransferHeader
-	32, // 27: copysync.v1.PeerMessage.done:type_name -> copysync.v1.TransferDone
-	27, // 28: copysync.v1.PeerMessage.link:type_name -> copysync.v1.LinkInfo
-	33, // 29: copysync.v1.ClipOffer.kind:type_name -> copysync.v1.ClipKind
-	34, // 30: copysync.v1.ClipOffer.items:type_name -> copysync.v1.ClipItem
-	0,  // 31: copysync.v1.TransferHeader.compression:type_name -> copysync.v1.Compression
-	1,  // 32: copysync.v1.TransferHeader.packaging:type_name -> copysync.v1.Packaging
-	33, // [33:33] is the sub-list for method output_type
-	33, // [33:33] is the sub-list for method input_type
-	33, // [33:33] is the sub-list for extension type_name
-	33, // [33:33] is the sub-list for extension extendee
-	0,  // [0:33] is the sub-list for field type_name
+	23, // 23: copysync.v1.LanPacket.nearby_request:type_name -> copysync.v1.LanPairSigned
+	26, // 24: copysync.v1.LanPacket.nearby_ping:type_name -> copysync.v1.LanNearbyPing
+	29, // 25: copysync.v1.PeerMessage.offer:type_name -> copysync.v1.ClipOffer
+	30, // 26: copysync.v1.PeerMessage.fetch:type_name -> copysync.v1.PeerFetch
+	31, // 27: copysync.v1.PeerMessage.reject:type_name -> copysync.v1.FetchReject
+	32, // 28: copysync.v1.PeerMessage.header:type_name -> copysync.v1.TransferHeader
+	33, // 29: copysync.v1.PeerMessage.done:type_name -> copysync.v1.TransferDone
+	28, // 30: copysync.v1.PeerMessage.link:type_name -> copysync.v1.LinkInfo
+	34, // 31: copysync.v1.ClipOffer.kind:type_name -> copysync.v1.ClipKind
+	35, // 32: copysync.v1.ClipOffer.items:type_name -> copysync.v1.ClipItem
+	0,  // 33: copysync.v1.TransferHeader.compression:type_name -> copysync.v1.Compression
+	1,  // 34: copysync.v1.TransferHeader.packaging:type_name -> copysync.v1.Packaging
+	35, // [35:35] is the sub-list for method output_type
+	35, // [35:35] is the sub-list for method input_type
+	35, // [35:35] is the sub-list for extension type_name
+	35, // [35:35] is the sub-list for extension extendee
+	0,  // [0:35] is the sub-list for field type_name
 }
 
 func init() { file_copysync_v1_wire_proto_init() }
@@ -2798,8 +2882,10 @@ func file_copysync_v1_wire_proto_init() {
 		(*LanPacket_PairRequest)(nil),
 		(*LanPacket_PairResponse)(nil),
 		(*LanPacket_PairReject)(nil),
+		(*LanPacket_NearbyRequest)(nil),
+		(*LanPacket_NearbyPing)(nil),
 	}
-	file_copysync_v1_wire_proto_msgTypes[24].OneofWrappers = []any{
+	file_copysync_v1_wire_proto_msgTypes[25].OneofWrappers = []any{
 		(*PeerMessage_Offer)(nil),
 		(*PeerMessage_Fetch)(nil),
 		(*PeerMessage_Reject)(nil),
@@ -2813,7 +2899,7 @@ func file_copysync_v1_wire_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_copysync_v1_wire_proto_rawDesc), len(file_copysync_v1_wire_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   31,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

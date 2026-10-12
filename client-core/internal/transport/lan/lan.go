@@ -105,6 +105,9 @@ type Options struct {
 	// AcceptPair 在有人用正确的配对码发来请求时调用。返回 false 表示这个码已经在别处
 	// （服务器那边）用掉了，请求会被拒绝。
 	AcceptPair func(peer PeerInfo) bool
+	// AcceptNearby 在有人从「搜索附近设备」里点了本机时调用（只在本机也开着这个窗口时）。
+	// 返回 false 会拒绝请求
+	AcceptNearby func(peer PeerInfo) bool
 	// OnChange 在开关、系统拦截状态变化时调用，用来刷新界面上的状态
 	OnChange func()
 }
@@ -166,6 +169,11 @@ type Transport struct {
 	// 显示配对码的一方据此先往本机发一个空包，见 found
 	seeking int
 	pokedAt map[string]time.Time
+	// visible 是开着的「搜索附近设备」窗口数：大于零时广播里带上设备名，见 nearby.go
+	visible         int
+	visibleName     string
+	visiblePlatform string
+	nearby          map[string]*nearbyState // mDNS 实例名 → 附近设备
 	// nextProbe 是下一次探测本地网络权限的时间，probeAddr 是探测的地址，见 probeTarget
 	nextProbe time.Time
 	probeAddr netip.Addr
@@ -210,6 +218,7 @@ func New(opts Options) *Transport {
 		responses: make(map[string]cachedResponse),
 		waiters:   make(map[string]*pairWaiter),
 		pokedAt:   make(map[string]time.Time),
+		nearby:    make(map[string]*nearbyState),
 		reach:     make(map[string]bool),
 	}
 }
@@ -283,6 +292,7 @@ func (t *Transport) Stop() {
 		}
 	}
 	t.instances = make(map[string]seenInstance)
+	t.nearby = make(map[string]*nearbyState)
 	t.pairing = nil
 	t.mu.Unlock()
 
@@ -546,6 +556,10 @@ func (t *Transport) handle(pkt *pb.LanPacket, src netip.AddrPort) {
 		t.handlePairResponse(p.PairResponse, src)
 	case *pb.LanPacket_PairReject:
 		t.handlePairReject(p.PairReject)
+	case *pb.LanPacket_NearbyRequest:
+		t.handleNearbyRequest(p.NearbyRequest, src)
+	case *pb.LanPacket_NearbyPing:
+		t.handleNearbyPing(p.NearbyPing, src)
 	}
 }
 
@@ -682,6 +696,14 @@ func (t *Transport) tick() {
 	for k, si := range t.instances {
 		if now.Sub(si.seen) > instanceTTL {
 			delete(t.instances, k)
+			delete(t.nearby, k)
+		}
+	}
+	for _, ns := range t.nearby {
+		for ap, at := range ns.addrs {
+			if now.Sub(at) > nearbyStale {
+				delete(ns.addrs, ap)
+			}
 		}
 	}
 
@@ -750,6 +772,7 @@ func (t *Transport) tick() {
 	if probe {
 		t.probe()
 	}
+	t.pingNearby()
 }
 
 // probe 往本网段里的一个地址发几个字节，看系统是否拦着（只有 macOS 有目标地址），
@@ -880,6 +903,7 @@ func (t *Transport) advertTextLocked() map[string]string {
 	if t.seeking > 0 {
 		text["s"] = "1"
 	}
+	t.nearbyAdvertLocked(text)
 	return text
 }
 
@@ -912,6 +936,12 @@ func (t *Transport) found(inst Instance) {
 	if fresh && (inst.Text["p"] == "1" || inst.Text["s"] == "1") {
 		t.log.Debug("发现正在配对的实例", "实例", inst.Name, "地址", inst.Addr, "开放配对码", inst.Text["p"] == "1", "在找人配对", inst.Text["s"] == "1")
 	}
+	// 两边都开着「搜索附近设备」：马上告诉对方本机在，不必等下一轮 tick。
+	// pion 只在实例有变化时才报，这里不会被刷屏
+	var ping []netip.AddrPort
+	if _, ok := nearbyName(inst.Text); ok && t.visible > 0 {
+		ping = t.nearbyAddrsLocked(inst.Name)
+	}
 
 	var hello string
 	if id := t.tokens[inst.Text["t"]]; id != "" {
@@ -933,6 +963,7 @@ func (t *Transport) found(inst Instance) {
 		t.log.Debug("向在找人配对的实例敲门", "地址", poke)
 		_ = t.write(poke, []byte(magic))
 	}
+	t.sendNearbyPing(ping)
 	if hello != "" {
 		t.sendHello(hello, []netip.AddrPort{inst.Addr}, true, t.intervalFor(hello))
 	}

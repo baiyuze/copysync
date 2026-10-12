@@ -31,6 +31,11 @@ service DaemonService {
   rpc Unpair(UnpairRequest) returns (Empty);
   // 手动告诉后台服务某台设备的局域网地址：跨网段、或两边都换了地址时用
   rpc SetDeviceAddress(SetDeviceAddressRequest) returns (Empty);
+  // 「搜索附近设备」窗口打开期间保持这个调用，窗口关掉时取消。期间本机在局域网里公开设备名，
+  // 并在附近同样打开了这个窗口的设备有变化时推送最新的列表
+  rpc WatchNearby(Empty) returns (stream NearbyDevices);
+  // 向附近的一台设备发起配对。之后与 RedeemPairingCode 一样，双方核对指纹后各自 ConfirmPairing
+  rpc PairNearby(PairNearbyRequest) returns (RedeemPairingCodeResponse);
 
   rpc GetConfig(Empty) returns (Config);
   rpc UpdateConfig(Config) returns (Config);
@@ -213,6 +218,22 @@ message RedeemPairingCodeResponse {
 message ConfirmPairingRequest {
   string pairing_session = 1;
   bool accept = 2;
+}
+
+// 附近一台打开了「搜索附近设备」窗口的设备。
+message NearbyDevice {
+  string id = 1;                  // 对方这次启动的 mDNS 实例名，用来发起配对
+  string name = 2;
+  string platform = 3;            // darwin / windows
+  bool paired = 4;                // 已经与本机配对
+}
+
+message NearbyDevices {
+  repeated NearbyDevice devices = 1;
+}
+
+message PairNearbyRequest {
+  string id = 1;
 }
 
 message UnpairRequest {

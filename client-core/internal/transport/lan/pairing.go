@@ -83,14 +83,21 @@ func (t *Transport) Pair(ctx context.Context, code string, extra []netip.AddrPor
 	if !t.Running() {
 		return PeerInfo{}, ErrDisabled
 	}
+	req := t.selfPairInfo()
+	req.Code = pairingcode.Normalize(code)
+	return t.exchange(ctx, req, pairRequest, func() []netip.AddrPort { return t.pairTargets(extra) }, true)
+}
+
+// exchange 每 500 毫秒把配对请求发往 targets 给出的地址，直到收到回复、被明确拒绝或 ctx 结束。
+// seek 为真时广播里带上 s=1，显示码的一方会先往本机发包，见 found。
+func (t *Transport) exchange(ctx context.Context, req *pb.LanPairInfo, kind pairKind,
+	targets func() []netip.AddrPort, seek bool) (PeerInfo, error) {
 	nonce := make([]byte, 16)
 	if _, err := cryptorand.Read(nonce); err != nil {
 		return PeerInfo{}, err
 	}
-	req := t.selfPairInfo()
-	req.Code = pairingcode.Normalize(code)
 	req.Nonce = nonce
-	pkt, err := t.encodePairInfo(req, true)
+	pkt, err := t.encodePairInfo(req, kind)
 	if err != nil {
 		return PeerInfo{}, err
 	}
@@ -99,38 +106,40 @@ func (t *Transport) Pair(ctx context.Context, code string, extra []netip.AddrPor
 	w := &pairWaiter{resp: make(chan pairResult, 1), rejects: make(map[string]bool)}
 	t.mu.Lock()
 	t.waiters[key] = w
-	t.seeking++
+	if seek {
+		t.seeking++
+	}
 	t.mu.Unlock()
-	t.updateAdvert() // 广播里带上 s=1，显示码的一方会先往本机发包，见 found
+	if seek {
+		t.updateAdvert()
+	}
 	defer func() {
 		t.mu.Lock()
 		delete(t.waiters, key)
-		t.seeking--
+		if seek {
+			t.seeking--
+		}
 		t.mu.Unlock()
-		t.updateAdvert()
+		if seek {
+			t.updateAdvert()
+		}
 	}()
 
 	tk := time.NewTicker(500 * time.Millisecond)
 	defer tk.Stop()
 	for round := 0; ; round++ {
-		targets := t.pairTargets(extra)
+		dsts := targets()
 		if round%4 == 0 {
-			t.log.Debug("发送配对请求", "目标", targets)
+			t.log.Debug("发送配对请求", "目标", dsts)
 		}
-		for _, dst := range targets {
+		for _, dst := range dsts {
 			_ = t.write(dst, pkt)
 		}
 		select {
 		case r := <-w.resp:
 			// 回复带着对方的签名：它此刻就在这个地址，确认配对后的第一次连接不必再等打招呼
 			t.sawPeer(r.info.GetDeviceId(), r.src, nil)
-			return PeerInfo{
-				ID:        r.info.GetDeviceId(),
-				Name:      r.info.GetDeviceName(),
-				Platform:  r.info.GetPlatform(),
-				PublicKey: r.info.GetPublicKey(),
-				Addrs:     mergeAddrs(r.info.GetAddresses(), r.src),
-			}, nil
+			return peerFromInfo(r.info, r.src), nil
 		case <-ctx.Done():
 			if err := t.rejectError(w, true); err != nil {
 				return PeerInfo{}, err
@@ -180,18 +189,12 @@ func (t *Transport) pairTargets(extra []netip.AddrPort) []netip.AddrPort {
 
 func (t *Transport) handlePairRequest(ps *pb.LanPairSigned, src netip.AddrPort) {
 	info, ok := t.openPairInfo(ps)
-	if !ok || len(info.GetNonce()) < 8 {
+	if !ok || len(info.GetNonce()) < 8 || t.resendResponse(info.GetNonce(), src) {
 		return
 	}
-	key := hex.EncodeToString(info.GetNonce())
 	now := time.Now()
 
 	t.mu.Lock()
-	if cached, ok := t.responses[key]; ok {
-		t.mu.Unlock()
-		_ = t.write(src, cached.pkt)
-		return
-	}
 	p := t.pairing
 	reason := ""
 	closeAdvert := false
@@ -218,33 +221,52 @@ func (t *Transport) handlePairRequest(ps *pb.LanPairSigned, src netip.AddrPort) 
 		return
 	}
 
-	peer := PeerInfo{
+	peer := peerFromInfo(info, src)
+	if t.opts.AcceptPair != nil && !t.opts.AcceptPair(peer) {
+		t.reject(src, info.GetNonce(), "closed")
+		return
+	}
+	t.log.Info("局域网配对请求已接受，等待用户核对指纹", "peer", peer.Name, "src", src)
+	t.respondPair(info, peer, src)
+}
+
+// resendResponse：对方没收到回复而重发了同一个请求时，把那份回复原样再发一次。
+func (t *Transport) resendResponse(nonce []byte, src netip.AddrPort) bool {
+	t.mu.Lock()
+	cached, ok := t.responses[hex.EncodeToString(nonce)]
+	t.mu.Unlock()
+	if ok {
+		_ = t.write(src, cached.pkt)
+	}
+	return ok
+}
+
+// respondPair 回复一个已接受的配对请求：本机的信息，回显请求的 nonce。
+func (t *Transport) respondPair(info *pb.LanPairInfo, peer PeerInfo, src netip.AddrPort) {
+	resp := t.selfPairInfo()
+	resp.Nonce = make([]byte, 16)
+	_, _ = cryptorand.Read(resp.Nonce)
+	resp.RequestNonce = info.GetNonce()
+	pkt, err := t.encodePairInfo(resp, pairResponse)
+	if err != nil {
+		return
+	}
+	t.mu.Lock()
+	t.responses[hex.EncodeToString(info.GetNonce())] = cachedResponse{pkt: pkt, at: time.Now()}
+	t.mu.Unlock()
+	t.sawPeer(peer.ID, src, nil)
+	_ = t.write(src, pkt)
+	time.AfterFunc(resendDelay, func() { _ = t.write(src, pkt) })
+}
+
+func peerFromInfo(info *pb.LanPairInfo, src netip.AddrPort) PeerInfo {
+	return PeerInfo{
 		ID:        info.GetDeviceId(),
 		Name:      info.GetDeviceName(),
 		Platform:  info.GetPlatform(),
 		PublicKey: info.GetPublicKey(),
 		Addrs:     mergeAddrs(info.GetAddresses(), src),
 	}
-	if t.opts.AcceptPair != nil && !t.opts.AcceptPair(peer) {
-		t.reject(src, info.GetNonce(), "closed")
-		return
-	}
-
-	resp := t.selfPairInfo()
-	resp.Nonce = make([]byte, 16)
-	_, _ = cryptorand.Read(resp.Nonce)
-	resp.RequestNonce = info.GetNonce()
-	pkt, err := t.encodePairInfo(resp, false)
-	if err != nil {
-		return
-	}
-	t.mu.Lock()
-	t.responses[key] = cachedResponse{pkt: pkt, at: now}
-	t.mu.Unlock()
-	t.log.Info("局域网配对请求已接受，等待用户核对指纹", "peer", peer.Name, "src", src)
-	t.sawPeer(peer.ID, src, nil)
-	_ = t.write(src, pkt)
-	time.AfterFunc(resendDelay, func() { _ = t.write(src, pkt) })
 }
 
 func (t *Transport) handlePairResponse(ps *pb.LanPairSigned, src netip.AddrPort) {
@@ -304,14 +326,26 @@ func (t *Transport) selfPairInfo() *pb.LanPairInfo {
 	}
 }
 
-func (t *Transport) encodePairInfo(info *pb.LanPairInfo, request bool) ([]byte, error) {
+// pairKind 是签名的配对消息放在 LanPacket 的哪个位置。
+type pairKind int
+
+const (
+	pairRequest pairKind = iota
+	pairResponse
+	nearbyRequest // 在「搜索附近设备」里点了对方，不带配对码
+)
+
+func (t *Transport) encodePairInfo(info *pb.LanPairInfo, kind pairKind) ([]byte, error) {
 	payload, err := proto.Marshal(info)
 	if err != nil {
 		return nil, err
 	}
 	ps := &pb.LanPairSigned{Payload: payload, Signature: t.id.Sign(payload)}
-	if request {
+	switch kind {
+	case pairRequest:
 		return encode(&pb.LanPacket{Payload: &pb.LanPacket_PairRequest{PairRequest: ps}})
+	case nearbyRequest:
+		return encode(&pb.LanPacket{Payload: &pb.LanPacket_NearbyRequest{NearbyRequest: ps}})
 	}
 	return encode(&pb.LanPacket{Payload: &pb.LanPacket_PairResponse{PairResponse: ps}})
 }

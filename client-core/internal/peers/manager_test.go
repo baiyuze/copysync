@@ -284,3 +284,86 @@ func TestCodeUsableOnceAcrossChannels(t *testing.T) {
 	case <-time.After(time.Second):
 	}
 }
+
+// 搜索附近设备：两台都打开窗口，a 点了 b，b 弹出确认（重复的请求只弹一次），
+// 双方核对后确认、直连；之后 b 在 a 的列表里显示为已配对。
+func TestPairNearby(t *testing.T) {
+	net := lan.NewMemoryNetwork()
+	a, b := newDevice(t, "办公室的 Mac", net, lanOnly()), newDevice(t, "b", net, lanOnly())
+	waitLANUp(t, a, b)
+	hideA, hideB := a.m.ShowNearby(), b.m.ShowNearby()
+	defer hideA()
+	defer hideB()
+
+	var target *pb.NearbyDevice
+	waitFor(t, "a 看到附近的 b", func() bool {
+		list := a.m.Nearby()
+		if len(list) == 1 {
+			target = list[0]
+		}
+		return target != nil
+	})
+	if target.GetName() != "b" || target.GetPaired() {
+		t.Fatalf("附近的设备信息不对: %v", target)
+	}
+	waitFor(t, "b 看到附近的 a", func() bool {
+		list := b.m.Nearby()
+		return len(list) == 1 && list[0].GetName() == "办公室的 Mac"
+	})
+
+	ctx := context.Background()
+	peer, session, err := a.m.PairNearby(ctx, target.GetId())
+	if err != nil {
+		t.Fatalf("向附近的设备发起配对: %v", err)
+	}
+	if peer.GetId() != b.id() || peer.GetName() != "b" {
+		t.Fatalf("配对的不是 b: %v", peer)
+	}
+	var bSession string
+	select {
+	case bSession = <-b.sessions:
+	case <-time.After(5 * time.Second):
+		t.Fatal("b 没收到配对请求")
+	}
+	// a 没收到回复时会重发；同一台设备的请求只弹一次确认
+	if _, _, err := a.m.PairNearby(ctx, target.GetId()); err != nil {
+		t.Fatalf("再点一次: %v", err)
+	}
+	select {
+	case s := <-b.sessions:
+		t.Fatalf("同一台设备的请求不该再弹一次确认: %s", s)
+	case <-time.After(300 * time.Millisecond):
+	}
+
+	if err := b.m.ConfirmPairing(ctx, bSession, true); err != nil {
+		t.Fatal(err)
+	}
+	if err := a.m.ConfirmPairing(ctx, session, true); err != nil {
+		t.Fatal(err)
+	}
+	waitDirect(t, a, b)
+	sendAndExpect(t, a, b, "clip-nearby")
+	waitFor(t, "b 在 a 的列表里显示为已配对", func() bool {
+		list := a.m.Nearby()
+		return len(list) == 1 && list[0].GetPaired()
+	})
+}
+
+// 对方没打开窗口时看不到它，也配不上。
+func TestNearbyNeedsBothWindows(t *testing.T) {
+	net := lan.NewMemoryNetwork()
+	a, b := newDevice(t, "a", net, lanOnly()), newDevice(t, "b", net, lanOnly())
+	waitLANUp(t, a, b)
+	defer a.m.ShowNearby()()
+
+	time.Sleep(500 * time.Millisecond)
+	if list := a.m.Nearby(); len(list) != 0 {
+		t.Fatalf("b 没打开窗口，不该出现在附近: %v", list)
+	}
+	if _, _, err := a.m.PairNearby(context.Background(), "copysync-000000000000"); !errors.Is(err, lan.ErrNotFound) {
+		t.Fatalf("应当找不到，得到 %v", err)
+	}
+	if _, peers := b.m.Devices(); len(peers) != 0 {
+		t.Fatalf("b 不该多出设备: %v", peers)
+	}
+}

@@ -501,6 +501,54 @@ final $typed_data.Uint8List confirmPairingRequestDescriptor = $convert.base64Dec
     'ChVDb25maXJtUGFpcmluZ1JlcXVlc3QSJwoPcGFpcmluZ19zZXNzaW9uGAEgASgJUg5wYWlyaW'
     '5nU2Vzc2lvbhIWCgZhY2NlcHQYAiABKAhSBmFjY2VwdA==');
 
+@$core.Deprecated('Use nearbyDeviceDescriptor instead')
+const NearbyDevice$json = {
+  '1': 'NearbyDevice',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
+    {'1': 'platform', '3': 3, '4': 1, '5': 9, '10': 'platform'},
+    {'1': 'paired', '3': 4, '4': 1, '5': 8, '10': 'paired'},
+  ],
+};
+
+/// Descriptor for `NearbyDevice`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List nearbyDeviceDescriptor = $convert.base64Decode(
+    'CgxOZWFyYnlEZXZpY2USDgoCaWQYASABKAlSAmlkEhIKBG5hbWUYAiABKAlSBG5hbWUSGgoIcG'
+    'xhdGZvcm0YAyABKAlSCHBsYXRmb3JtEhYKBnBhaXJlZBgEIAEoCFIGcGFpcmVk');
+
+@$core.Deprecated('Use nearbyDevicesDescriptor instead')
+const NearbyDevices$json = {
+  '1': 'NearbyDevices',
+  '2': [
+    {
+      '1': 'devices',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.copysync.v1.NearbyDevice',
+      '10': 'devices'
+    },
+  ],
+};
+
+/// Descriptor for `NearbyDevices`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List nearbyDevicesDescriptor = $convert.base64Decode(
+    'Cg1OZWFyYnlEZXZpY2VzEjMKB2RldmljZXMYASADKAsyGS5jb3B5c3luYy52MS5OZWFyYnlEZX'
+    'ZpY2VSB2RldmljZXM=');
+
+@$core.Deprecated('Use pairNearbyRequestDescriptor instead')
+const PairNearbyRequest$json = {
+  '1': 'PairNearbyRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+  ],
+};
+
+/// Descriptor for `PairNearbyRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List pairNearbyRequestDescriptor =
+    $convert.base64Decode('ChFQYWlyTmVhcmJ5UmVxdWVzdBIOCgJpZBgBIAEoCVICaWQ=');
+
 @$core.Deprecated('Use unpairRequestDescriptor instead')
 const UnpairRequest$json = {
   '1': 'UnpairRequest',

@@ -563,6 +563,24 @@ const LanPacket$json = {
       '9': 0,
       '10': 'pairReject'
     },
+    {
+      '1': 'nearby_request',
+      '3': 5,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.LanPairSigned',
+      '9': 0,
+      '10': 'nearbyRequest'
+    },
+    {
+      '1': 'nearby_ping',
+      '3': 6,
+      '4': 1,
+      '5': 11,
+      '6': '.copysync.v1.LanNearbyPing',
+      '9': 0,
+      '10': 'nearbyPing'
+    },
   ],
   '8': [
     {'1': 'payload'},
@@ -575,7 +593,10 @@ final $typed_data.Uint8List lanPacketDescriptor = $convert.base64Decode(
     '5hbBI/CgxwYWlyX3JlcXVlc3QYAiABKAsyGi5jb3B5c3luYy52MS5MYW5QYWlyU2lnbmVkSABS'
     'C3BhaXJSZXF1ZXN0EkEKDXBhaXJfcmVzcG9uc2UYAyABKAsyGi5jb3B5c3luYy52MS5MYW5QYW'
     'lyU2lnbmVkSABSDHBhaXJSZXNwb25zZRI9CgtwYWlyX3JlamVjdBgEIAEoCzIaLmNvcHlzeW5j'
-    'LnYxLkxhblBhaXJSZWplY3RIAFIKcGFpclJlamVjdEIJCgdwYXlsb2Fk');
+    'LnYxLkxhblBhaXJSZWplY3RIAFIKcGFpclJlamVjdBJDCg5uZWFyYnlfcmVxdWVzdBgFIAEoCz'
+    'IaLmNvcHlzeW5jLnYxLkxhblBhaXJTaWduZWRIAFINbmVhcmJ5UmVxdWVzdBI9CgtuZWFyYnlf'
+    'cGluZxgGIAEoCzIaLmNvcHlzeW5jLnYxLkxhbk5lYXJieVBpbmdIAFIKbmVhcmJ5UGluZ0IJCg'
+    'dwYXlsb2Fk');
 
 @$core.Deprecated('Use lanHelloDescriptor instead')
 const LanHello$json = {
@@ -646,6 +667,18 @@ const LanPairReject$json = {
 final $typed_data.Uint8List lanPairRejectDescriptor = $convert.base64Decode(
     'Cg1MYW5QYWlyUmVqZWN0EiMKDXJlcXVlc3Rfbm9uY2UYASABKAxSDHJlcXVlc3ROb25jZRIWCg'
     'ZyZWFzb24YAiABKAlSBnJlYXNvbg==');
+
+@$core.Deprecated('Use lanNearbyPingDescriptor instead')
+const LanNearbyPing$json = {
+  '1': 'LanNearbyPing',
+  '2': [
+    {'1': 'instance', '3': 1, '4': 1, '5': 9, '10': 'instance'},
+  ],
+};
+
+/// Descriptor for `LanNearbyPing`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lanNearbyPingDescriptor = $convert.base64Decode(
+    'Cg1MYW5OZWFyYnlQaW5nEhoKCGluc3RhbmNlGAEgASgJUghpbnN0YW5jZQ==');
 
 @$core.Deprecated('Use peerMessageDescriptor instead')
 const PeerMessage$json = {

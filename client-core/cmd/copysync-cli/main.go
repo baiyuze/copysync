@@ -11,6 +11,7 @@
 //	copysync-cli nat                 网络出口、局域网与各设备连接情况
 //	copysync-cli pair                生成配对码
 //	copysync-cli join CODE [ADDRESS] 兑换配对码；不在同一网段时带上对方显示的地址
+//	copysync-cli nearby [NAME]       搜索附近设备：给了 NAME 就在它出现时向它发起配对，否则等对方点本机
 //	copysync-cli address DEVICE ADDR 手动指定某台设备的地址
 package main
 
@@ -42,7 +43,7 @@ func main() {
 	cmd := flag.Arg(0)
 	if cmd == "" {
 		fmt.Fprintln(os.Stderr,
-			"用法: copysync-cli [-data-dir DIR] <status|watch|history|config|devices|nat|pair|join CODE [ADDRESS]|address DEVICE ADDR>")
+			"用法: copysync-cli [-data-dir DIR] <status|watch|history|config|devices|nat|pair|join CODE [ADDRESS]|nearby [NAME]|address DEVICE ADDR>")
 		os.Exit(2)
 	}
 
@@ -94,6 +95,8 @@ func run(cmd, dataDir string) error {
 		return createPairing(ctx, client)
 	case "join":
 		return joinPairing(ctx, client, flag.Arg(1), flag.Arg(2))
+	case "nearby":
+		return nearbyPairing(ctx, client, flag.Arg(1))
 	case "address":
 		return setAddress(ctx, client, flag.Arg(1), flag.Arg(2))
 	default:
@@ -179,31 +182,35 @@ func createPairing(ctx context.Context, c pb.DaemonServiceClient) error {
 			continue // 非待确认的配对事件（普通的在线状态变化）
 		}
 		fmt.Printf("\n  对方已兑换：%s（%s）\n", d.GetName(), d.GetPlatform())
-		if err := printFingerprints(ctx, c, d); err != nil {
-			return err
-		}
-		fmt.Print("  确认配对？[y/N] ")
-
-		var answer string
-		fmt.Scanln(&answer)
-		accept := answer == "y" || answer == "Y"
-
-		confirmCtx, confirmCancel := context.WithTimeout(ctx, 10*time.Second)
-		_, confirmErr := c.ConfirmPairing(confirmCtx, &pb.ConfirmPairingRequest{
-			PairingSession: d.GetPairingSession(),
-			Accept:         accept,
-		})
-		confirmCancel()
-		if confirmErr != nil {
-			return confirmErr
-		}
-		if accept {
-			fmt.Println("\n  ✓ 配对成功")
-		} else {
-			fmt.Println("\n  已取消")
-		}
-		return nil
+		return confirmPeer(ctx, c, d, d.GetPairingSession())
 	}
+}
+
+// confirmPeer 打印两行安全指纹，问用户是否一致，把回答告诉后台服务。
+func confirmPeer(ctx context.Context, c pb.DaemonServiceClient, peer *pb.Device, session string) error {
+	if err := printFingerprints(ctx, c, peer); err != nil {
+		return err
+	}
+	fmt.Print("  确认配对？[y/N] ")
+
+	var answer string
+	fmt.Scanln(&answer)
+	accept := answer == "y" || answer == "Y"
+
+	confirmCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+	if _, err := c.ConfirmPairing(confirmCtx, &pb.ConfirmPairingRequest{
+		PairingSession: session,
+		Accept:         accept,
+	}); err != nil {
+		return err
+	}
+	if accept {
+		fmt.Println("\n  ✓ 配对成功")
+	} else {
+		fmt.Println("\n  已取消")
+	}
+	return nil
 }
 
 // printFingerprints 打印配对时要核对的两行：本机与对方的公钥指纹，按指纹排序。
@@ -350,27 +357,95 @@ func joinPairing(ctx context.Context, c pb.DaemonServiceClient, code, address st
 	}
 	peer := resp.GetPeer()
 	fmt.Printf("\n  找到设备：%s（%s）\n", peer.GetName(), peer.GetPlatform())
-	if err := printFingerprints(ctx, c, peer); err != nil {
+	return confirmPeer(ctx, c, peer, resp.GetPairingSession())
+}
+
+// nearbyPairing 打开「搜索附近设备」，列出附近同样打开了的设备，直到配对完成或 Ctrl+C。
+// 给了 target（设备名或实例名）时，它一出现就向它发起配对；没给时等对方点本机。
+// 期间本机在局域网里公开设备名，与界面上开着这个窗口一样。
+func nearbyPairing(ctx context.Context, c pb.DaemonServiceClient, target string) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	events, err := c.Subscribe(ctx, &pb.SubscribeRequest{})
+	if err != nil {
 		return err
 	}
-	fmt.Print("  确认配对？[y/N] ")
-
-	var answer string
-	fmt.Scanln(&answer)
-	accept := answer == "y" || answer == "Y"
-
-	if _, err := c.ConfirmPairing(ctx, &pb.ConfirmPairingRequest{
-		PairingSession: resp.GetPairingSession(),
-		Accept:         accept,
-	}); err != nil {
+	nearby, err := c.WatchNearby(ctx, &pb.Empty{})
+	if err != nil {
 		return err
 	}
-	if accept {
-		fmt.Println("\n  ✓ 配对成功")
-	} else {
-		fmt.Println("\n  已取消")
+
+	requests := make(chan *pb.Device, 1)
+	go func() {
+		for {
+			ev, err := events.Recv()
+			if err != nil {
+				return
+			}
+			if d := ev.GetDeviceChanged(); d != nil && d.GetPairingSession() != "" {
+				select {
+				case requests <- d:
+				default:
+				}
+			}
+		}
+	}()
+	lists := make(chan []*pb.NearbyDevice)
+	lost := make(chan error, 1)
+	go func() {
+		for {
+			msg, err := nearby.Recv()
+			if err != nil {
+				lost <- err
+				return
+			}
+			select {
+			case lists <- msg.GetDevices():
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	fmt.Println("\n  正在搜索附近的设备…（Ctrl+C 取消）")
+	for {
+		select {
+		case err := <-lost:
+			return err
+		case list := <-lists:
+			printNearby(list)
+			for _, d := range list {
+				if target == "" || d.GetPaired() || (d.GetName() != target && d.GetId() != target) {
+					continue
+				}
+				pairCtx, pairCancel := context.WithTimeout(ctx, 20*time.Second)
+				resp, err := c.PairNearby(pairCtx, &pb.PairNearbyRequest{Id: d.GetId()})
+				pairCancel()
+				if err != nil {
+					return err
+				}
+				fmt.Printf("\n  %s 已回应\n", d.GetName())
+				return confirmPeer(ctx, c, resp.GetPeer(), resp.GetPairingSession())
+			}
+		case d := <-requests:
+			fmt.Printf("\n  %s（%s）请求配对\n", d.GetName(), d.GetPlatform())
+			return confirmPeer(ctx, c, d, d.GetPairingSession())
+		}
 	}
-	return nil
+}
+
+func printNearby(list []*pb.NearbyDevice) {
+	fmt.Printf("\n  %s 附近的设备：\n", time.Now().Format("15:04:05"))
+	if len(list) == 0 {
+		fmt.Println("    （没有。另一台也要打开「搜索附近设备」）")
+	}
+	for _, d := range list {
+		note := d.GetId()
+		if d.GetPaired() {
+			note = "已配对"
+		}
+		fmt.Printf("    %-24s %-8s %s\n", d.GetName(), d.GetPlatform(), note)
+	}
 }
 
 func resolvePaths(dataDir string) (config.Paths, error) {

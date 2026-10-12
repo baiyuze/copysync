@@ -1819,7 +1819,15 @@ class ServerError extends $pb.GeneratedMessage {
   void clearMessage() => $_clearField(2);
 }
 
-enum LanPacket_Payload { signal, pairRequest, pairResponse, pairReject, notSet }
+enum LanPacket_Payload {
+  signal,
+  pairRequest,
+  pairResponse,
+  pairReject,
+  nearbyRequest,
+  nearbyPing,
+  notSet
+}
 
 class LanPacket extends $pb.GeneratedMessage {
   factory LanPacket({
@@ -1827,12 +1835,16 @@ class LanPacket extends $pb.GeneratedMessage {
     LanPairSigned? pairRequest,
     LanPairSigned? pairResponse,
     LanPairReject? pairReject,
+    LanPairSigned? nearbyRequest,
+    LanNearbyPing? nearbyPing,
   }) {
     final result = LanPacket._();
     if (signal != null) result.signal = signal;
     if (pairRequest != null) result.pairRequest = pairRequest;
     if (pairResponse != null) result.pairResponse = pairResponse;
     if (pairReject != null) result.pairReject = pairReject;
+    if (nearbyRequest != null) result.nearbyRequest = nearbyRequest;
+    if (nearbyPing != null) result.nearbyPing = nearbyPing;
     return result;
   }
 
@@ -1851,13 +1863,15 @@ class LanPacket extends $pb.GeneratedMessage {
     2: LanPacket_Payload.pairRequest,
     3: LanPacket_Payload.pairResponse,
     4: LanPacket_Payload.pairReject,
+    5: LanPacket_Payload.nearbyRequest,
+    6: LanPacket_Payload.nearbyPing,
     0: LanPacket_Payload.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'LanPacket',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
       createEmptyInstance: LanPacket.$_createMessage)
-    ..oo(0, [1, 2, 3, 4])
+    ..oo(0, [1, 2, 3, 4, 5, 6])
     ..aOM<Signed>(1, _omitFieldNames ? '' : 'signal',
         subBuilder: Signed.$_createMessage)
     ..aOM<LanPairSigned>(2, _omitFieldNames ? '' : 'pairRequest',
@@ -1866,6 +1880,10 @@ class LanPacket extends $pb.GeneratedMessage {
         subBuilder: LanPairSigned.$_createMessage)
     ..aOM<LanPairReject>(4, _omitFieldNames ? '' : 'pairReject',
         subBuilder: LanPairReject.$_createMessage)
+    ..aOM<LanPairSigned>(5, _omitFieldNames ? '' : 'nearbyRequest',
+        subBuilder: LanPairSigned.$_createMessage)
+    ..aOM<LanNearbyPing>(6, _omitFieldNames ? '' : 'nearbyPing',
+        subBuilder: LanNearbyPing.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1892,11 +1910,15 @@ class LanPacket extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   @$pb.TagNumber(3)
   @$pb.TagNumber(4)
+  @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
   LanPacket_Payload whichPayload() => _LanPacket_PayloadByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
   @$pb.TagNumber(2)
   @$pb.TagNumber(3)
   @$pb.TagNumber(4)
+  @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
   void clearPayload() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -1942,6 +1964,28 @@ class LanPacket extends $pb.GeneratedMessage {
   void clearPairReject() => $_clearField(4);
   @$pb.TagNumber(4)
   LanPairReject ensurePairReject() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  LanPairSigned get nearbyRequest => $_getN(4);
+  @$pb.TagNumber(5)
+  set nearbyRequest(LanPairSigned value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasNearbyRequest() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearNearbyRequest() => $_clearField(5);
+  @$pb.TagNumber(5)
+  LanPairSigned ensureNearbyRequest() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  LanNearbyPing get nearbyPing => $_getN(5);
+  @$pb.TagNumber(6)
+  set nearbyPing(LanNearbyPing value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasNearbyPing() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearNearbyPing() => $_clearField(6);
+  @$pb.TagNumber(6)
+  LanNearbyPing ensureNearbyPing() => $_ensure(5);
 }
 
 /// 已配对设备之间的上线通知。还没连通时定期发，连通后低频保活。
@@ -2325,6 +2369,63 @@ class LanPairReject extends $pb.GeneratedMessage {
   $core.bool hasReason() => $_has(1);
   @$pb.TagNumber(2)
   void clearReason() => $_clearField(2);
+}
+
+class LanNearbyPing extends $pb.GeneratedMessage {
+  factory LanNearbyPing({
+    $core.String? instance,
+  }) {
+    final result = LanNearbyPing._();
+    if (instance != null) result.instance = instance;
+    return result;
+  }
+
+  LanNearbyPing._();
+
+  factory LanNearbyPing.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanNearbyPing()..mergeFromBuffer(data, registry);
+  factory LanNearbyPing.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      LanNearbyPing()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'LanNearbyPing',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: LanNearbyPing.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'instance')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanNearbyPing clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  LanNearbyPing copyWith(void Function(LanNearbyPing) updates) =>
+      super.copyWith((message) => updates(message as LanNearbyPing))
+          as LanNearbyPing;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use LanNearbyPing() / LanNearbyPing.new instead')
+  static LanNearbyPing create() => LanNearbyPing._();
+  static $pb.GeneratedMessage $_createMessage() => LanNearbyPing._();
+  @$core.override
+  LanNearbyPing createEmptyInstance() => LanNearbyPing._();
+  @$core.pragma('dart2js:noInline')
+  static LanNearbyPing getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LanNearbyPing>(
+          LanNearbyPing.$_createMessage);
+  static LanNearbyPing? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get instance => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set instance($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasInstance() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearInstance() => $_clearField(1);
 }
 
 enum PeerMessage_Payload { offer, fetch, reject, header, done, link, notSet }
