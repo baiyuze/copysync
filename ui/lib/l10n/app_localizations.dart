@@ -655,7 +655,7 @@ abstract class AppLocalizations {
   /// No description provided for @noDevicesBody.
   ///
   /// In en, this message translates to:
-  /// **'Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, nothing else is needed.'**
+  /// **'Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.'**
   String get noDevicesBody;
 
   /// No description provided for @pairedDevices.
@@ -777,6 +777,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, {device} can\'t connect to devices on this network.'**
   String lanBlockedBody(String device);
+
+  /// No description provided for @searchNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'Search nearby'**
+  String get searchNearby;
+
+  /// No description provided for @nearbyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby devices'**
+  String get nearbyTitle;
+
+  /// No description provided for @nearbySearching.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for nearby devices…'**
+  String get nearbySearching;
+
+  /// No description provided for @nearbyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Search nearby on the other computer too, and it shows up here. Click it to pair.'**
+  String get nearbyHint;
+
+  /// No description provided for @nearbyVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'While this window is open, devices on this network can see the name of {device}.'**
+  String nearbyVisible(String device);
+
+  /// No description provided for @nearbyPaired.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired'**
+  String get nearbyPaired;
+
+  /// No description provided for @nearbyRequesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacting “{name}”…'**
+  String nearbyRequesting(String name);
+
+  /// No description provided for @nearbyNoReply.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” didn\'t answer. Make sure Search nearby is still open on it.'**
+  String nearbyNoReply(String name);
+
+  /// No description provided for @nearbyLanOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local network discovery is off'**
+  String get nearbyLanOffTitle;
+
+  /// No description provided for @nearbyLanOffBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on “Find devices on this network” in Settings to see nearby devices, or pair with a code instead.'**
+  String get nearbyLanOffBody;
 
   /// No description provided for @generateCode.
   ///
@@ -1051,7 +1111,7 @@ abstract class AppLocalizations {
   /// No description provided for @lanDiscoveryDesc.
   ///
   /// In en, this message translates to:
-  /// **'Pair and sync without a server. Others on the network only see an anonymous entry that changes daily.'**
+  /// **'Pair and sync without a server. Others on the network only see an anonymous entry that changes daily, and the device name only while Search nearby is open.'**
   String get lanDiscoveryDesc;
 
   /// No description provided for @macLocalNetwork.

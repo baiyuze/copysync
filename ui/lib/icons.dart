@@ -26,6 +26,8 @@ abstract final class AppIcons {
   static IconData get questionCircle =>
       _pick(CupertinoIcons.question_circle, FluentIcons.question_circle_24_regular);
   static IconData get plus => _pick(CupertinoIcons.plus, FluentIcons.add_24_regular);
+  static IconData get radar =>
+      _pick(CupertinoIcons.dot_radiowaves_left_right, FluentIcons.radar_20_regular);
   static IconData get photo => _pick(CupertinoIcons.photo, FluentIcons.image_24_regular);
   static IconData get lockShield => _pick(CupertinoIcons.lock_shield, FluentIcons.shield_lock_24_regular);
   static IconData get filter =>

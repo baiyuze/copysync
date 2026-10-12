@@ -10,16 +10,17 @@ import 'common.dart';
 import '../icons.dart';
 import '../platform.dart';
 
-// 保存“添加设备”这条路由。配对请求到达时只移除它，不误关上层的确认框。
+// 保存“添加设备”或“搜索附近设备”这条路由。配对请求到达时只移除它，不误关上层的确认框。
 final _pairingSetupRoutes = Expando<DialogRoute<void>>();
 
-Future<void> showPairingDialog(BuildContext context) {
+Future<void> showPairingDialog(BuildContext context) =>
+    pushPairingSetupRoute(context, (_) => const PairingDialog());
+
+/// 推出一个发起配对的对话框。同一时间只开一个；配对请求到达、弹出核对指纹时它会被移除。
+Future<void> pushPairingSetupRoute(BuildContext context, WidgetBuilder builder) {
   final navigator = Navigator.of(context, rootNavigator: true);
   if (_pairingSetupRoutes[navigator] != null) return Future.value();
-  final route = DialogRoute<void>(
-    context: context,
-    builder: (_) => const PairingDialog(),
-  );
+  final route = DialogRoute<void>(context: context, builder: builder);
   _pairingSetupRoutes[navigator] = route;
   return navigator.push(route).whenComplete(() {
     if (identical(_pairingSetupRoutes[navigator], route)) {

@@ -326,7 +326,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get noDevicesBody =>
-      'もう一台のコンピューターで CopySync を開き、6 桁のペアリングコードでつなげます。同じネットワーク内なら、ほかに準備はいりません。';
+      'もう一台のコンピューターで CopySync を開き、6 桁のペアリングコードでつなげます。同じネットワーク内なら、両方で「近くを検索」を開いて相手をクリックすることもできます。';
 
   @override
   String get pairedDevices => 'ペアリング済みのデバイス';
@@ -397,6 +397,43 @@ class AppLocalizationsJa extends AppLocalizations {
   String lanBlockedBody(String device) {
     return '「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにしてください。オンにするまで、$deviceは同じネットワークのデバイスに接続できません。';
   }
+
+  @override
+  String get searchNearby => '近くを検索';
+
+  @override
+  String get nearbyTitle => '近くのデバイス';
+
+  @override
+  String get nearbySearching => '近くのデバイスを探しています…';
+
+  @override
+  String get nearbyHint => 'もう一台でも「近くを検索」を開くと、ここに表示されます。クリックしてペアリングします。';
+
+  @override
+  String nearbyVisible(String device) {
+    return 'このウィンドウを開いている間は、同じネットワークのデバイスから$deviceの名前が見えます。';
+  }
+
+  @override
+  String get nearbyPaired => 'ペアリング済み';
+
+  @override
+  String nearbyRequesting(String name) {
+    return '「$name」に接続しています…';
+  }
+
+  @override
+  String nearbyNoReply(String name) {
+    return '「$name」から応答がありません。相手で「近くを検索」が開いたままか確認してください。';
+  }
+
+  @override
+  String get nearbyLanOffTitle => 'ローカルネットワークの検出がオフです';
+
+  @override
+  String get nearbyLanOffBody =>
+      '近くのデバイスを表示するには「設定」で「このネットワークでデバイスを探す」をオンにするか、コードでペアリングしてください。';
 
   @override
   String get generateCode => 'コードを表示';
@@ -546,7 +583,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get lanDiscoveryDesc =>
-      'サーバーなしでペアリングと同期ができます。ネットワーク上の他の人には、毎日変わる匿名の識別子しか見えません';
+      'サーバーなしでペアリングと同期ができます。ネットワーク上の他の人には、毎日変わる匿名の識別子しか見えません。デバイス名が見えるのは「近くを検索」を開いている間だけです';
 
   @override
   String get macLocalNetwork => 'ローカルネットワークへのアクセス';

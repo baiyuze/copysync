@@ -119,7 +119,7 @@ S = [
     ("addDevice", "Add device", "添加设备", "デバイスを追加"),
     ("thisDeviceFootnote", "When pairing, {both} show the same two lines of security fingerprints, one for each device. Confirm only if they match character for character.", "配对时，{both}会显示同样的两行安全指纹：这台的和对方的。逐字核对一致才能确认。", "ペアリング時、{both}に同じ 2 行のセキュリティ指紋（このデバイスと相手のもの）が表示されます。1 文字ずつ一致を確かめてから確定してください。"),
     ("noDevicesTitle", "No paired devices yet", "还没有配对的设备", "ペアリングしたデバイスはまだありません"),
-    ("noDevicesBody", "Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, nothing else is needed.", "在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。两台在同一个网络里时，不需要别的准备。", "もう一台のコンピューターで CopySync を開き、6 桁のペアリングコードでつなげます。同じネットワーク内なら、ほかに準備はいりません。"),
+    ("noDevicesBody", "Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.", "在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。两台在同一个网络里时，也可以在两台上都打开「搜索附近设备」，点一下对方。", "もう一台のコンピューターで CopySync を開き、6 桁のペアリングコードでつなげます。同じネットワーク内なら、両方で「近くを検索」を開いて相手をクリックすることもできます。"),
     ("pairedDevices", "Paired devices", "已配对的设备", "ペアリング済みのデバイス"),
     ("pairedFootnote", "Direct: data goes straight between the two devices. Relay: when the network blocks a direct path, data goes through your server and stays end-to-end encrypted.", "直连：数据在两台设备之间直接传输。中转：网络环境打不通直连时，经你的服务器转发，内容依然是端到端加密的。", "直接接続：データは 2 台のデバイス間で直接やり取りされます。中継：直接つながらないネットワークでは、あなたのサーバーを経由します。内容はエンドツーエンドで暗号化されたままです。"),
     ("offline", "Offline", "离线", "オフライン"),
@@ -140,6 +140,18 @@ S = [
     ("addressSaved", "Looking for it at that address", "已记下，正在那个地址上找它", "そのアドレスで探しています"),
     ("lanBlockedTitle", "macOS is blocking the local network", "macOS 阻止了局域网访问", "macOS がローカルネットワークへのアクセスをブロックしています"),
     ("lanBlockedBody", "Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, {device} can't connect to devices on this network.", "在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。打开之前，{device}连不上同一网络里的设备。", "「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにしてください。オンにするまで、{device}は同じネットワークのデバイスに接続できません。"),
+
+    # ── 搜索附近设备 ──
+    ("searchNearby", "Search nearby", "搜索附近设备", "近くを検索"),
+    ("nearbyTitle", "Nearby devices", "附近的设备", "近くのデバイス"),
+    ("nearbySearching", "Looking for nearby devices…", "正在查找附近的设备…", "近くのデバイスを探しています…"),
+    ("nearbyHint", "Open Search nearby on the other computer too, and it shows up here. Click it to pair.", "在另一台电脑上也打开「搜索附近设备」，它就会出现在这里，点一下即可配对。", "もう一台でも「近くを検索」を開くと、ここに表示されます。クリックしてペアリングします。"),
+    ("nearbyVisible", "While this window is open, devices on this network can see the name of {device}.", "窗口打开期间，同一网络里的设备能看到{device}的名字。", "このウィンドウを開いている間は、同じネットワークのデバイスから{device}の名前が見えます。"),
+    ("nearbyPaired", "Paired", "已配对", "ペアリング済み"),
+    ("nearbyRequesting", "Contacting “{name}”…", "正在联系「{name}」…", "「{name}」に接続しています…"),
+    ("nearbyNoReply", "“{name}” didn't answer. Make sure Search nearby is still open on it.", "「{name}」没有回应。确认它还开着「搜索附近设备」。", "「{name}」から応答がありません。相手で「近くを検索」が開いたままか確認してください。"),
+    ("nearbyLanOffTitle", "Local network discovery is off", "局域网发现已关闭", "ローカルネットワークの検出がオフです"),
+    ("nearbyLanOffBody", "Turn on “Find devices on this network” in Settings to see nearby devices, or pair with a code instead.", "在「设置」里打开「在局域网中查找设备」才能看到附近的设备，或者改用配对码。", "近くのデバイスを表示するには「設定」で「このネットワークでデバイスを探す」をオンにするか、コードでペアリングしてください。"),
 
     # ── 配对 ──
     ("generateCode", "Show a code", "生成配对码", "コードを表示"),
@@ -189,7 +201,7 @@ S = [
     ("localNetwork", "Local network", "局域网", "ローカルネットワーク"),
     ("lanFootnote", "Uses UDP port 8788. If the devices are on different subnets, enter the other device's address when pairing.", "使用 UDP 端口 8788。两台不在同一网段时，配对时输入对方的地址。", "UDP ポート 8788 を使います。2 台が別のサブネットにある場合は、ペアリング時に相手のアドレスを入力します。"),
     ("lanDiscovery", "Find devices on this network", "在局域网中查找设备", "このネットワークでデバイスを探す"),
-    ("lanDiscoveryDesc", "Pair and sync without a server. Others on the network only see an anonymous entry that changes daily.", "不用服务器就能配对和同步。网络里的其他人只能看到一个每天都变的匿名标识", "サーバーなしでペアリングと同期ができます。ネットワーク上の他の人には、毎日変わる匿名の識別子しか見えません"),
+    ("lanDiscoveryDesc", "Pair and sync without a server. Others on the network only see an anonymous entry that changes daily, and the device name only while Search nearby is open.", "不用服务器就能配对和同步。网络里的其他人只能看到一个每天都变的匿名标识；打开「搜索附近设备」期间才看得到设备名", "サーバーなしでペアリングと同期ができます。ネットワーク上の他の人には、毎日変わる匿名の識別子しか見えません。デバイス名が見えるのは「近くを検索」を開いている間だけです"),
     ("macLocalNetwork", "Local Network access", "本地网络权限", "ローカルネットワークへのアクセス"),
     ("macLocalNetworkDesc", "macOS asks once whether CopySync may connect to devices on your network. If you declined, turn on CopySync Daemon there.", "macOS 会问一次是否允许 CopySync 连接网络里的设备。拒绝过的话，到那里打开 CopySync Daemon", "CopySync がネットワーク上のデバイスに接続してよいか、macOS が一度だけ確認します。拒否した場合は、そこで CopySync Daemon をオンにしてください"),
     ("allowLan", "Windows Firewall", "Windows 防火墙", "Windows ファイアウォール"),

@@ -5,6 +5,7 @@
 //
 // 放在 tool/ 而非 test/：它依赖本机字体，不该随 flutter test 在 CI 上跑。
 // ignore_for_file: invalid_use_of_visible_for_testing_member
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' show ImageByteFormat;
 
@@ -14,6 +15,7 @@ import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
 import 'package:copysync_ui/i18n.dart';
 import 'package:copysync_ui/main.dart';
 import 'package:copysync_ui/theme.dart';
+import 'package:copysync_ui/widgets/nearby_dialog.dart';
 import 'package:copysync_ui/widgets/pairing_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
@@ -31,10 +33,20 @@ String _t(String zh, String en, String ja) => switch (_lang) { 'en' => en, 'ja' 
 /// 汉字的字形跟着语言走：日文界面用冬青黑体，否则用苹方
 final _cjk = _lang == 'ja' ? const ['Hiragino', 'PingFang'] : const ['PingFang'];
 
-/// 生成配对码不走后台服务，直接给一个固定值。
+/// 生成配对码、搜索附近设备都不走后台服务，直接给固定的演示数据。
 class _DemoState extends AppState {
   @override
   Future<PairingCode> createPairingCode() async => (code: 'K7MP2X', addresses: ['192.168.1.20']);
+
+  // 不关闭的流：后台服务那边的订阅一直开着，结束就表示后台服务断开了
+  @override
+  Stream<List<NearbyDevice>> watchNearby() => (StreamController<List<NearbyDevice>>()
+        ..add([
+          NearbyDevice(id: 'n1', name: _t('设计部的 PC', 'Design PC', 'デザイン部の PC'), platform: 'windows'),
+          NearbyDevice(id: 'n2', name: 'MacBook Air', platform: 'darwin', paired: true),
+          NearbyDevice(id: 'n3', name: _t('会议室的 iMac', 'Meeting room iMac', '会議室の iMac'), platform: 'darwin'),
+        ]))
+      .stream;
 }
 
 Future<void> _loadFonts() async {
@@ -97,7 +109,7 @@ AppState _demo({LinkState link = LinkState.online,
     serviceState: service,
     pendingPairing: pending,
     status: Status(
-      version: '1.4.0',
+      version: '1.5.0',
       deviceName: 'MacBook Pro',
       signalingConnected: link == LinkState.online && server.isNotEmpty,
       serverConfigured: server.isNotEmpty,
@@ -296,6 +308,26 @@ void main() {
       );
     });
   });
+
+  for (final dark in [false, true]) {
+    testWidgets(dark ? 'nearby-dark' : 'nearby', (tester) async {
+      await _shoot(tester, dark ? 'nearby-dark' : 'nearby',
+          state: _demo(),
+          section: Section.devices,
+          brightness: dark ? Brightness.dark : Brightness.light,
+          settle: false, // 雷达的波纹一直在动
+          arrange: () async {
+        showDialog<void>(
+          context: tester.element(find.byType(Shell)),
+          builder: (_) => const NearbyDialog(),
+        );
+        await tester.pump();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(milliseconds: 900));
+      });
+    });
+  }
 
   testWidgets('verify', (tester) async {
     await _shoot(tester, 'verify',

@@ -339,6 +339,23 @@ class AppState extends ChangeNotifier {
     return peer;
   }
 
+  /// 「搜索附近设备」窗口打开期间订阅：本机在局域网里公开设备名，
+  /// 收到附近同样打开了这个窗口的设备。取消订阅本机就撤下。
+  Stream<List<NearbyDevice>> watchNearby() =>
+      _client.watchNearby(Empty()).map((e) => e.devices.toList());
+
+  /// 向附近的一台设备发起配对，返回待核对指纹的对端信息。
+  Future<Device> pairNearby(String id) async {
+    final resp = await _client.pairNearby(
+      PairNearbyRequest(id: id),
+      options: CallOptions(timeout: const Duration(seconds: 15)),
+    );
+    final peer = resp.peer..pairingSession = resp.pairingSession;
+    _setPendingPairing(peer);
+    notifyListeners();
+    return peer;
+  }
+
   Future<void> confirmPairing(String session, bool accept) async {
     await _client.confirmPairing(
       ConfirmPairingRequest(pairingSession: session, accept: accept),

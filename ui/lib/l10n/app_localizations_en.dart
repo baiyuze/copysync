@@ -387,7 +387,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noDevicesBody =>
-      'Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, nothing else is needed.';
+      'Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.';
 
   @override
   String get pairedDevices => 'Paired devices';
@@ -458,6 +458,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String lanBlockedBody(String device) {
     return 'Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, $device can\'t connect to devices on this network.';
   }
+
+  @override
+  String get searchNearby => 'Search nearby';
+
+  @override
+  String get nearbyTitle => 'Nearby devices';
+
+  @override
+  String get nearbySearching => 'Looking for nearby devices…';
+
+  @override
+  String get nearbyHint =>
+      'Open Search nearby on the other computer too, and it shows up here. Click it to pair.';
+
+  @override
+  String nearbyVisible(String device) {
+    return 'While this window is open, devices on this network can see the name of $device.';
+  }
+
+  @override
+  String get nearbyPaired => 'Paired';
+
+  @override
+  String nearbyRequesting(String name) {
+    return 'Contacting “$name”…';
+  }
+
+  @override
+  String nearbyNoReply(String name) {
+    return '“$name” didn\'t answer. Make sure Search nearby is still open on it.';
+  }
+
+  @override
+  String get nearbyLanOffTitle => 'Local network discovery is off';
+
+  @override
+  String get nearbyLanOffBody =>
+      'Turn on “Find devices on this network” in Settings to see nearby devices, or pair with a code instead.';
 
   @override
   String get generateCode => 'Show a code';
@@ -613,7 +651,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lanDiscoveryDesc =>
-      'Pair and sync without a server. Others on the network only see an anonymous entry that changes daily.';
+      'Pair and sync without a server. Others on the network only see an anonymous entry that changes daily, and the device name only while Search nearby is open.';
 
   @override
   String get macLocalNetwork => 'Local Network access';

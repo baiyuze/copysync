@@ -240,7 +240,7 @@
     }
   },
   "noDevicesTitle": "No paired devices yet",
-  "noDevicesBody": "Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, nothing else is needed.",
+  "noDevicesBody": "Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.",
   "pairedDevices": "Paired devices",
   "pairedFootnote": "Direct: data goes straight between the two devices. Relay: when the network blocks a direct path, data goes through your server and stays end-to-end encrypted.",
   "offline": "Offline",
@@ -289,6 +289,37 @@
       }
     }
   },
+  "searchNearby": "Search nearby",
+  "nearbyTitle": "Nearby devices",
+  "nearbySearching": "Looking for nearby devices…",
+  "nearbyHint": "Open Search nearby on the other computer too, and it shows up here. Click it to pair.",
+  "nearbyVisible": "While this window is open, devices on this network can see the name of {device}.",
+  "@nearbyVisible": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyPaired": "Paired",
+  "nearbyRequesting": "Contacting “{name}”…",
+  "@nearbyRequesting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyNoReply": "“{name}” didn't answer. Make sure Search nearby is still open on it.",
+  "@nearbyNoReply": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyLanOffTitle": "Local network discovery is off",
+  "nearbyLanOffBody": "Turn on “Find devices on this network” in Settings to see nearby devices, or pair with a code instead.",
   "generateCode": "Show a code",
   "enterCode": "Enter a code",
   "codeFailedTitle": "Couldn't create a pairing code",
@@ -355,7 +386,7 @@
   "localNetwork": "Local network",
   "lanFootnote": "Uses UDP port 8788. If the devices are on different subnets, enter the other device's address when pairing.",
   "lanDiscovery": "Find devices on this network",
-  "lanDiscoveryDesc": "Pair and sync without a server. Others on the network only see an anonymous entry that changes daily.",
+  "lanDiscoveryDesc": "Pair and sync without a server. Others on the network only see an anonymous entry that changes daily, and the device name only while Search nearby is open.",
   "macLocalNetwork": "Local Network access",
   "macLocalNetworkDesc": "macOS asks once whether CopySync may connect to devices on your network. If you declined, turn on CopySync Daemon there.",
   "allowLan": "Windows Firewall",

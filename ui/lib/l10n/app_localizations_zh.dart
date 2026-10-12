@@ -325,7 +325,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noDevicesBody =>
-      '在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。两台在同一个网络里时，不需要别的准备。';
+      '在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。两台在同一个网络里时，也可以在两台上都打开「搜索附近设备」，点一下对方。';
 
   @override
   String get pairedDevices => '已配对的设备';
@@ -395,6 +395,42 @@ class AppLocalizationsZh extends AppLocalizations {
   String lanBlockedBody(String device) {
     return '在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。打开之前，$device连不上同一网络里的设备。';
   }
+
+  @override
+  String get searchNearby => '搜索附近设备';
+
+  @override
+  String get nearbyTitle => '附近的设备';
+
+  @override
+  String get nearbySearching => '正在查找附近的设备…';
+
+  @override
+  String get nearbyHint => '在另一台电脑上也打开「搜索附近设备」，它就会出现在这里，点一下即可配对。';
+
+  @override
+  String nearbyVisible(String device) {
+    return '窗口打开期间，同一网络里的设备能看到$device的名字。';
+  }
+
+  @override
+  String get nearbyPaired => '已配对';
+
+  @override
+  String nearbyRequesting(String name) {
+    return '正在联系「$name」…';
+  }
+
+  @override
+  String nearbyNoReply(String name) {
+    return '「$name」没有回应。确认它还开着「搜索附近设备」。';
+  }
+
+  @override
+  String get nearbyLanOffTitle => '局域网发现已关闭';
+
+  @override
+  String get nearbyLanOffBody => '在「设置」里打开「在局域网中查找设备」才能看到附近的设备，或者改用配对码。';
 
   @override
   String get generateCode => '生成配对码';
@@ -540,7 +576,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get lanDiscovery => '在局域网中查找设备';
 
   @override
-  String get lanDiscoveryDesc => '不用服务器就能配对和同步。网络里的其他人只能看到一个每天都变的匿名标识';
+  String get lanDiscoveryDesc =>
+      '不用服务器就能配对和同步。网络里的其他人只能看到一个每天都变的匿名标识；打开「搜索附近设备」期间才看得到设备名';
 
   @override
   String get macLocalNetwork => '本地网络权限';

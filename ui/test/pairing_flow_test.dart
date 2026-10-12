@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:copysync_ui/app_state.dart';
 import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
 import 'package:copysync_ui/main.dart';
+import 'package:copysync_ui/widgets/nearby_dialog.dart';
 import 'package:copysync_ui/widgets/pairing_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,6 +22,11 @@ class PairingState extends AppState {
   final redeemedWith = <(String, String)>[];
   Object? nextRedeemFailure;
   bool failConfirmation = false;
+
+  bool nearbyCancelled = false;
+  late final nearby = StreamController<List<NearbyDevice>>(onCancel: () => nearbyCancelled = true);
+  final pairedNearby = <String>[];
+  Object? nextNearbyFailure;
 
   // 没有服务器、只开着局域网：这是新装的默认状态，照样能配对
   PairingState() {
@@ -54,6 +60,22 @@ class PairingState extends AppState {
   }
 
   @override
+  Stream<List<NearbyDevice>> watchNearby() => nearby.stream;
+
+  @override
+  Future<Device> pairNearby(String id) async {
+    pairedNearby.add(id);
+    final failure = nextNearbyFailure;
+    if (failure != null) {
+      nextNearbyFailure = null;
+      throw failure;
+    }
+    final peer = pendingPeer();
+    receive(peer);
+    return peer;
+  }
+
+  @override
   Future<void> confirmPairing(String session, bool accept) async {
     confirmations.add((session, accept));
     if (failConfirmation) throw StateError('配对会话已过期');
@@ -69,6 +91,21 @@ Future<void> openSetup(WidgetTester tester, PairingState state) async {
   await tester.tap(find.text('添加设备').first);
   await tester.pumpAndSettle();
 }
+
+/// 打开「搜索附近设备」。雷达的波纹一直在动，不能用 pumpAndSettle 等它停下。
+Future<void> openNearby(WidgetTester tester, PairingState state) async {
+  await tester.pumpWidget(CopySyncApp(state: state));
+  await tester.tap(find.text('设备').first);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('搜索附近设备').first);
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 300));
+}
+
+final nearbyDevices = [
+  NearbyDevice(id: 'copysync-1', name: '光光的电脑', platform: 'windows'),
+  NearbyDevice(id: 'copysync-2', name: '旧 Mac', platform: 'darwin', paired: true),
+];
 
 void expectSingleConfirmation() {
   // 包括被第二个对话框盖住的路由，避免只检查最上层而漏掉叠加弹窗。
@@ -216,6 +253,77 @@ void main() {
     expect(find.text('配对码不对，或者已经失效'), findsOneWidget);
     // 不是「找不到」，地址框保持收起
     expect(find.byType(TextField), findsOneWidget);
+  });
+
+  group('搜索附近设备', () {
+    testWidgets('原来的添加设备不变，雷达是单独的入口', (tester) async {
+      final state = PairingState();
+      addTearDown(state.dispose);
+      await openSetup(tester, state);
+      expect(find.byType(PairingDialog), findsOneWidget);
+      expect(find.byType(NearbyDialog), findsNothing);
+      expect(find.text('ABC123'), findsOneWidget);
+      expect(state.nearby.hasListener, isFalse, reason: '没打开雷达时不该公开本机');
+    });
+
+    testWidgets('显示附近的设备，点一下弹出核对指纹并关掉雷达', (tester) async {
+      final state = PairingState();
+      addTearDown(state.dispose);
+      await openNearby(tester, state);
+      expect(find.byType(NearbyDialog), findsOneWidget);
+      expect(find.text('正在查找附近的设备…'), findsOneWidget);
+      expect(state.nearby.hasListener, isTrue);
+
+      state.nearby.add(nearbyDevices);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('光光的电脑'), findsOneWidget);
+      expect(find.text('已配对'), findsOneWidget);
+      expect(find.text('正在查找附近的设备…'), findsNothing);
+
+      // 已配对的点了没反应
+      await tester.tap(find.text('旧 Mac'));
+      await tester.pump();
+      expect(state.pairedNearby, isEmpty);
+
+      await tester.tap(find.text('光光的电脑'));
+      await tester.pumpAndSettle();
+      expect(state.pairedNearby, ['copysync-1']);
+      expectSingleConfirmation();
+      expect(find.byType(NearbyDialog, skipOffstage: false), findsNothing);
+      expect(state.nearbyCancelled, isTrue, reason: '雷达关掉后要撤下本机');
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('对方没有回应时给出原因，关掉窗口就撤下本机', (tester) async {
+      final state = PairingState()
+        ..nextNearbyFailure = GrpcError.notFound('not_found: 没在局域网里找到正在配对的设备');
+      addTearDown(state.dispose);
+      await openNearby(tester, state);
+      state.nearby.add(nearbyDevices);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.tap(find.text('光光的电脑'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('「光光的电脑」没有回应。确认它还开着「搜索附近设备」。'), findsOneWidget);
+      expect(find.byType(NearbyDialog), findsOneWidget);
+
+      await tester.tap(find.byTooltip('关闭'));
+      await tester.pumpAndSettle();
+      expect(find.byType(NearbyDialog), findsNothing);
+      expect(state.nearbyCancelled, isTrue);
+    });
+
+    testWidgets('局域网发现关闭时说明原因', (tester) async {
+      final state = PairingState();
+      addTearDown(state.dispose);
+      state.debugSeed(status: Status(), config: Config(), self: Device(id: 'self', name: '本机'));
+      await openNearby(tester, state);
+      expect(find.text('局域网发现已关闭'), findsOneWidget);
+      expect(find.text('光光的电脑'), findsNothing);
+    });
   });
 
   group('侧边栏的连接状态', () {

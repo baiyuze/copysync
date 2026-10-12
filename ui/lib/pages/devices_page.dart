@@ -7,6 +7,7 @@ import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import '../widgets/nearby_dialog.dart';
 import '../widgets/pairing_dialog.dart';
 import '../icons.dart';
 import '../platform.dart';
@@ -30,6 +31,12 @@ class DevicesPage extends StatelessWidget {
               ? l.devicesSubtitleEmpty
               : l.devicesSubtitle(state.peers.length, state.onlinePeerCount),
           actions: [
+            // 配对码照常是主入口；想在局域网里点选对方时，才打开雷达
+            OutlinedButton.icon(
+              onPressed: canPair ? () => showNearbyDialog(context) : null,
+              icon: Icon(AppIcons.radar, size: 14),
+              label: Text(l.searchNearby),
+            ),
             FilledButton.icon(
               onPressed: canPair ? () => _startPairing(context) : null,
               icon: Icon(AppIcons.plus, size: 14),
@@ -60,9 +67,19 @@ class DevicesPage extends StatelessWidget {
                     title: l.noDevicesTitle,
                     description: l.noDevicesBody,
                     action: canPair
-                        ? FilledButton(
-                            onPressed: () => _startPairing(context),
-                            child: Text(l.addDevice),
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              FilledButton(
+                                onPressed: () => _startPairing(context),
+                                child: Text(l.addDevice),
+                              ),
+                              const SizedBox(width: Insets.sm),
+                              OutlinedButton(
+                                onPressed: () => showNearbyDialog(context),
+                                child: Text(l.searchNearby),
+                              ),
+                            ],
                           )
                         : null,
                   ),
