@@ -272,7 +272,7 @@ C = {
         ("Version", '1.6.1, released <time datetime="2026-10-12">October 12, 2026</time>'),
         ("Mac app", "macOS 13 Ventura or later; separate downloads for Apple silicon and Intel, about 25 MB each, no Rosetta; "
                     "a universal version for both is about 47 MB"),
-        ("Windows app", "Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
+        ("Windows app", "Windows 10 and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
         ("Linux app", "x64 and ARM64; .deb (Debian, Ubuntu and similar) or tar.gz (other distributions), about 22 MB; "
                       "needs an X11 desktop, or a Wayland desktop with XWayland (GNOME, KDE and others include it by default); GTK 3"),
         ("Server", "Optional, only for syncing across networks. Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM"),
@@ -966,7 +966,7 @@ C = {
                 "Open CopySync and click Turn on background sync. Allow it if Windows Firewall asks.",
             ],
             "notes": [
-                "Windows 10 (21H2 or later) and Windows 11, x64.",
+                "Windows 10 and Windows 11, x64.",
                 "The installer is about 23 MB, the portable zip about 28 MB.",
                 "After you close the window, CopySync keeps running in the notification area.",
             ],

@@ -255,7 +255,7 @@ C = {
         ("バージョン", '1.6.1（<time datetime="2026-10-12">2026 年 10 月 12 日</time>公開）'),
         ("Mac アプリ", "macOS 13 Ventura 以降。Apple シリコン版と Intel 版に分かれ、ダウンロードはそれぞれ約 25 MB で Rosetta 不要。"
                        "両方で動くユニバーサル版は約 47 MB"),
-        ("Windows アプリ", "Windows 10（21H2 以降）と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB"),
+        ("Windows アプリ", "Windows 10 と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB"),
         ("Linux アプリ", "x64 と ARM64。.deb（Debian、Ubuntu など）または tar.gz（ほかのディストリビューション）、約 22 MB。"
                          "X11 のデスクトップ、または XWayland 付きの Wayland デスクトップ（GNOME、KDE などは標準で搭載）が必要。GTK 3"),
         ("サーバー", "任意。ネットワークをまたぐときだけ必要。Linux（x86_64 または ARM64、systemd または Docker）、macOS（Intel と Apple シリコン）、Windows 10・11 x64（サービスとして動作）。メモリは約 15 MB"),
@@ -890,7 +890,7 @@ C = {
                 "CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。",
             ],
             "notes": [
-                "Windows 10（21H2 以降）と Windows 11、x64。",
+                "Windows 10 と Windows 11、x64。",
                 "インストーラーは約 23 MB、ポータブル版は約 28 MB。",
                 "ウィンドウを閉じても、CopySync は画面右下の通知領域で動き続けます。",
             ],

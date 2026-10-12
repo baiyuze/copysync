@@ -34,7 +34,7 @@
 <ul><li>在一台上 <code>Ctrl+C</code>，另一台上 <code>Ctrl+V</code>（或 <code>⌘V</code>）。粘贴文件时得到的是真实文件，可以直接粘贴进资源管理器、微信、Office。</li><li>开机自启，关掉窗口照常同步，崩溃自动拉起。Windows 安装时创建桌面快捷方式；后台服务持有托盘图标，点击可打开界面，右键可打开界面或退出 CopySync。</li><li>网络行为与 Mac 版完全相同：直连优先、多出口打洞、自动中转、端到端加密。</li><li>与 Mac 版互通，Mac 端不升级也能和 Windows 配对、同步（协议不变）。</li></ul>
 <p><strong>一期不做：</strong></p>
 <div class="table-scroll"><table><thead><tr><th scope="col">不做</th><th scope="col">原因</th><th scope="col">何时</th></tr></thead><tbody><tr><td>ARM64 原生包</td><td>Flutter 3.47 才正式支持 Windows ARM64，且只能在 ARM 机器上构建；x64 版在 ARM 上可以模拟运行</td><td>二期，用 GitHub 的 ARM Windows 构建机</td></tr><tr><td>虚拟文件（Outlook 附件、压缩包里直接复制的文件）</td><td>剪贴板里没有真实路径，只有流，需要实现 COM 接口</td><td>视需求</td></tr><tr><td>自动更新、微软商店</td><td>先跑通分发与签名</td><td>二期</td></tr></tbody></table></div>
-<p>支持的系统：Windows 10（21H2 及以上）与 Windows 11，x64。这是 Flutter 桌面版支持的范围。</p>
+<p>支持的系统：Windows 10 与 Windows 11，x64，Windows 10 不限版本。Flutter 引擎（<code>flutter_windows.dll</code>）与 Go 1.26 都要求 Windows 10；引擎直接引用的系统函数 Windows 8 就有，按 DPI 缩放这类新接口是运行时查找、找不到就退回。Windows 7、8 装不上。</p>
 <h2 id="二-现状-哪些能直接用">二、现状：哪些能直接用</h2>
 <p>后台服务除剪贴板外全部是纯 Go：数据库用的是纯 Go 的 <code>modernc.org/sqlite</code>，压缩是纯 Go 的 zstd，cgo 只出现在 <code>internal/clipboard/darwin.go</code>。实测在 Mac 上已经可以直接交叉编译出 Windows 版：</p>
 <pre><code>CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ./cmd/...    # copysyncd.exe、copysync-cli.exe

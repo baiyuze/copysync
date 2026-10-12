@@ -21,7 +21,7 @@
 | 虚拟文件（Outlook 附件、压缩包里直接复制的文件） | 剪贴板里没有真实路径，只有流，需要实现 COM 接口 | 视需求 |
 | 自动更新、微软商店 | 先跑通分发与签名 | 二期 |
 
-支持的系统：Windows 10（21H2 及以上）与 Windows 11，x64。这是 Flutter 桌面版支持的范围。
+支持的系统：Windows 10 与 Windows 11，x64，Windows 10 不限版本。Flutter 引擎（`flutter_windows.dll`）与 Go 1.26 都要求 Windows 10；引擎直接引用的系统函数 Windows 8 就有，按 DPI 缩放这类新接口是运行时查找、找不到就退回。Windows 7、8 装不上。
 
 ## 二、现状：哪些能直接用
 

@@ -250,7 +250,7 @@ C = {
     "specs": [
         ("版本", '1.6.1，<time datetime="2026-10-12">2026 年 10 月 12 日</time>发布'),
         ("Mac 客户端", "macOS 13 Ventura 及以上；Apple 芯片与 Intel 芯片各有一个安装包，约 25 MB，不需要 Rosetta；也有两种芯片通用的版本，约 47 MB"),
-        ("Windows 客户端", "Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
+        ("Windows 客户端", "Windows 10 与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
         ("Linux 客户端", "x64 与 ARM64；.deb（Debian、Ubuntu 等）或 tar.gz（其他发行版），约 22 MB；"
                         "需要 X11 桌面，或者带 XWayland 的 Wayland 桌面（GNOME、KDE 等默认都带）；GTK 3"),
         ("服务器", "可选，只在跨网络时需要。Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 与 Apple 芯片）、Windows 10 与 11 x64（系统服务）；约 15 MB 内存"),
@@ -873,7 +873,7 @@ C = {
                 "打开 CopySync，点「启用后台同步」。防火墙询问时选择允许。",
             ],
             "notes": [
-                "Windows 10（21H2 及以上）与 Windows 11，x64。",
+                "Windows 10 与 Windows 11，x64。",
                 "安装程序约 23 MB，便携版约 28 MB。",
                 "关掉窗口后，CopySync 在任务栏右下角的托盘里继续运行。",
             ],

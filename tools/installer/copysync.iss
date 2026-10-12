@@ -35,8 +35,8 @@ SolidCompression=yes
 WizardStyle=modern
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-; Windows 10 21H2 起
-MinVersion=10.0.19044
+; 任意版本的 Windows 10 与 11：Flutter 引擎与 Go 都要求 Windows 10，Windows 7、8 跑不起来
+MinVersion=10.0
 SetupIconFile=..\..\ui\windows\runner\resources\app_icon.ico
 UninstallDisplayIcon={app}\CopySync.exe
 UninstallDisplayName=CopySync

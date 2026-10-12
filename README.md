@@ -97,7 +97,7 @@ Open TCP 8787, UDP 3478 and UDP 32768–60999, then enter `ws://<server address>
 | | Requirement |
 |---|---|
 | **Mac app** | macOS 13 Ventura or later; Apple silicon and Intel |
-| **Windows app** | Windows 10 (21H2 or later) and 11, x64 |
+| **Windows app** | Windows 10 and 11, x64 |
 | **Linux app** | x64 or ARM64; an X11 desktop, or Wayland with XWayland (GNOME and KDE have it by default); GTK 3 |
 | **Server** | Optional, only to sync across networks: Linux (x86_64, ARM64; systemd or Docker), macOS, or Windows 10/11 x64 |
 | **iPhone / iPad** | Not supported: iOS doesn't let apps watch the clipboard in the background |

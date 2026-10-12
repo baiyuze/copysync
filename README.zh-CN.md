@@ -97,7 +97,7 @@ sudo ./install.sh <服务器公网IP>
 | | 要求 |
 |---|---|
 | **Mac 客户端** | macOS 13 Ventura 及以上；Apple 芯片与 Intel 芯片 |
-| **Windows 客户端** | Windows 10（21H2 及以上）与 11，x64 |
+| **Windows 客户端** | Windows 10 与 11，x64 |
 | **Linux 客户端** | x64 或 ARM64；X11 桌面，或带 XWayland 的 Wayland 桌面（GNOME、KDE 默认都带）；GTK 3 |
 | **服务器** | 可选，只在跨网络时需要：Linux（x86_64、ARM64；systemd 或 Docker）、macOS，或 Windows 10/11 x64 |
 | **iPhone / iPad** | 暂不支持：iOS 不允许 App 在后台监听剪贴板 |
