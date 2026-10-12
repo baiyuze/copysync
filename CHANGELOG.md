@@ -1,5 +1,26 @@
 # 更新记录 / Changelog
 
+## 1.5.0 — 2026-10-12
+
+Pair two computers on the same network without a code: open Search nearby on both and click the other one. This release also fixes mixed fonts on Windows.
+
+### Changes
+
+- **Search nearby**: a new button next to **Add device** opens a radar showing the nearby computers that have the same window open. Click one to pair; both screens then show the usual fingerprints to compare. **Add device** and pairing codes work as before and are still the way to pair across subnets.
+- **Privacy on the network**: a computer broadcasts its name only while Search nearby is open. The rest of the time, others on the network still see only an anonymous entry that changes daily.
+- **Command line**: `copysync-cli nearby [NAME]` does the same from a terminal.
+- **Website**: the same network guide explains pairing without a code.
+
+### Fixes
+
+- On Windows, Chinese text mixed glyphs from different fonts within one line. The app now uses Segoe UI with Microsoft YaHei UI for Chinese (Yu Gothic UI in the Japanese interface), and Consolas for codes, fingerprints and addresses.
+
+### Upgrade notes
+
+- **Mac and Windows apps**: upgrade both computers to use Search nearby. A computer on an older version doesn't appear on the radar but still pairs with a code and keeps syncing.
+- **Server**: no changes; upgrading is optional.
+- The device-to-device protocol is unchanged. Search nearby adds two messages on the local network and two mDNS TXT fields; older versions ignore them.
+
 ## 1.4.0 — 2026-10-11
 
 Computers on the same network now pair and sync without a server. You only need a server to connect computers on different networks.
