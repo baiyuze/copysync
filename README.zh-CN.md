@@ -5,14 +5,12 @@
 <h1 align="center">CopySync</h1>
 
 <p align="center">
-  在这台电脑复制，到那台电脑粘贴。Mac 与 Windows 互通。<br>
+  在这台电脑复制，到那台电脑粘贴。Mac、Windows、Linux 互通。<br>
   文本、图片、文件、整个文件夹都可以，不限账号，不限是否在同一个网络。
 </p>
 
 <p align="center">
-  <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><strong>下载 Mac 版</strong></a>
-  ·
-  <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><strong>下载 Windows 版</strong></a>
+  <a href="https://baiyuze.github.io/copysync/download/"><strong>下载</strong></a>
   ·
   <a href="https://baiyuze.github.io/copysync/">项目主页</a>
   ·
@@ -23,7 +21,7 @@
   <img src="https://img.shields.io/github/v/release/baiyuze/copysync?label=%E7%89%88%E6%9C%AC&color=0A66D8" alt="版本">
   <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1D1D1F" alt="Windows 10 / 11">
-  <img src="https://img.shields.io/badge/Intel%20%2B%20Apple%20%E8%8A%AF%E7%89%87-%E9%80%9A%E7%94%A8-1D1D1F" alt="Intel 与 Apple 芯片通用">
+  <img src="https://img.shields.io/badge/Linux-x64%20%2F%20ARM64-1D1D1F" alt="Linux x64 / ARM64">
   <img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-AGPL--3.0-6E6E73" alt="AGPL-3.0 许可">
 </p>
 
@@ -68,7 +66,13 @@ CopySync 的做法是：两台电脑配对一次，之后在一台上复制，�
 
 第一次用？跟着**[快速开始](https://baiyuze.github.io/copysync/start/)**一步步来，有截图。需要**每台电脑装一个 App**；同一个网络里这就够了，跨网络时再加一台服务器或 Tailscale。
 
-**1. 在每台电脑上安装 App**：macOS 13 以上用 [CopySync.dmg](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg)，Windows 10/11 用 [CopySync-Setup.exe](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe)（也有[便携版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip)）。还没有公证和代码签名：Mac 上第一次打开时到 **系统设置 → 隐私与安全性** 点 **仍要打开**；Windows 上点 **更多信息 → 仍要运行**。然后点 **启用后台同步**。Windows 防火墙询问、macOS 询问能否查找本地网络上的设备时，都选择允许。
+**1. 在每台电脑上安装 App**，到 **[下载页](https://baiyuze.github.io/copysync/download/)** 选：
+
+- **Mac**（macOS 13 以上）：[Apple 芯片版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-mac-apple-silicon.dmg)或 [Intel 版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-mac-intel.dmg)；也有两种芯片都能用的[通用版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg)。
+- **Windows** 10/11：[安装程序](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe)或[便携版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip)。
+- **Linux**（X11，或带 XWayland 的 Wayland 桌面）：Ubuntu、Debian 用 `.deb`（[x64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-amd64.deb)、[ARM64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-arm64.deb)），其他发行版用 `tar.gz`（[x64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-amd64.tar.gz)、[ARM64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-arm64.tar.gz)），解压后运行 `./CopySync/install.sh` 加进应用菜单。
+
+还没有公证和代码签名：Mac 上第一次打开时到 **系统设置 → 隐私与安全性** 点 **仍要打开**；Windows 上点 **更多信息 → 仍要运行**。然后点 **启用后台同步**。Windows 防火墙询问、macOS 询问能否查找本地网络上的设备时，都选择允许。
 
 **2. 配对。**一台点 **设备 → 添加设备 → 生成配对码**，另一台点 **输入配对码**；不在同一网段时，再点 **不在同一网段？** 输入配对码下面显示的地址。两边显示的两行安全指纹完全一致后再确认。之后在任意一台上复制，另一台就能直接粘贴。
 
@@ -92,8 +96,9 @@ sudo ./install.sh <服务器公网IP>
 
 | | 要求 |
 |---|---|
-| **Mac 客户端** | macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用 |
+| **Mac 客户端** | macOS 13 Ventura 及以上；Apple 芯片与 Intel 芯片 |
 | **Windows 客户端** | Windows 10（21H2 及以上）与 11，x64 |
+| **Linux 客户端** | x64 或 ARM64；X11 桌面，或带 XWayland 的 Wayland 桌面（GNOME、KDE 默认都带）；GTK 3 |
 | **服务器** | 可选，只在跨网络时需要：Linux（x86_64、ARM64；systemd 或 Docker）、macOS，或 Windows 10/11 x64 |
 | **iPhone / iPad** | 暂不支持：iOS 不允许 App 在后台监听剪贴板 |
 

@@ -34,6 +34,7 @@
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
         <a href="#server">连接方式</a>
+        <a href="../download/">下载</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="../en/start/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="../ja/start/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -59,17 +60,17 @@
       <div class="wrap">
         <p class="eyebrow">第 1 步</p>
         <h2 id="app-title">在每台电脑上安装 App</h2>
-        <p class="intro">要同步的每台电脑都装一个，Mac 与 Windows 可以混用。</p>
+        <p class="intro">要同步的每台电脑都装一个，Mac、Windows、Linux 可以混用。</p>
         <div class="os-grid qs-grid">
           <div>
             <div class="qs-app">
               <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
               <ol class="steps">
-                <li>下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。</li>
+                <li>下载 DMG，打开后把 CopySync 拖进「应用程序」。<span class="aside">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么选。</span></li>
                 <li>从「应用程序」里打开。<span class="aside">第一次会提示「无法验证开发者」：到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」。</span></li>
                 <li>点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。</li>
               </ol>
-              <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
+              <a class="button" href="../download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
             </div>
             <div class="qs-app">
               <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
@@ -77,7 +78,15 @@
                 <li>运行 CopySync-Setup.exe，不需要管理员权限。<span class="aside">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span></li>
                 <li>打开 CopySync，点「启用后台同步」。防火墙询问时选择允许。关掉窗口后它在右下角的托盘里继续运行。</li>
               </ol>
-              <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
+              <a class="button" href="../download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
+            </div>
+            <div class="qs-app">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
+              <ol class="steps">
+                <li>Ubuntu、Debian 等安装 .deb；其他发行版解压 tar.gz，运行里面的 <code>install.sh</code>。</li>
+                <li>从应用菜单里打开 CopySync，点「启用后台同步」。</li>
+              </ol>
+              <a class="button" href="../download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Linux 版</a>
             </div>
           </div>
           <figure class="shot">

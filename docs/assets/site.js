@@ -119,6 +119,24 @@
     if (linked) box.scrollIntoView();
   });
 
+  // 下载页：猜这台 Mac 是哪种芯片，把对应的按钮放在前面、改成主按钮。
+  // 浏览器不直接告诉芯片，只能看显卡型号：Chrome、Firefox 会给出 Intel 或 Apple M…，
+  // Safari 只说 Apple GPU，猜不出来就保持默认（Apple 芯片在前）
+  var chips = document.querySelector("[data-mac-chip]");
+  if (chips && /Macintosh/.test(navigator.userAgent)) {
+    try {
+      var gl = document.createElement("canvas").getContext("webgl");
+      var info = gl && gl.getExtension("WEBGL_debug_renderer_info");
+      var gpu = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+      if (/Intel|AMD|Radeon/i.test(gpu) && !/Apple M/i.test(gpu)) {
+        var buttons = chips.querySelectorAll(".button");
+        buttons[0].classList.add("quiet");
+        buttons[1].classList.remove("quiet");
+        chips.insertBefore(buttons[1], buttons[0]);
+      }
+    } catch (e) {}
+  }
+
   // 点过语言链接，以后打开首页就直接是这种语言，不再按浏览器语言跳转
   document.querySelectorAll("a[data-lang]").forEach(function (link) {
     link.addEventListener("click", function () {

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync：在 Mac 与 Windows 之间同步剪贴板与文件，跨账号跨网络</title>
-  <meta name="description" content="CopySync 让你在一台电脑上复制，另一台上直接粘贴，Mac 与 Windows 互通。支持文本、图片、文件和文件夹，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。设备间 P2P 直连、端到端加密。免费开源。">
+  <title>CopySync：在 Mac、Windows 与 Linux 之间同步剪贴板与文件，跨账号跨网络</title>
+  <meta name="description" content="CopySync 让你在一台电脑上复制，另一台上直接粘贴，Mac、Windows、Linux 互通。支持文本、图片、文件和文件夹，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。设备间 P2P 直连、端到端加密。免费开源。">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CopySync">
   <meta property="og:title" content="CopySync：在这台电脑复制，到那台电脑粘贴">
-  <meta property="og:description" content="Mac 与 Windows 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，同一网络里不需要服务器。免费开源。">
+  <meta property="og:description" content="Mac、Windows、Linux 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，同一网络里不需要服务器。免费开源。">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
   <meta property="og:image:width" content="1200">
@@ -55,9 +55,9 @@
         "@type": "SoftwareApplication",
         "@id": "https://baiyuze.github.io/copysync/#app",
         "name": "CopySync",
-        "description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。同一网络里不需要服务器；设备间 WebRTC 直连、DTLS 端到端加密，跨网络打不通时经用户自建服务器的 TURN 中转。",
+        "description": "在 Mac、Windows 与 Linux 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。同一网络里不需要服务器；设备间 WebRTC 直连、DTLS 端到端加密，跨网络打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）",
+        "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）；Linux（x64、ARM64）",
         "softwareVersion": "1.5.0",
         "datePublished": "2026-10-12",
         "inLanguage": "zh-CN",
@@ -68,13 +68,13 @@
           "price": "0",
           "priceCurrency": "CNY"
         },
-        "downloadUrl": "https://github.com/baiyuze/copysync/releases/latest",
+        "downloadUrl": "https://baiyuze.github.io/copysync/download/",
         "codeRepository": "https://github.com/baiyuze/copysync",
         "image": "https://baiyuze.github.io/copysync/assets/icon.png",
         "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/history-dark.png",
         "featureList": [
           "同步纯文本、带格式的文本、图片、文件与文件夹",
-          "Mac 与 Windows 互通，不要求同一个账号，跨网络可用",
+          "Mac、Windows、Linux 互通，不要求同一个账号，跨网络可用",
           "同一网络里不需要服务器，靠 mDNS 自动发现",
           "WebRTC 直连，打不通时自动经 TURN 中转",
           "DTLS 端到端加密，配对时人工核对安全指纹",
@@ -149,10 +149,10 @@
           },
           {
             "@type": "Question",
-            "name": "支持 Windows 吗？iPhone 呢？",
+            "name": "支持 Windows 和 Linux 吗？iPhone 呢？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "支持 Windows 10 与 Windows 11（x64），与 Mac 互通。复制的文件在 Windows 上粘贴出来就是真实文件，能直接粘进资源管理器、微信、Office。 iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到复制后立即同步。"
+              "text": "支持 Windows 10 与 Windows 11（x64），与 Mac 互通。复制的文件在 Windows 上粘贴出来就是真实文件，能直接粘进资源管理器、微信、Office。 也支持 x64 与 ARM64 的 Linux 桌面：X11，或者带 XWayland 的 Wayland 桌面（GNOME、KDE 等默认都带）。复制的文件能直接粘进文件管理器。 iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到复制后立即同步。"
             }
           },
           {
@@ -196,6 +196,7 @@
         <a class="wide" href="#how">工作原理</a>
         <a class="wide" href="#faq">常见问题</a>
         <a href="start/#server">连接方式</a>
+        <a href="download/">下载</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href="en/" hreflang="en" lang="en" data-lang="en">English</a>
         <a href="ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -207,12 +208,11 @@
     <section class="hero">
       <div class="wrap">
         <h1 class="display">在这台电脑复制，<br>到那台电脑粘贴。</h1>
-        <p class="lede">Mac 与 Windows 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络也可以。数据在你的设备之间直接传输，端到端加密。</p>
+        <p class="lede">Mac、Windows、Linux 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络也可以。数据在你的设备之间直接传输，端到端加密。</p>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
-          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 CopySync</a>
         </div>
-        <p class="note">版本 1.5.0，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
+        <p class="note">版本 1.5.0，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。</p>
         <a class="start-link" href="start/">第一次用？看快速开始，三步配好 →</a>
         <div class="stage" data-play role="img" aria-label="演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来">
           <figure class="device mac">
@@ -455,12 +455,12 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
-              <li>下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。</li>
+              <li>下载 DMG，打开后把 CopySync 拖进「应用程序」。<span class="aside">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么看自己的 Mac 是哪种。</span></li>
               <li>从「应用程序」里打开。<span class="aside">第一次会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证。到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」，只需要这一次。</span></li>
               <li>点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。</li>
               <li>跨网络同步时，在「设置」里填入服务器地址 <code>ws://服务器地址:8787/signal</code>，按回车；同一个网络里不用填。</li>
             </ol>
-            <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
+            <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
@@ -469,20 +469,29 @@
               <li>打开 CopySync，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。防火墙询问时选择允许。</li>
               <li>跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。</li>
             </ol>
-            <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
+            <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
           </div>
           <div>
-            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>连接方式</h3>
-            <p class="small">同一个网络里不需要服务器。三种方式按你的情况选一种，每种都有图文教程：</p>
-            <ul class="opts">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
+            <ol>
+              <li>Ubuntu、Debian 等下载 .deb，运行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；其他发行版下载 tar.gz，解压后运行 <code>./CopySync/install.sh</code>。</li>
+              <li>从应用菜单里打开 CopySync，点「启用后台同步」。之后它随登录自动启动。</li>
+              <li>跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。</li>
+            </ol>
+            <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Linux 版</a>
+          </div>
+        </div>
+        <div class="install-more">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>连接方式</h3>
+          <p class="small">同一个网络里不需要服务器。三种方式按你的情况选一种，每种都有图文教程：</p>
+          <ul class="opts">
               <li><a href="lan/">同一网络</a><span>什么都不用部署</span></li>
               <li><a href="cloud/">公网服务器</a><span>在哪儿都能同步</span></li>
               <li><a href="tailscale/">Tailscale</a><span>跨网络，不用服务器</span></li>
-            </ul>
-            <a class="button quiet" href="start/#server">对比三种方式</a>
-          </div>
+          </ul>
+          <a class="button quiet" href="start/#server">对比三种方式</a>
         </div>
-        <p class="pairing"><strong>配对：</strong>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。不在同一网段时，输入配对码的同时输入它下面显示的地址。Mac 与 Windows 之间、两台 Windows 之间都一样。</p>
+        <p class="pairing"><strong>配对：</strong>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。不在同一网段时，输入配对码的同时输入它下面显示的地址。Mac、Windows、Linux 之间怎么组合都一样。</p>
       </div>
     </section>
 
@@ -493,8 +502,9 @@
           <table class="specs">
             <tbody>
             <tr><th scope="row">版本</th><td>1.5.0，<time datetime="2026-10-12">2026 年 10 月 12 日</time>发布</td></tr>
-            <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB</td></tr>
+            <tr><th scope="row">Mac 客户端</th><td>macOS 13 Ventura 及以上；Apple 芯片与 Intel 芯片各有一个安装包，约 25 MB，不需要 Rosetta；也有两种芯片通用的版本，约 47 MB</td></tr>
             <tr><th scope="row">Windows 客户端</th><td>Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB</td></tr>
+            <tr><th scope="row">Linux 客户端</th><td>x64 与 ARM64；.deb（Debian、Ubuntu 等）或 tar.gz（其他发行版），约 22 MB；需要 X11 桌面，或者带 XWayland 的 Wayland 桌面（GNOME、KDE 等默认都带）；GTK 3</td></tr>
             <tr><th scope="row">服务器</th><td>可选，只在跨网络时需要。Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 与 Apple 芯片）、Windows 10 与 11 x64（系统服务）；约 15 MB 内存</td></tr>
             <tr><th scope="row">界面语言</th><td>简体中文、English、日本語，默认跟随系统，可在设置里切换</td></tr>
             <tr><th scope="row">同步的内容</th><td>纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭</td></tr>
@@ -504,7 +514,7 @@
             <tr><th scope="row">自动同步上限</th><td>默认 50 MB，可在 1 MB 到 1 GB 之间调整</td></tr>
             <tr><th scope="row">记录保留</th><td>默认 3 天，可在 1 小时到 30 天之间调整，到期自动清理</td></tr>
             <tr><th scope="row">实测速度</th><td>局域网直连传输 20 MB 文件约 330 毫秒，校验和一致</td></tr>
-            <tr><th scope="row">技术栈</th><td>后台服务与服务器用 Go（Windows 上纯 Go 调用 Win32），界面用 Flutter（Mac 与 Windows 共用一套代码），消息定义用 Protocol Buffers</td></tr>
+            <tr><th scope="row">技术栈</th><td>后台服务与服务器用 Go（Windows 上纯 Go 调用 Win32，Linux 上纯 Go 走 X11 协议），界面用 Flutter（三个系统共用一套代码），消息定义用 Protocol Buffers</td></tr>
             <tr><th scope="row">许可</th><td>GNU AGPL-3.0；闭源产品等情况可购买<a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商业授权</a></td></tr>
             </tbody>
           </table>
@@ -545,8 +555,8 @@
             <div class="answer"><p>先看两台是不是真的在同一个网段：公司里有线和无线、访客网络、开了「AP 隔离」的 Wi‑Fi 常常不互通，局域网发现过不去。这时在输入配对码的那台点「不在同一网段？」，填上另一台配对码下面显示的地址。</p><p>Windows 上，第一次运行时防火墙会询问，要选允许；点过取消的话，在「设置 → 局域网」里点「放行」。Mac 上，要在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。更多见<a href="lan/#faq">同一网络教程</a>。</p></div>
           </details>
           <details>
-            <summary>支持 Windows 吗？iPhone 呢？</summary>
-            <div class="answer"><p>支持 Windows 10 与 Windows 11（x64），与 Mac 互通。复制的文件在 Windows 上粘贴出来就是真实文件，能直接粘进资源管理器、微信、Office。</p><p>iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到复制后立即同步。</p></div>
+            <summary>支持 Windows 和 Linux 吗？iPhone 呢？</summary>
+            <div class="answer"><p>支持 Windows 10 与 Windows 11（x64），与 Mac 互通。复制的文件在 Windows 上粘贴出来就是真实文件，能直接粘进资源管理器、微信、Office。</p><p>也支持 x64 与 ARM64 的 Linux 桌面：X11，或者带 XWayland 的 Wayland 桌面（GNOME、KDE 等默认都带）。复制的文件能直接粘进文件管理器。</p><p>iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到复制后立即同步。</p></div>
           </details>
           <details>
             <summary>为什么第一次打开时系统会拦一下？</summary>
@@ -568,10 +578,9 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">两台电脑，一个剪贴板。</h2>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
-          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 CopySync</a>
         </div>
-        <p class="note">版本 1.5.0，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。</p>
+        <p class="note">版本 1.5.0，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。</p>
         <a class="start-link" href="start/">第一次用？看快速开始，三步配好 →</a>
         <a class="source" href="https://github.com/baiyuze/copysync">在 GitHub 上查看源码</a>
       </div>

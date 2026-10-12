@@ -6,7 +6,7 @@ The Mac app needs Go 1.26, Flutter 3.44 and Xcode:
 
 ```bash
 ./scripts/build.sh       # build everything into dist/
-./scripts/package.sh     # build the DMG and server packages into release/
+./scripts/package.sh     # build the DMGs (Apple silicon, Intel, universal) and server packages into release/
 ```
 
 The Windows app needs Go, Flutter, Visual Studio ("Desktop development with C++") and Inno Setup 6. On Windows:
@@ -16,6 +16,14 @@ powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1   # installer
 ```
 
 The background service is pure Go and also cross-compiles from a Mac: `GOOS=windows go build ./cmd/copysyncd`. CI builds the Windows installer on every commit.
+
+The Linux app needs Go, Flutter and its Linux toolchain (`sudo apt install clang cmake ninja-build pkg-config libgtk-3-dev`). Flutter can't cross-compile Linux desktop apps, so build on the architecture you want (CI builds both x64 and ARM64 on Ubuntu 22.04):
+
+```bash
+./scripts/package-linux.sh   # .deb and tar.gz for this machine's architecture into dist/linux/
+```
+
+The Linux clipboard is pure Go (X11 protocol) and also cross-compiles from a Mac: `GOOS=linux go build ./cmd/copysyncd`. Its tests need an X display: `xvfb-run -a go test ./internal/clipboard/` with `xclip` installed.
 
 The server is pure Go too. `package.sh` cross-compiles it for Linux (amd64, arm64), macOS and Windows, and bundles each with its install script from `server/deploy/`.
 
@@ -34,7 +42,7 @@ After changing a `.proto` file, run `./scripts/gen-proto.sh` (uses buf; install 
 
 ```
 client-core/    background service (Go)
-  internal/clipboard    clipboard (Mac: cgo + Objective-C; Windows: Win32; main thread only)
+  internal/clipboard    clipboard (Mac: cgo + Objective-C; Windows: Win32; Linux: X11; main thread only)
   internal/transport    signaling (WebSocket) and P2P (WebRTC)
   internal/sync         sync engine: routing, packing, transfer, storage
 ui/             app (Flutter)
@@ -45,4 +53,5 @@ spikes/         technical validation done before development
 design/         design documents
 tools/natlab/   NAT traversal lab
 tools/installer/ Windows installer (Inno Setup)
+tools/linux/    Linux menu entry, icons and install script
 ```

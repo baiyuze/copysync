@@ -4,12 +4,12 @@ REPO = "https://github.com/baiyuze/copysync"
 SITE = "https://baiyuze.github.io/copysync/"
 
 C = {
-    "title": "CopySync: sync the clipboard and files between Mac and Windows, across accounts and networks",
-    "description": "CopySync lets you copy on one computer and paste on another, Mac or Windows: text, images, files and folders. "
+    "title": "CopySync: sync the clipboard and files between Mac, Windows and Linux, across accounts and networks",
+    "description": "CopySync lets you copy on one computer and paste on another, Mac, Windows or Linux: text, images, files and folders. "
                    "No shared account required. On the same network it works with no server at all; across networks, use a server "
                    "you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.",
     "og_title": "CopySync: copy on this computer, paste on that one",
-    "og_description": "Mac and Windows. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end "
+    "og_description": "Mac, Windows and Linux. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end "
                       "encrypted, no server needed on the same network. Free and open source.",
     "og_image": "og-en.png",
     "skip": "Skip to content",
@@ -19,14 +19,17 @@ C = {
     "nav_how": "How it works",
     "nav_faq": "FAQ",
     "nav_server": "Ways to connect",
+    "nav_download": "Download",
     "lang_label": "Language",
 
     "h1": "Copy on this computer.<br>Paste on that one.",
-    "lede": "Mac and Windows. Text, images, files, whole folders. No shared account required. On the same network it works "
+    "lede": "Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. On the same network it works "
             "with no server at all, and it works across networks too. Data moves directly between your devices, end-to-end encrypted.",
+    "dl_button": "Download CopySync",
     "dl_mac": "Download for Mac",
     "dl_win": "Download for Windows",
-    "dl_note": "Version 1.5.0, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.",
+    "dl_linux": "Download for Linux",
+    "dl_note": "Version 1.5.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).",
     "start_link": "New here? Set it up in three steps →",
     "stage_label": "Demo: Command C on a MacBook turns a file into a sheet that flies over a direct connection to a Windows "
                    "laptop, where Ctrl V pastes it",
@@ -231,7 +234,8 @@ C = {
     "install_intro": "Install the app on each computer. On the same network you can pair right away; across networks, pick a way "
                      "for them to find each other. First time? Follow the <a href=\"{start}\">quick start</a>.",
     "mac_steps": [
-        "Download CopySync.dmg, open it and drag CopySync into Applications.",
+        "Download the DMG, open it and drag CopySync into Applications.<span class=\"aside\">There's one for Apple silicon "
+        "and one for Intel; the download page shows how to tell which your Mac has.</span>",
         "Open it from Applications.<span class=\"aside\">The first time, macOS says it can't verify the developer: CopySync "
         "isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. "
         "You only do this once.</span>",
@@ -248,6 +252,12 @@ C = {
         "keeps running in the notification area.",
         "To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.",
     ],
+    "linux_steps": [
+        "On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./CopySync-linux-amd64.deb</code>; "
+        "on other distributions, download the tar.gz, extract it and run <code>./CopySync/install.sh</code>.",
+        "Open CopySync from the app menu and click Turn on background sync. From then on it starts when you log in.",
+        "To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.",
+    ],
     "server_h3": "Ways to connect",
     "server_intro": "No server on the same network. Pick the way that fits; each has a step-by-step guide:",
     "server_compare": "Compare the three",
@@ -255,13 +265,16 @@ C = {
     "copied": "Copied",
     "pairing": "<strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on "
                "the other, and confirm once both screens show the same two fingerprints. On a different subnet, also enter the "
-               "address shown under the code. Mac with Windows, or two Windows PCs, works the same way.",
+               "address shown under the code. Any mix of Mac, Windows and Linux works the same way.",
 
     "specs_h2": "Specifications",
     "specs": [
         ("Version", '1.5.0, released <time datetime="2026-10-12">October 12, 2026</time>'),
-        ("Mac app", "macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 47 MB download"),
+        ("Mac app", "macOS 13 Ventura or later; separate downloads for Apple silicon and Intel, about 25 MB each, no Rosetta; "
+                    "a universal version for both is about 47 MB"),
         ("Windows app", "Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
+        ("Linux app", "x64 and ARM64; .deb (Debian, Ubuntu and similar) or tar.gz (other distributions), about 22 MB; "
+                      "needs an X11 desktop, or a Wayland desktop with XWayland (GNOME, KDE and others include it by default); GTK 3"),
         ("Server", "Optional, only for syncing across networks. Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM"),
         ("Languages", "English, Simplified Chinese and Japanese; follows the system by default, switchable in Settings"),
         ("Content", "Plain text, rich text, images and screenshots, files, folders; each type can be turned off"),
@@ -271,7 +284,7 @@ C = {
         ("Auto-sync limit", "50 MB by default, adjustable from 1 MB to 1 GB"),
         ("History", "3 days by default, adjustable from 1 hour to 30 days; expired items removed automatically"),
         ("Measured speed", "A 20 MB file transfers in about 330 ms over a direct LAN connection, checksums matching"),
-        ("Built with", "Go for the background service and server (pure Go calling Win32 on Windows), Flutter for the app (one codebase for Mac and Windows), Protocol Buffers for messages"),
+        ("Built with", "Go for the background service and server (pure Go calling Win32 on Windows and speaking the X11 protocol on Linux), Flutter for the app (one codebase for all three systems), Protocol Buffers for messages"),
         ("License", f'GNU AGPL-3.0; a <a href="{REPO}/blob/main/LICENSING.md">commercial license</a> is available for closed-source use'),
     ],
 
@@ -318,9 +331,11 @@ C = {
             "Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy &amp; Security → Local Network. More in "
             "the <a href=\"{lan}#faq\">same network guide</a>.",
         ]),
-        ("Windows? iPhone?", [
+        ("Windows? Linux? iPhone?", [
             "Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you "
             "can drop into Explorer or Office.",
+            "Linux desktops on x64 and ARM64 are supported too: X11, or Wayland with XWayland (GNOME, KDE and others include it "
+            "by default). Files you copy paste straight into the file manager.",
             "iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so "
             "copy-and-it's-there can't work.",
         ]),
@@ -655,9 +670,10 @@ C = {
         "step": "Step {n}",
 
         "app_h2": "Install the app on each computer",
-        "app_intro": "One on every computer you want to sync. Macs and Windows PCs mix freely.",
+        "app_intro": "One on every computer you want to sync. Mac, Windows and Linux mix freely.",
         "mac": [
-            "Download CopySync.dmg, open it and drag CopySync into Applications.",
+            "Download the DMG, open it and drag CopySync into Applications.<span class=\"aside\">There's one for Apple silicon "
+            "and one for Intel; the download page helps you choose.</span>",
             "Open it from Applications.<span class=\"aside\">The first time, macOS says it can't verify the developer: go to "
             "System Settings → Privacy &amp; Security and click Open Anyway near the bottom.</span>",
             "Click Turn on background sync. When macOS asks about clipboard access and finding devices on your local network, "
@@ -668,6 +684,11 @@ C = {
             "click More info, then Run anyway.</span>",
             "Open CopySync and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it "
             "keeps running in the notification area.",
+        ],
+        "linux": [
+            "On Ubuntu, Debian and similar, install the .deb; on other distributions, extract the tar.gz and run the "
+            "<code>install.sh</code> inside.",
+            "Open CopySync from the app menu and click Turn on background sync.",
         ],
         "app_alt": "CopySync the first time it opens, asking you to turn on background sync",
 
@@ -928,15 +949,84 @@ C = {
         "source": "Back to the same network guide",
     },
 
-    "ld_description": "Open-source app that syncs the clipboard and files between Mac and Windows computers. Copy text, "
+    # ── Download (download/ page) ──
+    "download": {
+        "title": "Download CopySync: Mac (Apple silicon, Intel), Windows and Linux",
+        "description": "CopySync for every system: Apple silicon and Intel versions for macOS 13 or later, an installer and a "
+                       "portable zip for Windows 10 and 11, and .deb and tar.gz packages for Linux on x64 and ARM64. Free and open source.",
+        "h1": "Download CopySync",
+        "lede": "Free and open source, version {version}. Install it on each computer you want to sync; Mac, Windows and Linux mix freely.",
+        "os_label": "Choose your system",
+        "win": {
+            "setup": "Download the installer",
+            "portable": "Rather not run an installer? Get the <a href=\"{portable}\">portable zip</a>, extract it and run CopySync from there.",
+            "steps": [
+                "Run CopySync-Setup.exe. It installs for the current user, no administrator rights needed."
+                "<span class=\"aside\">If you see \"Windows protected your PC\", click More info, then Run anyway.</span>",
+                "Open CopySync and click Turn on background sync. Allow it if Windows Firewall asks.",
+            ],
+            "notes": [
+                "Windows 10 (21H2 or later) and Windows 11, x64.",
+                "The installer is about 23 MB, the portable zip about 28 MB.",
+                "After you close the window, CopySync keeps running in the notification area.",
+            ],
+        },
+        "mac": {
+            "apple": "Apple silicon (M1 and later)",
+            "intel": "Intel",
+            "universal": "A <a href=\"{universal}\">universal version</a> that runs on both is also available, at twice the size.",
+            "steps": [
+                "Open the DMG you downloaded and drag CopySync into Applications.",
+                "Open it from Applications.<span class=\"aside\">The first time, macOS says it can't verify the developer: go to "
+                "System Settings → Privacy &amp; Security and click Open Anyway near the bottom.</span>",
+                "Click Turn on background sync. When macOS asks about clipboard access and finding devices on your local network, "
+                "allow both.",
+            ],
+            "chip_h": "Not sure which chip?",
+            "chip": [
+                "Click the Apple menu in the top-left corner of the screen and choose About This Mac.",
+                "\"Chip: Apple M1\" (or M2, M3, M4…) means Apple silicon; \"Processor: … Intel Core …\" means Intel.",
+                "Almost every Mac bought since late 2020 has Apple silicon. If you pick the wrong one, just download the other: "
+                "on an Apple silicon Mac the Intel version needs Rosetta installed first, and the Apple silicon version won't "
+                "open on an Intel Mac.",
+                "Requires macOS 13 Ventura or later.",
+            ],
+        },
+        "linux": {
+            "deb_h": "Ubuntu, Debian and derivatives",
+            "tar_h": "Other distributions",
+            "x64": "x64",
+            "arm64": "ARM64",
+            "notes": [
+                "Needs a graphical desktop: X11, or Wayland with XWayland, which GNOME, KDE and other major desktops include by default.",
+                "Not sure whether you have x64 or ARM64? Run <code>uname -m</code> in a terminal: <code>x86_64</code> means x64, "
+                "<code>aarch64</code> means ARM64.",
+                "The .deb installs to /opt/CopySync and adds CopySync to the app menu. The tar.gz runs from wherever you extract "
+                "it, and <code>install.sh</code> adds it to the app menu.",
+                "Once it's open, click Turn on background sync; from then on it starts when you log in. GNOME shows no tray icon "
+                "by default, so open the window from the app menu.",
+                "Needs GTK 3. Tested on Ubuntu 24.04 with GNOME (Wayland).",
+            ],
+        },
+        "more_h2": "More",
+        "more": [
+            ("Server", "Two computers on the same network need no server. The ways to connect across networks are in the "
+                       "<a href=\"{server}\">quick start</a>; each guide has its own server download."),
+            ("Checksums", "SHA-256 checksums of every file are in <a href=\"{sums}\">SHA256SUMS</a>."),
+            ("What's new and older versions", "See the <a href=\"{notes}\">release notes</a> for what changed in this version; "
+                                              "older versions are on <a href=\"{releases}\">GitHub Releases</a>."),
+        ],
+    },
+
+    "ld_description": "Open-source app that syncs the clipboard and files between Mac, Windows and Linux computers. Copy text, "
                       "images, files or folders on one computer and paste on the other. No server is needed on the same "
                       "network. Devices connect directly over WebRTC with end-to-end DTLS encryption; across networks, a "
                       "server the user hosts introduces them and relays over TURN when needed.",
-    "ld_os": "macOS 13 or later (Intel and Apple silicon); Windows 10, Windows 11 (x64)",
+    "ld_os": "macOS 13 or later (Intel and Apple silicon); Windows 10, Windows 11 (x64); Linux (x64, ARM64)",
     "ld_currency": "USD",
     "ld_features": [
         "Syncs plain text, rich text, images, files and folders",
-        "Works between Mac and Windows, across accounts and networks",
+        "Works between Mac, Windows and Linux, across accounts and networks",
         "No server needed on the same network, with automatic mDNS discovery",
         "Direct WebRTC connection with automatic TURN relay fallback",
         "End-to-end DTLS encryption with human-verified fingerprints at pairing",

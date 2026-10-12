@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync: sync the clipboard and files between Mac and Windows, across accounts and networks</title>
-  <meta name="description" content="CopySync lets you copy on one computer and paste on another, Mac or Windows: text, images, files and folders. No shared account required. On the same network it works with no server at all; across networks, use a server you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.">
+  <title>CopySync: sync the clipboard and files between Mac, Windows and Linux, across accounts and networks</title>
+  <meta name="description" content="CopySync lets you copy on one computer and paste on another, Mac, Windows or Linux: text, images, files and folders. No shared account required. On the same network it works with no server at all; across networks, use a server you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/en/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CopySync">
   <meta property="og:title" content="CopySync: copy on this computer, paste on that one">
-  <meta property="og:description" content="Mac and Windows. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end encrypted, no server needed on the same network. Free and open source.">
+  <meta property="og:description" content="Mac, Windows and Linux. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end encrypted, no server needed on the same network. Free and open source.">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/en/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
   <meta property="og:image:width" content="1200">
@@ -35,9 +35,9 @@
         "@type": "SoftwareApplication",
         "@id": "https://baiyuze.github.io/copysync/#app",
         "name": "CopySync",
-        "description": "Open-source app that syncs the clipboard and files between Mac and Windows computers. Copy text, images, files or folders on one computer and paste on the other. No server is needed on the same network. Devices connect directly over WebRTC with end-to-end DTLS encryption; across networks, a server the user hosts introduces them and relays over TURN when needed.",
+        "description": "Open-source app that syncs the clipboard and files between Mac, Windows and Linux computers. Copy text, images, files or folders on one computer and paste on the other. No server is needed on the same network. Devices connect directly over WebRTC with end-to-end DTLS encryption; across networks, a server the user hosts introduces them and relays over TURN when needed.",
         "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "macOS 13 or later (Intel and Apple silicon); Windows 10, Windows 11 (x64)",
+        "operatingSystem": "macOS 13 or later (Intel and Apple silicon); Windows 10, Windows 11 (x64); Linux (x64, ARM64)",
         "softwareVersion": "1.5.0",
         "datePublished": "2026-10-12",
         "inLanguage": "en",
@@ -48,13 +48,13 @@
           "price": "0",
           "priceCurrency": "USD"
         },
-        "downloadUrl": "https://github.com/baiyuze/copysync/releases/latest",
+        "downloadUrl": "https://baiyuze.github.io/copysync/en/download/",
         "codeRepository": "https://github.com/baiyuze/copysync",
         "image": "https://baiyuze.github.io/copysync/assets/icon.png",
         "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/en/history-dark.png",
         "featureList": [
           "Syncs plain text, rich text, images, files and folders",
-          "Works between Mac and Windows, across accounts and networks",
+          "Works between Mac, Windows and Linux, across accounts and networks",
           "No server needed on the same network, with automatic mDNS discovery",
           "Direct WebRTC connection with automatic TURN relay fallback",
           "End-to-end DTLS encryption with human-verified fingerprints at pairing",
@@ -129,10 +129,10 @@
           },
           {
             "@type": "Question",
-            "name": "Windows? iPhone?",
+            "name": "Windows? Linux? iPhone?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you can drop into Explorer or Office. iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so copy-and-it's-there can't work."
+              "text": "Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you can drop into Explorer or Office. Linux desktops on x64 and ARM64 are supported too: X11, or Wayland with XWayland (GNOME, KDE and others include it by default). Files you copy paste straight into the file manager. iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so copy-and-it's-there can't work."
             }
           },
           {
@@ -176,6 +176,7 @@
         <a class="wide" href="#how">How it works</a>
         <a class="wide" href="#faq">FAQ</a>
         <a href="start/#server">Ways to connect</a>
+        <a href="download/">Download</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
@@ -187,12 +188,11 @@
     <section class="hero">
       <div class="wrap">
         <h1 class="display">Copy on this computer.<br>Paste on that one.</h1>
-        <p class="lede">Mac and Windows. Text, images, files, whole folders. No shared account required. On the same network it works with no server at all, and it works across networks too. Data moves directly between your devices, end-to-end encrypted.</p>
+        <p class="lede">Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. On the same network it works with no server at all, and it works across networks too. Data moves directly between your devices, end-to-end encrypted.</p>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
-          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download CopySync</a>
         </div>
-        <p class="note">Version 1.5.0, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <p class="note">Version 1.5.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).</p>
         <a class="start-link" href="start/">New here? Set it up in three steps →</a>
         <div class="stage" data-play role="img" aria-label="Demo: Command C on a MacBook turns a file into a sheet that flies over a direct connection to a Windows laptop, where Ctrl V pastes it">
           <figure class="device mac">
@@ -435,12 +435,12 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
-              <li>Download CopySync.dmg, open it and drag CopySync into Applications.</li>
+              <li>Download the DMG, open it and drag CopySync into Applications.<span class="aside">There's one for Apple silicon and one for Intel; the download page shows how to tell which your Mac has.</span></li>
               <li>Open it from Applications.<span class="aside">The first time, macOS says it can't verify the developer: CopySync isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once.</span></li>
               <li>Click Turn on background sync. When macOS asks whether CopySync may read the clipboard or find devices on your local network, allow both.</li>
               <li>To sync across networks, enter your server in Settings as <code>ws://server-address:8787/signal</code> and press Return. On the same network, leave it empty.</li>
             </ol>
-            <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
+            <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
@@ -449,20 +449,29 @@
               <li>Open CopySync and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it keeps running in the notification area.</li>
               <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
             </ol>
-            <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
+            <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
           </div>
           <div>
-            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Ways to connect</h3>
-            <p class="small">No server on the same network. Pick the way that fits; each has a step-by-step guide:</p>
-            <ul class="opts">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
+            <ol>
+              <li>On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./CopySync-linux-amd64.deb</code>; on other distributions, download the tar.gz, extract it and run <code>./CopySync/install.sh</code>.</li>
+              <li>Open CopySync from the app menu and click Turn on background sync. From then on it starts when you log in.</li>
+              <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
+            </ol>
+            <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Linux</a>
+          </div>
+        </div>
+        <div class="install-more">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Ways to connect</h3>
+          <p class="small">No server on the same network. Pick the way that fits; each has a step-by-step guide:</p>
+          <ul class="opts">
               <li><a href="lan/">Same network</a><span>Nothing to set up</span></li>
               <li><a href="cloud/">Public server</a><span>Syncs from anywhere</span></li>
               <li><a href="tailscale/">Tailscale</a><span>Across networks, no server</span></li>
-            </ul>
-            <a class="button quiet" href="start/#server">Compare the three</a>
-          </div>
+          </ul>
+          <a class="button quiet" href="start/#server">Compare the three</a>
         </div>
-        <p class="pairing"><strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints. On a different subnet, also enter the address shown under the code. Mac with Windows, or two Windows PCs, works the same way.</p>
+        <p class="pairing"><strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints. On a different subnet, also enter the address shown under the code. Any mix of Mac, Windows and Linux works the same way.</p>
       </div>
     </section>
 
@@ -473,8 +482,9 @@
           <table class="specs">
             <tbody>
             <tr><th scope="row">Version</th><td>1.5.0, released <time datetime="2026-10-12">October 12, 2026</time></td></tr>
-            <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; universal binary for Intel and Apple silicon, no Rosetta; about 47 MB download</td></tr>
+            <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; separate downloads for Apple silicon and Intel, about 25 MB each, no Rosetta; a universal version for both is about 47 MB</td></tr>
             <tr><th scope="row">Windows app</th><td>Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download</td></tr>
+            <tr><th scope="row">Linux app</th><td>x64 and ARM64; .deb (Debian, Ubuntu and similar) or tar.gz (other distributions), about 22 MB; needs an X11 desktop, or a Wayland desktop with XWayland (GNOME, KDE and others include it by default); GTK 3</td></tr>
             <tr><th scope="row">Server</th><td>Optional, only for syncing across networks. Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM</td></tr>
             <tr><th scope="row">Languages</th><td>English, Simplified Chinese and Japanese; follows the system by default, switchable in Settings</td></tr>
             <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>
@@ -484,7 +494,7 @@
             <tr><th scope="row">Auto-sync limit</th><td>50 MB by default, adjustable from 1 MB to 1 GB</td></tr>
             <tr><th scope="row">History</th><td>3 days by default, adjustable from 1 hour to 30 days; expired items removed automatically</td></tr>
             <tr><th scope="row">Measured speed</th><td>A 20 MB file transfers in about 330 ms over a direct LAN connection, checksums matching</td></tr>
-            <tr><th scope="row">Built with</th><td>Go for the background service and server (pure Go calling Win32 on Windows), Flutter for the app (one codebase for Mac and Windows), Protocol Buffers for messages</td></tr>
+            <tr><th scope="row">Built with</th><td>Go for the background service and server (pure Go calling Win32 on Windows and speaking the X11 protocol on Linux), Flutter for the app (one codebase for all three systems), Protocol Buffers for messages</td></tr>
             <tr><th scope="row">License</th><td>GNU AGPL-3.0; a <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">commercial license</a> is available for closed-source use</td></tr>
             </tbody>
           </table>
@@ -525,8 +535,8 @@
             <div class="answer"><p>Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code.</p><p>On Windows, allow CopySync when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy &amp; Security → Local Network. More in the <a href="lan/#faq">same network guide</a>.</p></div>
           </details>
           <details>
-            <summary>Windows? iPhone?</summary>
-            <div class="answer"><p>Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you can drop into Explorer or Office.</p><p>iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so copy-and-it's-there can't work.</p></div>
+            <summary>Windows? Linux? iPhone?</summary>
+            <div class="answer"><p>Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you can drop into Explorer or Office.</p><p>Linux desktops on x64 and ARM64 are supported too: X11, or Wayland with XWayland (GNOME, KDE and others include it by default). Files you copy paste straight into the file manager.</p><p>iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so copy-and-it's-there can't work.</p></div>
           </details>
           <details>
             <summary>Why does the system warn me the first time?</summary>
@@ -548,10 +558,9 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">Two computers, one clipboard.</h2>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
-          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download CopySync</a>
         </div>
-        <p class="note">Version 1.5.0, free and open source. macOS 13 or later, Intel and Apple silicon; Windows 10 and 11.</p>
+        <p class="note">Version 1.5.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).</p>
         <a class="start-link" href="start/">New here? Set it up in three steps →</a>
         <a class="source" href="https://github.com/baiyuze/copysync">View the source on GitHub</a>
       </div>

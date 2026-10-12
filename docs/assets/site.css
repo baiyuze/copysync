@@ -1074,6 +1074,32 @@ td {
   }
 }
 
+/* 首页安装区下面的连接方式：三个系统的卡片占一行，它单独一块 */
+.install-more {
+  max-width: 70rem;
+  margin: 2.5rem auto 0;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+}
+
+.install-more h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.15rem;
+}
+
+.install-more h3 svg {
+  width: 22px;
+  height: 22px;
+  color: var(--dim);
+}
+
+.install-more .button {
+  margin-top: 1.2rem;
+}
+
 .install h3 {
   display: flex;
   align-items: center;
@@ -1115,7 +1141,8 @@ td {
 }
 
 /* 服务器一栏：三种部署方式并列，各一行说明 */
-.install .opts {
+.install .opts,
+.install-more .opts {
   display: grid;
   gap: 0.9rem;
   margin: 1.1rem 0 0;
@@ -1124,17 +1151,20 @@ td {
   font-size: 0.95rem;
 }
 
-.install .opts li {
+.install .opts li,
+.install-more .opts li {
   padding-left: 0.9rem;
   border-left: 2px solid var(--rule-strong);
 }
 
-.install .opts a {
+.install .opts a,
+.install-more .opts a {
   display: block;
   font-weight: 600;
 }
 
-.install .opts span {
+.install .opts span,
+.install-more .opts span {
   display: block;
   color: var(--dim);
   font-size: 0.88rem;
@@ -2358,4 +2388,37 @@ td {
   .stage.play .win .file {
     opacity: 1;
   }
+}
+
+/* 下载页：同一行里的几个下载按钮，比如 Apple 芯片与 Intel、x64 与 ARM64 */
+.dl-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0 0 0.9rem;
+}
+
+.os h4 {
+  margin: 1.6rem 0 0.8rem;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.os .os-steps > h4:first-child,
+.os-grid > div > h4:first-child {
+  margin-top: 0;
+}
+
+.os .os-steps > .small {
+  margin: 0 0 1.4rem;
+  color: var(--dim);
+}
+
+.os .os-steps .code {
+  margin-bottom: 0.4rem;
+}
+
+/* 下载页的系统选择紧跟在标题下面，是首屏的一部分，不需要再隔一整节的距离 */
+.guide-hero + #get {
+  padding-top: clamp(1.5rem, 4vw, 2.5rem);
 }

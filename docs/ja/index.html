@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync：Mac と Windows のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK</title>
-  <meta name="description" content="CopySync は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac と Windows の両方に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントは不要。同じネットワークならサーバーなしで使え、ネットワークをまたぐときは自分で用意したサーバーか Tailscale を使います。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。無料・オープンソース。">
+  <title>CopySync：Mac、Windows、Linux のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK</title>
+  <meta name="description" content="CopySync は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac、Windows、Linux に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントは不要。同じネットワークならサーバーなしで使え、ネットワークをまたぐときは自分で用意したサーバーか Tailscale を使います。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。無料・オープンソース。">
   <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/">
   <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
   <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CopySync">
   <meta property="og:title" content="CopySync：このコンピューターでコピーして、あのコンピューターで貼り付け">
-  <meta property="og:description" content="Mac と Windows に対応。テキスト、画像、ファイル、フォルダを、アカウントやネットワークをまたいで同期。P2P 直接接続、エンドツーエンド暗号化、同じネットワークならサーバー不要。無料・オープンソース。">
+  <meta property="og:description" content="Mac、Windows、Linux に対応。テキスト、画像、ファイル、フォルダを、アカウントやネットワークをまたいで同期。P2P 直接接続、エンドツーエンド暗号化、同じネットワークならサーバー不要。無料・オープンソース。">
   <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/">
   <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
   <meta property="og:image:width" content="1200">
@@ -35,9 +35,9 @@
         "@type": "SoftwareApplication",
         "@id": "https://baiyuze.github.io/copysync/#app",
         "name": "CopySync",
-        "description": "Mac と Windows のコンピューター間でクリップボードとファイルを同期するオープンソースのアプリ。テキスト、画像、ファイル、フォルダを一台でコピーし、もう一台で貼り付けられる。同じネットワークならサーバーは不要。デバイス間は WebRTC で直接つながり DTLS でエンドツーエンド暗号化、ネットワークをまたいでつながらないときはユーザーが用意したサーバーの TURN で中継する。",
+        "description": "Mac、Windows、Linux のコンピューター間でクリップボードとファイルを同期するオープンソースのアプリ。テキスト、画像、ファイル、フォルダを一台でコピーし、もう一台で貼り付けられる。同じネットワークならサーバーは不要。デバイス間は WebRTC で直接つながり DTLS でエンドツーエンド暗号化、ネットワークをまたいでつながらないときはユーザーが用意したサーバーの TURN で中継する。",
         "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "macOS 13 以降（Intel と Apple シリコン）、Windows 10、Windows 11（x64）",
+        "operatingSystem": "macOS 13 以降（Intel と Apple シリコン）、Windows 10、Windows 11（x64）、Linux（x64、ARM64）",
         "softwareVersion": "1.5.0",
         "datePublished": "2026-10-12",
         "inLanguage": "ja",
@@ -48,13 +48,13 @@
           "price": "0",
           "priceCurrency": "JPY"
         },
-        "downloadUrl": "https://github.com/baiyuze/copysync/releases/latest",
+        "downloadUrl": "https://baiyuze.github.io/copysync/ja/download/",
         "codeRepository": "https://github.com/baiyuze/copysync",
         "image": "https://baiyuze.github.io/copysync/assets/icon.png",
         "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/ja/history-dark.png",
         "featureList": [
           "プレーンテキスト、書式付きテキスト、画像、ファイル、フォルダを同期",
-          "Mac と Windows のあいだで、アカウントやネットワークをまたいで使える",
+          "Mac、Windows、Linux のあいだで、アカウントやネットワークをまたいで使える",
           "同じネットワークならサーバー不要、mDNS で自動的に発見",
           "WebRTC の直接接続、つながらないときは自動で TURN 中継",
           "DTLS のエンドツーエンド暗号化、ペアリング時に指紋を人が照合",
@@ -129,10 +129,10 @@
           },
           {
             "@type": "Question",
-            "name": "Windows に対応していますか？iPhone は？",
+            "name": "Windows や Linux に対応していますか？iPhone は？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Windows 10 と Windows 11（x64）に対応し、Mac と相互に使えます。Windows で貼り付けたファイルは本物のファイルなので、エクスプローラーや Office にそのまま貼り付けられます。 iPhone と iPad には対応していません。iOS ではアプリがバックグラウンドでクリップボードを監視できないため、コピーしてすぐ同期することができないからです。"
+              "text": "Windows 10 と Windows 11（x64）に対応し、Mac と相互に使えます。Windows で貼り付けたファイルは本物のファイルなので、エクスプローラーや Office にそのまま貼り付けられます。 x64 と ARM64 の Linux デスクトップにも対応しています。X11、または XWayland 付きの Wayland デスクトップ（GNOME、KDE などは標準で搭載）で動きます。コピーしたファイルはファイルマネージャーにそのまま貼り付けられます。 iPhone と iPad には対応していません。iOS ではアプリがバックグラウンドでクリップボードを監視できないため、コピーしてすぐ同期することができないからです。"
             }
           },
           {
@@ -176,6 +176,7 @@
         <a class="wide" href="#how">しくみ</a>
         <a class="wide" href="#faq">よくある質問</a>
         <a href="start/#server">接続方法</a>
+        <a href="download/">ダウンロード</a>
         <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
         <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
@@ -187,12 +188,11 @@
     <section class="hero">
       <div class="wrap">
         <h1 class="display">こっちでコピーして、<br>あっちで貼り付け。</h1>
-        <p class="lede">Mac と Windows に対応。テキスト、画像、ファイル、フォルダまるごと。同じアカウントは要りません。同じネットワークならサーバーなしで使え、ネットワークをまたいでも使えます。データはデバイス間を直接流れ、エンドツーエンドで暗号化されます。</p>
+        <p class="lede">Mac、Windows、Linux に対応。テキスト、画像、ファイル、フォルダまるごと。同じアカウントは要りません。同じネットワークならサーバーなしで使え、ネットワークをまたいでも使えます。データはデバイス間を直接流れ、エンドツーエンドで暗号化されます。</p>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
-          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>CopySync をダウンロード</a>
         </div>
-        <p class="note">バージョン 1.5.0、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <p class="note">バージョン 1.5.0、無料・オープンソース。macOS 13 以降、Windows 10・11、Linux（x64 と ARM64）。</p>
         <a class="start-link" href="start/">はじめての方は、3 ステップのはじめかたへ →</a>
         <div class="stage" data-play role="img" aria-label="デモ：MacBook で Command C を押すと、ファイルが一枚の紙になって直接接続で Windows ノートへ飛び、そこで Ctrl V を押して貼り付けます">
           <figure class="device mac">
@@ -435,12 +435,12 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
-              <li>CopySync.dmg をダウンロードして開き、CopySync を「アプリケーション」にドラッグします。</li>
+              <li>DMG をダウンロードして開き、CopySync を「アプリケーション」にドラッグします。<span class="aside">Apple シリコン版と Intel 版があります。自分の Mac がどちらかの確かめ方は、ダウンロードページにあります。</span></li>
               <li>「アプリケーション」から開きます。<span class="aside">初回は「開発元を検証できません」と表示されます。CopySync はまだ Apple の公証を受けていないためです。「システム設定 → プライバシーとセキュリティ」を開き、ページ下部の「このまま開く」をクリックします。必要なのは一度だけです。</span></li>
               <li>「バックグラウンド同期を有効にする」をクリックします。クリップボードの読み取りと、ローカルネットワーク上のデバイスを探すことについて聞かれたら、どちらも許可します。</li>
               <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレス <code>ws://サーバーアドレス:8787/signal</code> を入力して Return を押します。同じネットワークなら空欄のままです。</li>
             </ol>
-            <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
+            <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
           </div>
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
@@ -449,20 +449,29 @@
               <li>CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても、画面右下の通知領域で動き続けます。</li>
               <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
             </ol>
-            <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+            <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
           </div>
           <div>
-            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>接続方法</h3>
-            <p class="small">同じネットワークならサーバーは要りません。状況に合うものを選んでください。どれにも手順のページがあります：</p>
-            <ul class="opts">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
+            <ol>
+              <li>Ubuntu や Debian などでは .deb をダウンロードし、<code>sudo apt install ./CopySync-linux-amd64.deb</code> を実行します。ほかのディストリビューションでは tar.gz をダウンロードして展開し、<code>./CopySync/install.sh</code> を実行します。</li>
+              <li>アプリケーションメニューから CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。以後はログイン時に自動で起動します。</li>
+              <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
+            </ol>
+            <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Linux 版をダウンロード</a>
+          </div>
+        </div>
+        <div class="install-more">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>接続方法</h3>
+          <p class="small">同じネットワークならサーバーは要りません。状況に合うものを選んでください。どれにも手順のページがあります：</p>
+          <ul class="opts">
               <li><a href="lan/">同じネットワーク</a><span>準備は何も要らない</span></li>
               <li><a href="cloud/">公開サーバー</a><span>どこからでも同期</span></li>
               <li><a href="tailscale/">Tailscale</a><span>ネットワークをまたぐ、サーバーなし</span></li>
-            </ul>
-            <a class="button quiet" href="start/#server">3 通りを比べる</a>
-          </div>
+          </ul>
+          <a class="button quiet" href="start/#server">3 通りを比べる</a>
         </div>
-        <p class="pairing"><strong>ペアリング：</strong>一台で「デバイス → デバイスを追加」を開いて 6 桁のコードを表示し、もう一台で入力します。両方の画面に同じ 2 行の指紋が表示されたら確定します。別のサブネットにある場合は、コードの下に表示されたアドレスも入力します。Mac と Windows、Windows 同士でも同じ手順です。</p>
+        <p class="pairing"><strong>ペアリング：</strong>一台で「デバイス → デバイスを追加」を開いて 6 桁のコードを表示し、もう一台で入力します。両方の画面に同じ 2 行の指紋が表示されたら確定します。別のサブネットにある場合は、コードの下に表示されたアドレスも入力します。Mac、Windows、Linux のどの組み合わせでも同じ手順です。</p>
       </div>
     </section>
 
@@ -473,8 +482,9 @@
           <table class="specs">
             <tbody>
             <tr><th scope="row">バージョン</th><td>1.5.0（<time datetime="2026-10-12">2026 年 10 月 12 日</time>公開）</td></tr>
-            <tr><th scope="row">Mac アプリ</th><td>macOS 13 Ventura 以降。Intel と Apple シリコンのユニバーサルバイナリで Rosetta 不要。ダウンロードは約 47 MB</td></tr>
+            <tr><th scope="row">Mac アプリ</th><td>macOS 13 Ventura 以降。Apple シリコン版と Intel 版に分かれ、ダウンロードはそれぞれ約 25 MB で Rosetta 不要。両方で動くユニバーサル版は約 47 MB</td></tr>
             <tr><th scope="row">Windows アプリ</th><td>Windows 10（21H2 以降）と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB</td></tr>
+            <tr><th scope="row">Linux アプリ</th><td>x64 と ARM64。.deb（Debian、Ubuntu など）または tar.gz（ほかのディストリビューション）、約 22 MB。X11 のデスクトップ、または XWayland 付きの Wayland デスクトップ（GNOME、KDE などは標準で搭載）が必要。GTK 3</td></tr>
             <tr><th scope="row">サーバー</th><td>任意。ネットワークをまたぐときだけ必要。Linux（x86_64 または ARM64、systemd または Docker）、macOS（Intel と Apple シリコン）、Windows 10・11 x64（サービスとして動作）。メモリは約 15 MB</td></tr>
             <tr><th scope="row">表示言語</th><td>日本語、英語、簡体字中国語。初期設定はシステムに合わせ、「設定」で切り替え可能</td></tr>
             <tr><th scope="row">同期する内容</th><td>プレーンテキスト、書式付きテキスト、画像とスクリーンショット、ファイル、フォルダ。種類ごとにオフにできる</td></tr>
@@ -484,7 +494,7 @@
             <tr><th scope="row">自動同期の上限</th><td>初期値 50 MB、1 MB〜1 GB で調整可能</td></tr>
             <tr><th scope="row">履歴の保存期間</th><td>初期値 3 日、1 時間〜30 日で調整可能。期限が来たら自動で削除</td></tr>
             <tr><th scope="row">実測の速度</th><td>LAN の直接接続で 20 MB のファイルを約 330 ミリ秒で転送、チェックサム一致</td></tr>
-            <tr><th scope="row">技術スタック</th><td>バックグラウンドサービスとサーバーは Go（Windows では Go から Win32 を直接呼び出し）、アプリは Flutter（Mac と Windows で同じコード）、メッセージ定義は Protocol Buffers</td></tr>
+            <tr><th scope="row">技術スタック</th><td>バックグラウンドサービスとサーバーは Go（Windows では Go から Win32 を直接呼び出し、Linux では Go で X11 プロトコルを直接扱う）、アプリは Flutter（3 つの OS で同じコード）、メッセージ定義は Protocol Buffers</td></tr>
             <tr><th scope="row">ライセンス</th><td>GNU AGPL-3.0。クローズドソースでの利用などには<a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商用ライセンス</a>を用意</td></tr>
             </tbody>
           </table>
@@ -525,8 +535,8 @@
             <div class="answer"><p>まず本当に同じサブネットか確認してください。会社の有線と Wi‑Fi、ゲストネットワーク、クライアント分離が有効な Wi‑Fi では、デバイス同士が見えないことがよくあります。その場合は、コードを入力する側で「別のサブネットにありますか？」をクリックし、相手のコードの下に表示されたアドレスを入力します。</p><p>Windows では初回起動時にファイアウォールに聞かれたら許可してください。キャンセルした場合は「設定 → ローカルネットワーク」で「許可」をクリックします。Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。詳しくは<a href="lan/#faq">同じネットワークでの手順</a>を。</p></div>
           </details>
           <details>
-            <summary>Windows に対応していますか？iPhone は？</summary>
-            <div class="answer"><p>Windows 10 と Windows 11（x64）に対応し、Mac と相互に使えます。Windows で貼り付けたファイルは本物のファイルなので、エクスプローラーや Office にそのまま貼り付けられます。</p><p>iPhone と iPad には対応していません。iOS ではアプリがバックグラウンドでクリップボードを監視できないため、コピーしてすぐ同期することができないからです。</p></div>
+            <summary>Windows や Linux に対応していますか？iPhone は？</summary>
+            <div class="answer"><p>Windows 10 と Windows 11（x64）に対応し、Mac と相互に使えます。Windows で貼り付けたファイルは本物のファイルなので、エクスプローラーや Office にそのまま貼り付けられます。</p><p>x64 と ARM64 の Linux デスクトップにも対応しています。X11、または XWayland 付きの Wayland デスクトップ（GNOME、KDE などは標準で搭載）で動きます。コピーしたファイルはファイルマネージャーにそのまま貼り付けられます。</p><p>iPhone と iPad には対応していません。iOS ではアプリがバックグラウンドでクリップボードを監視できないため、コピーしてすぐ同期することができないからです。</p></div>
           </details>
           <details>
             <summary>初めて開くときにシステムに止められるのはなぜ？</summary>
@@ -548,10 +558,9 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">2 台のコンピューター、<br>ひとつのクリップボード。</h2>
         <div class="cta">
-          <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
-          <a class="button quiet" href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>CopySync をダウンロード</a>
         </div>
-        <p class="note">バージョン 1.5.0、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。</p>
+        <p class="note">バージョン 1.5.0、無料・オープンソース。macOS 13 以降、Windows 10・11、Linux（x64 と ARM64）。</p>
         <a class="start-link" href="start/">はじめての方は、3 ステップのはじめかたへ →</a>
         <a class="source" href="https://github.com/baiyuze/copysync">GitHub でソースコードを見る</a>
       </div>

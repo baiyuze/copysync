@@ -4,12 +4,12 @@ REPO = "https://github.com/baiyuze/copysync"
 SITE = "https://baiyuze.github.io/copysync/"
 
 C = {
-    "title": "CopySync：在 Mac 与 Windows 之间同步剪贴板与文件，跨账号跨网络",
-    "description": "CopySync 让你在一台电脑上复制，另一台上直接粘贴，Mac 与 Windows 互通。支持文本、图片、文件和文件夹，"
+    "title": "CopySync：在 Mac、Windows 与 Linux 之间同步剪贴板与文件，跨账号跨网络",
+    "description": "CopySync 让你在一台电脑上复制，另一台上直接粘贴，Mac、Windows、Linux 互通。支持文本、图片、文件和文件夹，"
                    "不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。"
                    "设备间 P2P 直连、端到端加密。免费开源。",
     "og_title": "CopySync：在这台电脑复制，到那台电脑粘贴",
-    "og_description": "Mac 与 Windows 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，同一网络里不需要服务器。免费开源。",
+    "og_description": "Mac、Windows、Linux 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，同一网络里不需要服务器。免费开源。",
     "og_image": "og.png",
     "skip": "跳到正文",
     "home_label": "CopySync 首页",
@@ -18,14 +18,17 @@ C = {
     "nav_how": "工作原理",
     "nav_faq": "常见问题",
     "nav_server": "连接方式",
+    "nav_download": "下载",
     "lang_label": "语言",
 
     "h1": "在这台电脑复制，<br>到那台电脑粘贴。",
-    "lede": "Mac 与 Windows 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号。"
+    "lede": "Mac、Windows、Linux 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号。"
             "同一个网络里装好就能用，不需要服务器；跨网络也可以。数据在你的设备之间直接传输，端到端加密。",
+    "dl_button": "下载 CopySync",
     "dl_mac": "下载 Mac 版",
     "dl_win": "下载 Windows 版",
-    "dl_note": "版本 1.5.0，免费开源。macOS 13 及以上，Intel 与 Apple 芯片通用；Windows 10、11。",
+    "dl_linux": "下载 Linux 版",
+    "dl_note": "版本 1.5.0，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。",
     "start_link": "第一次用？看快速开始，三步配好 →",
     "stage_label": "演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来",
     "stage_file": "季度汇报-终版.pptx",
@@ -216,7 +219,7 @@ C = {
     "install_intro": "每台电脑装一个 App。同一个网络里装好就能配对；跨网络时，再选一种方式让两台电脑找到彼此。"
                      "第一次装可以跟着<a href=\"{start}\">快速开始</a>。",
     "mac_steps": [
-        "下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。",
+        "下载 DMG，打开后把 CopySync 拖进「应用程序」。<span class=\"aside\">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么看自己的 Mac 是哪种。</span>",
         "从「应用程序」里打开。<span class=\"aside\">第一次会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证。"
         "到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」，只需要这一次。</span>",
         "点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。",
@@ -229,19 +232,27 @@ C = {
         "打开 CopySync，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。防火墙询问时选择允许。",
         "跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。",
     ],
+    "linux_steps": [
+        "Ubuntu、Debian 等下载 .deb，运行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；"
+        "其他发行版下载 tar.gz，解压后运行 <code>./CopySync/install.sh</code>。",
+        "从应用菜单里打开 CopySync，点「启用后台同步」。之后它随登录自动启动。",
+        "跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。",
+    ],
     "server_h3": "连接方式",
     "server_intro": "同一个网络里不需要服务器。三种方式按你的情况选一种，每种都有图文教程：",
     "server_compare": "对比三种方式",
     "copy": "复制",
     "copied": "已复制",
     "pairing": "<strong>配对：</strong>一台点「设备 → 添加设备」生成 6 位配对码，另一台输入它；两块屏幕上的两行安全指纹完全一致后确认。"
-               "不在同一网段时，输入配对码的同时输入它下面显示的地址。Mac 与 Windows 之间、两台 Windows 之间都一样。",
+               "不在同一网段时，输入配对码的同时输入它下面显示的地址。Mac、Windows、Linux 之间怎么组合都一样。",
 
     "specs_h2": "技术规格",
     "specs": [
         ("版本", '1.5.0，<time datetime="2026-10-12">2026 年 10 月 12 日</time>发布'),
-        ("Mac 客户端", "macOS 13 Ventura 及以上；Intel 与 Apple 芯片通用，不需要 Rosetta；安装包约 47 MB"),
+        ("Mac 客户端", "macOS 13 Ventura 及以上；Apple 芯片与 Intel 芯片各有一个安装包，约 25 MB，不需要 Rosetta；也有两种芯片通用的版本，约 47 MB"),
         ("Windows 客户端", "Windows 10（21H2 及以上）与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
+        ("Linux 客户端", "x64 与 ARM64；.deb（Debian、Ubuntu 等）或 tar.gz（其他发行版），约 22 MB；"
+                        "需要 X11 桌面，或者带 XWayland 的 Wayland 桌面（GNOME、KDE 等默认都带）；GTK 3"),
         ("服务器", "可选，只在跨网络时需要。Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 与 Apple 芯片）、Windows 10 与 11 x64（系统服务）；约 15 MB 内存"),
         ("界面语言", "简体中文、English、日本語，默认跟随系统，可在设置里切换"),
         ("同步的内容", "纯文本、带格式的文本、图片与截图、文件、文件夹，可以按类型关闭"),
@@ -251,7 +262,7 @@ C = {
         ("自动同步上限", "默认 50 MB，可在 1 MB 到 1 GB 之间调整"),
         ("记录保留", "默认 3 天，可在 1 小时到 30 天之间调整，到期自动清理"),
         ("实测速度", "局域网直连传输 20 MB 文件约 330 毫秒，校验和一致"),
-        ("技术栈", "后台服务与服务器用 Go（Windows 上纯 Go 调用 Win32），界面用 Flutter（Mac 与 Windows 共用一套代码），消息定义用 Protocol Buffers"),
+        ("技术栈", "后台服务与服务器用 Go（Windows 上纯 Go 调用 Win32，Linux 上纯 Go 走 X11 协议），界面用 Flutter（三个系统共用一套代码），消息定义用 Protocol Buffers"),
         ("许可", f'GNU AGPL-3.0；闭源产品等情况可购买<a href="{REPO}/blob/main/LICENSING.md">商业授权</a>'),
     ],
 
@@ -290,8 +301,9 @@ C = {
             "Windows 上，第一次运行时防火墙会询问，要选允许；点过取消的话，在「设置 → 局域网」里点「放行」。"
             "Mac 上，要在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。更多见<a href=\"{lan}#faq\">同一网络教程</a>。",
         ]),
-        ("支持 Windows 吗？iPhone 呢？", [
+        ("支持 Windows 和 Linux 吗？iPhone 呢？", [
             "支持 Windows 10 与 Windows 11（x64），与 Mac 互通。复制的文件在 Windows 上粘贴出来就是真实文件，能直接粘进资源管理器、微信、Office。",
+            "也支持 x64 与 ARM64 的 Linux 桌面：X11，或者带 XWayland 的 Wayland 桌面（GNOME、KDE 等默认都带）。复制的文件能直接粘进文件管理器。",
             "iPhone 和 iPad 暂不支持：iOS 不允许 App 在后台监听剪贴板，做不到复制后立即同步。",
         ]),
         ("为什么第一次打开时系统会拦一下？", [
@@ -603,15 +615,19 @@ C = {
         "step": "第 {n} 步",
 
         "app_h2": "在每台电脑上安装 App",
-        "app_intro": "要同步的每台电脑都装一个，Mac 与 Windows 可以混用。",
+        "app_intro": "要同步的每台电脑都装一个，Mac、Windows、Linux 可以混用。",
         "mac": [
-            "下载 CopySync.dmg，打开后把 CopySync 拖进「应用程序」。",
+            "下载 DMG，打开后把 CopySync 拖进「应用程序」。<span class=\"aside\">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么选。</span>",
             "从「应用程序」里打开。<span class=\"aside\">第一次会提示「无法验证开发者」：到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」。</span>",
             "点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。",
         ],
         "win": [
             "运行 CopySync-Setup.exe，不需要管理员权限。<span class=\"aside\">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span>",
             "打开 CopySync，点「启用后台同步」。防火墙询问时选择允许。关掉窗口后它在右下角的托盘里继续运行。",
+        ],
+        "linux": [
+            "Ubuntu、Debian 等安装 .deb；其他发行版解压 tar.gz，运行里面的 <code>install.sh</code>。",
+            "从应用菜单里打开 CopySync，点「启用后台同步」。",
         ],
         "app_alt": "第一次打开 CopySync：提示启用后台同步",
 
@@ -840,13 +856,74 @@ C = {
         "source": "回到同一网络教程",
     },
 
-    "ld_description": "在 Mac 与 Windows 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。"
+    # ── 下载（download/ 页面） ──
+    "download": {
+        "title": "下载 CopySync：Mac（Apple 芯片、Intel）、Windows、Linux",
+        "description": "CopySync 各系统的安装包：macOS 13 及以上的 Apple 芯片版与 Intel 版，Windows 10、11 的安装程序与便携版，"
+                       "Linux x64 与 ARM64 的 .deb 和 tar.gz。免费开源。",
+        "h1": "下载 CopySync",
+        "lede": "免费开源，当前版本 {version}。每台要同步的电脑各装一个，Mac、Windows、Linux 可以混用。",
+        "os_label": "选择系统",
+        "win": {
+            "setup": "下载安装程序",
+            "portable": "不想运行安装程序的话，可以下载<a href=\"{portable}\">便携版</a>，解压后直接运行。",
+            "steps": [
+                "运行 CopySync-Setup.exe，装在当前用户目录下，不需要管理员权限。"
+                "<span class=\"aside\">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span>",
+                "打开 CopySync，点「启用后台同步」。防火墙询问时选择允许。",
+            ],
+            "notes": [
+                "Windows 10（21H2 及以上）与 Windows 11，x64。",
+                "安装程序约 23 MB，便携版约 28 MB。",
+                "关掉窗口后，CopySync 在任务栏右下角的托盘里继续运行。",
+            ],
+        },
+        "mac": {
+            "apple": "Apple 芯片（M1 及更新）",
+            "intel": "Intel 芯片",
+            "universal": "两种芯片都能用的<a href=\"{universal}\">通用版</a>也在，体积大一倍。",
+            "steps": [
+                "打开下载的 DMG，把 CopySync 拖进「应用程序」。",
+                "从「应用程序」里打开。<span class=\"aside\">第一次会提示「无法验证开发者」：到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」。</span>",
+                "点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。",
+            ],
+            "chip_h": "不确定是哪种芯片？",
+            "chip": [
+                "点屏幕左上角的苹果菜单，选「关于本机」。",
+                "写着「芯片：Apple M1」（或 M2、M3、M4 等）的是 Apple 芯片；写着「处理器：… Intel Core …」的是 Intel 芯片。",
+                "2020 年底以后买的 Mac 基本都是 Apple 芯片。选错了也不要紧，换另一个下载就行：Intel 版在 Apple 芯片的 Mac 上要先装 Rosetta，Apple 芯片版在 Intel 的 Mac 上打不开。",
+                "需要 macOS 13 Ventura 及以上。",
+            ],
+        },
+        "linux": {
+            "deb_h": "Ubuntu、Debian 及其衍生版",
+            "tar_h": "其他发行版",
+            "x64": "x64",
+            "arm64": "ARM64",
+            "notes": [
+                "需要图形桌面：X11，或者带 XWayland 的 Wayland 桌面，GNOME、KDE 等主流桌面默认都带。",
+                "不确定是 x64 还是 ARM64：在终端运行 <code>uname -m</code>，显示 <code>x86_64</code> 是 x64，<code>aarch64</code> 是 ARM64。",
+                ".deb 装在 /opt/CopySync，出现在应用菜单里。tar.gz 解压到哪里都能运行，<code>install.sh</code> 把它加进应用菜单。",
+                "打开后点「启用后台同步」，之后随登录自动启动。GNOME 默认不显示托盘图标，从应用菜单打开窗口。",
+                "需要 GTK 3。在 Ubuntu 24.04 的 GNOME（Wayland）上实测过。",
+            ],
+        },
+        "more_h2": "其他",
+        "more": [
+            ("服务器", "两台电脑在同一个网络里不需要服务器。跨网络时的几种方式见<a href=\"{server}\">快速开始</a>，"
+                      "服务器的安装包在各自的教程里。"),
+            ("校验文件", "所有文件的 SHA-256 在 <a href=\"{sums}\">SHA256SUMS</a> 里。"),
+            ("更新内容与旧版本", "这一版改了什么见<a href=\"{notes}\">发布说明</a>，旧版本在 <a href=\"{releases}\">GitHub Releases</a>。"),
+        ],
+    },
+
+    "ld_description": "在 Mac、Windows 与 Linux 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。"
                       "同一网络里不需要服务器；设备间 WebRTC 直连、DTLS 端到端加密，跨网络打不通时经用户自建服务器的 TURN 中转。",
-    "ld_os": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）",
+    "ld_os": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）；Linux（x64、ARM64）",
     "ld_currency": "CNY",
     "ld_features": [
         "同步纯文本、带格式的文本、图片、文件与文件夹",
-        "Mac 与 Windows 互通，不要求同一个账号，跨网络可用",
+        "Mac、Windows、Linux 互通，不要求同一个账号，跨网络可用",
         "同一网络里不需要服务器，靠 mDNS 自动发现",
         "WebRTC 直连，打不通时自动经 TURN 中转",
         "DTLS 端到端加密，配对时人工核对安全指纹",

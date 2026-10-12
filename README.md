@@ -5,14 +5,12 @@
 <h1 align="center">CopySync</h1>
 
 <p align="center">
-  Copy on one computer, paste on the other. Mac and Windows both.<br>
+  Copy on one computer, paste on the other. Mac, Windows and Linux.<br>
   Text, images, files and whole folders — across accounts and across networks.
 </p>
 
 <p align="center">
-  <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg"><strong>Download for Mac</strong></a>
-  ·
-  <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe"><strong>Download for Windows</strong></a>
+  <a href="https://baiyuze.github.io/copysync/en/download/"><strong>Download</strong></a>
   ·
   <a href="https://baiyuze.github.io/copysync/en/">Website</a>
   ·
@@ -23,7 +21,7 @@
   <img src="https://img.shields.io/github/v/release/baiyuze/copysync?color=0A66D8" alt="Release">
   <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1D1D1F" alt="Windows 10 / 11">
-  <img src="https://img.shields.io/badge/Intel%20%2B%20Apple%20silicon-universal-1D1D1F" alt="Universal binary">
+  <img src="https://img.shields.io/badge/Linux-x64%20%2F%20ARM64-1D1D1F" alt="Linux x64 / ARM64">
   <img src="https://img.shields.io/badge/license-AGPL--3.0-6E6E73" alt="AGPL-3.0 License">
 </p>
 
@@ -68,7 +66,13 @@ With CopySync you pair two computers once. After that, copy on one and paste on 
 
 New here? The **[quick start](https://baiyuze.github.io/copysync/en/start/)** walks through it with screenshots. You need **the app on each computer**. On the same network that's all; across networks, add a server or Tailscale.
 
-**1. Install the app** on each computer: [CopySync.dmg](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg) for macOS 13+, [CopySync-Setup.exe](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe) for Windows 10/11 ([portable zip](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip)). The builds aren't notarized or code-signed yet: on Mac, allow it once under **System Settings → Privacy & Security → Open Anyway**; on Windows, click **More info → Run anyway**. Then click **Turn on background sync**, and allow CopySync when Windows Firewall asks, or when macOS asks to find devices on your local network.
+**1. Install the app** on each computer from the **[download page](https://baiyuze.github.io/copysync/en/download/)**:
+
+- **Mac** (macOS 13+): [Apple silicon](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-mac-apple-silicon.dmg) or [Intel](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-mac-intel.dmg); a [universal](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg) build runs on both.
+- **Windows** 10/11: [installer](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe) or [portable zip](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip).
+- **Linux** (X11, or Wayland with XWayland): `.deb` for Ubuntu and Debian ([x64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-amd64.deb), [ARM64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-arm64.deb)), or `tar.gz` for other distributions ([x64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-amd64.tar.gz), [ARM64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-arm64.tar.gz)) — extract it and run `./CopySync/install.sh` to add it to the app menu.
+
+The builds aren't notarized or code-signed yet: on Mac, allow it once under **System Settings → Privacy & Security → Open Anyway**; on Windows, click **More info → Run anyway**. Then click **Turn on background sync**, and allow CopySync when Windows Firewall asks, or when macOS asks to find devices on your local network.
 
 **2. Pair.** On one computer, **Devices → Add device → Show a code**; on the other, **Enter a code**. On a different subnet, click **On a different subnet?** and also enter the address shown under the code. Confirm only if both screens show the same two fingerprint lines. From then on, copy on either one and paste on the other.
 
@@ -92,8 +96,9 @@ Open TCP 8787, UDP 3478 and UDP 32768–60999, then enter `ws://<server address>
 
 | | Requirement |
 |---|---|
-| **Mac app** | macOS 13 Ventura or later; Intel and Apple silicon |
+| **Mac app** | macOS 13 Ventura or later; Apple silicon and Intel |
 | **Windows app** | Windows 10 (21H2 or later) and 11, x64 |
+| **Linux app** | x64 or ARM64; an X11 desktop, or Wayland with XWayland (GNOME and KDE have it by default); GTK 3 |
 | **Server** | Optional, only to sync across networks: Linux (x86_64, ARM64; systemd or Docker), macOS, or Windows 10/11 x64 |
 | **iPhone / iPad** | Not supported: iOS doesn't let apps watch the clipboard in the background |
 

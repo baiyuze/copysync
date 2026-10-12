@@ -131,6 +131,27 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/"/>
   </url>
   <url>
+    <loc>https://baiyuze.github.io/copysync/download/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/download/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/download/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/download/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/en/download/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/download/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/download/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/download/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/ja/download/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/download/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/download/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/download/"/>
+  </url>
+  <url>
     <loc>https://baiyuze.github.io/copysync/design/nat-traversal.html</loc>
     <lastmod>2026-10-12</lastmod>
   </url>
@@ -140,6 +161,10 @@
   </url>
   <url>
     <loc>https://baiyuze.github.io/copysync/design/lan-mode.html</loc>
+    <lastmod>2026-10-12</lastmod>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/copysync/design/linux-client.html</loc>
     <lastmod>2026-10-12</lastmod>
   </url>
 </urlset>

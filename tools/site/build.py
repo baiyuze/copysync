@@ -44,12 +44,14 @@ LAN = "lan/"
 CLOUD = "cloud/"
 GUIDE = "server/"
 TAILSCALE = "tailscale/"
-SUBPAGES = [START, LAN, CLOUD, GUIDE, TAILSCALE]
+# 下载页：所有「下载」按钮都指向它，按系统、芯片选具体的安装包
+DOWNLOAD = "download/"
+SUBPAGES = [START, LAN, CLOUD, GUIDE, TAILSCALE, DOWNLOAD]
 DEPLOY_PAGES = [LAN, CLOUD, GUIDE, TAILSCALE]
 
 # 放到网站上的技术方案：文件名 → 网页名。其他 design/*.md 链接到 GitHub
 DESIGN_DOCS = {"nat-traversal.md": "nat-traversal", "windows-client.md": "windows-client",
-               "lan-mode.md": "lan-mode"}
+               "lan-mode.md": "lan-mode", "linux-client.md": "linux-client"}
 
 DOWN = ('<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" '
         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
@@ -137,13 +139,13 @@ def footer(c: dict, code: str, up: str, sub: str = "") -> str:
   </footer>"""
 
 
-def cta(c: dict, start: str = "") -> str:
-    """两个下载按钮。start 是快速开始页面的地址，给了就在下面加一行链接。"""
+def cta(c: dict, base: str, start: str = "") -> str:
+    """下载按钮，指向下载页：在那里按系统和芯片选安装包。base 是语言根目录的相对路径，
+    start 是快速开始页面的地址，给了就在下面加一行链接。"""
     link = f'\n        <a class="start-link" href="{start}">{c["start_link"]}</a>' if start else ""
     return f"""
         <div class="cta">
-          <a class="button" href="{DL}CopySync.dmg">{DOWN}{c["dl_mac"]}</a>
-          <a class="button quiet" href="{DL}CopySync-Setup.exe">{DOWN}{c["dl_win"]}</a>
+          <a class="button" href="{base}{DOWNLOAD}">{DOWN}{c["dl_button"]}</a>
         </div>
         <p class="note">{c["dl_note"]}</p>{link}"""
 
@@ -164,6 +166,7 @@ def header(c: dict, code: str, up: str, sub: str = "") -> str:
         start = f'<a href="{base}{START}">'
         current = ' aria-current="true"' if sub in DEPLOY_PAGES else ""
         deploy = f'<a href="{base}{START}#server"{current}>'
+    download = '<a href="./" aria-current="page">' if sub == DOWNLOAD else f'<a href="{base}{DOWNLOAD}">'
 
     return f"""  <header class="bar">
     <div class="wrap">
@@ -173,6 +176,7 @@ def header(c: dict, code: str, up: str, sub: str = "") -> str:
         <a class="wide" href="{home}#how">{c["nav_how"]}</a>
         <a class="wide" href="{home}#faq">{c["nav_faq"]}</a>
         {deploy}{c["nav_server"]}</a>
+        {download}{c["nav_download"]}</a>
         <a class="wide" href="{REPO}">GitHub</a>
         {lang_links(code, up, sub)}
       </nav>
@@ -282,7 +286,7 @@ def jsonld(c: dict, code: str, path: str, shots: str) -> str:
                 "license": "https://www.gnu.org/licenses/agpl-3.0.html",
                 "isAccessibleForFree": True,
                 "offers": {"@type": "Offer", "price": "0", "priceCurrency": c["ld_currency"]},
-                "downloadUrl": REPO + "/releases/latest",
+                "downloadUrl": SITE + LANGS[code][0] + DOWNLOAD,
                 "codeRepository": REPO,
                 "image": SITE + "assets/icon.png",
                 "screenshot": SITE + shots + "history-dark.png",
@@ -327,6 +331,7 @@ def home(code: str) -> str:
     fallbacks = "\n".join(f"          <div><dt>{t}</dt><dd>{d}</dd></div>" for t, d in c["fallbacks"])
     mac_steps = "\n".join(f"              <li>{s}</li>" for s in c["mac_steps"])
     win_steps = "\n".join(f"              <li>{s}</li>" for s in c["win_steps"])
+    linux_steps = "\n".join(f"              <li>{s}</li>" for s in c["linux_steps"])
     opts = "\n".join(
         f'              <li><a href="{page}">{c["plans"][key]["name"]}</a><span>{c["plans"][key]["fit"]}</span></li>'
         for key, page, _ in PLANS)
@@ -373,7 +378,7 @@ def home(code: str) -> str:
     <section class="hero">
       <div class="wrap">
         <h1 class="display">{c["h1"]}</h1>
-        <p class="lede">{c["lede"]}</p>{cta(c, START)}
+        <p class="lede">{c["lede"]}</p>{cta(c, "", START)}
         <div class="stage" data-play role="img" aria-label="{esc(c["stage_label"])}">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -550,23 +555,30 @@ def home(code: str) -> str:
             <ol>
 {mac_steps}
             </ol>
-            <a class="button" href="{DL}CopySync.dmg">{DOWN}{c["dl_mac"]}</a>
+            <a class="button" href="{DOWNLOAD}#macos">{DOWN}{c["dl_mac"]}</a>
           </div>
           <div>
             <h3>{DESKTOP}Windows</h3>
             <ol>
 {win_steps}
             </ol>
-            <a class="button" href="{DL}CopySync-Setup.exe">{DOWN}{c["dl_win"]}</a>
+            <a class="button" href="{DOWNLOAD}#windows">{DOWN}{c["dl_win"]}</a>
           </div>
           <div>
-            <h3>{SERVER}{c["server_h3"]}</h3>
-            <p class="small">{c["server_intro"]}</p>
-            <ul class="opts">
-{opts}
-            </ul>
-            <a class="button quiet" href="{START}#server">{c["server_compare"]}</a>
+            <h3>{DESKTOP}Linux</h3>
+            <ol>
+{linux_steps}
+            </ol>
+            <a class="button" href="{DOWNLOAD}#linux">{DOWN}{c["dl_linux"]}</a>
           </div>
+        </div>
+        <div class="install-more">
+          <h3>{SERVER}{c["server_h3"]}</h3>
+          <p class="small">{c["server_intro"]}</p>
+          <ul class="opts">
+{opts}
+          </ul>
+          <a class="button quiet" href="{START}#server">{c["server_compare"]}</a>
         </div>
         <p class="pairing">{c["pairing"]}</p>
       </div>
@@ -596,7 +608,7 @@ def home(code: str) -> str:
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 class="display" id="closing-title">{c["closing"]}</h2>{cta(c, START)}
+        <h2 class="display" id="closing-title">{c["closing"]}</h2>{cta(c, "", START)}
         <a class="source" href="{REPO}">{c["source"]}</a>
       </div>
     </section>
@@ -1055,7 +1067,7 @@ cd copysync-server-macos
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 class="display" id="closing-title">{g["closing"]}</h2>{cta(c)}
+        <h2 class="display" id="closing-title">{g["closing"]}</h2>{cta(c, base)}
         <a class="source" href="{REPO}/blob/main/server/deploy/README.md">{g["source"]}</a>
       </div>
     </section>
@@ -1245,7 +1257,7 @@ sudo ./install.sh {CLOUD_IP}"""
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 class="display" id="closing-title">{cl["closing"]}</h2>{cta(c)}
+        <h2 class="display" id="closing-title">{cl["closing"]}</h2>{cta(c, base)}
         <a class="source" href="{links["deploy"]}">{cl["source"]}</a>
       </div>
     </section>
@@ -1295,14 +1307,21 @@ def start_page(code: str) -> str:
               <ol class="steps">
 {items(s["mac"])}
               </ol>
-              <a class="button" href="{DL}CopySync.dmg">{DOWN}{c["dl_mac"]}</a>
+              <a class="button" href="{base}{DOWNLOAD}#macos">{DOWN}{c["dl_mac"]}</a>
             </div>
             <div class="qs-app">
               <h3>{DESKTOP}Windows</h3>
               <ol class="steps">
 {items(s["win"])}
               </ol>
-              <a class="button" href="{DL}CopySync-Setup.exe">{DOWN}{c["dl_win"]}</a>
+              <a class="button" href="{base}{DOWNLOAD}#windows">{DOWN}{c["dl_win"]}</a>
+            </div>
+            <div class="qs-app">
+              <h3>{DESKTOP}Linux</h3>
+              <ol class="steps">
+{items(s["linux"])}
+              </ol>
+              <a class="button" href="{base}{DOWNLOAD}#linux">{DOWN}{c["dl_linux"]}</a>
             </div>
           </div>
           <figure class="shot">
@@ -1491,12 +1510,130 @@ def lan_page(code: str) -> str:
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 class="display" id="closing-title">{ln["closing"]}</h2>{cta(c)}
+        <h2 class="display" id="closing-title">{ln["closing"]}</h2>{cta(c, base)}
         <a class="source" href="{links["design"]}">{ln["source"]}</a>
       </div>
     </section>
   </main>
 """ + page_bottom(c, code, LAN)
+
+
+# ─────────────────────────── 下载 ───────────────────────────
+
+
+def download_page(code: str) -> str:
+    """下载页：按系统分页签（打开时选中访客自己的系统，见 site.js），Mac 再分芯片。"""
+    c = load(code)
+    d = c["download"]
+    path = LANGS[code][0]
+    up = "../" * (path + DOWNLOAD).count("/")
+    home_href = up + (path or "./")
+    base = up + path
+    links = {"start": base + START, "server": base + START + "#server", "releases": REPO + "/releases",
+             "sums": DL + "SHA256SUMS", "universal": DL + "CopySync.dmg", "portable": DL + "CopySync-windows-x64.zip",
+             "notes": REPO + "/releases/latest", "lan": base + LAN}
+    w, m, lx = d["win"], d["mac"], d["linux"]
+
+    def button(name: str, label: str, quiet: bool = False) -> str:
+        return f'<a class="button{" quiet" if quiet else ""}" href="{DL}{name}">{DOWN}{label}</a>'
+
+    more = "\n".join(f"          <div><dt>{t}</dt><dd>{fill(v, links)}</dd></div>" for t, v in d["more"])
+
+    return page_top(c, code, DOWNLOAD, d["title"], d["description"]) + f"""
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="{home_href}">CopySync</a> / {c["nav_download"]}</p>
+        <h1 class="display">{d["h1"]}</h1>
+        <p class="lede">{fill(d["lede"], {"version": VERSION})}</p>
+      </div>
+    </section>
+
+    <section class="section" id="get" aria-label="{d["os_label"]}">
+      <div class="wrap">
+        <div class="os-tabs" data-tabs="os">
+          <div class="tablist" role="tablist" aria-label="{d["os_label"]}" hidden>
+            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
+            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
+            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+          </div>
+
+          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
+            <h3 class="os-title">{DESKTOP}Windows</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <div class="dl-row">
+                  {button("CopySync-Setup.exe", w["setup"])}
+                </div>
+                <p class="small">{fill(w["portable"], links)}</p>
+                <ol class="steps">
+{items(w["steps"])}
+                </ol>
+              </div>
+              <ul class="points">
+{items(w["notes"])}
+              </ul>
+            </div>
+          </section>
+
+          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
+            <h3 class="os-title">{LAPTOP}macOS</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <div class="dl-row" data-mac-chip>
+                  {button("CopySync-mac-apple-silicon.dmg", m["apple"])}
+                  {button("CopySync-mac-intel.dmg", m["intel"], True)}
+                </div>
+                <p class="small">{fill(m["universal"], links)}</p>
+                <ol class="steps">
+{items(m["steps"])}
+                </ol>
+              </div>
+              <div>
+                <h4>{m["chip_h"]}</h4>
+                <ul class="points">
+{items(m["chip"])}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
+            <h3 class="os-title">{DESKTOP}Linux</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <h4>{lx["deb_h"]}</h4>
+                <div class="dl-row">
+                  {button("CopySync-linux-amd64.deb", lx["x64"])}
+                  {button("CopySync-linux-arm64.deb", lx["arm64"], True)}
+                </div>
+                {code_block(c, "sudo apt install ./CopySync-linux-amd64.deb")}
+                <h4>{lx["tar_h"]}</h4>
+                <div class="dl-row">
+                  {button("CopySync-linux-amd64.tar.gz", lx["x64"], True)}
+                  {button("CopySync-linux-arm64.tar.gz", lx["arm64"], True)}
+                </div>
+                {code_block(c, "tar xzf CopySync-linux-amd64.tar.gz" + chr(10) + "./CopySync/install.sh")}
+              </div>
+              <ul class="points">
+{items(lx["notes"])}
+              </ul>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="more-title">
+      <div class="wrap">
+        <h2 id="more-title">{d["more_h2"]}</h2>
+        <dl class="fallbacks">
+{more}
+        </dl>
+      </div>
+    </section>
+  </main>
+""" + page_bottom(c, code, DOWNLOAD)
 
 
 # ─────────────────────────── 用 Tailscale 跨网络使用 ───────────────────────────
@@ -1651,7 +1788,7 @@ def tailscale_page(code: str) -> str:
 
     <section class="closing" aria-labelledby="closing-title">
       <div class="wrap">
-        <h2 class="display" id="closing-title">{ts["closing"]}</h2>{cta(c)}
+        <h2 class="display" id="closing-title">{ts["closing"]}</h2>{cta(c, base)}
         <a class="source" href="{links["lan"]}">{ts["source"]}</a>
       </div>
     </section>
@@ -1937,6 +2074,7 @@ def main() -> None:
         write(DOCS / path / LAN / "index.html", lan_page(code))
         write(DOCS / path / CLOUD / "index.html", cloud_page(code))
         write(DOCS / path / TAILSCALE / "index.html", tailscale_page(code))
+        write(DOCS / path / DOWNLOAD / "index.html", download_page(code))
     for md_name, page in DESIGN_DOCS.items():
         write(DOCS / "design" / f"{page}.html", design_page(md_name, page))
     write(DOCS / "404.html", not_found())

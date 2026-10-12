@@ -6,7 +6,7 @@ Mac 版需要 Go 1.26、Flutter 3.44 和 Xcode：
 
 ```bash
 ./scripts/build.sh       # 构建全部到 dist/
-./scripts/package.sh     # 打出 DMG 与服务器发布包到 release/
+./scripts/package.sh     # 打出 DMG（Apple 芯片、Intel、通用）与服务器发布包到 release/
 ```
 
 Windows 版需要 Go、Flutter、Visual Studio（「使用 C++ 的桌面开发」）与 Inno Setup 6，在 Windows 上运行：
@@ -16,6 +16,14 @@ powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1   # 安装程
 ```
 
 后台服务是纯 Go，也可以在 Mac 上交叉编译：`GOOS=windows go build ./cmd/copysyncd`。CI 在每次提交时构建 Windows 安装包。
+
+Linux 版需要 Go、Flutter 及其 Linux 工具链（`sudo apt install clang cmake ninja-build pkg-config libgtk-3-dev`）。Flutter 不能交叉编译 Linux 桌面程序，要在目标架构的机器上构建（CI 在 Ubuntu 22.04 上分别构建 x64 与 ARM64）：
+
+```bash
+./scripts/package-linux.sh   # 按本机架构打出 .deb 与 tar.gz 到 dist/linux/
+```
+
+Linux 的剪贴板是纯 Go 走 X11 协议，同样可以在 Mac 上交叉编译：`GOOS=linux go build ./cmd/copysyncd`。它的测试需要 X 显示：装好 `xclip` 后运行 `xvfb-run -a go test ./internal/clipboard/`。
 
 服务器也是纯 Go。`package.sh` 把它交叉编译成 Linux（amd64、arm64）、macOS 与 Windows 版本，各自带上 `server/deploy/` 里对应的安装脚本。
 
@@ -34,7 +42,7 @@ cd ui && flutter test                    # 界面的测试
 
 ```
 client-core/    后台服务（Go）
-  internal/clipboard    剪贴板（Mac：cgo + Objective-C；Windows：Win32；都必须跑在主线程）
+  internal/clipboard    剪贴板（Mac：cgo + Objective-C；Windows：Win32；Linux：X11；都必须跑在主线程）
   internal/transport    信令（WebSocket）与 P2P（WebRTC）
   internal/sync         同步引擎：分流、打包、传输、落盘
 ui/             界面（Flutter）
@@ -45,4 +53,5 @@ spikes/         开工前的技术验证
 design/         技术方案文档
 tools/natlab/   NAT 打洞实验室
 tools/installer/ Windows 安装程序（Inno Setup）
+tools/linux/    Linux 的应用菜单项、图标与安装脚本
 ```

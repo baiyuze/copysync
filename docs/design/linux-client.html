@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linux 客户端：CopySync 技术方案</title>
+  <meta name="description" content="状态：已实现，随 1.6.0 发布">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/design/linux-client.html">
+  <meta name="theme-color" content="#141416">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="页面导航">
+        <a href="../start/">快速开始</a>
+        <a href="../start/#server">连接方式</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync/blob/main/design/linux-client.md">在 GitHub 上查看</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <article class="article">
+      <p class="crumb"><a href="../">CopySync</a> 的技术方案</p>
+      <h1>Linux 客户端</h1>
+<blockquote><p>状态：已实现，随 1.6.0 发布</p><p>代码：<code>client-core/internal/clipboard/linux.go</code>（剪贴板）、<code>client-core/cmd/copysyncd/platform_linux.go</code> 与 <code>supervisor.go</code>（后台服务）、<code>ui/linux/</code>（GTK 外壳）、<code>ui/lib/background_service_linux.dart</code>（开机自启）、<code>scripts/package-linux.sh</code> 与 <code>tools/linux/</code>（打包）</p><p>验证：<code>internal/clipboard/linux_test.go</code>（Xvfb + xclip、Wayland + wl-clipboard）、CI 的 Linux 任务（x64 与 ARM64）、Ubuntu 24.04 GNOME（Wayland）虚拟机实测</p><p>相关：<a href="windows-client.html">Windows 客户端</a>、<a href="lan-mode.html">局域网直连</a></p></blockquote>
+<nav class="toc" aria-label="目录"><strong>目录</strong><ul><li><a href="#一-目标">一、目标</a></li><li><a href="#二-剪贴板">二、剪贴板</a></li><li><a href="#三-后台服务">三、后台服务</a></li><li><a href="#四-界面">四、界面</a></li><li><a href="#五-打包与发布">五、打包与发布</a></li><li><a href="#六-验证">六、验证</a></li><li><a href="#七-局限">七、局限</a></li></ul></nav>
+<h2 id="一-目标">一、目标</h2>
+<p>让 Linux 电脑加入 CopySync，与 Mac、Windows 互相同步文本、带格式文本、图片和文件，体验与另外两个平台一致：开机自启、关掉窗口照常同步、崩溃自动拉起，网络行为完全相同。</p>
+<p>支持：x64 与 ARM64；X11 桌面，或者带 XWayland 的 Wayland 桌面（GNOME、KDE 等主流桌面默认都带）；GTK 3。</p>
+<p><strong>不做：</strong></p>
+<div class="table-scroll"><table><thead><tr><th scope="col">不做</th><th scope="col">原因</th></tr></thead><tbody><tr><td>托盘图标</td><td>GNOME 默认不显示托盘图标；与 Mac 一样，从应用菜单打开窗口</td></tr><tr><td>没有 XWayland 的纯 Wayland 桌面</td><td>Wayland 不允许后台程序读剪贴板；wlr-data-control 只有 wlroots 系与 KDE 支持，GNOME 不支持。见第二节</td></tr><tr><td>AppImage、Flatpak、Snap</td><td>AppImage 每次运行挂载到临时目录，开机自启要另行处理；Flatpak 的沙盒拿不到剪贴板。先提供 .deb 与 tar.gz</td></tr><tr><td>HEIC、TIFF 预览</td><td>Mac 上靠系统的 ImageIO 转换，Linux 上没有现成的，按需再做</td></tr></tbody></table></div>
+<h2 id="二-剪贴板">二、剪贴板</h2>
+<h3 id="1-走-x11-wayland-上靠-xwayland-桥接">1. 走 X11，Wayland 上靠 XWayland 桥接</h3>
+<p>X11 的剪贴板是「谁复制谁持有」：没有一块共享的内容，读的时候请持有者把内容转换成某种格式放到自己窗口的属性上。实现是纯 Go 的 X11 协议（<code>github.com/jezek/xgb</code>），不链接 libX11，也不调用 xclip 之类的外部程序。后台服务因此是静态链接的纯 Go 程序，不依赖发行版的库版本。</p>
+<p>Wayland 的设计不允许后台程序读剪贴板（只有拿到键盘焦点的窗口能读）。但 GNOME、KDE 都带着 XWayland，混成器在 Wayland 剪贴板与 X11 的 CLIPBOARD 选区之间双向同步：Wayland 程序复制，混成器就成为 X11 选区的持有者，X11 程序能收到变化通知、能读；X11 程序成为持有者，Wayland 程序粘贴时混成器替它去取。所以同一套 X11 实现在 X11 和 Wayland 会话里都能用。</p>
+<p>在 Ubuntu 24.04 的 GNOME（Wayland）上实测（<code>TestLinuxWaylandBridge</code>，用 wl-copy、wl-paste 扮演原生 Wayland 程序）：两个方向的文本、图片都通，变化通知即时到达。</p>
+<h3 id="2-变化-读取与写入">2. 变化、读取与写入</h3>
+<div class="table-scroll"><table><thead><tr><th scope="col">做什么</th><th scope="col">怎么做</th></tr></thead><tbody><tr><td>知道剪贴板变了</td><td>XFixes 订阅 CLIPBOARD 的持有者变化（设置、窗口销毁、客户端断开），每次计数加一并通知 Watcher 立即探测，不用轮询内容</td></tr><tr><td>判断类型</td><td>问持有者要 TARGETS（能提供的格式列表），按规则分类；同一次变化只问一次</td></tr><tr><td>读</td><td>ConvertSelection 请持有者把内容放到本机窗口的属性上；超过请求上限的走 INCR 分段</td></tr><tr><td>写</td><td>本机成为持有者，在 SelectionRequest 里按请求的格式回应；大块数据同样走 INCR</td></tr></tbody></table></div>
+<p><strong>写入时的计数：</strong> Watcher 写入后马上 Peek，用新的计数记下「这是自己写的」。所以写入成功时本地先把计数加一，XFixes 随后报来的、持有者是本机窗口的那次变化不再计数。</p>
+<p><strong>INCR 的两个坑：</strong></p>
+<ul><li>X 协议不开 BIG-REQUESTS 时单个请求最多 262140 字节，还要扣掉请求头。一开始按 256 KB 整块写属性，超长的请求把整条连接写坏，之后所有请求都卡住。分段改为 128 KB。</li><li>持有者写入 INCR 标记时会产生一次「属性有新值」的事件，等本机读完标记（顺带删掉）再去等下一段，先拿到的就是这个旧事件，此时属性已不存在，读出来是空的，被当成了结束。属性不存在（类型为 None）的事件跳过即可：真正的结束段有类型、长度为零。</li></ul>
+<h3 id="3-格式对照">3. 格式对照</h3>
+<div class="table-scroll"><table><thead><tr><th scope="col">内容</th><th scope="col">读</th><th scope="col">写</th></tr></thead><tbody><tr><td>文本</td><td>UTF8_STRING、text/plain;charset=utf-8、text/plain、TEXT、STRING（Latin-1，但不少程序放的是 UTF-8，按 UTF-8 能解就按 UTF-8）</td><td>UTF8_STRING、text/plain;charset=utf-8、text/plain、TEXT；纯 ASCII 时再加 STRING</td></tr><tr><td>带格式文本</td><td>text/html（Firefox 给的是带 BOM 的 UTF-16）</td><td>text/html（UTF-8）加上文本</td></tr><tr><td>图片</td><td>image/png；只有 JPEG、GIF、BMP 时转成 PNG（BMP 去掉文件头后就是 Windows 的 DIB，复用那边的解码）</td><td>image/png</td></tr><tr><td>文件</td><td>x-special/gnome-copied-files、text/uri-list，只取还存在的本地文件</td><td>x-special/gnome-copied-files（第一行 copy：文件管理器粘贴时复制而不是移动）、text/uri-list、application/x-kde-cutselection=0，再加一份路径文本</td></tr></tbody></table></div>
+<p>分类规则与 Windows 一致：文件优先；只有图片没有文本时才算图片（办公软件复制文字时会附带一张渲染出来的图）；再是 HTML、文本。浏览器复制网页内容时也可能带 text/uri-list，所以只有 uri-list、同时没有 HTML 和图片时才当作文件；读出来不是本地文件（比如网址）就按文本处理。</p>
+<p>KeePassXC 等密码管理器复制密码时带着 KDE 约定的 <code>x-kde-passwordManagerHint</code>，看到就标为敏感：不同步，也不进复制记录（与 Windows 上的做法相同）。</p>
+<h3 id="4-会话结束">4. 会话结束</h3>
+<p>与 X 服务器的连接断开几乎总是因为用户注销。这时按会话结束处理（与 Windows 收到 WM_ENDSESSION 一样），后台服务正常退出，守护进程见到退出码 0 也随之结束；下次登录由开机自启重新拉起，而不是留下一个连不上新会话的后台服务。</p>
+<h2 id="三-后台服务">三、后台服务</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col"></th><th scope="col">Mac</th><th scope="col">Windows</th><th scope="col">Linux</th></tr></thead><tbody><tr><td>开机自启</td><td>LaunchAgent</td><td>HKCU\...\Run</td><td>XDG 自启动项（<code>~/.config/autostart/copysync-daemon.desktop</code>）</td></tr><tr><td>崩溃拉起</td><td>launchd 的 KeepAlive</td><td><code>copysyncd -supervise</code> 守护进程</td><td>同 Windows</td></tr><tr><td>只运行一个</td><td>launchd</td><td>命名互斥量</td><td><code>flock</code>（数据目录下的 daemon.lock、supervisor.lock）</td></tr><tr><td>日志</td><td>launchd 重定向</td><td><code>logs/daemon.log</code>，10 MB 轮转</td><td>同 Windows</td></tr><tr><td>数据目录</td><td><code>~/Library/Application Support/CopySync</code></td><td><code>%LOCALAPPDATA%\CopySync</code></td><td><code>$XDG_DATA_HOME/copysync</code>，默认 <code>~/.local/share/copysync</code></td></tr></tbody></table></div>
+<p>用 XDG 自启动项而不是 systemd 的用户服务：自启动项在登录后的图形会话里启动，带着 DISPLAY、XAUTHORITY，后台服务才连得上剪贴板；systemd 用户服务不一定拿得到这些环境变量，各发行版的做法也不一致。GNOME、KDE、Xfce 都认 XDG 自启动项。</p>
+<p>守护进程与 Windows 共用（<code>supervisor.go</code>）。Linux 上子进程带 <code>Pdeathsig</code>：守护进程被结束时后台服务随之结束，界面重启服务时只要结束守护进程，不会留下没人看着的后台服务。</p>
+<h2 id="四-界面">四、界面</h2>
+<ul><li><strong>GTK 外壳</strong>（<code>ui/linux/</code>）：应用 ID <code>com.copysync.app</code>（与 Mac 的包名一致，桌面据此把窗口与应用菜单项对应起来，Dock 里显示正确的图标）；默认 960×640、最小 760×520；只运行一个实例，再次打开时激活已有的窗口；窗口图标随程序发布。为了在 Ubuntu 22.04（GLib 2.72）上编译，不用 2.74 才有的 <code>G_APPLICATION_DEFAULT_FLAGS</code>。</li><li><strong>开机自启</strong>（<code>background_service_linux.dart</code>）：写自启动项，路径按 Desktop Entry 规范加引号转义（文件夹名可能带空格）；状态按自启动项里的路径与 <code>pgrep</code> 判断；重启时结束当前用户的 copysyncd 再脱离界面启动守护进程，环境变量随之传下去。</li><li><strong>字体</strong>：主字体跟随系统（fontconfig 默认的无衬线字体）；汉字指定 Noto Sans CJK SC 等（日文界面用 JP），理由与 Windows 相同：系统逐字回退时，中日共用的汉字可能落到另一种语言的字形上。等宽字体交给 fontconfig 的 <code>monospace</code> 别名。</li><li><strong>叫法与图标</strong>：与 Windows 一样说「这台电脑」，用 Fluent 图标（线条风格与 GNOME、KDE 的图标接近）；打开网址用 <code>xdg-open</code>。</li></ul>
+<h2 id="五-打包与发布">五、打包与发布</h2>
+<p><code>scripts/package-linux.sh</code> 在 Linux 上构建后台服务、命令行与界面，产出：</p>
+<ul><li><code>CopySync-linux-&lt;arch&gt;.deb</code>：装在 <code>/opt/CopySync</code>，应用菜单项与图标装进系统目录，<code>/usr/bin</code> 下有 <code>copysync</code>、<code>copysync-cli</code>。依赖只写 <code>libgtk-3-0</code>（Ubuntu 24.04 起改名为 libgtk-3-0t64，新包也提供旧名字，两边都能装），推荐 <code>fonts-noto-cjk</code>。卸载时结束正在运行的后台服务。</li><li><code>CopySync-linux-&lt;arch&gt;.tar.gz</code>：解压即用，<code>install.sh</code> 把应用菜单项和图标装进用户目录（不需要 root），<code>uninstall.sh</code> 撤销并停用后台服务。</li></ul>
+<p>Flutter 不能交叉编译 Linux 桌面程序，CI 在 GitHub 的 x64 与 ARM64 两种 Ubuntu 22.04 机器上各跑一次：先在 Xvfb 里跑后台服务的全部测试（含 X11 剪贴板），再跑界面测试，最后打包上传。在 22.04 上构建，产物依赖的 glibc 与 GTK 版本较老，新的发行版也能运行。</p>
+<h2 id="六-验证">六、验证</h2>
+<p><strong>单元测试与集成测试</strong>（<code>linux_test.go</code>，CI 在 Xvfb 里用 xclip 扮演别的程序）：读写文本（含中文、换行）；本机写入后 Peek 看到新的计数、别的程序复制后本机不再持有；约 1.4 MB 的图片两个方向都走 INCR；文件的两种格式与中文文件名、网址不当作文件；HTML；密码管理器的敏感标记；分类规则、UTF-16 的 HTML、Latin-1、BMP 转 PNG、URI 解析。</p>
+<p><strong>Ubuntu 24.04 GNOME（Wayland）虚拟机实测</strong>，与 Mac 上的测试设备（fakeclip）配对：</p>
+<ul><li>装 .deb：程序、应用菜单项、图标、命令行都就位；从应用菜单项启动后 Dock 显示正确的图标。</li><li>点「启用后台同步」：写入自启动项，守护进程与后台服务启动，界面连上。</li><li>在雷达上点 Mac 的测试设备：两边指纹一致，确认后直连。</li><li>用 wl-copy、wl-paste（原生 Wayland 程序）测同步：文本、图片、带中文名与子目录的文件夹、单个文件，两个方向都通，SHA-256 一致；从 Mac 来的文件在剪贴板里带着 x-special/gnome-copied-files，文件管理器能直接粘贴。</li><li>重启虚拟机：自动登录后，自启动项拉起后台服务，带着会话的 DISPLAY 与 XAUTHORITY，1 秒内与 Mac 恢复直连，剪贴板照常同步。</li><li>Ubuntu 自带的 avahi 与后台服务共用 UDP 5353，互不影响，局域网发现两个方向都正常。</li></ul>
+<p><strong>没测：</strong> KDE、Xfce 等其他桌面；X11 会话（只在 Xvfb 里测过）；ARM64 真机（CI 构建并跑了测试）；Fedora 等非 Debian 系发行版上的 tar.gz。</p>
+<h2 id="七-局限">七、局限</h2>
+<ul><li>需要 XWayland。GNOME 46 起 XWayland 按需启动，后台服务连上 DISPLAY 时它就会启动，不需要额外设置。</li><li>后台服务写进剪贴板的内容由它自己持有，后台服务退出后就粘贴不出来了。这与 X11 下所有程序的行为一致；GNOME 没有剪贴板管理器替程序保管内容。</li><li>没有托盘图标，也没有代码签名。</li></ul>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync 以 GNU AGPL-3.0 开源，另提供商业授权。</p>
+      <nav aria-label="页脚链接">
+        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">商业授权</a>
+        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+      </nav>
+      <nav aria-label="语言">
+        <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>
+        <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>
