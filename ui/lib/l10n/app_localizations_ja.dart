@@ -776,6 +776,10 @@ class AppLocalizationsJa extends AppLocalizations {
       '開発ビルドのため copysyncd.exe がありません。ソースフォルダで scripts\\build-windows.ps1 を実行して完全版をビルドしてください。';
 
   @override
+  String get svcDevBodyLinux =>
+      '開発ビルドのため copysyncd がありません。ソースフォルダで ./scripts/package-linux.sh を実行して完全版をビルドしてください。';
+
+  @override
   String get svcDevBodyMac =>
       '開発ビルドのためバックグラウンドサービスが含まれていません。ソースフォルダで ./scripts/install-macos.sh を実行してインストールしてください。';
 

@@ -47,8 +47,11 @@ class DaemonEndpoint {
           '';
       return '$base\\CopySync';
     }
-    final home = Platform.environment['HOME'] ?? '';
-    return '$home/.config/copysync';
+    // Linux：按 XDG 放在 ~/.local/share 下，XDG_DATA_HOME 是绝对路径时以它为准
+    final env = Platform.environment;
+    final data = env['XDG_DATA_HOME'] ?? '';
+    final base = data.startsWith('/') ? data : '${env['HOME'] ?? ''}/.local/share';
+    return '$base/copysync';
   }
 
   static File endpointFile([String? dataDir]) =>

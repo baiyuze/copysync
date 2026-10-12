@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 /// 界面用到的图标：Mac 上是 Cupertino 图标，Windows 上是微软的 Fluent 图标，
-/// 各自与系统自带的应用一致。
+/// 各自与系统自带的应用一致。Linux 上用 Fluent：线条风格与 GNOME、KDE 的图标接近。
 abstract final class AppIcons {
-  static final bool _win = Platform.isWindows;
+  static final bool _win = !Platform.isMacOS;
 
   static IconData _pick(IconData mac, IconData windows) => _win ? windows : mac;
 

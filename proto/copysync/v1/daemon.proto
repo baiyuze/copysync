@@ -125,7 +125,7 @@ enum ConnectionKind {
 message Device {
   string id = 1;
   string name = 2;
-  string platform = 3;            // darwin / windows
+  string platform = 3;            // darwin / windows / linux
   bool online = 4;
   ConnectionKind connection = 5;
   string public_key_fingerprint = 6;
@@ -224,7 +224,7 @@ message ConfirmPairingRequest {
 message NearbyDevice {
   string id = 1;                  // 对方这次启动的 mDNS 实例名，用来发起配对
   string name = 2;
-  string platform = 3;            // darwin / windows
+  string platform = 3;            // darwin / windows / linux
   bool paired = 4;                // 已经与本机配对
 }
 

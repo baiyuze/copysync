@@ -1468,6 +1468,12 @@ abstract class AppLocalizations {
   /// **'This is a development build with no copysyncd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.'**
   String get svcDevBodyWin;
 
+  /// No description provided for @svcDevBodyLinux.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a development build with no copysyncd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.'**
+  String get svcDevBodyLinux;
+
   /// No description provided for @svcDevBodyMac.
   ///
   /// In en, this message translates to:

@@ -234,7 +234,7 @@ class _NearbyDialogState extends State<NearbyDialog> with SingleTickerProviderSt
 
   Widget _radar(BuildContext context, AppState state) {
     final p = context.palette;
-    final selfPlatform = state.self?.platform ?? (Platform.isWindows ? 'windows' : 'darwin');
+    final selfPlatform = state.self?.platform ?? Platform.operatingSystem.replaceFirst('macos', 'darwin');
     return LayoutBuilder(
       builder: (context, box) {
         final center = box.biggest.center(Offset.zero);

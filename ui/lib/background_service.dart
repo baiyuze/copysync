@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'background_service_linux.dart';
 import 'background_service_windows.dart';
 import 'i18n.dart';
 
@@ -14,7 +15,7 @@ enum ServiceState {
 
   /// 从一个随时会消失的位置运行，这时登记的自启项会指向不存在的路径：
   /// Mac 上是直接从 DMG 里打开、或被系统随机化路径（App Translocation）；
-  /// Windows 上是直接在压缩包里双击打开（实际运行在临时目录）
+  /// Windows 上是直接在压缩包里双击打开（实际运行在临时目录）。Linux 上没有这种情况
   mustMove,
 
   /// 尚未注册为登录项
@@ -30,11 +31,14 @@ enum ServiceState {
 }
 
 /// 管理随 App 一起分发的后台服务（剪贴板监听与同步进程）：开机自启、崩溃自动拉起，
-/// 关掉窗口也照常同步。各平台的做法不同，见 [MacBackgroundService] 与
-/// [WindowsBackgroundService]。
+/// 关掉窗口也照常同步。各平台的做法不同，见 [MacBackgroundService]、
+/// [WindowsBackgroundService] 与 [LinuxBackgroundService]。
 abstract class BackgroundService {
-  factory BackgroundService() =>
-      Platform.isWindows ? WindowsBackgroundService() : MacBackgroundService();
+  factory BackgroundService() => Platform.isWindows
+      ? WindowsBackgroundService()
+      : Platform.isLinux
+          ? LinuxBackgroundService()
+          : MacBackgroundService();
 
   /// App 里是否带着后台服务（开发构建没有）
   bool get available;

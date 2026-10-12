@@ -263,6 +263,7 @@ S = [
     ("svcStoppedTitle", "The background service isn't running", "后台服务没有运行", "バックグラウンドサービスが動いていません"),
     ("svcStoppedBody", "It may have just quit; the system usually restarts it within seconds. If you stay on this page, restart it with the button below.", "它可能刚刚退出，系统通常会在几秒内把它重新拉起。如果一直停在这一页，点下面的按钮重新启动。", "終了した直後かもしれません。通常は数秒で再起動されます。この画面のままなら、下のボタンで再起動してください。"),
     ("svcDevBodyWin", "This is a development build with no copysyncd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.", "这是开发构建，旁边没有 copysyncd.exe。在源码目录运行 scripts\\build-windows.ps1 构建完整的版本。", "開発ビルドのため copysyncd.exe がありません。ソースフォルダで scripts\\build-windows.ps1 を実行して完全版をビルドしてください。"),
+    ("svcDevBodyLinux", "This is a development build with no copysyncd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.", "这是开发构建，旁边没有 copysyncd。在源码目录运行 ./scripts/package-linux.sh 构建完整的版本。", "開発ビルドのため copysyncd がありません。ソースフォルダで ./scripts/package-linux.sh を実行して完全版をビルドしてください。"),
     ("svcDevBodyMac", "This is a development build without the background service. Run ./scripts/install-macos.sh in the source folder to install it.", "这是开发构建，App 里没有内置后台服务。在源码目录运行 ./scripts/install-macos.sh 安装它。", "開発ビルドのためバックグラウンドサービスが含まれていません。ソースフォルダで ./scripts/install-macos.sh を実行してインストールしてください。"),
     ("svcLogPath", "Log: {path}", "运行日志：{path}", "ログ：{path}"),
     ("svcCanDisable", "You can turn background sync off anytime in Settings.", "随时可以在「设置」中停用后台同步。", "バックグラウンド同期は「設定」でいつでもオフにできます。"),

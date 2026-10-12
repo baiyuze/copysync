@@ -614,7 +614,7 @@ type Device struct {
 	state                protoimpl.MessageState `protogen:"open.v1"`
 	Id                   string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name                 string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Platform             string                 `protobuf:"bytes,3,opt,name=platform,proto3" json:"platform,omitempty"` // darwin / windows
+	Platform             string                 `protobuf:"bytes,3,opt,name=platform,proto3" json:"platform,omitempty"` // darwin / windows / linux
 	Online               bool                   `protobuf:"varint,4,opt,name=online,proto3" json:"online,omitempty"`
 	Connection           ConnectionKind         `protobuf:"varint,5,opt,name=connection,proto3,enum=copysync.v1.ConnectionKind" json:"connection,omitempty"`
 	PublicKeyFingerprint string                 `protobuf:"bytes,6,opt,name=public_key_fingerprint,json=publicKeyFingerprint,proto3" json:"public_key_fingerprint,omitempty"`
@@ -1406,7 +1406,7 @@ type NearbyDevice struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // 对方这次启动的 mDNS 实例名，用来发起配对
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Platform      string                 `protobuf:"bytes,3,opt,name=platform,proto3" json:"platform,omitempty"` // darwin / windows
+	Platform      string                 `protobuf:"bytes,3,opt,name=platform,proto3" json:"platform,omitempty"` // darwin / windows / linux
 	Paired        bool                   `protobuf:"varint,4,opt,name=paired,proto3" json:"paired,omitempty"`    // 已经与本机配对
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

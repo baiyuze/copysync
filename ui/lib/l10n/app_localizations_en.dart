@@ -847,6 +847,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This is a development build with no copysyncd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.';
 
   @override
+  String get svcDevBodyLinux =>
+      'This is a development build with no copysyncd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.';
+
+  @override
   String get svcDevBodyMac =>
       'This is a development build without the background service. Run ./scripts/install-macos.sh in the source folder to install it.';
 

@@ -41,7 +41,8 @@ class _ServicePageState extends State<ServicePage> {
   @override
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
-    final windows = Platform.isWindows;
+    // Linux 上的自启动与 Windows 一样是一个指向程序路径的条目，挪了位置的说法相同
+    final windows = !Platform.isMacOS;
     final l = context.l10n;
     final (title, body, button) = switch (state.serviceState) {
       ServiceState.mustMove when windows => (l.svcExtractTitle, l.svcExtractBody, null),
@@ -53,7 +54,15 @@ class _ServicePageState extends State<ServicePage> {
           l.svcReenable,
         ),
       ServiceState.stopped => (l.svcStoppedTitle, l.svcStoppedBody, l.restart),
-      _ => (l.svcStoppedTitle, windows ? l.svcDevBodyWin : l.svcDevBodyMac, null),
+      _ => (
+          l.svcStoppedTitle,
+          Platform.isLinux
+              ? l.svcDevBodyLinux
+              : windows
+                  ? l.svcDevBodyWin
+                  : l.svcDevBodyMac,
+          null,
+        ),
     };
 
     return Center(

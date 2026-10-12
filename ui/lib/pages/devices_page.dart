@@ -158,7 +158,7 @@ String connectionLabel(Device d) => switch (d.connection) {
     };
 
 IconData platformIcon(String platform) => switch (platform) {
-      'windows' => AppIcons.desktopComputer,
+      'windows' || 'linux' => AppIcons.desktopComputer,
       _ => AppIcons.deviceLaptop,
     };
 

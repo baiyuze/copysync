@@ -768,6 +768,10 @@ class AppLocalizationsZh extends AppLocalizations {
       '这是开发构建，旁边没有 copysyncd.exe。在源码目录运行 scripts\\build-windows.ps1 构建完整的版本。';
 
   @override
+  String get svcDevBodyLinux =>
+      '这是开发构建，旁边没有 copysyncd。在源码目录运行 ./scripts/package-linux.sh 构建完整的版本。';
+
+  @override
   String get svcDevBodyMac =>
       '这是开发构建，App 里没有内置后台服务。在源码目录运行 ./scripts/install-macos.sh 安装它。';
 

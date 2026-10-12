@@ -228,6 +228,7 @@
   "svcStoppedTitle": "バックグラウンドサービスが動いていません",
   "svcStoppedBody": "終了した直後かもしれません。通常は数秒で再起動されます。この画面のままなら、下のボタンで再起動してください。",
   "svcDevBodyWin": "開発ビルドのため copysyncd.exe がありません。ソースフォルダで scripts\\build-windows.ps1 を実行して完全版をビルドしてください。",
+  "svcDevBodyLinux": "開発ビルドのため copysyncd がありません。ソースフォルダで ./scripts/package-linux.sh を実行して完全版をビルドしてください。",
   "svcDevBodyMac": "開発ビルドのためバックグラウンドサービスが含まれていません。ソースフォルダで ./scripts/install-macos.sh を実行してインストールしてください。",
   "svcLogPath": "ログ：{path}",
   "svcCanDisable": "バックグラウンド同期は「設定」でいつでもオフにできます。"

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -126,7 +128,8 @@ void main() {
   test('数据目录路径与 Go 侧 config.DefaultPaths 保持一致', () {
     final dir = DaemonEndpoint.defaultDataDir();
     // 路径不一致会导致 UI 根本找不到 daemon，这里锁住约定
-    expect(dir, contains('CopySync'));
+    // Linux 按 XDG 的习惯用小写目录名，见 config.DefaultPaths
+    expect(dir, Platform.isLinux ? endsWith('/copysync') : contains('CopySync'));
     expect(DaemonEndpoint.endpointFile(dir).path, endsWith('daemon.json'));
   });
 

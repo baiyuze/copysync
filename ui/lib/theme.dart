@@ -138,8 +138,13 @@ extension PaletteAccess on BuildContext {
 }
 
 /// 等宽字体：配对码、指纹、服务器地址这类需要逐字符核对的内容。
-/// Windows 没有 Menlo，找不到时会退回 Segoe UI，数字就不等宽了。
-final monoFamily = Platform.isWindows ? 'Consolas' : 'Menlo';
+/// Windows 没有 Menlo，找不到时会退回 Segoe UI，数字就不等宽了。Linux 上交给 fontconfig 的 monospace 别名，
+/// 各发行版会解析成自己的等宽字体（DejaVu Sans Mono 等）。
+final monoFamily = Platform.isWindows
+    ? 'Consolas'
+    : Platform.isLinux
+        ? 'monospace'
+        : 'Menlo';
 
 /// Windows 上汉字用哪些字体，按界面语言 [language] 排先后。
 ///
@@ -150,13 +155,24 @@ List<String> windowsFontFallback(String language) => language == 'ja'
     ? const ['Yu Gothic UI', 'Meiryo UI', 'Microsoft YaHei UI']
     : const ['Microsoft YaHei UI', 'Microsoft YaHei', 'Yu Gothic UI'];
 
+/// Linux 上汉字用哪些字体，按界面语言 [language] 排先后。主字体跟随系统（fontconfig 默认的无衬线字体），
+/// 汉字指定字体，理由与 [windowsFontFallback] 相同。列的都是各发行版常见的开源字体，没装的会被跳过。
+List<String> linuxFontFallback(String language) => language == 'ja'
+    ? const ['Noto Sans CJK JP', 'Source Han Sans JP', 'IPAexGothic', 'Noto Sans CJK SC']
+    : const ['Noto Sans CJK SC', 'Source Han Sans SC', 'WenQuanYi Micro Hei', 'Droid Sans Fallback'];
+
 /// [fontFamily] 只给截图渲染用：App 本身不指定。Mac 上跟随系统字体（SF Pro 与苹方），
-/// Windows 上用 Segoe UI，汉字按 [language] 用 [windowsFontFallback] 里的字体。
+/// Windows 上用 Segoe UI，汉字按 [language] 用 [windowsFontFallback] 里的字体；
+/// Linux 上主字体跟随系统，汉字用 [linuxFontFallback] 里的字体。
 ThemeData buildTheme(Brightness brightness,
     {String? fontFamily, List<String>? fontFamilyFallback, String language = 'zh'}) {
-  if (fontFamily == null && Platform.isWindows) {
-    fontFamily = 'Segoe UI';
-    fontFamilyFallback = windowsFontFallback(language);
+  if (fontFamily == null && fontFamilyFallback == null) {
+    if (Platform.isWindows) {
+      fontFamily = 'Segoe UI';
+      fontFamilyFallback = windowsFontFallback(language);
+    } else if (Platform.isLinux) {
+      fontFamilyFallback = linuxFontFallback(language);
+    }
   }
   final dark = brightness == Brightness.dark;
   final p = dark ? AppPalette.dark : AppPalette.light;
@@ -185,7 +201,7 @@ ThemeData buildTheme(Brightness brightness,
     labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: p.textDim),
     labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: p.textDim),
   );
-  if (fontFamily != null) {
+  if (fontFamily != null || fontFamilyFallback != null) {
     textTheme = textTheme.apply(fontFamily: fontFamily, fontFamilyFallback: fontFamilyFallback);
   }
 

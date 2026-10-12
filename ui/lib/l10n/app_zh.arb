@@ -228,6 +228,7 @@
   "svcStoppedTitle": "后台服务没有运行",
   "svcStoppedBody": "它可能刚刚退出，系统通常会在几秒内把它重新拉起。如果一直停在这一页，点下面的按钮重新启动。",
   "svcDevBodyWin": "这是开发构建，旁边没有 copysyncd.exe。在源码目录运行 scripts\\build-windows.ps1 构建完整的版本。",
+  "svcDevBodyLinux": "这是开发构建，旁边没有 copysyncd。在源码目录运行 ./scripts/package-linux.sh 构建完整的版本。",
   "svcDevBodyMac": "这是开发构建，App 里没有内置后台服务。在源码目录运行 ./scripts/install-macos.sh 安装它。",
   "svcLogPath": "运行日志：{path}",
   "svcCanDisable": "随时可以在「设置」中停用后台同步。"
