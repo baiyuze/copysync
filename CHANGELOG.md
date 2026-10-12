@@ -1,19 +1,5 @@
 # 更新记录 / Changelog
 
-## 1.6.1 — 2026-10-12
-
-A fix for the Mac app: discovery on the local network no longer restarts every minute or two while a paired computer is offline.
-
-### Fixes
-
-- On a Mac, while a paired computer on the same network was offline, the background service mistook the failed sends to it for macOS blocking local network access. It then restarted discovery on the local network every one to two minutes, which could make the Search nearby list flicker. Now it tells the two cases apart, and still shows the local network notice when macOS really blocks access.
-
-### Upgrade notes
-
-- **Mac, Windows and Linux apps**: upgrading the Mac app is recommended. Nothing changed for Windows and Linux; upgrading them is optional.
-- **Server**: no changes; upgrading is optional.
-- The device-to-device protocol is unchanged.
-
 ## 1.6.0 — 2026-10-12
 
 CopySync now runs on Linux, and the Mac app comes in separate downloads for Apple silicon and Intel.
