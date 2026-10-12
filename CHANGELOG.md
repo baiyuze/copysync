@@ -1,5 +1,19 @@
 # 更新记录 / Changelog
 
+## 1.6.3 — 2026-10-12
+
+The Windows app now brings the Visual C++ runtime it needs, so it also starts on computers that don't have it installed.
+
+### Fixes
+
+- On Windows, the app needs three Visual C++ runtime files (`msvcp140.dll`, `vcruntime140.dll`, `vcruntime140_1.dll`) that Windows doesn't always include. On a computer without the Visual C++ Redistributable, CopySync didn't open and Windows reported that `MSVCP140.dll` was not found. The installer and the portable zip now include these files next to `CopySync.exe`; you still don't need administrator rights or a separate download.
+
+### Upgrade notes
+
+- **Mac, Windows and Linux apps**: upgrading the Windows app is recommended, and needed if it didn't start before. Nothing changed for Mac and Linux; upgrading them is optional.
+- **Server**: no changes; upgrading is optional.
+- The device-to-device protocol is unchanged.
+
 ## 1.6.2 — 2026-10-12
 
 The Windows installer now runs on every version of Windows 10.
