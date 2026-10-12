@@ -1,5 +1,25 @@
 # 更新记录 / Changelog
 
+## 1.6.0 — 2026-10-12
+
+CopySync now runs on Linux, and the Mac app comes in separate downloads for Apple silicon and Intel.
+
+### Changes
+
+- **Linux client**: syncs text, rich text, images, files and folders with Mac and Windows, on the same network or through a server. It runs on x64 and ARM64 with X11, or with Wayland through XWayland (GNOME and KDE include it). Get the `.deb` for Debian, Ubuntu and derivatives, or the `tar.gz` for other distributions. The background service starts at login and keeps syncing after you close the window.
+- **Mac downloads per chip**: `CopySync-mac-apple-silicon.dmg` and `CopySync-mac-intel.dmg` are about half the size of the universal `CopySync.dmg`, which is still available.
+- **Download page**: the website has one download button that opens a page listing every package. It suggests the build for your system, including your Mac's chip.
+
+### Fixes
+
+- On macOS 13 and 14, the background service and the command line tool could not start: they were built to require macOS 15. They now run on macOS 13 and later, like the app.
+
+### Upgrade notes
+
+- **Mac, Windows and Linux apps**: install the Linux app on each Linux computer and pair it as usual. Mac and Windows don't need to upgrade to sync with it. Upgrade Macs on macOS 13 or 14; elsewhere upgrading is optional. On a Mac, you can switch to the build for your chip; your settings and pairings stay.
+- **Server**: no changes; upgrading is optional.
+- The device-to-device protocol is unchanged.
+
 ## 1.5.0 — 2026-10-12
 
 Pair two computers on the same network without a code: open Search nearby on both and click the other one. This release also fixes mixed fonts on Windows.
