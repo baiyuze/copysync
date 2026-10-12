@@ -1,5 +1,19 @@
 # 更新记录 / Changelog
 
+## 1.6.2 — 2026-10-12
+
+The Windows installer now runs on every version of Windows 10.
+
+### Fixes
+
+- On Windows 10 versions before 21H2, the installer stopped with "This program does not support the version of Windows your computer is running", although the app itself works there. It now installs on any version of Windows 10, and on Windows 11 as before.
+
+### Upgrade notes
+
+- **Mac, Windows and Linux apps**: the apps themselves are unchanged; upgrading is optional. On Windows 10 before 21H2, you can now use the installer instead of the portable zip.
+- **Server**: no changes; upgrading is optional.
+- The device-to-device protocol is unchanged.
+
 ## 1.6.1 — 2026-10-12
 
 A fix for the Mac app: discovery on the local network no longer restarts every minute or two while a paired computer is offline.
