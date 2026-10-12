@@ -1042,9 +1042,30 @@ func (t *Transport) send(dst netip.AddrPort, pkt []byte, probe bool) error {
 	if !running {
 		return ErrDisabled
 	}
-	_, err := conn.WriteToUDPAddrPort(pkt, dst)
-	if onLink(dst.Addr()) {
-		t.noteSend(err, probe, time.Now())
+	if !onLink(dst.Addr()) {
+		_, err := conn.WriteToUDPAddrPort(pkt, dst)
+		return err
+	}
+	err := writeOnLink(conn, dst, pkt)
+	t.noteSend(err, probe, time.Now())
+	return err
+}
+
+// udpWriter 是 *net.UDPConn 发包的那部分，测试里换成假的。
+type udpWriter interface {
+	WriteToUDPAddrPort(b []byte, addr netip.AddrPort) (int, error)
+}
+
+// writeOnLink 往直连网段里的地址发一个包。
+//
+// 对方不在线时，ARP 解析失败的那一次发送也返回 EHOSTUNREACH，与被本地网络权限拦下时相同，
+// 但紧接着再发得到的是 EHOSTDOWN：系统把对方标成不在线，20 秒内都这样。被权限拦下的包到不了 ARP
+// 那一步，再发还是 EHOSTUNREACH。所以遇到它就再发一次，以第二次的结果为准。
+// 第一次没有发出去，对方最多收到一份。
+func writeOnLink(w udpWriter, dst netip.AddrPort, pkt []byte) error {
+	_, err := w.WriteToUDPAddrPort(pkt, dst)
+	if deniedByOS(err) {
+		_, err = w.WriteToUDPAddrPort(pkt, dst)
 	}
 	return err
 }

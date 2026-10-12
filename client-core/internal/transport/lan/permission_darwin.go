@@ -19,6 +19,7 @@ func RequestPermission() error {
 
 // deniedByOS 判断一次发送失败是不是被系统的本地网络权限拦下的。
 // 只对本机直连网段里的地址下这个结论：真的没有路由时也会是同一个错误。
+// 直连网段里的对方不在线时，ARP 解析失败也会返回一次同样的错误，见 writeOnLink。
 func deniedByOS(err error) bool {
 	return errors.Is(err, syscall.EHOSTUNREACH)
 }

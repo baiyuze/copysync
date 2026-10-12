@@ -84,3 +84,56 @@ func TestBlockedWithoutProbeTarget(t *testing.T) {
 		t.Fatal("没有探测地址时，发送成功应当算拦截解除")
 	}
 }
+
+// fakeWriter 依次返回给定的错误，记下发了几次。
+type fakeWriter struct {
+	errs []error
+	n    int
+}
+
+func (f *fakeWriter) WriteToUDPAddrPort(b []byte, _ netip.AddrPort) (int, error) {
+	err := f.errs[f.n]
+	f.n++
+	if err != nil {
+		return 0, err
+	}
+	return len(b), nil
+}
+
+// 对方不在线时 ARP 解析失败，那一次也返回 EHOSTUNREACH，紧接着再发就是 EHOSTDOWN：不算被系统拦下。
+// 实测被本地网络权限拦下时，再发还是 EHOSTUNREACH。
+func TestUnresolvedPeerIsNotDenied(t *testing.T) {
+	dst := netip.MustParseAddrPort("192.168.1.77:8788")
+	for _, c := range []struct {
+		name   string
+		errs   []error
+		writes int
+		denied bool
+	}{
+		{"发出去了", []error{nil}, 1, false},
+		{"对方被标成不在线", []error{syscall.EHOSTDOWN}, 1, false},
+		{"ARP 刚解析失败", []error{syscall.EHOSTUNREACH, syscall.EHOSTDOWN}, 2, false},
+		{"被本地网络权限拦下", []error{syscall.EHOSTUNREACH, syscall.EHOSTUNREACH}, 2, true},
+	} {
+		w := &fakeWriter{errs: c.errs}
+		err := writeOnLink(w, dst, []byte(magic))
+		if w.n != c.writes || deniedByOS(err) != c.denied {
+			t.Errorf("%s：发了 %d 次，结果 %v；应当发 %d 次，被拦=%v", c.name, w.n, err, c.writes, c.denied)
+		}
+	}
+}
+
+// ARP 解析失败不能触发重启 mDNS：之前每一两分钟就因此重启一次。
+func TestUnresolvedPeerKeepsDiscovery(t *testing.T) {
+	tr := idleTransport(t)
+	tr.probeAddr = netip.MustParseAddr("192.168.1.253")
+	now := time.Now()
+	tr.nextProbe = now.Add(probeEvery)
+
+	err := writeOnLink(&fakeWriter{errs: []error{syscall.EHOSTUNREACH, syscall.EHOSTDOWN}}, netip.MustParseAddrPort("192.168.1.77:8788"), []byte(magic))
+	tr.noteSend(err, false, now)
+	tr.noteSend(nil, true, now.Add(time.Second))
+	if tr.rediscover || !tr.deniedSince.IsZero() || tr.nextProbe.Before(now.Add(time.Minute)) {
+		t.Fatal("对方不在线不是被系统拦下，不该提前探测、也不该重启 mDNS")
+	}
+}
