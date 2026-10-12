@@ -82,7 +82,7 @@
           </svg>
         </figure>
         <ul class="points ports">
-          <li><strong>自动发现。</strong>每台电脑用 mDNS 在局域网里广播自己，广播里只有一个每天都变的匿名标识，看不出是谁的电脑。</li>
+          <li><strong>自动发现。</strong>每台电脑用 mDNS 在局域网里广播自己，广播里只有一个每天都变的匿名标识，看不出是谁的电脑。打开「搜索附近设备」时才带上设备名，关掉就撤下。</li>
           <li><strong>直连。</strong>复制的内容在两台电脑之间直接传输，速度就是局域网的速度。</li>
           <li><strong>安全照旧。</strong>配对时核对两行安全指纹，之后的每条消息都带签名，同一网络里的其他人冒充不了你的设备。</li>
         </ul>
@@ -119,6 +119,19 @@
           </div>
           <figure class="shot">
             <img src="../assets/screenshots/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="添加设备：显示配对码 K7MP2X，下面是本机地址 192.168.1.20">
+          </figure>
+        </div>
+        <div class="os-grid qs-grid">
+          <div class="qs-app">
+            <h3>不用配对码：搜索附近设备</h3>
+            <ol class="steps">
+              <li>两台电脑都打开「设备」，点「搜索附近设备」。窗口打开期间，同一网络里的设备才看得到这台电脑的名字。</li>
+              <li>对方出现在雷达上之后点它。两块屏幕会显示同样的两行安全指纹，核对一致后各自确认。</li>
+              <li>只在同一网段里有效。找不到对方时，改用上面的配对码。</li>
+            </ol>
+          </div>
+          <figure class="shot">
+            <img src="../assets/screenshots/nearby-dark.png" width="2112" height="1472" loading="lazy" alt="附近的设备：本机在中间，周围是同样打开了这个窗口的设计部的 PC、会议室的 iMac，以及已经配对过的 MacBook Air">
           </figure>
         </div>
       </div>
@@ -163,7 +176,7 @@
           </details>
           <details>
             <summary>同一网络里的其他人会看到我的电脑吗？</summary>
-            <div class="answer"><p>能看到网络里有一台 CopySync，但看不出是谁的：广播里只有一个每天都变的匿名标识，没有设备名，也没有设备 ID。没有和你配对过的设备，发来的消息一律丢弃；配对还要两边核对安全指纹。</p></div>
+            <div class="answer"><p>能看到网络里有一台 CopySync，但看不出是谁的：广播里只有一个每天都变的匿名标识，没有设备名，也没有设备 ID。只有你打开「搜索附近设备」的那段时间，广播里才带上设备名，关掉窗口就撤下。没有和你配对过的设备，发来的消息一律丢弃；配对还要两边核对安全指纹。</p></div>
           </details>
           <details>
             <summary>用了哪些端口？</summary>

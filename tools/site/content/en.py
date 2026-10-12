@@ -204,7 +204,7 @@ C = {
         ("You compare fingerprints when pairing.", " Both screens show the same two lines: the fingerprint of each device's key. The server could swap keys in transit, but then the two screens would no longer match. That check is what stops a man in the middle."),
         ("Every message after that is signed,", " so the server can't impersonate your device. The direct channel's certificate is checked again after the handshake; a mismatch drops the connection."),
         ("The relay only forwards ciphertext.", " TURN carries encrypted packets, and relay credentials are issued per device and expire after 12 hours."),
-        ("Same on the local network.", " What a device broadcasts on the LAN is an anonymous token that changes daily, not its name. Pairing still means comparing fingerprints, and every message is still signed."),
+        ("Same on the local network.", " What a device broadcasts on the LAN is an anonymous token that changes daily, not its name; the name is added only while Search nearby is open. Pairing still means comparing fingerprints, and every message is still signed."),
     ],
     "verify_alt": "The fingerprint check during pairing shows R8NF-2WTC-QL5J and asks you to confirm it matches the other computer exactly",
 
@@ -721,7 +721,7 @@ C = {
         },
         "overview_points": [
             "<strong>Found automatically.</strong> Each computer announces itself on the LAN over mDNS, with only an anonymous "
-            "token that changes daily, so nobody can tell whose computer it is.",
+            "token that changes daily, so nobody can tell whose computer it is. Its name is added only while Search nearby is open.",
             "<strong>Direct.</strong> Content goes straight between the two computers, at the speed of your network.",
             "<strong>Same security.</strong> You compare two fingerprint lines when pairing, and every message after that is "
             "signed, so others on the network can't pose as your device.",
@@ -748,6 +748,13 @@ C = {
             "Both screens show the same two fingerprint lines. Check them character by character, then confirm. Copying syncs from now on.",
         ],
         "pair_alt": "Add device: the pairing code K7MP2X, with this computer's address 192.168.1.20 below it",
+        "nearby_h3": "Without a code: Search nearby",
+        "nearby_steps": [
+            "On both computers, open Devices and click Search nearby. Only while this window is open can devices on the network see this computer's name.",
+            "When the other one shows up on the radar, click it. Both screens show the same two fingerprint lines; check them, then confirm on each.",
+            "This works within one subnet only. If the other computer doesn't show up, use a pairing code as above.",
+        ],
+        "nearby_alt": "Nearby devices: this computer in the middle, with Design PC and Meeting room iMac around it, plus the already paired MacBook Air",
 
         "subnet_h2": "Different subnets",
         "subnet_intro": "Local discovery only reaches one subnet. When your computers are on different subnets that can still "
@@ -782,7 +789,8 @@ C = {
             ]),
             ("Can others on the network see my computer?", [
                 "They can see that a CopySync device is there, but not whose: the broadcast carries an anonymous token that changes "
-                "daily, with no device name or ID. Messages from devices you haven't paired with are dropped, and pairing requires "
+                "daily, with no device name or ID. The name is added only while you have Search nearby open, and removed when you close it. "
+                "Messages from devices you haven't paired with are dropped, and pairing requires "
                 "comparing fingerprints on both screens.",
             ]),
             ("Which ports does it use?", [

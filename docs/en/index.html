@@ -395,7 +395,7 @@
             <li><strong>You compare fingerprints when pairing.</strong> Both screens show the same two lines: the fingerprint of each device's key. The server could swap keys in transit, but then the two screens would no longer match. That check is what stops a man in the middle.</li>
             <li><strong>Every message after that is signed,</strong> so the server can't impersonate your device. The direct channel's certificate is checked again after the handshake; a mismatch drops the connection.</li>
             <li><strong>The relay only forwards ciphertext.</strong> TURN carries encrypted packets, and relay credentials are issued per device and expire after 12 hours.</li>
-            <li><strong>Same on the local network.</strong> What a device broadcasts on the LAN is an anonymous token that changes daily, not its name. Pairing still means comparing fingerprints, and every message is still signed.</li>
+            <li><strong>Same on the local network.</strong> What a device broadcasts on the LAN is an anonymous token that changes daily, not its name; the name is added only while Search nearby is open. Pairing still means comparing fingerprints, and every message is still signed.</li>
           </ul>
           <figure class="figure-card">
             <img src="../assets/screenshots/en/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="The fingerprint check during pairing shows R8NF-2WTC-QL5J and asks you to confirm it matches the other computer exactly">

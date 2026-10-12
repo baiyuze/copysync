@@ -82,7 +82,7 @@
           </svg>
         </figure>
         <ul class="points ports">
-          <li><strong>Found automatically.</strong> Each computer announces itself on the LAN over mDNS, with only an anonymous token that changes daily, so nobody can tell whose computer it is.</li>
+          <li><strong>Found automatically.</strong> Each computer announces itself on the LAN over mDNS, with only an anonymous token that changes daily, so nobody can tell whose computer it is. Its name is added only while Search nearby is open.</li>
           <li><strong>Direct.</strong> Content goes straight between the two computers, at the speed of your network.</li>
           <li><strong>Same security.</strong> You compare two fingerprint lines when pairing, and every message after that is signed, so others on the network can't pose as your device.</li>
         </ul>
@@ -119,6 +119,19 @@
           </div>
           <figure class="shot">
             <img src="../../assets/screenshots/en/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="Add device: the pairing code K7MP2X, with this computer&#x27;s address 192.168.1.20 below it">
+          </figure>
+        </div>
+        <div class="os-grid qs-grid">
+          <div class="qs-app">
+            <h3>Without a code: Search nearby</h3>
+            <ol class="steps">
+              <li>On both computers, open Devices and click Search nearby. Only while this window is open can devices on the network see this computer's name.</li>
+              <li>When the other one shows up on the radar, click it. Both screens show the same two fingerprint lines; check them, then confirm on each.</li>
+              <li>This works within one subnet only. If the other computer doesn't show up, use a pairing code as above.</li>
+            </ol>
+          </div>
+          <figure class="shot">
+            <img src="../../assets/screenshots/en/nearby-dark.png" width="2112" height="1472" loading="lazy" alt="Nearby devices: this computer in the middle, with Design PC and Meeting room iMac around it, plus the already paired MacBook Air">
           </figure>
         </div>
       </div>
@@ -163,7 +176,7 @@
           </details>
           <details>
             <summary>Can others on the network see my computer?</summary>
-            <div class="answer"><p>They can see that a CopySync device is there, but not whose: the broadcast carries an anonymous token that changes daily, with no device name or ID. Messages from devices you haven't paired with are dropped, and pairing requires comparing fingerprints on both screens.</p></div>
+            <div class="answer"><p>They can see that a CopySync device is there, but not whose: the broadcast carries an anonymous token that changes daily, with no device name or ID. The name is added only while you have Search nearby open, and removed when you close it. Messages from devices you haven't paired with are dropped, and pairing requires comparing fingerprints on both screens.</p></div>
           </details>
           <details>
             <summary>Which ports does it use?</summary>

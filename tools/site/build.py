@@ -1447,6 +1447,17 @@ def lan_page(code: str) -> str:
             <img src="{shots}pairing-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(ln["pair_alt"])}">
           </figure>
         </div>
+        <div class="os-grid qs-grid">
+          <div class="qs-app">
+            <h3>{ln["nearby_h3"]}</h3>
+            <ol class="steps">
+{items(ln["nearby_steps"], "              ")}
+            </ol>
+          </div>
+          <figure class="shot">
+            <img src="{shots}nearby-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(ln["nearby_alt"])}">
+          </figure>
+        </div>
       </div>
     </section>
 
