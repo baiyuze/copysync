@@ -1,10 +1,10 @@
-//go:build !darwin && !windows
+//go:build !darwin && !windows && !linux
 
 package clipboard
 
 import "time"
 
-// 既非 macOS 也非 Windows 的平台（目前只有 Linux，服务器端用不到剪贴板）的占位实现。
+// macOS、Windows、Linux 以外的平台的占位实现。
 type stubClipboard struct{}
 
 func New() Clipboard { return stubClipboard{} }
