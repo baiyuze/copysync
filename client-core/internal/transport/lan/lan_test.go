@@ -300,12 +300,21 @@ func TestReachabilityExpires(t *testing.T) {
 	waitReachable(t, a, b.id.DeviceID)
 
 	b.t.Stop()
-	a.t.mu.Lock()
-	a.t.peers[b.id.DeviceID].lastSeen = time.Now().Add(-time.Hour)
-	a.t.mu.Unlock()
-	a.t.tick()
-	if a.t.Reachable(b.id.DeviceID) {
-		t.Fatal("对方长时间没消息，应当变为不可达")
+	// b 停下前发出的包可能还在 a 的接收缓冲里，a 读到后会把 lastSeen 刷新成现在。
+	// 所以反复把 lastSeen 拨回一小时前再检查，等这些包读完
+	deadline := time.Now().Add(2 * time.Second)
+	for {
+		a.t.mu.Lock()
+		a.t.peers[b.id.DeviceID].lastSeen = time.Now().Add(-time.Hour)
+		a.t.mu.Unlock()
+		a.t.tick()
+		if !a.t.Reachable(b.id.DeviceID) {
+			return
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("对方长时间没消息，应当变为不可达")
+		}
+		time.Sleep(10 * time.Millisecond)
 	}
 }
 
