@@ -1963,6 +1963,9 @@ func (x *LanPairReject) GetReason() string {
 type LanNearbyPing struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Instance      string                 `protobuf:"bytes,1,opt,name=instance,proto3" json:"instance,omitempty"` // 发送方的 mDNS 实例名
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`         // 与广播里的 n、o、t 相同（名字不编码）
+	Platform      string                 `protobuf:"bytes,3,opt,name=platform,proto3" json:"platform,omitempty"`
+	Token         string                 `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2000,6 +2003,27 @@ func (*LanNearbyPing) Descriptor() ([]byte, []int) {
 func (x *LanNearbyPing) GetInstance() string {
 	if x != nil {
 		return x.Instance
+	}
+	return ""
+}
+
+func (x *LanNearbyPing) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *LanNearbyPing) GetPlatform() string {
+	if x != nil {
+		return x.Platform
+	}
+	return ""
+}
+
+func (x *LanNearbyPing) GetToken() string {
+	if x != nil {
+		return x.Token
 	}
 	return ""
 }
@@ -2701,9 +2725,12 @@ const file_copysync_v1_wire_proto_rawDesc = "" +
 	"\rrequest_nonce\x18\t \x01(\fR\frequestNonce\"L\n" +
 	"\rLanPairReject\x12#\n" +
 	"\rrequest_nonce\x18\x01 \x01(\fR\frequestNonce\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\tR\x06reason\"+\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason\"q\n" +
 	"\rLanNearbyPing\x12\x1a\n" +
-	"\binstance\x18\x01 \x01(\tR\binstance\"\xc1\x02\n" +
+	"\binstance\x18\x01 \x01(\tR\binstance\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
+	"\bplatform\x18\x03 \x01(\tR\bplatform\x12\x14\n" +
+	"\x05token\x18\x04 \x01(\tR\x05token\"\xc1\x02\n" +
 	"\vPeerMessage\x12.\n" +
 	"\x05offer\x18\x01 \x01(\v2\x16.copysync.v1.ClipOfferH\x00R\x05offer\x12.\n" +
 	"\x05fetch\x18\x02 \x01(\v2\x16.copysync.v1.PeerFetchH\x00R\x05fetch\x122\n" +

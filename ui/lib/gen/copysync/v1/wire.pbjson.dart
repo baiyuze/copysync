@@ -673,12 +673,17 @@ const LanNearbyPing$json = {
   '1': 'LanNearbyPing',
   '2': [
     {'1': 'instance', '3': 1, '4': 1, '5': 9, '10': 'instance'},
+    {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
+    {'1': 'platform', '3': 3, '4': 1, '5': 9, '10': 'platform'},
+    {'1': 'token', '3': 4, '4': 1, '5': 9, '10': 'token'},
   ],
 };
 
 /// Descriptor for `LanNearbyPing`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List lanNearbyPingDescriptor = $convert.base64Decode(
-    'Cg1MYW5OZWFyYnlQaW5nEhoKCGluc3RhbmNlGAEgASgJUghpbnN0YW5jZQ==');
+    'Cg1MYW5OZWFyYnlQaW5nEhoKCGluc3RhbmNlGAEgASgJUghpbnN0YW5jZRISCgRuYW1lGAIgAS'
+    'gJUgRuYW1lEhoKCHBsYXRmb3JtGAMgASgJUghwbGF0Zm9ybRIUCgV0b2tlbhgEIAEoCVIFdG9r'
+    'ZW4=');
 
 @$core.Deprecated('Use peerMessageDescriptor instead')
 const PeerMessage$json = {

@@ -156,3 +156,25 @@ func TestNearbyNameEncoding(t *testing.T) {
 		t.Fatal("编码不对的设备名不该接受")
 	}
 }
+
+// mDNS 只在实例有变化时才报：对方开着窗口很久没变化，本机可能早把它的实例过期丢掉了。
+// 对方的 ping 自带名字、系统和令牌，收到就能重新显示它。
+func TestNearbyPingRestoresForgottenInstance(t *testing.T) {
+	net := NewMemoryNetwork()
+	a, b := newNode(t, net), newNode(t, net)
+	pair(a, b)
+	defer b.t.ShowNearby()()
+
+	// a 还没打开窗口时，b 的实例过了期，被 a 丢掉
+	a.t.mu.Lock()
+	for id := range a.t.instances {
+		delete(a.t.instances, id)
+	}
+	a.t.mu.Unlock()
+
+	defer a.t.ShowNearby()() // b 看到 a 打开了窗口，马上 ping 它
+	got := waitNearby(t, a, 1)
+	if got[0].Name != "node-"+b.id.DeviceID[:4] || got[0].Platform != "test" || got[0].PeerID != b.id.DeviceID {
+		t.Fatalf("只靠 ping 也应当显示完整的信息: %+v", got[0])
+	}
+}

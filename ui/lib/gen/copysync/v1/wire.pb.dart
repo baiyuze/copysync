@@ -2374,9 +2374,15 @@ class LanPairReject extends $pb.GeneratedMessage {
 class LanNearbyPing extends $pb.GeneratedMessage {
   factory LanNearbyPing({
     $core.String? instance,
+    $core.String? name,
+    $core.String? platform,
+    $core.String? token,
   }) {
     final result = LanNearbyPing._();
     if (instance != null) result.instance = instance;
+    if (name != null) result.name = name;
+    if (platform != null) result.platform = platform;
+    if (token != null) result.token = token;
     return result;
   }
 
@@ -2394,6 +2400,9 @@ class LanNearbyPing extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
       createEmptyInstance: LanNearbyPing.$_createMessage)
     ..aOS(1, _omitFieldNames ? '' : 'instance')
+    ..aOS(2, _omitFieldNames ? '' : 'name')
+    ..aOS(3, _omitFieldNames ? '' : 'platform')
+    ..aOS(4, _omitFieldNames ? '' : 'token')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2426,6 +2435,33 @@ class LanNearbyPing extends $pb.GeneratedMessage {
   $core.bool hasInstance() => $_has(0);
   @$pb.TagNumber(1)
   void clearInstance() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get name => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set name($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasName() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearName() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get platform => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set platform($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasPlatform() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPlatform() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get token => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set token($core.String value) => $_setString(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasToken() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearToken() => $_clearField(4);
 }
 
 enum PeerMessage_Payload { offer, fetch, reject, header, done, link, notSet }

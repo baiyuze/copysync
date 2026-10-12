@@ -21,6 +21,8 @@ import (
 //   - mDNS 不会通知实例下线（pion 只报新出现和有变化的实例），所以两台都打开窗口时
 //     每 2 秒互发一个 LanNearbyPing，几秒收不到就当对方走了。它同时是敲门：
 //     没放行防火墙的 Windows 先往对方发过包，对方随后的配对请求才进得来。
+//     ping 自带名字、系统和令牌：对方开着窗口很久没有变化时，mDNS 不会再报它，
+//     本机可能早把它的实例过期丢掉了，收到 ping 就能重新显示。
 //   - 配对请求不带配对码，只在窗口打开期间接受，由对方的用户在弹窗里决定接不接受；
 //     之后双方照常核对指纹，防中间人的办法与用配对码时相同。
 
@@ -144,25 +146,38 @@ func (t *Transport) handleNearbyRequest(ps *pb.LanPairSigned, src netip.AddrPort
 	t.respondPair(info, peer, src)
 }
 
-// handleNearbyPing 记下对方还在、以及它实际在哪个地址。
+// handleNearbyPing 记下对方还在、它实际在哪个地址，以及 ping 里自带的名字、系统和令牌。
 func (t *Transport) handleNearbyPing(p *pb.LanNearbyPing, src netip.AddrPort) {
+	id := p.GetInstance()
+	if id == "" || id == t.instance || p.GetName() == "" {
+		return
+	}
 	now := time.Now()
 	t.mu.Lock()
 	defer t.mu.Unlock()
-	si, ok := t.instances[p.GetInstance()]
-	if t.visible == 0 || !ok {
+	if t.visible == 0 {
 		return
 	}
-	if _, ok := nearbyName(si.inst.Text); !ok {
-		return
+	si, ok := t.instances[id]
+	if !ok {
+		// mDNS 只在实例有变化时才报：本机可能早把它过期丢掉了，或者还没收到它的广播
+		si = seenInstance{inst: Instance{Name: id, Addr: src}}
 	}
-	// mDNS 只在实例有变化时才报，对方一直开着窗口时靠 ping 让它保持新鲜
+	text := copyText(si.inst.Text)
+	text["v"] = "1"
+	text["n"] = encodeNearbyName(p.GetName())
+	text["o"] = p.GetPlatform()
+	if p.GetToken() != "" {
+		text["t"] = p.GetToken()
+	}
+	si.inst.Text = text
+	// 对方一直开着窗口时，靠 ping 让它保持新鲜
 	si.seen = now
-	t.instances[p.GetInstance()] = si
-	ns := t.nearby[p.GetInstance()]
+	t.instances[id] = si
+	ns := t.nearby[id]
 	if ns == nil {
 		ns = &nearbyState{addrs: make(map[netip.AddrPort]time.Time)}
-		t.nearby[p.GetInstance()] = ns
+		t.nearby[id] = ns
 	}
 	ns.addrs[src] = now
 }
@@ -188,8 +203,14 @@ func (t *Transport) sendNearbyPing(targets []netip.AddrPort) {
 	if len(targets) == 0 {
 		return
 	}
+	t.mu.Lock()
+	name, platform := t.nearbySelfLocked()
+	t.mu.Unlock()
 	pkt, err := encode(&pb.LanPacket{Payload: &pb.LanPacket_NearbyPing{NearbyPing: &pb.LanNearbyPing{
 		Instance: t.instance,
+		Name:     name,
+		Platform: platform,
+		Token:    presenceToken(t.id.DeviceID, time.Now()),
 	}}})
 	if err != nil {
 		return
@@ -226,14 +247,24 @@ func (t *Transport) nearbyAdvertLocked(text map[string]string) {
 	if t.visible == 0 {
 		return
 	}
-	name := t.visibleName
+	name, platform := t.nearbySelfLocked()
+	text["n"] = encodeNearbyName(name)
+	if platform != "" {
+		text["o"] = platform
+	}
+}
+
+// nearbySelfLocked 是本机在「搜索附近设备」里显示的名字和系统。
+func (t *Transport) nearbySelfLocked() (name, platform string) {
+	name = t.visibleName
 	if name == "" {
 		name = "CopySync"
 	}
-	text["n"] = base64.RawURLEncoding.EncodeToString([]byte(truncateUTF8(name, maxNearbyName)))
-	if t.visiblePlatform != "" {
-		text["o"] = t.visiblePlatform
-	}
+	return truncateUTF8(name, maxNearbyName), t.visiblePlatform
+}
+
+func encodeNearbyName(name string) string {
+	return base64.RawURLEncoding.EncodeToString([]byte(truncateUTF8(name, maxNearbyName)))
 }
 
 // nearbyName 取出广播里的设备名。没有设备名（对方没打开窗口，或是旧版本）时返回 false。

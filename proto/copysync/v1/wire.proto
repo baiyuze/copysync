@@ -177,6 +177,7 @@ message ServerError {
 // 「搜索附近设备」：窗口打开期间，mDNS 广播里带上设备名（n，base64url 编码的 UTF-8）
 // 和系统（o）。两台都打开时互相看得到，每 2 秒互发一个 LanNearbyPing：
 // mDNS 不会通知实例下线，靠它判断对方还在；它也是敲门，让对方的配对请求进得来。
+// ping 自带名字、系统和令牌：mDNS 只在实例有变化时才报，收到的一方可能早把它过期丢掉了。
 // 点了对方就发 nearby_request：与 pair_request 相同，只是不带配对码，
 // 对方只在窗口打开期间接受。回复仍是 pair_response 或 pair_reject。
 
@@ -227,6 +228,9 @@ message LanPairReject {
 
 message LanNearbyPing {
   string instance = 1;              // 发送方的 mDNS 实例名
+  string name = 2;                  // 与广播里的 n、o、t 相同（名字不编码）
+  string platform = 3;
+  string token = 4;
 }
 
 // ═══════════════════ 设备间协议（DataChannel 承载）═══════════════════
