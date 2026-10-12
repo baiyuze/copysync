@@ -17,6 +17,10 @@ DIST=dist
 VERSION=${VERSION:-1.5.0}
 rm -rf "$DIST" && mkdir -p "$DIST"
 
+# 支持的最低 macOS 版本，与界面工程的 MACOSX_DEPLOYMENT_TARGET、后台服务的 LSMinimumSystemVersion 一致。
+# cgo 的编译与链接要显式指定，否则按构建机的系统版本来，产物在旧系统上起不来
+MACOS_MIN=13.0
+
 # 构建 x86_64 + arm64 通用二进制：两台 Mac 的芯片未必相同，单架构的
 # daemon 到 Apple Silicon 上要靠 Rosetta，而 Rosetta 默认并未安装。
 # daemon 含 cgo，交叉编译时必须给 clang 显式指定 -arch。
@@ -26,7 +30,8 @@ build_universal() { # <模块目录> <包路径> <输出路径> <ldflags>
     for arch in amd64 arm64; do
         local clang_arch=$arch
         [[ $arch == amd64 ]] && clang_arch=x86_64
-        (cd "$dir" && CGO_ENABLED=1 GOOS=darwin GOARCH=$arch CC="clang -arch $clang_arch" \
+        (cd "$dir" && CGO_ENABLED=1 GOOS=darwin GOARCH=$arch MACOSX_DEPLOYMENT_TARGET=$MACOS_MIN \
+            CC="clang -arch $clang_arch -mmacosx-version-min=$MACOS_MIN" \
             go build -trimpath -ldflags "$ldflags" -o "$tmp/$arch" "$pkg")
     done
     lipo -create -output "$out" "$tmp/amd64" "$tmp/arm64"
@@ -61,7 +66,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundlePackageType</key>        <string>APPL</string>
     <key>CFBundleShortVersionString</key> <string>$VERSION</string>
     <key>CFBundleVersion</key>            <string>$VERSION</string>
-    <key>LSMinimumSystemVersion</key>     <string>13.0</string>
+    <key>LSMinimumSystemVersion</key>     <string>$MACOS_MIN</string>
     <!-- 后台常驻：不出现在 Dock 与任务切换器里 -->
     <key>LSUIElement</key>                <true/>
     <!-- macOS 15 起，后台服务连接局域网里的设备要经用户允许，系统弹窗里显示这段说明 -->
