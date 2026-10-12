@@ -22,7 +22,7 @@ jobs:
 
   client-core:
     name: 后台服务
-    # 剪贴板部分是 cgo + AppKit，只能在 macOS 上编译
+    # 剪贴板部分是 cgo + AppKit，只能在 macOS 上编译。Linux、Windows 上的测试在各自的客户端任务里
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -95,3 +95,48 @@ jobs:
           path: |
             dist/windows/CopySync-Setup.exe
             dist/windows/CopySync-windows-x64.zip
+
+  linux:
+    name: Linux 客户端（${{ matrix.arch }}）
+    # Flutter 不能交叉编译 Linux 桌面程序，两种架构各用一台机器。
+    # 在 22.04 上构建：产物依赖的 glibc 与 GTK 版本较老，新的发行版也能运行
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-22.04
+            arch: amd64
+          - runner: ubuntu-22.04-arm
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: client-core/go.mod
+          cache-dependency-path: client-core/go.sum
+      - name: 安装构建依赖
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q clang cmake ninja-build pkg-config libgtk-3-dev xvfb xclip
+      # flutter-action 不提供 Linux ARM64 的 Flutter，两种架构都直接取 stable 分支
+      - name: 安装 Flutter
+        run: |
+          git clone --depth 1 -b stable https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - run: flutter --version
+      # X11 剪贴板的测试在虚拟显示器里跑，xclip 扮演别的程序
+      - run: go vet ./... && xvfb-run -a go test ./...
+        working-directory: client-core
+      - run: xvfb-run -a go test -v -count=1 -run Linux ./internal/clipboard/
+        working-directory: client-core
+      - run: flutter pub get && flutter analyze && flutter test
+        working-directory: ui
+      - run: ./scripts/package-linux.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CopySync-linux-${{ matrix.arch }}
+          path: |
+            dist/linux/CopySync-linux-${{ matrix.arch }}.deb
+            dist/linux/CopySync-linux-${{ matrix.arch }}.tar.gz
+          if-no-files-found: error
