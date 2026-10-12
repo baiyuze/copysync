@@ -52,6 +52,20 @@ try {
 }
 Copy-Item -Recurse -Force 'ui\build\windows\x64\runner\Release\*' $app
 
+# 界面程序依赖 VC++ 运行库（msvcp140 等三个 DLL），Windows 不一定自带，缺了就打不开。
+# 按微软的「应用本地部署」放在 exe 旁边：不用装系统级的运行库，也就不需要管理员权限
+Write-Host '▶ 附带 VC++ 运行库'
+$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+$vs = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+$crt = Get-ChildItem "$vs\VC\Redist\MSVC\*\x64\Microsoft.VC*.CRT" -Directory -ErrorAction SilentlyContinue |
+    Where-Object { $_.Parent.Parent.Name -as [version] } |
+    Sort-Object { $_.Parent.Parent.Name -as [version] } -Descending | Select-Object -First 1
+if (-not $crt) { throw "在 $vs 里没有找到 VC++ 运行库（VC\Redist\MSVC\<版本>\x64\Microsoft.VC*.CRT）" }
+foreach ($dll in 'msvcp140.dll', 'vcruntime140.dll', 'vcruntime140_1.dll') {
+    Copy-Item (Join-Path $crt.FullName $dll) $app
+}
+Write-Host "  $($crt.FullName)"
+
 Write-Host '▶ 打包'
 Compress-Archive -Path $app -DestinationPath (Join-Path $out 'CopySync-windows-x64.zip')
 
