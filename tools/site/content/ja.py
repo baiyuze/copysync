@@ -27,7 +27,7 @@ C = {
             "同じネットワークならサーバーなしで使え、ネットワークをまたいでも使えます。データはデバイス間を直接流れ、エンドツーエンドで暗号化されます。",
     "dl_mac": "Mac 版をダウンロード",
     "dl_win": "Windows 版をダウンロード",
-    "dl_note": "バージョン 1.4.0、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。",
+    "dl_note": "バージョン 1.5.0、無料・オープンソース。macOS 13 以降（Intel と Apple シリコン）、Windows 10・11。",
     "start_link": "はじめての方は、3 ステップのはじめかたへ →",
     "stage_label": "デモ：MacBook で Command C を押すと、ファイルが一枚の紙になって直接接続で Windows ノートへ飛び、そこで Ctrl V を押して貼り付けます",
     "stage_file": "四半期報告_最終版.pptx",
@@ -242,7 +242,7 @@ C = {
 
     "specs_h2": "仕様",
     "specs": [
-        ("バージョン", '1.4.0（<time datetime="2026-10-11">2026 年 10 月 11 日</time>公開）'),
+        ("バージョン", '1.5.0（<time datetime="2026-10-12">2026 年 10 月 12 日</time>公開）'),
         ("Mac アプリ", "macOS 13 Ventura 以降。Intel と Apple シリコンのユニバーサルバイナリで Rosetta 不要。ダウンロードは約 47 MB"),
         ("Windows アプリ", "Windows 10（21H2 以降）と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB"),
         ("サーバー", "任意。ネットワークをまたぐときだけ必要。Linux（x86_64 または ARM64、systemd または Docker）、macOS（Intel と Apple シリコン）、Windows 10・11 x64（サービスとして動作）。メモリは約 15 MB"),
