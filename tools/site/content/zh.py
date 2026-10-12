@@ -263,7 +263,7 @@ C = {
         ("记录保留", "默认 3 天，可在 1 小时到 30 天之间调整，到期自动清理"),
         ("实测速度", "局域网直连传输 20 MB 文件约 330 毫秒，校验和一致"),
         ("技术栈", "后台服务与服务器用 Go（Windows 上纯 Go 调用 Win32，Linux 上纯 Go 走 X11 协议），界面用 Flutter（三个系统共用一套代码），消息定义用 Protocol Buffers"),
-        ("许可", f'GNU AGPL-3.0；闭源产品等情况可购买<a href="{REPO}/blob/main/LICENSING.md">商业授权</a>'),
+        ("许可", f'<a href="{REPO}/blob/main/LICENSING.md">GNU AGPL-3.0</a>'),
     ],
 
     "faq_h2": "常见问题",
@@ -315,19 +315,18 @@ C = {
         ]),
         ("免费吗？公司能用吗？", [
             "免费。CopySync 以 GNU AGPL-3.0 开源，个人和公司都可以免费使用和修改。分发它、或通过网络提供修改过的版本时，需要以同样的许可公开源码。",
-            f'要放进闭源产品、修改后不想公开、或者作为托管服务运营，可以购买<a href="{REPO}/blob/main/LICENSING.md">商业授权</a>。',
         ]),
     ],
 
     "closing": "两台电脑，一个剪贴板。",
     "source": "在 GitHub 上查看源码",
-    "footer_license": "CopySync 以 GNU AGPL-3.0 开源，另提供商业授权。",
+    "footer_license": "CopySync 以 GNU AGPL-3.0 开源。",
     "footer_label": "页脚链接",
     "footer_links": [
         ("所有版本", f"{REPO}/releases"),
         ("更新记录", f"{REPO}/blob/main/CHANGELOG.md"),
         ("技术方案", f"{SITE}design/nat-traversal.html"),
-        ("商业授权", f"{REPO}/blob/main/LICENSING.md"),
+        ("许可说明", f"{REPO}/blob/main/LICENSING.md"),
         ("反馈问题", f"{REPO}/issues"),
     ],
 

@@ -114,4 +114,4 @@ sudo ./install.sh <服务器公网IP>
 
 ## 许可
 
-CopySync 采用双授权。按 [GNU AGPL-3.0](LICENSE) 免费使用：任何人（包括公司）都可以使用和修改，但分发它、或通过网络提供修改过的版本时，必须以同样的许可公开你的源码。闭源产品、不公开的修改、托管服务等情况可以购买[商业授权](LICENSING.md)，请[提交「商业授权」issue](https://github.com/baiyuze/copysync/issues/new?template=commercial-license.yml)。1.2.0 及更早的版本仍适用 MIT 许可。
+CopySync 以 [GNU AGPL-3.0](LICENSE) 免费开源：任何人（包括公司）都可以使用和修改，但分发它、或通过网络提供修改过的版本时，必须以同样的许可公开你的源码。详见 [LICENSING.md](LICENSING.md)。1.2.0 及更早的版本仍适用 MIT 许可。

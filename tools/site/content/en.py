@@ -285,7 +285,7 @@ C = {
         ("History", "3 days by default, adjustable from 1 hour to 30 days; expired items removed automatically"),
         ("Measured speed", "A 20 MB file transfers in about 330 ms over a direct LAN connection, checksums matching"),
         ("Built with", "Go for the background service and server (pure Go calling Win32 on Windows and speaking the X11 protocol on Linux), Flutter for the app (one codebase for all three systems), Protocol Buffers for messages"),
-        ("License", f'GNU AGPL-3.0; a <a href="{REPO}/blob/main/LICENSING.md">commercial license</a> is available for closed-source use'),
+        ("License", f'<a href="{REPO}/blob/main/LICENSING.md">GNU AGPL-3.0</a>'),
     ],
 
     "faq_h2": "Questions",
@@ -351,20 +351,18 @@ C = {
         ("Is it free? Can my company use it?", [
             "Yes. CopySync is open source under the GNU AGPL-3.0, so individuals and companies can use and modify it for free. "
             "If you distribute it, or offer a modified version over a network, you publish your source under the same license.",
-            f'To ship it inside a closed-source product, keep modifications private or run it as a hosted service, get a '
-            f'<a href="{REPO}/blob/main/LICENSING.md">commercial license</a>.',
         ]),
     ],
 
     "closing": "Two computers, one clipboard.",
     "source": "View the source on GitHub",
-    "footer_license": "CopySync is open source under the GNU AGPL-3.0, with commercial licenses available.",
+    "footer_license": "CopySync is open source under the GNU AGPL-3.0.",
     "footer_label": "Footer",
     "footer_links": [
         ("All releases", f"{REPO}/releases"),
         ("Changelog", f"{REPO}/blob/main/CHANGELOG.md"),
         ("Design notes (Chinese)", f"{SITE}design/nat-traversal.html"),
-        ("Commercial license", f"{REPO}/blob/main/LICENSING.md"),
+        ("License", f"{REPO}/blob/main/LICENSING.md"),
         ("Report an issue", f"{REPO}/issues"),
     ],
 

@@ -268,7 +268,7 @@ C = {
         ("履歴の保存期間", "初期値 3 日、1 時間〜30 日で調整可能。期限が来たら自動で削除"),
         ("実測の速度", "LAN の直接接続で 20 MB のファイルを約 330 ミリ秒で転送、チェックサム一致"),
         ("技術スタック", "バックグラウンドサービスとサーバーは Go（Windows では Go から Win32 を直接呼び出し、Linux では Go で X11 プロトコルを直接扱う）、アプリは Flutter（3 つの OS で同じコード）、メッセージ定義は Protocol Buffers"),
-        ("ライセンス", f'GNU AGPL-3.0。クローズドソースでの利用などには<a href="{REPO}/blob/main/LICENSING.md">商用ライセンス</a>を用意'),
+        ("ライセンス", f'<a href="{REPO}/blob/main/LICENSING.md">GNU AGPL-3.0</a>'),
     ],
 
     "faq_h2": "よくある質問",
@@ -322,19 +322,18 @@ C = {
         ]),
         ("無料ですか？会社で使えますか？", [
             "無料です。CopySync は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。",
-            f'クローズドソースの製品に組み込む、改変を公開したくない、ホスティングサービスとして運用する、といった場合は<a href="{REPO}/blob/main/LICENSING.md">商用ライセンス</a>をご利用ください。',
         ]),
     ],
 
     "closing": "2 台のコンピューター、<br>ひとつのクリップボード。",
     "source": "GitHub でソースコードを見る",
-    "footer_license": "CopySync は GNU AGPL-3.0 のオープンソースです。商用ライセンスもあります。",
+    "footer_license": "CopySync は GNU AGPL-3.0 のオープンソースです。",
     "footer_label": "フッターのリンク",
     "footer_links": [
         ("すべてのリリース", f"{REPO}/releases"),
         ("更新履歴", f"{REPO}/blob/main/CHANGELOG.md"),
         ("技術資料（中国語）", f"{SITE}design/nat-traversal.html"),
-        ("商用ライセンス", f"{REPO}/blob/main/LICENSING.md"),
+        ("ライセンス", f"{REPO}/blob/main/LICENSING.md"),
         ("問題を報告", f"{REPO}/issues"),
     ],
 
