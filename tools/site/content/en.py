@@ -967,7 +967,7 @@ C = {
             ],
             "notes": [
                 "Windows 10 and Windows 11, x64.",
-                "The installer is about 23 MB, the portable zip about 28 MB.",
+                "The installer is about 23 MB, the portable zip about 29 MB.",
                 "After you close the window, CopySync keeps running in the notification area.",
             ],
         },
