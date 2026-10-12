@@ -29,7 +29,7 @@ C = {
     "dl_mac": "Download for Mac",
     "dl_win": "Download for Windows",
     "dl_linux": "Download for Linux",
-    "dl_note": "Version 1.6.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).",
+    "dl_note": "Version 1.6.1, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).",
     "start_link": "New here? Set it up in three steps →",
     "stage_label": "Demo: Command C on a MacBook turns a file into a sheet that flies over a direct connection to a Windows "
                    "laptop, where Ctrl V pastes it",
@@ -269,7 +269,7 @@ C = {
 
     "specs_h2": "Specifications",
     "specs": [
-        ("Version", '1.6.0, released <time datetime="2026-10-12">October 12, 2026</time>'),
+        ("Version", '1.6.1, released <time datetime="2026-10-12">October 12, 2026</time>'),
         ("Mac app", "macOS 13 Ventura or later; separate downloads for Apple silicon and Intel, about 25 MB each, no Rosetta; "
                     "a universal version for both is about 47 MB"),
         ("Windows app", "Windows 10 (21H2 or later) and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
