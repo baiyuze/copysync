@@ -116,7 +116,7 @@ func TestUnresolvedPeerIsNotDenied(t *testing.T) {
 		{"被本地网络权限拦下", []error{syscall.EHOSTUNREACH, syscall.EHOSTUNREACH}, 2, true},
 	} {
 		w := &fakeWriter{errs: c.errs}
-		err := writeOnLink(w, dst, []byte(magic))
+		err := writeUDP(w, dst, []byte(magic))
 		if w.n != c.writes || deniedByOS(err) != c.denied {
 			t.Errorf("%s：发了 %d 次，结果 %v；应当发 %d 次，被拦=%v", c.name, w.n, err, c.writes, c.denied)
 		}
@@ -130,7 +130,7 @@ func TestUnresolvedPeerKeepsDiscovery(t *testing.T) {
 	now := time.Now()
 	tr.nextProbe = now.Add(probeEvery)
 
-	err := writeOnLink(&fakeWriter{errs: []error{syscall.EHOSTUNREACH, syscall.EHOSTDOWN}}, netip.MustParseAddrPort("192.168.1.77:8788"), []byte(magic))
+	err := writeUDP(&fakeWriter{errs: []error{syscall.EHOSTUNREACH, syscall.EHOSTDOWN}}, netip.MustParseAddrPort("192.168.1.77:8788"), []byte(magic))
 	tr.noteSend(err, false, now)
 	tr.noteSend(nil, true, now.Add(time.Second))
 	if tr.rediscover || !tr.deniedSince.IsZero() || tr.nextProbe.Before(now.Add(time.Minute)) {

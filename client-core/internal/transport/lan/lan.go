@@ -1042,12 +1042,12 @@ func (t *Transport) send(dst netip.AddrPort, pkt []byte, probe bool) error {
 	if !running {
 		return ErrDisabled
 	}
-	if !onLink(dst.Addr()) {
-		_, err := conn.WriteToUDPAddrPort(pkt, dst)
-		return err
+	// 先发再判断是不是直连网段：onLink 要列举网卡，放在前面会让每个包都晚一点发出，
+	// 「搜索附近设备」关窗口前发出的最后一个 ping 就可能晚于撤下设备名的广播到达
+	err := writeUDP(conn, dst, pkt)
+	if onLink(dst.Addr()) {
+		t.noteSend(err, probe, time.Now())
 	}
-	err := writeOnLink(conn, dst, pkt)
-	t.noteSend(err, probe, time.Now())
 	return err
 }
 
@@ -1056,13 +1056,13 @@ type udpWriter interface {
 	WriteToUDPAddrPort(b []byte, addr netip.AddrPort) (int, error)
 }
 
-// writeOnLink 往直连网段里的地址发一个包。
+// writeUDP 发一个包。
 //
-// 对方不在线时，ARP 解析失败的那一次发送也返回 EHOSTUNREACH，与被本地网络权限拦下时相同，
+// 直连网段里的对方不在线时，ARP 解析失败的那一次发送也返回 EHOSTUNREACH，与被本地网络权限拦下时相同，
 // 但紧接着再发得到的是 EHOSTDOWN：系统把对方标成不在线，20 秒内都这样。被权限拦下的包到不了 ARP
 // 那一步，再发还是 EHOSTUNREACH。所以遇到它就再发一次，以第二次的结果为准。
-// 第一次没有发出去，对方最多收到一份。
-func writeOnLink(w udpWriter, dst netip.AddrPort, pkt []byte) error {
+// 第一次没有发出去，对方最多收到一份。只有 macOS 会把错误认作被拦，其他系统只发一次。
+func writeUDP(w udpWriter, dst netip.AddrPort, pkt []byte) error {
 	_, err := w.WriteToUDPAddrPort(pkt, dst)
 	if deniedByOS(err) {
 		_, err = w.WriteToUDPAddrPort(pkt, dst)
