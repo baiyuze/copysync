@@ -22,16 +22,18 @@ REPO = "baiyuze/copysync"
 DEFAULT_LOG = Path.home() / ".copysync-stats" / "downloads.jsonl"
 
 # 文件名 → 类别。1.0.0 的文件名带版本号，后来的不带，两种都要认
+# 1.6.0 起 Mac 分 Apple 芯片、Intel 与通用三个 DMG，合在一起算；Linux 的 .deb 与 tar.gz 也合在一起
 CATEGORIES = [
     ("Mac 客户端", re.compile(r"^CopySync.*\.dmg$")),
     ("Windows 安装包", re.compile(r"^CopySync-Setup\.exe$")),
     ("Windows 便携版", re.compile(r"^CopySync-windows-x64\.zip$")),
+    ("Linux 客户端", re.compile(r"^CopySync-linux-(amd64|arm64)\.(deb|tar\.gz)$")),
     ("服务器 Linux", re.compile(r"^copysync-server.*-linux-(amd64|arm64)\.tar\.gz$")),
     ("服务器 macOS", re.compile(r"^copysync-server.*-macos\.tar\.gz$")),
     ("服务器 Windows", re.compile(r"^copysync-server.*-windows-amd64\.zip$")),
 ]
 NAMES = [name for name, _ in CATEGORIES]
-CLIENTS = NAMES[:3]
+CLIENTS = NAMES[:4]
 
 
 def category(asset: str):
@@ -116,7 +118,7 @@ def main() -> None:
                 + [["客户端合计", str(clients)], ["服务器合计", str(servers)]]))
 
     print("\n按版本：\n")
-    short = ["Mac", "Win 安装", "Win 便携", "服务器 Linux", "服务器 Mac", "服务器 Win"]
+    short = ["Mac", "Win 安装", "Win 便携", "Linux", "服务器 Linux", "服务器 Mac", "服务器 Win"]
     rows = []
     for tag, files in counts.items():  # 接口按发布时间从新到旧返回
         c = by_category({tag: files})
