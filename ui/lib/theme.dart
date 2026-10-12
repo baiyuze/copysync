@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 /// CopySync 的设计系统。
@@ -136,10 +138,26 @@ extension PaletteAccess on BuildContext {
 }
 
 /// 等宽字体：配对码、指纹、服务器地址这类需要逐字符核对的内容。
-const monoFamily = 'Menlo';
+/// Windows 没有 Menlo，找不到时会退回 Segoe UI，数字就不等宽了。
+final monoFamily = Platform.isWindows ? 'Consolas' : 'Menlo';
 
-/// [fontFamily] 只给截图渲染用：App 本身不指定，跟随系统字体（SF Pro 与苹方）。
-ThemeData buildTheme(Brightness brightness, {String? fontFamily, List<String>? fontFamilyFallback}) {
+/// Windows 上汉字用哪些字体，按界面语言 [language] 排先后。
+///
+/// Flutter 在 Windows 上默认只认 Segoe UI，汉字交给系统逐字回退：中日共用的字常落到
+/// 日文字体，简体独有的字落到雅黑或宋体，同一行里字形参差不齐。把回退顺序定死，
+/// 汉字就统一用同一套字体，和系统自带的应用一致。
+List<String> windowsFontFallback(String language) => language == 'ja'
+    ? const ['Yu Gothic UI', 'Meiryo UI', 'Microsoft YaHei UI']
+    : const ['Microsoft YaHei UI', 'Microsoft YaHei', 'Yu Gothic UI'];
+
+/// [fontFamily] 只给截图渲染用：App 本身不指定。Mac 上跟随系统字体（SF Pro 与苹方），
+/// Windows 上用 Segoe UI，汉字按 [language] 用 [windowsFontFallback] 里的字体。
+ThemeData buildTheme(Brightness brightness,
+    {String? fontFamily, List<String>? fontFamilyFallback, String language = 'zh'}) {
+  if (fontFamily == null && Platform.isWindows) {
+    fontFamily = 'Segoe UI';
+    fontFamilyFallback = windowsFontFallback(language);
+  }
   final dark = brightness == Brightness.dark;
   final p = dark ? AppPalette.dark : AppPalette.light;
 

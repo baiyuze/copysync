@@ -203,7 +203,7 @@ class _DeviceMenu extends StatelessWidget {
               TextField(
                 controller: controller,
                 autofocus: true,
-                style: const TextStyle(fontFamily: monoFamily, fontSize: 14),
+                style: TextStyle(fontFamily: monoFamily, fontSize: 14),
                 decoration: const InputDecoration(hintText: '192.168.1.20'),
                 onSubmitted: (v) => Navigator.pop(ctx, v),
               ),

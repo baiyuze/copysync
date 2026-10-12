@@ -324,7 +324,7 @@ class _JoinTabState extends State<_JoinTab> {
               maxLength: 6,
               textCapitalization: TextCapitalization.characters,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
                 fontFamily: monoFamily,
@@ -350,7 +350,7 @@ class _JoinTabState extends State<_JoinTab> {
               TextField(
                 controller: _addressController,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontFamily: monoFamily, fontSize: 14),
+                style: TextStyle(fontFamily: monoFamily, fontSize: 14),
                 decoration: InputDecoration(
                   labelText: l.peerAddress,
                   hintText: '192.168.1.20',

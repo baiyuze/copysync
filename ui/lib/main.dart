@@ -28,8 +28,9 @@ class CopySyncApp extends StatefulWidget {
 
 class _CopySyncAppState extends State<CopySyncApp> {
   late final AppState _state;
-  final _light = buildTheme(Brightness.light);
-  final _dark = buildTheme(Brightness.dark);
+
+  /// 按界面语言缓存的浅色、深色主题：Windows 上中文和日文的汉字用不同的字体
+  final _themes = <String, (ThemeData, ThemeData)>{};
 
   @override
   void initState() {
@@ -52,21 +53,32 @@ class _CopySyncAppState extends State<CopySyncApp> {
       // 语言设置存在后台服务的配置里，配置变了要重建 MaterialApp 才会换语言
       child: ListenableBuilder(
         listenable: _state,
-        builder: (context, _) => MaterialApp(
-          title: 'CopySync',
-          debugShowCheckedModeBanner: false,
-          theme: _light,
-          darkTheme: _dark,
-          locale: localeFromSetting(_state.config?.language ?? ''),
-          supportedLocales: supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          localeListResolutionCallback: (preferred, _) => resolveLocale(preferred),
-          builder: (context, child) {
-            appL10n = context.l10n;
-            return child!;
-          },
-          home: const Shell(),
-        ),
+        builder: (context, _) {
+          final locale = localeFromSetting(_state.config?.language ?? '');
+          final language =
+              (locale ?? resolveLocale(WidgetsBinding.instance.platformDispatcher.locales)).languageCode;
+          final (light, dark) = _themes.putIfAbsent(
+              language,
+              () => (
+                    buildTheme(Brightness.light, language: language),
+                    buildTheme(Brightness.dark, language: language),
+                  ));
+          return MaterialApp(
+            title: 'CopySync',
+            debugShowCheckedModeBanner: false,
+            theme: light,
+            darkTheme: dark,
+            locale: locale,
+            supportedLocales: supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localeListResolutionCallback: (preferred, _) => resolveLocale(preferred),
+            builder: (context, child) {
+              appL10n = context.l10n;
+              return child!;
+            },
+            home: const Shell(),
+          );
+        },
       ),
     );
   }
