@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # 构建并打出可分发的发布包到 release/。
 #
-#   CopySync.dmg                          macOS 客户端，Intel 与 Apple 芯片通用
+#   CopySync-mac-apple-silicon.dmg        macOS 客户端，Apple 芯片（M1 及更新）
+#   CopySync-mac-intel.dmg                macOS 客户端，Intel 芯片
+#   CopySync.dmg                          macOS 客户端，两种芯片通用（体积约为单芯片版的两倍；
+#                                         早期版本的下载链接指向它，一直保留）
 #   copysync-server-linux-amd64.tar.gz    信令服务器 + systemd / Docker 部署文件
 #   copysync-server-linux-arm64.tar.gz
 #   copysync-server-macos.tar.gz          把服务器放在其中一台 Mac 上时用（LaunchAgent 安装脚本）
@@ -9,6 +12,7 @@
 #
 # Windows 的安装程序与便携版（CopySync-Setup.exe、CopySync-windows-x64.zip）只能在 Windows 上
 # 构建：由 CI 的 Windows 任务运行 scripts/build-windows.ps1 产出，发布时从构建产物里取。
+# Linux 的 .deb 与 tar.gz 同理，由 CI 的 Linux 任务运行 scripts/package-linux.sh 产出。
 #
 # 文件名不带版本号：网站与 README 用 releases/latest/download/<文件名> 直链下载，
 # 带版本号的话每发一版这些链接都会失效。版本号见 Release 标题与 copysync-server -version。
@@ -64,35 +68,65 @@ EOF
     return 1
 }
 
-echo "▶ 打包 DMG"
-VOL=CopySync
-SRC="$STAGE/dmg"
-mkdir -p "$SRC/.background"
-ditto dist/CopySync.app "$SRC/CopySync.app"
-ln -s /Applications "$SRC/Applications"
+# thin_app 从通用 App 拆出单一芯片的版本：每个通用二进制只留一种架构，再由内向外重新签名
+# （改了二进制，原来的签名就失效了，Apple 芯片上会拒绝运行）。
+thin_app() { # <通用 App> <输出 App> <arm64 | x86_64>
+    local src=$1 dst=$2 arch=$3 f
+    ditto "$src" "$dst"
+    while IFS= read -r -d '' f; do
+        if lipo -archs "$f" 2>/dev/null | grep -qw arm64 && lipo -archs "$f" | grep -qw x86_64; then
+            lipo -thin "$arch" -output "$f.thin" "$f"
+            chmod "$(stat -f %Lp "$f")" "$f.thin"
+            mv "$f.thin" "$f"
+        fi
+    done < <(find "$dst" -type f -print0)
+    codesign --force --sign - "$dst/Contents/Helpers/copysync-cli"
+    codesign --force --sign - "$dst/Contents/Helpers/CopySyncDaemon.app"
+    codesign --force --sign - "$dst/Contents/Frameworks/App.framework"
+    codesign --force --sign - "$dst/Contents/Frameworks/FlutterMacOS.framework"
+    codesign --force --sign - --preserve-metadata=entitlements,requirements,flags "$dst"
+    codesign --verify --deep --strict "$dst"
+}
+
+# 安装窗口的背景三个 DMG 共用
 swift tools/dmg/background.swift "$STAGE/bg" >/dev/null
 tiffutil -cathidpicheck "$STAGE/bg/background.png" "$STAGE/bg/background@2x.png" \
-    -out "$SRC/.background/background.tiff" 2>/dev/null
+    -out "$STAGE/background.tiff" 2>/dev/null
 
-# 同名的卷还挂着的话，Finder 会把布局写到另一个窗口上
-hdiutil detach "/Volumes/$VOL" -quiet 2>/dev/null || true
-hdiutil create -volname "$VOL" -srcfolder "$SRC" -fs HFS+ -format UDRW -ov "$STAGE/rw.dmg" -quiet
-MNT=$(hdiutil attach "$STAGE/rw.dmg" -readwrite -noverify -noautoopen | awk -F'\t' '/\/Volumes\//{print $NF}')
-if layout_dmg "$VOL"; then
-    echo "  ✓ 安装窗口布局"
-else
-    echo "  ! 没能设置安装窗口布局（Finder 自动化权限未授予），DMG 仍可正常安装"
-fi
-# 卷图标放在布局之后：-srcfolder 不会带上 .VolumeIcon.icns，
-# 而 Finder 保存布局时又会清掉卷的自定义图标标记
-cp assets/brand/AppIcon.icns "$MNT/.VolumeIcon.icns"
-SetFile -a C "$MNT"
-rm -rf "$MNT/.fseventsd"
-sync
-hdiutil detach "$MNT" -quiet
-hdiutil convert "$STAGE/rw.dmg" -format UDZO -imagekey zlib-level=9 \
-    -o "$OUT/CopySync.dmg" -quiet
-echo "  ✓ CopySync.dmg（${VERSION}）"
+make_dmg() { # <App> <输出文件名>
+    local app=$1 name=$2 vol=CopySync src="$STAGE/dmg-$2" mnt
+    mkdir -p "$src/.background"
+    ditto "$app" "$src/CopySync.app"
+    ln -s /Applications "$src/Applications"
+    cp "$STAGE/background.tiff" "$src/.background/background.tiff"
+
+    # 同名的卷还挂着的话，Finder 会把布局写到另一个窗口上
+    hdiutil detach "/Volumes/$vol" -quiet 2>/dev/null || true
+    hdiutil create -volname "$vol" -srcfolder "$src" -fs HFS+ -format UDRW -ov "$STAGE/rw.dmg" -quiet
+    mnt=$(hdiutil attach "$STAGE/rw.dmg" -readwrite -noverify -noautoopen | awk -F'\t' '/\/Volumes\//{print $NF}')
+    if layout_dmg "$vol"; then
+        echo "  ✓ 安装窗口布局"
+    else
+        echo "  ! 没能设置安装窗口布局（Finder 自动化权限未授予），DMG 仍可正常安装"
+    fi
+    # 卷图标放在布局之后：-srcfolder 不会带上 .VolumeIcon.icns，
+    # 而 Finder 保存布局时又会清掉卷的自定义图标标记
+    cp assets/brand/AppIcon.icns "$mnt/.VolumeIcon.icns"
+    SetFile -a C "$mnt"
+    rm -rf "$mnt/.fseventsd"
+    sync
+    hdiutil detach "$mnt" -quiet
+    hdiutil convert "$STAGE/rw.dmg" -format UDZO -imagekey zlib-level=9 -o "$OUT/$name" -quiet
+    rm -f "$STAGE/rw.dmg"
+    echo "  ✓ $name（${VERSION}）"
+}
+
+echo "▶ 打包 DMG"
+thin_app dist/CopySync.app "$STAGE/arm64/CopySync.app" arm64
+thin_app dist/CopySync.app "$STAGE/x86_64/CopySync.app" x86_64
+make_dmg "$STAGE/arm64/CopySync.app" CopySync-mac-apple-silicon.dmg
+make_dmg "$STAGE/x86_64/CopySync.app" CopySync-mac-intel.dmg
+make_dmg dist/CopySync.app CopySync.dmg
 
 # ─────────────────────────── 服务器 ───────────────────────────
 
