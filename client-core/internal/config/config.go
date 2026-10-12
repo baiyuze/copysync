@@ -137,9 +137,15 @@ func DefaultPaths() (Paths, error) {
 		}
 		root = filepath.Join(base, "CopySync")
 	default:
-		base, err := os.UserConfigDir()
-		if err != nil {
-			return Paths{}, err
+		// Linux 等：数据库、缓存、身份都是数据而不是配置，按 XDG 放在 ~/.local/share 下。
+		// 界面要找到同一个位置，见 ui/lib/daemon_client.dart 的 defaultDataDir
+		base := os.Getenv("XDG_DATA_HOME")
+		if !filepath.IsAbs(base) {
+			home, err := os.UserHomeDir()
+			if err != nil {
+				return Paths{}, err
+			}
+			base = filepath.Join(home, ".local", "share")
 		}
 		root = filepath.Join(base, "copysync")
 	}

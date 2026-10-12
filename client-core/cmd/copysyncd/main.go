@@ -50,7 +50,7 @@ func main() {
 		probe   = flag.Bool("probe-clipboard", false,
 			"诊断用：在主线程直接读一次剪贴板并打印结果后退出")
 		supervise = flag.Bool("supervise", false,
-			"守护模式：拉起后台服务，异常退出时自动重启（Windows 开机自启用）")
+			"守护模式：拉起后台服务，异常退出时自动重启（Windows、Linux 开机自启用）")
 	)
 	flag.Parse()
 
@@ -83,7 +83,7 @@ func main() {
 	}
 }
 
-// exitAlreadyRunning 是「已有实例在运行」的退出码。Windows 的守护进程见到它就不再重启。
+// exitAlreadyRunning 是「已有实例在运行」的退出码。守护进程见到它就不再重启。
 const exitAlreadyRunning = 3
 
 var errAlreadyRunning = errors.New("已有后台服务在运行")
@@ -120,7 +120,7 @@ func probeClipboard() {
 func run(dataDir string) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	// 注销、关机时由剪贴板窗口收到系统通知后调用（目前只有 Windows），见下方 SetSystemHooks
+	// 注销、关机时调用（Windows 由剪贴板窗口收到系统通知，Linux 是与 X11 显示的连接断了），见下方 SetSystemHooks
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -409,7 +409,7 @@ func run(dataDir string) error {
 	stopTray := startTray(ctx, cancel, dataDir == "")
 	defer stopTray()
 
-	// 系统事件（目前只有 Windows 上报）：注销关机时正常退出，唤醒后立即重新探测网络
+	// 系统事件（Windows 上报注销关机与唤醒，Linux 上报注销）：注销关机时正常退出，唤醒后立即重新探测网络
 	clipboard.SetSystemHooks(
 		func() {
 			slog.Info("系统正在注销或关机，退出")
