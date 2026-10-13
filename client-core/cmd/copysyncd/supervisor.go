@@ -44,6 +44,16 @@ func logOutput(dataDir string) io.Writer {
 	return w
 }
 
+// logFiles 是诊断报告要读的日志，与 logOutput 写的是同一处：轮转出去的旧文件在前。
+func logFiles(dataDir string) (logs []string, crash string) {
+	paths, err := resolvePaths(dataDir)
+	if err != nil {
+		return nil, ""
+	}
+	dir := filepath.Join(paths.Root, "logs")
+	return []string{filepath.Join(dir, "daemon.log.1"), filepath.Join(dir, "daemon.log")}, filepath.Join(dir, "crash.log")
+}
+
 // runSupervisor 是守护模式：拉起后台服务，它异常退出就隔一会儿再拉起。
 //
 // 子进程正常退出（退出码 0：用户注销、或界面要求停止）或发现已有实例在运行时，

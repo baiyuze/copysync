@@ -416,36 +416,6 @@ abstract class AppLocalizations {
   /// **'Nothing of this kind'**
   String get historyEmptyFilteredTitle;
 
-  /// No description provided for @searchHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Search text and file names'**
-  String get searchHint;
-
-  /// No description provided for @searchClear.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear search'**
-  String get searchClear;
-
-  /// No description provided for @searchResultCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 match} other{{count} matches}}'**
-  String searchResultCount(int count);
-
-  /// No description provided for @searchEmptyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No matches for “{query}”'**
-  String searchEmptyTitle(String query);
-
-  /// No description provided for @searchEmptyBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Search looks through copied text and the names of copied files.'**
-  String get searchEmptyBody;
-
   /// No description provided for @historyEmptyBody.
   ///
   /// In en, this message translates to:
@@ -571,6 +541,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} and {others, plural, =1{1 more} other{{others} more}}'**
   String itemsSummary(String name, int others, int count);
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search text and file names'**
+  String get searchHint;
+
+  /// No description provided for @searchClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get searchClear;
+
+  /// No description provided for @searchResultCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 match} other{{count} matches}}'**
+  String searchResultCount(int count);
+
+  /// No description provided for @searchEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches for “{query}”'**
+  String searchEmptyTitle(String query);
+
+  /// No description provided for @searchEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Search looks through copied text and the names of copied files.'**
+  String get searchEmptyBody;
 
   /// No description provided for @imagePreviewTitle.
   ///
@@ -1423,6 +1423,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Device name updated'**
   String get deviceNameUpdated;
+
+  /// No description provided for @diagIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'This report has the app version, your system, settings, devices and recent logs. Device names, the server address, public IP addresses, your user folder and file names are replaced, and what you copy is never written to the logs. Issues on GitHub are public, so read it through before posting.'**
+  String get diagIntro;
+
+  /// No description provided for @diagVerboseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed logging'**
+  String get diagVerboseTitle;
+
+  /// No description provided for @diagVerboseDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'For connection problems: turn it on, make the problem happen again, then come back for the report. It turns itself off after 30 minutes.'**
+  String get diagVerboseDesc;
+
+  /// No description provided for @diagVerboseOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on for 30 minutes'**
+  String get diagVerboseOn;
+
+  /// No description provided for @diagVerboseUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'On until {time}'**
+  String diagVerboseUntil(String time);
+
+  /// No description provided for @diagVerboseOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get diagVerboseOff;
+
+  /// No description provided for @diagRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get diagRefresh;
+
+  /// No description provided for @diagSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as file'**
+  String get diagSave;
+
+  /// No description provided for @diagSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to your Downloads folder: {name}'**
+  String diagSaved(String name);
+
+  /// No description provided for @diagCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy report'**
+  String get diagCopy;
+
+  /// No description provided for @diagCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Report copied'**
+  String get diagCopied;
+
+  /// No description provided for @diagNewIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'New issue on GitHub'**
+  String get diagNewIssue;
+
+  /// No description provided for @diagIssueHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Report copied. Paste it into the issue\'s “Diagnostics report” box.'**
+  String get diagIssueHint;
+
+  /// No description provided for @diagFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t create the report: {detail}'**
+  String diagFailed(String detail);
 
   /// No description provided for @svcExtractTitle.
   ///

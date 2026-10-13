@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	"path/filepath"
+	"slices"
 	"testing"
 	"time"
 )
@@ -199,6 +200,24 @@ func TestSearchClips(t *testing.T) {
 		if want == "" && len(got) != 0 || want != "" && (len(got) != 1 || got[0] != want) {
 			t.Errorf("搜索 %q 得到 %v，应为 %q", query, got, want)
 		}
+	}
+}
+
+func TestFileNames(t *testing.T) {
+	s := openTest(t)
+	now := time.Now()
+	for _, id := range []string{"x", "y"} { // 两条记录的文件名相同，只出现一次
+		if err := s.PutClip(sampleClip(id, now)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	got, err := s.FileNames(100)
+	if err != nil {
+		t.Fatal(err)
+	}
+	slices.Sort(got)
+	if want := []string{"/tmp/a.txt", "/tmp/b.txt", "a.txt", "docs"}; !slices.Equal(got, want) {
+		t.Errorf("FileNames = %q，应为 %q", got, want)
 	}
 }
 

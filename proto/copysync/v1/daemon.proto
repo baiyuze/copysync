@@ -49,6 +49,12 @@ service DaemonService {
 
   // 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
   rpc GetNetwork(Empty) returns (NetworkInfo);
+
+  // 反馈问题用的诊断报告：版本、系统、设置、设备与网络状态、最近的日志。
+  // 设备名、服务器地址、公网 IP、用户目录、文件名已换成占位符，用户看过后自己贴进 issue
+  rpc ExportDiagnostics(ExportDiagnosticsRequest) returns (Diagnostics);
+  // 临时打开详细日志（调试级别），到时间自动关回去；minutes 为 0 立即关闭
+  rpc SetVerboseLog(SetVerboseLogRequest) returns (Status);
 }
 
 message Empty {}
@@ -333,6 +339,21 @@ message Status {
   bool lan_enabled = 9;
   // 系统拦下了本机发往局域网的包：macOS 上是没允许「本地网络」权限
   bool lan_blocked = 10;
+  // 详细日志打开到什么时候；0 表示没打开
+  int64 verbose_log_until_unix = 11;
+}
+
+message ExportDiagnosticsRequest {
+  int32 log_lines = 1;     // 带上最近多少行日志
+  string ui_version = 2;   // 界面的版本，写进报告
+}
+
+message Diagnostics {
+  string report = 1;
+}
+
+message SetVerboseLogRequest {
+  int32 minutes = 1;
 }
 
 message GetImagePreviewRequest {

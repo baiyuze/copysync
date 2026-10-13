@@ -192,25 +192,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get historyEmptyFilteredTitle => 'この種類の履歴はありません';
 
   @override
-  String get searchHint => 'テキストとファイル名を検索';
-
-  @override
-  String get searchClear => '検索をクリア';
-
-  @override
-  String searchResultCount(int count) {
-    return '$count 件見つかりました';
-  }
-
-  @override
-  String searchEmptyTitle(String query) {
-    return '「$query」は見つかりません';
-  }
-
-  @override
-  String get searchEmptyBody => 'コピーしたテキストとファイル名から検索します。';
-
-  @override
   String get historyEmptyBody => 'ペアリングしたどのデバイスでテキスト、画像、ファイルをコピーしても、ここに表示されます。';
 
   @override
@@ -278,6 +259,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String itemsSummary(String name, int others, int count) {
     return '$name ほか $others 件';
   }
+
+  @override
+  String get searchHint => 'テキストとファイル名を検索';
+
+  @override
+  String get searchClear => '検索をクリア';
+
+  @override
+  String searchResultCount(int count) {
+    return '$count 件見つかりました';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return '「$query」は見つかりません';
+  }
+
+  @override
+  String get searchEmptyBody => 'コピーしたテキストとファイル名から検索します。';
 
   @override
   String get imagePreviewTitle => '画像プレビュー';
@@ -744,6 +744,57 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get deviceNameUpdated => 'デバイス名を更新しました';
+
+  @override
+  String get diagIntro =>
+      'このレポートには、バージョン、システム、設定、デバイスの状態、最近のログが含まれます。デバイス名、サーバーのアドレス、グローバル IP アドレス、ユーザーフォルダ、ファイル名は置き換え済みで、コピーした内容はログに書かれません。GitHub の Issue は公開されるので、投稿する前に目を通してください。';
+
+  @override
+  String get diagVerboseTitle => '詳細ログ';
+
+  @override
+  String get diagVerboseDesc =>
+      '接続の問題を調べるときに使います。オンにして問題をもう一度起こしてから、ここでレポートを作り直してください。30 分後に自動でオフになります。';
+
+  @override
+  String get diagVerboseOn => '30 分間オンにする';
+
+  @override
+  String diagVerboseUntil(String time) {
+    return '$time までオン';
+  }
+
+  @override
+  String get diagVerboseOff => 'オフにする';
+
+  @override
+  String get diagRefresh => '作り直す';
+
+  @override
+  String get diagSave => 'ファイルに保存';
+
+  @override
+  String diagSaved(String name) {
+    return '「ダウンロード」フォルダに保存しました：$name';
+  }
+
+  @override
+  String get diagCopy => 'レポートをコピー';
+
+  @override
+  String get diagCopied => 'レポートをコピーしました';
+
+  @override
+  String get diagNewIssue => 'GitHub で Issue を作成';
+
+  @override
+  String get diagIssueHint =>
+      'レポートをコピーしました。Issue の「Diagnostics report」欄に貼り付けてください';
+
+  @override
+  String diagFailed(String detail) {
+    return 'レポートを作成できませんでした：$detail';
+  }
 
   @override
   String get svcExtractTitle => '先に CopySync をインストールまたは展開してください';

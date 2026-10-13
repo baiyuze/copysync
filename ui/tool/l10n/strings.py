@@ -256,6 +256,22 @@ S = [
     ("serverUpdated", "Server updated. Reconnecting…", "服务器地址已更新，正在重连", "サーバーを更新しました。再接続しています…", "伺服器位址已更新，正在重新連線", "伺服器地址已更新，正在重新連線"),
     ("deviceNameUpdated", "Device name updated", "设备名称已更新", "デバイス名を更新しました", "裝置名稱已更新", "裝置名稱已更新"),
 
+    # ── 反馈问题：诊断报告 ──
+    ("diagIntro", "This report has the app version, your system, settings, devices and recent logs. Device names, the server address, public IP addresses, your user folder and file names are replaced, and what you copy is never written to the logs. Issues on GitHub are public, so read it through before posting.", "报告里有版本、系统、设置、设备状态和最近的日志。设备名、服务器地址、公网 IP、用户目录和文件名都已替换，复制的内容从不写进日志。GitHub 上的问题是公开的，贴出去之前请看一遍。", "このレポートには、バージョン、システム、設定、デバイスの状態、最近のログが含まれます。デバイス名、サーバーのアドレス、グローバル IP アドレス、ユーザーフォルダ、ファイル名は置き換え済みで、コピーした内容はログに書かれません。GitHub の Issue は公開されるので、投稿する前に目を通してください。", "報告裡有版本、系統、設定、裝置狀態和最近的記錄檔。裝置名稱、伺服器位址、公用 IP、使用者資料夾和檔名都已替換，複製的內容從不寫進記錄檔。GitHub 上的問題是公開的，貼出去之前請看一遍。", "報告裏有版本、系統、設定、裝置狀態和最近的日誌。裝置名稱、伺服器地址、公網 IP、用戶資料夾和檔案名稱都已替換，複製的內容從不寫進日誌。GitHub 上的問題是公開的，貼出去之前請看一遍。"),
+    ("diagVerboseTitle", "Detailed logging", "详细日志", "詳細ログ", "詳細記錄檔", "詳細日誌"),
+    ("diagVerboseDesc", "For connection problems: turn it on, make the problem happen again, then come back for the report. It turns itself off after 30 minutes.", "连接方面的问题常要看它：打开后重现一次问题，再回来生成报告。30 分钟后自动关闭。", "接続の問題を調べるときに使います。オンにして問題をもう一度起こしてから、ここでレポートを作り直してください。30 分後に自動でオフになります。", "連線方面的問題常要看它：開啟後重現一次問題，再回來產生報告。30 分鐘後自動關閉。", "連線方面的問題常要看它：開啟後重現一次問題，再回來產生報告。30 分鐘後自動關閉。"),
+    ("diagVerboseOn", "Turn on for 30 minutes", "打开 30 分钟", "30 分間オンにする", "開啟 30 分鐘", "開啟 30 分鐘"),
+    ("diagVerboseUntil", "On until {time}", "已打开，{time} 自动关闭", "{time} までオン", "已開啟，{time} 自動關閉", "已開啟，{time} 自動關閉"),
+    ("diagVerboseOff", "Turn off", "关闭", "オフにする", "關閉", "關閉"),
+    ("diagRefresh", "Regenerate", "重新生成", "作り直す", "重新產生", "重新產生"),
+    ("diagSave", "Save as file", "保存为文件", "ファイルに保存", "儲存為檔案", "儲存為檔案"),
+    ("diagSaved", "Saved to your Downloads folder: {name}", "已保存到「下载」文件夹：{name}", "「ダウンロード」フォルダに保存しました：{name}", "已儲存到「下載」資料夾：{name}", "已儲存到「下載」資料夾：{name}"),
+    ("diagCopy", "Copy report", "拷贝报告", "レポートをコピー", "複製報告", "拷貝報告"),
+    ("diagCopied", "Report copied", "报告已拷贝", "レポートをコピーしました", "報告已複製", "報告已拷貝"),
+    ("diagNewIssue", "New issue on GitHub", "在 GitHub 上提问题", "GitHub で Issue を作成", "在 GitHub 上回報", "在 GitHub 上回報"),
+    ("diagIssueHint", "Report copied. Paste it into the issue's “Diagnostics report” box.", "报告已拷贝，粘贴到问题里的「诊断报告」一栏", "レポートをコピーしました。Issue の「Diagnostics report」欄に貼り付けてください", "報告已複製，貼到問題裡的「診斷報告」一欄", "報告已拷貝，貼到問題裏的「診斷報告」一欄"),
+    ("diagFailed", "Couldn't create the report: {detail}", "生成报告失败：{detail}", "レポートを作成できませんでした：{detail}", "產生報告失敗：{detail}", "產生報告失敗：{detail}"),
+
     # ── 启用后台服务的引导页 ──
     ("svcExtractTitle", "Install or extract CopySync first", "先解压或安装 CopySync", "先に CopySync をインストールまたは展開してください", "先解壓縮或安裝 CopySync", "先解壓縮或安裝 CopySync"),
     ("svcExtractBody", "CopySync is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.", "CopySync 现在是直接从压缩包里打开的，关掉之后它所在的临时文件夹就会被删除。运行安装程序，或者把整个文件夹解压出来再打开，就可以启用后台同步。", "CopySync は zip から直接開かれていて、閉じると一時フォルダごと消えます。インストーラーを実行するか、フォルダ全体を展開してから開くと、バックグラウンド同期を有効にできます。", "CopySync 現在是直接從壓縮檔裡打開的，關掉之後它所在的暫存資料夾就會被刪除。執行安裝程式，或者把整個資料夾解壓縮出來再打開，就可以啟用背景同步。", "CopySync 現在是直接從壓縮檔裏開啟的，關閉之後它所在的臨時資料夾就會被刪除。執行安裝程式，或者把整個資料夾解壓縮出來再開啟，就可以啟用背景同步。"),

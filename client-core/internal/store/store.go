@@ -315,6 +315,28 @@ ORDER BY created_at DESC LIMIT ?`,
 		KindText, like, KindHTML, like, like, KindImage, like, limit)
 }
 
+// FileNames 返回复制过的文件、文件夹名，以及它们在源电脑上的完整路径（去重，最多 limit 个）。
+// 诊断报告据此把它们从日志里换掉。
+func (s *Store) FileNames(limit int) ([]string, error) {
+	rows, err := s.db.Query(`
+SELECT name FROM clip_items
+UNION SELECT value FROM clips, json_each(clips.source_paths)
+LIMIT ?`, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		out = append(out, name)
+	}
+	return out, rows.Err()
+}
+
 const clipCols = `id, kind, status, origin_device_id, origin_device_name, outgoing,
                   total_size, text_preview, text_content, text_plain, cache_path,
                   source_paths, error, created_at, expires_at`

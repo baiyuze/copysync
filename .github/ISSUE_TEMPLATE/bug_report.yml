@@ -1,0 +1,28 @@
+# CopySync 的「设置 → 反馈问题 → 在 GitHub 上提问题」打开这个模板，并预先填好 version。
+# 改了字段的 id，要一起改 ui/lib/widgets/feedback_dialog.dart 里的地址。
+name: Bug report / 问题反馈
+description: Something doesn't work as expected. / 用起来有问题。
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened / 发生了什么
+      description: What you did, what you expected, and what happened instead. / 做了什么、以为会怎样、实际怎样。
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: CopySync version / 版本
+      placeholder: "1.7.0"
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics report / 诊断报告
+      description: >-
+        In CopySync, open Settings → Report a problem and copy the report, then paste it here.
+        Device names, the server address, public IP addresses and file names are already replaced;
+        read it through before posting, because issues are public.
+        在 CopySync 的「设置 → 反馈问题」里拷贝报告，粘贴到这里。设备名、服务器地址、公网 IP 和文件名已经替换掉；
+        问题是公开的，贴之前请看一遍。
+      render: text

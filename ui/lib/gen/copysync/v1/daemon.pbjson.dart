@@ -762,6 +762,13 @@ const Status$json = {
     },
     {'1': 'lan_enabled', '3': 9, '4': 1, '5': 8, '10': 'lanEnabled'},
     {'1': 'lan_blocked', '3': 10, '4': 1, '5': 8, '10': 'lanBlocked'},
+    {
+      '1': 'verbose_log_until_unix',
+      '3': 11,
+      '4': 1,
+      '5': 3,
+      '10': 'verboseLogUntilUnix'
+    },
   ],
 };
 
@@ -774,7 +781,48 @@ final $typed_data.Uint8List statusDescriptor = $convert.base64Decode(
     'ZWQYBSABKANSDmNhY2hlQnl0ZXNVc2VkEiEKDHBlZXJzX29ubGluZRgGIAEoBVILcGVlcnNPbm'
     'xpbmUSGAoHdmVyc2lvbhgHIAEoCVIHdmVyc2lvbhIrChFzZXJ2ZXJfY29uZmlndXJlZBgIIAEo'
     'CFIQc2VydmVyQ29uZmlndXJlZBIfCgtsYW5fZW5hYmxlZBgJIAEoCFIKbGFuRW5hYmxlZBIfCg'
-    'tsYW5fYmxvY2tlZBgKIAEoCFIKbGFuQmxvY2tlZA==');
+    'tsYW5fYmxvY2tlZBgKIAEoCFIKbGFuQmxvY2tlZBIzChZ2ZXJib3NlX2xvZ191bnRpbF91bml4'
+    'GAsgASgDUhN2ZXJib3NlTG9nVW50aWxVbml4');
+
+@$core.Deprecated('Use exportDiagnosticsRequestDescriptor instead')
+const ExportDiagnosticsRequest$json = {
+  '1': 'ExportDiagnosticsRequest',
+  '2': [
+    {'1': 'log_lines', '3': 1, '4': 1, '5': 5, '10': 'logLines'},
+    {'1': 'ui_version', '3': 2, '4': 1, '5': 9, '10': 'uiVersion'},
+  ],
+};
+
+/// Descriptor for `ExportDiagnosticsRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List exportDiagnosticsRequestDescriptor =
+    $convert.base64Decode(
+        'ChhFeHBvcnREaWFnbm9zdGljc1JlcXVlc3QSGwoJbG9nX2xpbmVzGAEgASgFUghsb2dMaW5lcx'
+        'IdCgp1aV92ZXJzaW9uGAIgASgJUgl1aVZlcnNpb24=');
+
+@$core.Deprecated('Use diagnosticsDescriptor instead')
+const Diagnostics$json = {
+  '1': 'Diagnostics',
+  '2': [
+    {'1': 'report', '3': 1, '4': 1, '5': 9, '10': 'report'},
+  ],
+};
+
+/// Descriptor for `Diagnostics`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List diagnosticsDescriptor = $convert
+    .base64Decode('CgtEaWFnbm9zdGljcxIWCgZyZXBvcnQYASABKAlSBnJlcG9ydA==');
+
+@$core.Deprecated('Use setVerboseLogRequestDescriptor instead')
+const SetVerboseLogRequest$json = {
+  '1': 'SetVerboseLogRequest',
+  '2': [
+    {'1': 'minutes', '3': 1, '4': 1, '5': 5, '10': 'minutes'},
+  ],
+};
+
+/// Descriptor for `SetVerboseLogRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List setVerboseLogRequestDescriptor =
+    $convert.base64Decode(
+        'ChRTZXRWZXJib3NlTG9nUmVxdWVzdBIYCgdtaW51dGVzGAEgASgFUgdtaW51dGVz');
 
 @$core.Deprecated('Use getImagePreviewRequestDescriptor instead')
 const GetImagePreviewRequest$json = {

@@ -58,15 +58,14 @@ func main() {
 		os.Exit(runSupervisor(*dataDir))
 	}
 
-	level := slog.LevelInfo
 	if *verbose {
-		level = slog.LevelDebug
+		logLevel.Set(slog.LevelDebug)
 	}
 	logOut := logOutput(*dataDir)
 	if *probe {
 		logOut = os.Stderr
 	}
-	slog.SetDefault(slog.New(slog.NewTextHandler(logOut, &slog.HandlerOptions{Level: level})))
+	slog.SetDefault(slog.New(slog.NewTextHandler(logOut, &slog.HandlerOptions{Level: &logLevel})))
 
 	if *probe {
 		probeClipboard()
@@ -208,6 +207,12 @@ func run(dataDir string) error {
 	// 状态快照要由 gRPC 服务组装，而它晚于 peerMgr 创建，这里先记下"状态变了"，
 	// 等服务就绪后统一推送。容量 1 让连续的变化合并成一次刷新。
 	statusDirty := make(chan struct{}, 1)
+	verbose := &verboseLog{base: logLevel.Level(), changed: func() {
+		select {
+		case statusDirty <- struct{}{}:
+		default:
+		}
+	}}
 
 	peerMgr, err := peers.NewManager(peers.Options{
 		Identity:   id,
@@ -331,6 +336,9 @@ func run(dataDir string) error {
 		ConfirmPairing:           peerMgr.ConfirmPairing,
 		Unpair:                   peerMgr.Unpair,
 		SetDeviceAddress:         peerMgr.SetDeviceAddress,
+		LogFiles:                 func() ([]string, string) { return logFiles(dataDir) },
+		VerboseLog:               verbose.Set,
+		VerboseUntil:             verbose.Until,
 		ShowNearby:               peerMgr.ShowNearby,
 		Nearby:                   peerMgr.Nearby,
 		PairNearby:               peerMgr.PairNearby,

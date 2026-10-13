@@ -2533,6 +2533,7 @@ class Status extends $pb.GeneratedMessage {
     $core.bool? serverConfigured,
     $core.bool? lanEnabled,
     $core.bool? lanBlocked,
+    $fixnum.Int64? verboseLogUntilUnix,
   }) {
     final result = Status._();
     if (deviceId != null) result.deviceId = deviceId;
@@ -2547,6 +2548,8 @@ class Status extends $pb.GeneratedMessage {
     if (serverConfigured != null) result.serverConfigured = serverConfigured;
     if (lanEnabled != null) result.lanEnabled = lanEnabled;
     if (lanBlocked != null) result.lanBlocked = lanBlocked;
+    if (verboseLogUntilUnix != null)
+      result.verboseLogUntilUnix = verboseLogUntilUnix;
     return result;
   }
 
@@ -2574,6 +2577,7 @@ class Status extends $pb.GeneratedMessage {
     ..aOB(8, _omitFieldNames ? '' : 'serverConfigured')
     ..aOB(9, _omitFieldNames ? '' : 'lanEnabled')
     ..aOB(10, _omitFieldNames ? '' : 'lanBlocked')
+    ..aInt64(11, _omitFieldNames ? '' : 'verboseLogUntilUnix')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2687,6 +2691,203 @@ class Status extends $pb.GeneratedMessage {
   $core.bool hasLanBlocked() => $_has(9);
   @$pb.TagNumber(10)
   void clearLanBlocked() => $_clearField(10);
+
+  /// 详细日志打开到什么时候；0 表示没打开
+  @$pb.TagNumber(11)
+  $fixnum.Int64 get verboseLogUntilUnix => $_getI64(10);
+  @$pb.TagNumber(11)
+  set verboseLogUntilUnix($fixnum.Int64 value) => $_setInt64(10, value);
+  @$pb.TagNumber(11)
+  $core.bool hasVerboseLogUntilUnix() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearVerboseLogUntilUnix() => $_clearField(11);
+}
+
+class ExportDiagnosticsRequest extends $pb.GeneratedMessage {
+  factory ExportDiagnosticsRequest({
+    $core.int? logLines,
+    $core.String? uiVersion,
+  }) {
+    final result = ExportDiagnosticsRequest._();
+    if (logLines != null) result.logLines = logLines;
+    if (uiVersion != null) result.uiVersion = uiVersion;
+    return result;
+  }
+
+  ExportDiagnosticsRequest._();
+
+  factory ExportDiagnosticsRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      ExportDiagnosticsRequest()..mergeFromBuffer(data, registry);
+  factory ExportDiagnosticsRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      ExportDiagnosticsRequest()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ExportDiagnosticsRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: ExportDiagnosticsRequest.$_createMessage)
+    ..aI(1, _omitFieldNames ? '' : 'logLines')
+    ..aOS(2, _omitFieldNames ? '' : 'uiVersion')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ExportDiagnosticsRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ExportDiagnosticsRequest copyWith(
+          void Function(ExportDiagnosticsRequest) updates) =>
+      super.copyWith((message) => updates(message as ExportDiagnosticsRequest))
+          as ExportDiagnosticsRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated(
+      'Use ExportDiagnosticsRequest() / ExportDiagnosticsRequest.new instead')
+  static ExportDiagnosticsRequest create() => ExportDiagnosticsRequest._();
+  static $pb.GeneratedMessage $_createMessage() => ExportDiagnosticsRequest._();
+  @$core.override
+  ExportDiagnosticsRequest createEmptyInstance() =>
+      ExportDiagnosticsRequest._();
+  @$core.pragma('dart2js:noInline')
+  static ExportDiagnosticsRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ExportDiagnosticsRequest>(
+          ExportDiagnosticsRequest.$_createMessage);
+  static ExportDiagnosticsRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get logLines => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set logLines($core.int value) => $_setSignedInt32(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasLogLines() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLogLines() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get uiVersion => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set uiVersion($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasUiVersion() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearUiVersion() => $_clearField(2);
+}
+
+class Diagnostics extends $pb.GeneratedMessage {
+  factory Diagnostics({
+    $core.String? report,
+  }) {
+    final result = Diagnostics._();
+    if (report != null) result.report = report;
+    return result;
+  }
+
+  Diagnostics._();
+
+  factory Diagnostics.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      Diagnostics()..mergeFromBuffer(data, registry);
+  factory Diagnostics.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      Diagnostics()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'Diagnostics',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: Diagnostics.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'report')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Diagnostics clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Diagnostics copyWith(void Function(Diagnostics) updates) =>
+      super.copyWith((message) => updates(message as Diagnostics))
+          as Diagnostics;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use Diagnostics() / Diagnostics.new instead')
+  static Diagnostics create() => Diagnostics._();
+  static $pb.GeneratedMessage $_createMessage() => Diagnostics._();
+  @$core.override
+  Diagnostics createEmptyInstance() => Diagnostics._();
+  @$core.pragma('dart2js:noInline')
+  static Diagnostics getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Diagnostics>(
+          Diagnostics.$_createMessage);
+  static Diagnostics? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get report => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set report($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasReport() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearReport() => $_clearField(1);
+}
+
+class SetVerboseLogRequest extends $pb.GeneratedMessage {
+  factory SetVerboseLogRequest({
+    $core.int? minutes,
+  }) {
+    final result = SetVerboseLogRequest._();
+    if (minutes != null) result.minutes = minutes;
+    return result;
+  }
+
+  SetVerboseLogRequest._();
+
+  factory SetVerboseLogRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      SetVerboseLogRequest()..mergeFromBuffer(data, registry);
+  factory SetVerboseLogRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      SetVerboseLogRequest()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SetVerboseLogRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'copysync.v1'),
+      createEmptyInstance: SetVerboseLogRequest.$_createMessage)
+    ..aI(1, _omitFieldNames ? '' : 'minutes')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetVerboseLogRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetVerboseLogRequest copyWith(void Function(SetVerboseLogRequest) updates) =>
+      super.copyWith((message) => updates(message as SetVerboseLogRequest))
+          as SetVerboseLogRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated(
+      'Use SetVerboseLogRequest() / SetVerboseLogRequest.new instead')
+  static SetVerboseLogRequest create() => SetVerboseLogRequest._();
+  static $pb.GeneratedMessage $_createMessage() => SetVerboseLogRequest._();
+  @$core.override
+  SetVerboseLogRequest createEmptyInstance() => SetVerboseLogRequest._();
+  @$core.pragma('dart2js:noInline')
+  static SetVerboseLogRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SetVerboseLogRequest>(
+          SetVerboseLogRequest.$_createMessage);
+  static SetVerboseLogRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get minutes => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set minutes($core.int value) => $_setSignedInt32(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasMinutes() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMinutes() => $_clearField(1);
 }
 
 class GetImagePreviewRequest extends $pb.GeneratedMessage {

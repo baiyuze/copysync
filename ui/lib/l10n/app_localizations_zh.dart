@@ -192,25 +192,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyEmptyFilteredTitle => '没有这一类的记录';
 
   @override
-  String get searchHint => '搜索文字和文件名';
-
-  @override
-  String get searchClear => '清除搜索';
-
-  @override
-  String searchResultCount(int count) {
-    return '找到 $count 条';
-  }
-
-  @override
-  String searchEmptyTitle(String query) {
-    return '没有找到「$query」';
-  }
-
-  @override
-  String get searchEmptyBody => '搜索的是复制过的文字和文件名。';
-
-  @override
   String get historyEmptyBody => '在任意一台已配对的设备上复制文本、图片或文件，记录会出现在这里。';
 
   @override
@@ -277,6 +258,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String itemsSummary(String name, int others, int count) {
     return '$name 等 $count 项';
   }
+
+  @override
+  String get searchHint => '搜索文字和文件名';
+
+  @override
+  String get searchClear => '清除搜索';
+
+  @override
+  String searchResultCount(int count) {
+    return '找到 $count 条';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return '没有找到「$query」';
+  }
+
+  @override
+  String get searchEmptyBody => '搜索的是复制过的文字和文件名。';
 
   @override
   String get imagePreviewTitle => '图片预览';
@@ -739,6 +739,55 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceNameUpdated => '设备名称已更新';
 
   @override
+  String get diagIntro =>
+      '报告里有版本、系统、设置、设备状态和最近的日志。设备名、服务器地址、公网 IP、用户目录和文件名都已替换，复制的内容从不写进日志。GitHub 上的问题是公开的，贴出去之前请看一遍。';
+
+  @override
+  String get diagVerboseTitle => '详细日志';
+
+  @override
+  String get diagVerboseDesc => '连接方面的问题常要看它：打开后重现一次问题，再回来生成报告。30 分钟后自动关闭。';
+
+  @override
+  String get diagVerboseOn => '打开 30 分钟';
+
+  @override
+  String diagVerboseUntil(String time) {
+    return '已打开，$time 自动关闭';
+  }
+
+  @override
+  String get diagVerboseOff => '关闭';
+
+  @override
+  String get diagRefresh => '重新生成';
+
+  @override
+  String get diagSave => '保存为文件';
+
+  @override
+  String diagSaved(String name) {
+    return '已保存到「下载」文件夹：$name';
+  }
+
+  @override
+  String get diagCopy => '拷贝报告';
+
+  @override
+  String get diagCopied => '报告已拷贝';
+
+  @override
+  String get diagNewIssue => '在 GitHub 上提问题';
+
+  @override
+  String get diagIssueHint => '报告已拷贝，粘贴到问题里的「诊断报告」一栏';
+
+  @override
+  String diagFailed(String detail) {
+    return '生成报告失败：$detail';
+  }
+
+  @override
   String get svcExtractTitle => '先解压或安装 CopySync';
 
   @override
@@ -991,25 +1040,6 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get historyEmptyFilteredTitle => '沒有這一類的記錄';
 
   @override
-  String get searchHint => '搜尋文字和檔案名稱';
-
-  @override
-  String get searchClear => '清除搜尋';
-
-  @override
-  String searchResultCount(int count) {
-    return '找到 $count 條';
-  }
-
-  @override
-  String searchEmptyTitle(String query) {
-    return '找不到「$query」';
-  }
-
-  @override
-  String get searchEmptyBody => '搜尋範圍是複製過的文字和檔案名稱。';
-
-  @override
   String get historyEmptyBody => '在任何一部已配對的裝置上複製文字、圖片或檔案，記錄會出現在這裏。';
 
   @override
@@ -1077,6 +1107,25 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String itemsSummary(String name, int others, int count) {
     return '$name 等 $count 項';
   }
+
+  @override
+  String get searchHint => '搜尋文字和檔案名稱';
+
+  @override
+  String get searchClear => '清除搜尋';
+
+  @override
+  String searchResultCount(int count) {
+    return '找到 $count 條';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return '找不到「$query」';
+  }
+
+  @override
+  String get searchEmptyBody => '搜尋範圍是複製過的文字和檔案名稱。';
 
   @override
   String get imagePreviewTitle => '圖片預覽';
@@ -1539,6 +1588,55 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get deviceNameUpdated => '裝置名稱已更新';
 
   @override
+  String get diagIntro =>
+      '報告裏有版本、系統、設定、裝置狀態和最近的日誌。裝置名稱、伺服器地址、公網 IP、用戶資料夾和檔案名稱都已替換，複製的內容從不寫進日誌。GitHub 上的問題是公開的，貼出去之前請看一遍。';
+
+  @override
+  String get diagVerboseTitle => '詳細日誌';
+
+  @override
+  String get diagVerboseDesc => '連線方面的問題常要看它：開啟後重現一次問題，再回來產生報告。30 分鐘後自動關閉。';
+
+  @override
+  String get diagVerboseOn => '開啟 30 分鐘';
+
+  @override
+  String diagVerboseUntil(String time) {
+    return '已開啟，$time 自動關閉';
+  }
+
+  @override
+  String get diagVerboseOff => '關閉';
+
+  @override
+  String get diagRefresh => '重新產生';
+
+  @override
+  String get diagSave => '儲存為檔案';
+
+  @override
+  String diagSaved(String name) {
+    return '已儲存到「下載」資料夾：$name';
+  }
+
+  @override
+  String get diagCopy => '拷貝報告';
+
+  @override
+  String get diagCopied => '報告已拷貝';
+
+  @override
+  String get diagNewIssue => '在 GitHub 上回報';
+
+  @override
+  String get diagIssueHint => '報告已拷貝，貼到問題裏的「診斷報告」一欄';
+
+  @override
+  String diagFailed(String detail) {
+    return '產生報告失敗：$detail';
+  }
+
+  @override
   String get svcExtractTitle => '先解壓縮或安裝 CopySync';
 
   @override
@@ -1791,25 +1889,6 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get historyEmptyFilteredTitle => '沒有這一類的記錄';
 
   @override
-  String get searchHint => '搜尋文字和檔名';
-
-  @override
-  String get searchClear => '清除搜尋';
-
-  @override
-  String searchResultCount(int count) {
-    return '找到 $count 筆';
-  }
-
-  @override
-  String searchEmptyTitle(String query) {
-    return '找不到「$query」';
-  }
-
-  @override
-  String get searchEmptyBody => '搜尋範圍是複製過的文字和檔名。';
-
-  @override
   String get historyEmptyBody => '在任何一台已配對的裝置上複製文字、圖片或檔案，記錄會出現在這裡。';
 
   @override
@@ -1877,6 +1956,25 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String itemsSummary(String name, int others, int count) {
     return '$name 等 $count 項';
   }
+
+  @override
+  String get searchHint => '搜尋文字和檔名';
+
+  @override
+  String get searchClear => '清除搜尋';
+
+  @override
+  String searchResultCount(int count) {
+    return '找到 $count 筆';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return '找不到「$query」';
+  }
+
+  @override
+  String get searchEmptyBody => '搜尋範圍是複製過的文字和檔名。';
 
   @override
   String get imagePreviewTitle => '圖片預覽';
@@ -2337,6 +2435,55 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get deviceNameUpdated => '裝置名稱已更新';
+
+  @override
+  String get diagIntro =>
+      '報告裡有版本、系統、設定、裝置狀態和最近的記錄檔。裝置名稱、伺服器位址、公用 IP、使用者資料夾和檔名都已替換，複製的內容從不寫進記錄檔。GitHub 上的問題是公開的，貼出去之前請看一遍。';
+
+  @override
+  String get diagVerboseTitle => '詳細記錄檔';
+
+  @override
+  String get diagVerboseDesc => '連線方面的問題常要看它：開啟後重現一次問題，再回來產生報告。30 分鐘後自動關閉。';
+
+  @override
+  String get diagVerboseOn => '開啟 30 分鐘';
+
+  @override
+  String diagVerboseUntil(String time) {
+    return '已開啟，$time 自動關閉';
+  }
+
+  @override
+  String get diagVerboseOff => '關閉';
+
+  @override
+  String get diagRefresh => '重新產生';
+
+  @override
+  String get diagSave => '儲存為檔案';
+
+  @override
+  String diagSaved(String name) {
+    return '已儲存到「下載」資料夾：$name';
+  }
+
+  @override
+  String get diagCopy => '複製報告';
+
+  @override
+  String get diagCopied => '報告已複製';
+
+  @override
+  String get diagNewIssue => '在 GitHub 上回報';
+
+  @override
+  String get diagIssueHint => '報告已複製，貼到問題裡的「診斷報告」一欄';
+
+  @override
+  String diagFailed(String detail) {
+    return '產生報告失敗：$detail';
+  }
 
   @override
   String get svcExtractTitle => '先解壓縮或安裝 CopySync';

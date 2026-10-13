@@ -10,6 +10,7 @@ import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
+import '../widgets/feedback_dialog.dart';
 import '../icons.dart';
 import '../platform.dart';
 
@@ -306,7 +307,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: Text(l.homepage),
                         ),
                         TextButton(
-                          onPressed: () => _open('https://github.com/baiyuze/copysync/issues'),
+                          onPressed: () => showFeedbackDialog(context),
                           child: Text(l.feedback),
                         ),
                       ],

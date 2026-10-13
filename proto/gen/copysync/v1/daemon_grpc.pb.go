@@ -44,6 +44,8 @@ const (
 	DaemonService_RequestClipboardPermission_FullMethodName    = "/copysync.v1.DaemonService/RequestClipboardPermission"
 	DaemonService_RequestLocalNetworkPermission_FullMethodName = "/copysync.v1.DaemonService/RequestLocalNetworkPermission"
 	DaemonService_GetNetwork_FullMethodName                    = "/copysync.v1.DaemonService/GetNetwork"
+	DaemonService_ExportDiagnostics_FullMethodName             = "/copysync.v1.DaemonService/ExportDiagnostics"
+	DaemonService_SetVerboseLog_FullMethodName                 = "/copysync.v1.DaemonService/SetVerboseLog"
 )
 
 // DaemonServiceClient is the client API for DaemonService service.
@@ -83,6 +85,11 @@ type DaemonServiceClient interface {
 	RequestLocalNetworkPermission(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
 	GetNetwork(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkInfo, error)
+	// 反馈问题用的诊断报告：版本、系统、设置、设备与网络状态、最近的日志。
+	// 设备名、服务器地址、公网 IP、用户目录、文件名已换成占位符，用户看过后自己贴进 issue
+	ExportDiagnostics(ctx context.Context, in *ExportDiagnosticsRequest, opts ...grpc.CallOption) (*Diagnostics, error)
+	// 临时打开详细日志（调试级别），到时间自动关回去；minutes 为 0 立即关闭
+	SetVerboseLog(ctx context.Context, in *SetVerboseLogRequest, opts ...grpc.CallOption) (*Status, error)
 }
 
 type daemonServiceClient struct {
@@ -311,6 +318,26 @@ func (c *daemonServiceClient) GetNetwork(ctx context.Context, in *Empty, opts ..
 	return out, nil
 }
 
+func (c *daemonServiceClient) ExportDiagnostics(ctx context.Context, in *ExportDiagnosticsRequest, opts ...grpc.CallOption) (*Diagnostics, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Diagnostics)
+	err := c.cc.Invoke(ctx, DaemonService_ExportDiagnostics_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonServiceClient) SetVerboseLog(ctx context.Context, in *SetVerboseLogRequest, opts ...grpc.CallOption) (*Status, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Status)
+	err := c.cc.Invoke(ctx, DaemonService_SetVerboseLog_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DaemonServiceServer is the server API for DaemonService service.
 // All implementations must embed UnimplementedDaemonServiceServer
 // for forward compatibility.
@@ -348,6 +375,11 @@ type DaemonServiceServer interface {
 	RequestLocalNetworkPermission(context.Context, *Empty) (*Empty, error)
 	// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 copysync-cli nat
 	GetNetwork(context.Context, *Empty) (*NetworkInfo, error)
+	// 反馈问题用的诊断报告：版本、系统、设置、设备与网络状态、最近的日志。
+	// 设备名、服务器地址、公网 IP、用户目录、文件名已换成占位符，用户看过后自己贴进 issue
+	ExportDiagnostics(context.Context, *ExportDiagnosticsRequest) (*Diagnostics, error)
+	// 临时打开详细日志（调试级别），到时间自动关回去；minutes 为 0 立即关闭
+	SetVerboseLog(context.Context, *SetVerboseLogRequest) (*Status, error)
 	mustEmbedUnimplementedDaemonServiceServer()
 }
 
@@ -417,6 +449,12 @@ func (UnimplementedDaemonServiceServer) RequestLocalNetworkPermission(context.Co
 }
 func (UnimplementedDaemonServiceServer) GetNetwork(context.Context, *Empty) (*NetworkInfo, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetNetwork not implemented")
+}
+func (UnimplementedDaemonServiceServer) ExportDiagnostics(context.Context, *ExportDiagnosticsRequest) (*Diagnostics, error) {
+	return nil, status.Error(codes.Unimplemented, "method ExportDiagnostics not implemented")
+}
+func (UnimplementedDaemonServiceServer) SetVerboseLog(context.Context, *SetVerboseLogRequest) (*Status, error) {
+	return nil, status.Error(codes.Unimplemented, "method SetVerboseLog not implemented")
 }
 func (UnimplementedDaemonServiceServer) mustEmbedUnimplementedDaemonServiceServer() {}
 func (UnimplementedDaemonServiceServer) testEmbeddedByValue()                       {}
@@ -785,6 +823,42 @@ func _DaemonService_GetNetwork_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DaemonService_ExportDiagnostics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExportDiagnosticsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).ExportDiagnostics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_ExportDiagnostics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).ExportDiagnostics(ctx, req.(*ExportDiagnosticsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DaemonService_SetVerboseLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetVerboseLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).SetVerboseLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_SetVerboseLog_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).SetVerboseLog(ctx, req.(*SetVerboseLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DaemonService_ServiceDesc is the grpc.ServiceDesc for DaemonService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -863,6 +937,14 @@ var DaemonService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetNetwork",
 			Handler:    _DaemonService_GetNetwork_Handler,
+		},
+		{
+			MethodName: "ExportDiagnostics",
+			Handler:    _DaemonService_ExportDiagnostics_Handler,
+		},
+		{
+			MethodName: "SetVerboseLog",
+			Handler:    _DaemonService_SetVerboseLog_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

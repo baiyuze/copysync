@@ -27,3 +27,33 @@ void openUrl(String url) {
     Process.run('open', [url]);
   }
 }
+
+/// 用户的「下载」文件夹。Linux 上这个文件夹按系统语言命名（比如「下载」），以 XDG 的设置为准。
+String downloadsDir() {
+  final env = Platform.environment;
+  if (Platform.isWindows) return '${env['USERPROFILE']}\\Downloads';
+  final home = env['HOME'] ?? '';
+  if (Platform.isLinux) {
+    final config = env['XDG_CONFIG_HOME'] ?? '$home/.config';
+    try {
+      for (final line in File('$config/user-dirs.dirs').readAsLinesSync()) {
+        final m = RegExp(r'^XDG_DOWNLOAD_DIR="(.+)"$').firstMatch(line.trim());
+        if (m != null) return m.group(1)!.replaceFirst(r'$HOME', home);
+      }
+    } on FileSystemException {
+      // 没有这个文件就用默认的
+    }
+  }
+  return '$home/Downloads';
+}
+
+/// 在访达、资源管理器或文件管理器里显示这个文件。Linux 上的文件管理器各不相同，打开它所在的文件夹。
+void revealFile(String path) {
+  if (Platform.isWindows) {
+    Process.run('explorer.exe', ['/select,', path]);
+  } else if (Platform.isLinux) {
+    Process.run('xdg-open', [File(path).parent.path]);
+  } else {
+    Process.run('open', ['-R', path]);
+  }
+}

@@ -7,11 +7,16 @@ import 'package:copysync_ui/background_service.dart';
 import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
 import 'package:copysync_ui/i18n.dart';
 import 'package:copysync_ui/main.dart';
+import 'package:copysync_ui/widgets/feedback_dialog.dart';
 import 'package:copysync_ui/widgets/pairing_dialog.dart';
 
 class _DemoState extends AppState {
   @override
   Future<PairingCode> createPairingCode() async => (code: 'K7MP2X', addresses: ['192.168.1.20']);
+
+  @override
+  Future<String> exportDiagnostics({int logLines = 200}) async =>
+      'CopySync diagnostics report\n${List.filled(40, 'time=2026-10-13T20:41:02 level=INFO msg=信令已连接').join('\n')}';
 }
 
 AppState _demo(String language, {LinkState link = LinkState.online, ServiceState? service}) =>
@@ -176,6 +181,13 @@ void main() {
         final l = await open(tester, state);
         await tester.pumpAndSettle();
         expect(find.text(l.confirmMatch), findsOneWidget);
+      });
+
+      testWidgets('反馈问题', (tester) async {
+        final l = await open(tester, _demo(language));
+        showFeedbackDialog(tester.element(find.byType(Shell)));
+        await tester.pumpAndSettle();
+        expect(find.text(l.diagNewIssue), findsOneWidget);
       });
 
       testWidgets('启用后台服务的引导页', (tester) async {

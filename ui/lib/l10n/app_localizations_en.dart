@@ -244,32 +244,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyEmptyFilteredTitle => 'Nothing of this kind';
 
   @override
-  String get searchHint => 'Search text and file names';
-
-  @override
-  String get searchClear => 'Clear search';
-
-  @override
-  String searchResultCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count matches',
-      one: '1 match',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String searchEmptyTitle(String query) {
-    return 'No matches for “$query”';
-  }
-
-  @override
-  String get searchEmptyBody =>
-      'Search looks through copied text and the names of copied files.';
-
-  @override
   String get historyEmptyBody =>
       'Copy text, an image or a file on any paired device and it appears here.';
 
@@ -344,6 +318,32 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$name and $_temp0';
   }
+
+  @override
+  String get searchHint => 'Search text and file names';
+
+  @override
+  String get searchClear => 'Clear search';
+
+  @override
+  String searchResultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matches',
+      one: '1 match',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return 'No matches for “$query”';
+  }
+
+  @override
+  String get searchEmptyBody =>
+      'Search looks through copied text and the names of copied files.';
 
   @override
   String get imagePreviewTitle => 'Image preview';
@@ -822,6 +822,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deviceNameUpdated => 'Device name updated';
+
+  @override
+  String get diagIntro =>
+      'This report has the app version, your system, settings, devices and recent logs. Device names, the server address, public IP addresses, your user folder and file names are replaced, and what you copy is never written to the logs. Issues on GitHub are public, so read it through before posting.';
+
+  @override
+  String get diagVerboseTitle => 'Detailed logging';
+
+  @override
+  String get diagVerboseDesc =>
+      'For connection problems: turn it on, make the problem happen again, then come back for the report. It turns itself off after 30 minutes.';
+
+  @override
+  String get diagVerboseOn => 'Turn on for 30 minutes';
+
+  @override
+  String diagVerboseUntil(String time) {
+    return 'On until $time';
+  }
+
+  @override
+  String get diagVerboseOff => 'Turn off';
+
+  @override
+  String get diagRefresh => 'Regenerate';
+
+  @override
+  String get diagSave => 'Save as file';
+
+  @override
+  String diagSaved(String name) {
+    return 'Saved to your Downloads folder: $name';
+  }
+
+  @override
+  String get diagCopy => 'Copy report';
+
+  @override
+  String get diagCopied => 'Report copied';
+
+  @override
+  String get diagNewIssue => 'New issue on GitHub';
+
+  @override
+  String get diagIssueHint =>
+      'Report copied. Paste it into the issue\'s “Diagnostics report” box.';
+
+  @override
+  String diagFailed(String detail) {
+    return 'Couldn\'t create the report: $detail';
+  }
 
   @override
   String get svcExtractTitle => 'Install or extract CopySync first';

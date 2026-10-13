@@ -191,6 +191,23 @@ class DaemonServiceClient extends $grpc.Client {
     return $createUnaryCall(_$getNetwork, request, options: options);
   }
 
+  /// 反馈问题用的诊断报告：版本、系统、设置、设备与网络状态、最近的日志。
+  /// 设备名、服务器地址、公网 IP、用户目录、文件名已换成占位符，用户看过后自己贴进 issue
+  $grpc.ResponseFuture<$0.Diagnostics> exportDiagnostics(
+    $0.ExportDiagnosticsRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$exportDiagnostics, request, options: options);
+  }
+
+  /// 临时打开详细日志（调试级别），到时间自动关回去；minutes 为 0 立即关闭
+  $grpc.ResponseFuture<$0.Status> setVerboseLog(
+    $0.SetVerboseLogRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$setVerboseLog, request, options: options);
+  }
+
   // method descriptors
 
   static final _$subscribe = $grpc.ClientMethod<$0.SubscribeRequest, $0.Event>(
@@ -285,6 +302,16 @@ class DaemonServiceClient extends $grpc.Client {
       '/copysync.v1.DaemonService/GetNetwork',
       ($0.Empty value) => value.writeToBuffer(),
       $0.NetworkInfo.fromBuffer);
+  static final _$exportDiagnostics =
+      $grpc.ClientMethod<$0.ExportDiagnosticsRequest, $0.Diagnostics>(
+          '/copysync.v1.DaemonService/ExportDiagnostics',
+          ($0.ExportDiagnosticsRequest value) => value.writeToBuffer(),
+          $0.Diagnostics.fromBuffer);
+  static final _$setVerboseLog =
+      $grpc.ClientMethod<$0.SetVerboseLogRequest, $0.Status>(
+          '/copysync.v1.DaemonService/SetVerboseLog',
+          ($0.SetVerboseLogRequest value) => value.writeToBuffer(),
+          $0.Status.fromBuffer);
 }
 
 @$pb.GrpcServiceName('copysync.v1.DaemonService')
@@ -444,6 +471,22 @@ abstract class DaemonServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
         ($0.NetworkInfo value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.ExportDiagnosticsRequest, $0.Diagnostics>(
+        'ExportDiagnostics',
+        exportDiagnostics_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.ExportDiagnosticsRequest.fromBuffer(value),
+        ($0.Diagnostics value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.SetVerboseLogRequest, $0.Status>(
+        'SetVerboseLog',
+        setVerboseLog_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.SetVerboseLogRequest.fromBuffer(value),
+        ($0.Status value) => value.writeToBuffer()));
   }
 
   $async.Stream<$0.Event> subscribe_Pre($grpc.ServiceCall $call,
@@ -606,4 +649,20 @@ abstract class DaemonServiceBase extends $grpc.Service {
 
   $async.Future<$0.NetworkInfo> getNetwork(
       $grpc.ServiceCall call, $0.Empty request);
+
+  $async.Future<$0.Diagnostics> exportDiagnostics_Pre($grpc.ServiceCall $call,
+      $async.Future<$0.ExportDiagnosticsRequest> $request) async {
+    return exportDiagnostics($call, await $request);
+  }
+
+  $async.Future<$0.Diagnostics> exportDiagnostics(
+      $grpc.ServiceCall call, $0.ExportDiagnosticsRequest request);
+
+  $async.Future<$0.Status> setVerboseLog_Pre($grpc.ServiceCall $call,
+      $async.Future<$0.SetVerboseLogRequest> $request) async {
+    return setVerboseLog($call, await $request);
+  }
+
+  $async.Future<$0.Status> setVerboseLog(
+      $grpc.ServiceCall call, $0.SetVerboseLogRequest request);
 }

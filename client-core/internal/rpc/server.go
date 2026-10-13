@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 
 	"github.com/baiyuze/copysync/client-core/internal/clipboard"
 	"github.com/baiyuze/copysync/client-core/internal/config"
+	"github.com/baiyuze/copysync/client-core/internal/diag"
 	"github.com/baiyuze/copysync/client-core/internal/peers"
 	"github.com/baiyuze/copysync/client-core/internal/store"
 	"github.com/baiyuze/copysync/client-core/internal/transport/lan"
@@ -47,6 +49,11 @@ type Deps struct {
 	OpenPermissionSettings func() error
 	// SearchHistory 按文字内容与文件名搜索复制记录，见 sync.Engine.SearchHistory
 	SearchHistory func(query string, limit int) ([]store.Clip, error)
+	// 诊断报告要读的日志文件（轮转出去的旧文件在前）与崩溃日志
+	LogFiles func() (logs []string, crash string)
+	// VerboseLog 临时打开详细日志，d 不大于 0 时关闭；VerboseUntil 是打开到什么时候
+	VerboseLog   func(d time.Duration) time.Time
+	VerboseUntil func() time.Time
 	// Network 返回最近一轮网络出口探测的结果
 	Network           func() *pb.NetworkInfo
 	Devices           func() (self *pb.Device, peers []*pb.Device)
@@ -321,6 +328,11 @@ func (s *Server) GetStatus(context.Context, *pb.Empty) (*pb.Status, error) {
 	if s.deps.LANBlocked != nil {
 		st.LanBlocked = s.deps.LANBlocked()
 	}
+	if s.deps.VerboseUntil != nil {
+		if until := s.deps.VerboseUntil(); !until.IsZero() {
+			st.VerboseLogUntilUnix = until.Unix()
+		}
+	}
 	if s.deps.CacheBytesUsed != nil {
 		st.CacheBytesUsed = s.deps.CacheBytesUsed()
 	}
@@ -340,6 +352,54 @@ func (s *Server) GetNetwork(context.Context, *pb.Empty) (*pb.NetworkInfo, error)
 		return nil, status.Error(codes.Unimplemented, "当前版本不支持网络诊断")
 	}
 	return s.deps.Network(), nil
+}
+
+// ExportDiagnostics 生成反馈问题用的诊断报告，脱敏在 diag 包里做。
+func (s *Server) ExportDiagnostics(ctx context.Context, req *pb.ExportDiagnosticsRequest) (*pb.Diagnostics, error) {
+	lines := int(req.GetLogLines())
+	if lines <= 0 || lines > 2000 {
+		lines = 200
+	}
+	st, err := s.GetStatus(ctx, &pb.Empty{})
+	if err != nil {
+		return nil, err
+	}
+	in := diag.Input{
+		Now:       time.Now(),
+		Version:   s.deps.Version,
+		UIVersion: req.GetUiVersion(),
+		Config:    s.deps.LoadConfig(),
+		Status:    st,
+		LogLines:  lines,
+	}
+	if s.deps.Devices != nil {
+		in.Self, in.Peers = s.deps.Devices()
+	}
+	if s.deps.Network != nil {
+		in.Network = s.deps.Network()
+	}
+	if s.deps.VerboseUntil != nil {
+		in.VerboseUntil = s.deps.VerboseUntil()
+	}
+	if s.deps.LogFiles != nil {
+		in.LogFiles, in.CrashLog = s.deps.LogFiles()
+	}
+	in.Home, _ = os.UserHomeDir()
+	if s.deps.Store != nil {
+		// 名字取不全只是少换掉几个，报告照样能用
+		in.FileNames, _ = s.deps.Store.FileNames(5000)
+	}
+	return &pb.Diagnostics{Report: diag.Build(in)}, nil
+}
+
+func (s *Server) SetVerboseLog(ctx context.Context, req *pb.SetVerboseLogRequest) (*pb.Status, error) {
+	if s.deps.VerboseLog == nil {
+		return nil, status.Error(codes.Unimplemented, "当前版本不支持临时打开详细日志")
+	}
+	// 最长两小时：详细日志量大，忘了关也不至于一直写下去
+	minutes := min(max(req.GetMinutes(), 0), 120)
+	s.deps.VerboseLog(time.Duration(minutes) * time.Minute)
+	return s.GetStatus(ctx, &pb.Empty{})
 }
 
 func (s *Server) RequestClipboardPermission(context.Context, *pb.Empty) (*pb.Empty, error) {

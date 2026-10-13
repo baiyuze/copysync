@@ -458,6 +458,41 @@
   "urlMustBeWs": "The address must start with ws:// or wss://",
   "serverUpdated": "Server updated. Reconnecting…",
   "deviceNameUpdated": "Device name updated",
+  "diagIntro": "This report has the app version, your system, settings, devices and recent logs. Device names, the server address, public IP addresses, your user folder and file names are replaced, and what you copy is never written to the logs. Issues on GitHub are public, so read it through before posting.",
+  "diagVerboseTitle": "Detailed logging",
+  "diagVerboseDesc": "For connection problems: turn it on, make the problem happen again, then come back for the report. It turns itself off after 30 minutes.",
+  "diagVerboseOn": "Turn on for 30 minutes",
+  "diagVerboseUntil": "On until {time}",
+  "@diagVerboseUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "diagVerboseOff": "Turn off",
+  "diagRefresh": "Regenerate",
+  "diagSave": "Save as file",
+  "diagSaved": "Saved to your Downloads folder: {name}",
+  "@diagSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "diagCopy": "Copy report",
+  "diagCopied": "Report copied",
+  "diagNewIssue": "New issue on GitHub",
+  "diagIssueHint": "Report copied. Paste it into the issue's “Diagnostics report” box.",
+  "diagFailed": "Couldn't create the report: {detail}",
+  "@diagFailed": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
   "svcExtractTitle": "Install or extract CopySync first",
   "svcExtractBody": "CopySync is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.",
   "svcMoveTitle": "Move CopySync to Applications first",

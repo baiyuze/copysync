@@ -87,6 +87,12 @@ class AppState extends ChangeNotifier {
   /// macOS 拦下了发往局域网的包：用户还没允许「本地网络」权限。
   bool get lanBlocked => _status?.lanBlocked ?? false;
 
+  /// 详细日志打开到什么时候；没打开时为 null。
+  DateTime? get verboseLogUntil {
+    final until = _status?.verboseLogUntilUnix.toInt() ?? 0;
+    return until == 0 ? null : DateTime.fromMillisecondsSinceEpoch(until * 1000);
+  }
+
   @override
   void dispose() {
     _retry?.cancel();
@@ -415,6 +421,18 @@ class AppState extends ChangeNotifier {
 
   Future<void> updateConfig(Config next) async {
     _config = await _client.updateConfig(next);
+    notifyListeners();
+  }
+
+  // ─────────────────────────── 反馈问题 ───────────────────────────
+
+  /// 反馈问题用的诊断报告，由后台服务生成并脱敏，带上最近 [logLines] 行日志。
+  Future<String> exportDiagnostics({int logLines = 200}) async =>
+      (await _client.exportDiagnostics(ExportDiagnosticsRequest(logLines: logLines, uiVersion: appVersion))).report;
+
+  /// 临时打开详细日志 [minutes] 分钟，0 表示立即关闭。
+  Future<void> setVerboseLog(int minutes) async {
+    _status = await _client.setVerboseLog(SetVerboseLogRequest(minutes: minutes));
     notifyListeners();
   }
 
