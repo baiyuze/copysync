@@ -1,4 +1,4 @@
-// 首屏动画、代码块的「复制」按钮、分页（部署教程按系统分页、快速开始按部署方式分页）、记住选过的语言。
+// 首屏动画、代码块的「复制」按钮、分页（部署教程按系统分页、快速开始按部署方式分页）、语言菜单、记住选过的语言。
 // 没有脚本时页面照样完整：动画停在复制完成的样子，分页的内容依次排开。
 (function () {
   var stage = document.querySelector("[data-play]");
@@ -137,7 +137,21 @@
     } catch (e) {}
   }
 
-  // 点过语言链接，以后打开首页就直接是这种语言，不再按浏览器语言跳转
+  // 语言菜单：点菜单外面或按 Esc 收起
+  var langs = document.querySelector("details.lang");
+  if (langs) {
+    document.addEventListener("click", function (e) {
+      if (langs.open && !langs.contains(e.target)) langs.open = false;
+    });
+    langs.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && langs.open) {
+        langs.open = false;
+        langs.querySelector("summary").focus();
+      }
+    });
+  }
+
+  // 选过语言，以后打开首页就直接是这种语言，不再按浏览器语言跳转
   document.querySelectorAll("a[data-lang]").forEach(function (link) {
     link.addEventListener("click", function () {
       try { localStorage.setItem("copysync-lang", link.dataset.lang); } catch (e) {}

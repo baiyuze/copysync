@@ -1,4 +1,4 @@
-"""官网文案：简体中文。结构见 tools/site/build.py，三种语言的键必须一致。"""
+"""官网文案：简体中文。结构见 tools/site/build.py，各语言的键必须一致。改了这里，繁体的 zh-tw.py 与 zh-hk.py 要跟着改。"""
 
 REPO = "https://github.com/baiyuze/copysync"
 SITE = "https://baiyuze.github.io/copysync/"

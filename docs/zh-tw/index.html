@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CopySync：在 Mac、Windows 與 Linux 之間同步剪貼簿與檔案，跨帳號跨網路</title>
+  <meta name="description" content="CopySync 讓你在一台電腦上複製，到另一台直接貼上，Mac、Windows、Linux 互通。支援文字、圖片、檔案和資料夾，不必使用同一個帳號。在同一個網路裡裝好就能用，不需要伺服器；跨網路時可以用自己架設的伺服器或 Tailscale。裝置之間 P2P 直連、端對端加密。免費開源。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/zh-tw/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="CopySync：在這台電腦複製，到那台電腦貼上">
+  <meta property="og:description" content="Mac、Windows、Linux 互通。文字、圖片、檔案、資料夾，跨帳號、跨網路，P2P 直連、端對端加密，同一個網路裡不需要伺服器。免費開源。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/zh-tw/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-zh-hant.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:locale:alternate" content="zh_CN">
+  <meta property="og:locale:alternate" content="zh_HK">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:locale:alternate" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://baiyuze.github.io/copysync/#app",
+        "name": "CopySync",
+        "description": "在 Mac、Windows 與 Linux 電腦之間同步剪貼簿與檔案的開源工具。複製文字、圖片、檔案或資料夾後，另一台電腦可直接貼上。同一個網路裡不需要伺服器；裝置之間 WebRTC 直連、DTLS 端對端加密，跨網路打不通時，經使用者自行架設的伺服器以 TURN 中繼。",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "macOS 13 以上（Intel 與 Apple 晶片）；Windows 10、Windows 11（x64）；Linux（x64、ARM64）",
+        "softwareVersion": "1.6.4",
+        "datePublished": "2026-10-13",
+        "inLanguage": "zh-TW",
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "TWD"
+        },
+        "downloadUrl": "https://baiyuze.github.io/copysync/zh-tw/download/",
+        "codeRepository": "https://github.com/baiyuze/copysync",
+        "image": "https://baiyuze.github.io/copysync/assets/icon.png",
+        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/history-dark.png",
+        "featureList": [
+          "同步純文字、帶格式的文字、圖片、檔案與資料夾",
+          "Mac、Windows、Linux 互通，不必使用同一個帳號，跨網路也能用",
+          "同一個網路裡不需要伺服器，靠 mDNS 自動發現",
+          "WebRTC 直連，打不通時自動經 TURN 中繼",
+          "DTLS 端對端加密，配對時人工核對安全指紋",
+          "50 MB 以內複製即推送，更大的檔案依需要拉取",
+          "最近 3 天的複製記錄，圖片可以預覽",
+          "介面支援簡體中文、英文、日文"
+        ],
+        "author": {
+          "@type": "Person",
+          "name": "baiyuze",
+          "url": "https://github.com/baiyuze"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "開著 UU 遠端時，為什麼一直出現 .uuremote_ 檔案？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UU 遠端會在系統剪貼簿裡寫入暫時的佔位檔案，舊版 CopySync 把它們當成一般檔案，反覆記錄和轉送。1.3.2 在傳送和接收時會過濾已確認的佔位檔名，啟動時清除只含佔位檔案的記錄。正常的空檔案、隱藏檔案和大檔案不受這條規則影響。50 MB 只決定是否自動傳輸，與 UU 的 UDP P2P 設定無關。建議兩端都更新；其他軟體如果也會同步剪貼簿，仍可能產生一般內容的重複記錄。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "和 macOS 內建的「通用剪貼板」有什麼不同？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "通用剪貼板要求兩台裝置登入同一個 Apple ID、開著藍牙和 Wi‑Fi，而且距離要近，也只能在 Apple 裝置之間使用。CopySync 在同一個網路裡裝好就能用；跨網路時，只要兩台電腦都能連上你架設的伺服器，或都裝了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有複製記錄，大檔案也可以依需要再拉取。 如果你的兩台 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能就夠用了。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "伺服器會看到我複製的內容嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "不會。直連時資料根本不經過伺服器；需要中繼時，伺服器轉送的是 DTLS 加密後的封包。伺服器不存帳號，也不存任何複製的內容。程式碼是開源的，可以自己檢查。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "公司網路（雙線路、多出口）能直連嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "可以。這類網路依目的位址選擇出口，CopySync 會在同一個連接埠上向多台伺服器偵測，拿到每個出口的位址後一起傳給對方，由對方逐一嘗試。實測公司的 4 個出口與家用寬頻之間可以直連。對方是連接埠隨機分配的 NAT 時，仍會走中繼。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "一定要自己準備伺服器嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "不一定。兩台電腦在同一個網路裡時，裝好 App 直接配對就行，不需要伺服器。 跨網路時有兩種做法：雲端伺服器，最低規格的雲端主機就夠，在哪裡都能同步；Tailscale，每台電腦裝上它，配對時輸入對方的 Tailscale 位址，不需要伺服器。CopySync 不提供公共伺服器，所以任何人的資料都不會經過別人的機器。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "家裡沒有公用 IP，能在家和公司之間同步嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "可以，有兩種做法。如果有一台具備公用 IP 的伺服器，就把伺服器架在上面，家裡和公司的電腦都直接連它，見雲端伺服器架設。沒有的話，每台電腦裝上 Tailscale、登入同一個帳號，配對時輸入對方的 Tailscale 位址，見Tailscale 教學。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "在同一個網路裡，為什麼找不到另一台？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "先確認兩台是不是真的在同一個網段：公司裡的有線和無線、訪客網路、開了「AP 隔離」的 Wi‑Fi 常常互不相通，區域網路探索過不去。這時在輸入配對碼的那台點「不在同一網段？」，填上另一台配對碼下方顯示的位址。 在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，到「設置 → 局域網」裡點「放行」。在 Mac 上，要到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。更多說明見同一網路教學。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "支援 Windows 和 Linux 嗎？iPhone 呢？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "支援 Windows 10 與 Windows 11（x64），與 Mac 互通。複製的檔案在 Windows 上貼上後就是真正的檔案，能直接貼進檔案總管、WeChat、Office。 也支援 x64 與 ARM64 的 Linux 桌面：X11，或附有 XWayland 的 Wayland 桌面（GNOME、KDE 等預設都有）。複製的檔案能直接貼進檔案管理員。 暫不支援 iPhone 和 iPad：iOS 不允許 App 在背景監聽剪貼簿，做不到複製後立即同步。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "為什麼第一次打開時系統會擋一下？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "CopySync 還沒有經過 Apple 公證，Windows 版也還沒有程式碼簽章，兩者都需要每年付費購買的憑證。 在 Mac 上，到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」；在 Windows 上，在「Windows 已保護您的電腦」提示裡點「其他資訊」，再點「仍要執行」。都只需要這一次。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "大檔案怎麼處理？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "預設 50 MB 以內的內容，在你複製時就推送到另一台電腦，那邊可以直接貼上；更大的檔案只同步一筆記錄，需要時在複製記錄裡點「拉取到本機」再傳。上限可以在設定裡調整。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "免費嗎？公司能用嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "免費。CopySync 以 GNU AGPL-3.0 授權開源，個人和公司都可以免費使用和修改。散布它，或透過網路提供修改過的版本時，需要以同樣的授權公開原始碼。"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要內容</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="./" aria-label="CopySync 首頁"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="頁面導覽">
+        <a href="start/">快速入門</a>
+        <a class="wide" href="#how">運作原理</a>
+        <a class="wide" href="#faq">常見問題</a>
+        <a class="mid" href="start/#server">連線方式</a>
+        <a href="download/">下載</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <details class="lang">
+          <summary aria-label="語言：繁體中文（台灣）"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>繁體中文（台灣）</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a></li>
+            <li><a href="../zh-tw/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw" aria-current="page">繁體中文（台灣）</a></li>
+            <li><a href="../zh-hk/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../en/" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <h1 class="display">在這台電腦複製，<br>到那台電腦貼上。</h1>
+        <p class="lede">Mac、Windows、Linux 互通。文字、圖片、檔案、整個資料夾都可以，不必使用同一個帳號。在同一個網路裡裝好就能用，不需要伺服器；跨網路也可以。資料在你的裝置之間直接傳輸，端對端加密。</p>
+        <div class="cta">
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 CopySync</a>
+        </div>
+        <p class="note">版本 1.6.4，免費開源。macOS 13 以上；Windows 10、11；Linux（x64 與 ARM64）。</p>
+        <a class="start-link" href="start/">第一次用？看快速入門，三個步驟就設定好 →</a>
+        <div class="stage" data-play role="img" aria-label="示範：在 MacBook 上按下 Command C，檔案化成一張紙，經直連飛到 Windows 筆電，在那裡按下 Ctrl V 貼上">
+          <figure class="device mac">
+            <div class="screen"><div class="desk">
+              <div class="file"><span class="doc"><span class="lines"><i></i><i></i><i></i></span></span><span class="name">季度報告-定稿.pptx</span></div>
+              <div class="keys"><kbd>⌘</kbd><kbd>C</kbd></div>
+            </div></div>
+            <div class="base"></div>
+            <figcaption>MacBook</figcaption>
+          </figure>
+          <div></div>
+          <figure class="device win">
+            <div class="screen"><div class="desk">
+              <div class="file"><span class="doc"><span class="lines"><i></i><i></i><i></i></span></span><span class="name">季度報告-定稿.pptx</span></div>
+              <div class="keys"><kbd>Ctrl</kbd><kbd>V</kbd></div>
+              <div class="taskbar"><i></i><i></i><i></i><i></i><i></i></div>
+            </div></div>
+            <div class="base"></div>
+            <figcaption>Windows 筆電</figcaption>
+          </figure>
+          <svg class="arc" aria-hidden="true"><path d=""/></svg>
+          <span class="arc-label" aria-hidden="true">直連，端對端加密</span>
+          <span class="sheet-fly" aria-hidden="true"><span class="lines"><i></i><i></i><i></i></span></span>
+        </div>
+        <button class="replay" type="button">再示範一次</button>
+      </div>
+    </section>
+
+    <section class="section" id="deploy" aria-labelledby="deploy-title">
+      <div class="wrap">
+        <h2 id="deploy-title">兩台電腦怎麼連起來</h2>
+        <p class="intro">在同一個網路裡，裝好 App 就能直接配對，不需要伺服器。跨網路時，兩台電腦要靠伺服器或 Tailscale 找到彼此，複製的內容不會存在上面。依你的情況選一種。</p>
+        <div class="paths">
+          <a class="path" href="lan/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
+            <span class="path-when">什麼都不用架設</span>
+            <h3>同一網路</h3>
+            <p>家裡或辦公室，連著同一台路由器。兩台電腦裝好 App，輸入配對碼就能同步，不需要伺服器，也不需要一直開著的電腦。</p>
+            <span class="path-go">同一網路教學 →</span>
+          </a>
+          <a class="path" href="cloud/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-when">在哪裡都能同步</span>
+            <h3>雲端伺服器</h3>
+            <p>一台有公用 IP 的 Linux 雲端主機，最低規格就夠了。每台電腦直接連到它，在家、在公司、在外面都能用，不必另外安裝軟體。</p>
+            <span class="path-go">雲端伺服器架設教學 →</span>
+          </a>
+          <a class="path" href="tailscale/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><path class="p-data" d="M85 52h71"/><rect class="p-dev" x="42" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M37 69h48"/><rect class="p-dev" x="161" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M156 69h48"/></svg>
+            <span class="path-when">跨網路，不用伺服器</span>
+            <h3>Tailscale</h3>
+            <p>每台電腦裝上 Tailscale、登入同一個帳號，配對時輸入對方的 Tailscale 位址。在家、在公司都能同步，不需要伺服器，也不需要一直開著的電腦。</p>
+            <span class="path-go">Tailscale 教學 →</span>
+          </a>
+        </div>
+        <p class="note">拿不定主意？<a href="start/#server">快速入門</a>裡有三種方式的比較。</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="history-title">
+      <div class="wrap">
+        <h2 id="history-title">所有裝置上複製過的，都在這裡</h2>
+        <p class="intro">複製記錄保留最近 3 天的內容，隨時可以放回剪貼簿，圖片點一下就能預覽。50 MB 以內的檔案在你複製的時候就已經傳好了，更大的檔案等需要時再點一下拉取。</p>
+        <figure class="shot">
+          <img src="../assets/screenshots/history-dark.png" width="2112" height="1472" alt="CopySync 的複製記錄：來自 MacBook Air 和 Mac mini 的檔案、圖片、文字，大檔案顯示「拉取到本機」按鈕">
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="flow-title">
+      <div class="wrap">
+        <h2 id="flow-title">按下複製之後</h2>
+        <p class="intro">文字、圖片、檔案、整個資料夾，都走同一條路。</p>
+        <ol class="flow">
+          <li><h3>偵測</h3><p>在 Mac 上，背景服務每隔一小段時間查看一次剪貼簿的變更計數，只看計數和類型，不需要授權，也不會跳出系統提示；在 Windows 上，複製的那一刻系統就會通知它。</p></li>
+          <li><h3>傳輸</h3><p>文字隨訊息一起送出；50 MB 以內的圖片和檔案打包成串流立即推送；更大的檔案只送出一筆記錄，等你需要時再傳。</p></li>
+          <li><h3>貼上</h3><p>另一台電腦先把內容存到本機，再寫入剪貼簿。按下 ⌘V 或 Ctrl+V 貼上的，就是本機上真正的檔案。</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="why-title">
+      <div class="wrap">
+        <h2 id="why-title">為什麼不用現有的方法</h2>
+        <p class="intro">通用剪貼板要同一個 Apple ID、距離夠近；AirDrop 每次都要點接受；傳給自己要手動下載，檔案還留在別人的伺服器上。一台 Mac 加一台 Windows 時，系統內建的方法一個都用不了。</p>
+        <div class="block table-scroll">
+          <table class="compare">
+            <caption class="skip">CopySync 與其他方式的比較</caption>
+            <thead><tr><td></td><th scope="col" class="ours">CopySync</th><th scope="col">通用剪貼板</th><th scope="col">AirDrop</th><th scope="col">聊天軟體</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">不同 Apple ID 之間</th><td class="yes ours">可以</td><td class="no">不行</td><td class="partial">要對方接受</td><td class="yes">可以</td></tr>
+              <tr><th scope="row">Mac 與 Windows 之間</th><td class="yes ours">可以</td><td class="no">不行</td><td class="no">不行</td><td class="yes">可以</td></tr>
+              <tr><th scope="row">不在同一個網路（家裡和公司）</th><td class="yes ours">可以</td><td class="no">不行</td><td class="no">不行</td><td class="yes">可以</td></tr>
+              <tr><th scope="row">複製後直接貼上，不用點接受</th><td class="yes ours">可以</td><td class="yes">可以</td><td class="no">不行</td><td class="no">不行</td></tr>
+              <tr><th scope="row">檔案與整個資料夾</th><td class="yes ours">可以</td><td class="partial">不穩定</td><td class="yes">可以</td><td class="partial">要先壓縮</td></tr>
+              <tr><th scope="row">找回之前複製過的內容</th><td class="yes ours">可以</td><td class="no">不行</td><td class="no">不行</td><td class="partial">翻聊天記錄</td></tr>
+              <tr><th scope="row">內容不經過第三方伺服器</th><td class="yes ours">不經過</td><td class="yes">不經過</td><td class="yes">不經過</td><td class="no">經過</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <h2 id="how-title">運作原理</h2>
+        <p class="intro">兩台電腦之間直接建立加密連線。在同一個網路裡，它們自己就能找到彼此；跨網路時，由你的伺服器負責牽線，直連打不通時再幫忙轉送。下圖是跨網路的情況。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">CopySync 的連線方式</title>
+            <desc id="diagram-desc">電腦 A 與電腦 B（Mac 或 Windows）之間是 WebRTC 直連；兩台電腦都透過信令連線到你的伺服器；直連失敗時，資料經伺服器的 TURN 中繼。</desc>
+            <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
+            <text class="d-title" x="480" y="64" text-anchor="middle">你的伺服器</text>
+            <text class="d-sub" x="480" y="92" text-anchor="middle">信令、STUN、TURN 中繼</text>
+            <path class="d-sig" d="M140 210V58H360"/>
+            <path class="d-sig" d="M820 210V58H600"/>
+            <path class="d-relay" d="M196 210V100H360"/>
+            <path class="d-relay" d="M764 210V100H600"/>
+            <text class="d-note" x="210" y="50">信令：交換連線資訊</text>
+            <text class="d-note" x="210" y="128">中繼：只在直連打不通時</text>
+            <rect class="d-box" x="40" y="210" width="240" height="120" rx="14"/>
+            <text class="d-title" x="160" y="262" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="290" text-anchor="middle">在這裡複製</text>
+            <rect class="d-box" x="680" y="210" width="240" height="120" rx="14"/>
+            <text class="d-title" x="800" y="262" text-anchor="middle">Mac 或 Windows</text>
+            <text class="d-sub" x="800" y="290" text-anchor="middle">在這裡貼上</text>
+            <path class="d-direct" d="M280 270H680"/>
+            <text class="d-label" x="480" y="256" text-anchor="middle">WebRTC 直連，DTLS 加密</text>
+            <text class="d-note" x="480" y="298" text-anchor="middle">資料只在兩台電腦之間傳輸</text>
+            <g class="d-legend" transform="translate(40 372)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">資料（直連）</text>
+              <path class="d-relay" d="M210 0H238"/><text x="248" y="5">資料（中繼，備用）</text>
+              <path class="d-sig" d="M470 0H498"/><text x="508" y="5">信令</text>
+            </g>
+          </svg>
+          <ul class="points diagram-text">
+            <li><strong>WebRTC 直連，DTLS 加密</strong> 資料只在兩台電腦之間傳輸</li>
+            <li><strong>你的伺服器</strong> 信令、STUN、TURN 中繼</li>
+            <li>中繼：只在直連打不通時</li>
+          </ul>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="multi-uplink" aria-labelledby="multi-title">
+      <div class="wrap">
+        <h2 id="multi-title">公司網路也能直連</h2>
+        <p class="intro">公司雙線路、電信業者位址池這類網路有多個出口，會依目的位址決定走哪一個。只偵測一次，只會知道其中一個出口，結果只能經伺服器中繼。CopySync 會偵測每個出口，把位址全部告訴對方。</p>
+        <div class="cols">
+          <div>
+            <h3>做了什麼</h3>
+            <ul class="points">
+              <li><strong>共用一個連接埠。</strong>所有連線都從同一個本機 UDP 連接埠收發，向不同伺服器查到的位址才對得上。</li>
+              <li><strong>偵測每個出口。</strong>在這個連接埠上同時詢問 7 台 IP 分散的伺服器，網路有幾個出口就拿到幾個位址；遭 DNS 汙染的位址會先過濾掉。</li>
+              <li><strong>全部告訴對方。</strong>對方逐一嘗試，與實際出口相符的那一個就能打通。</li>
+              <li><strong>記住見過的出口。</strong>某次漏掉的出口，如果它不會改變連接埠，就用「出口 IP + 本機連接埠」推算補上。</li>
+              <li><strong>講好誰先送封包。</strong>有些路由器收到對方先到的封包，會把連接埠佔住。一方先公布出口位址，另一方先往那邊送封包，再公布自己的；重試時兩種順序輪流使用。</li>
+              <li><strong>先中繼，再換直連。</strong>第一次交握落到中繼時，會在閒置時再打一次洞，打通就換成直連。</li>
+            </ul>
+          </div>
+          <div>
+            <h3>用真實的網路拓撲驗證</h3>
+            <p class="small">NAT 打洞實驗室用 Linux 網路命名空間與 iptables 搭出這些拓撲，用 CopySync 真正的連線程式碼各跑一遍，每次提交程式碼都會自動執行。</p>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th scope="col">情境</th><th scope="col">結果</th></tr></thead>
+                <tbody>
+                <tr><td>單一出口 ↔ 家用路由器</td><td>直連</td></tr>
+                <tr><td>兩個出口，舊版本（對照）</td><td>中繼</td></tr>
+                <tr><td>兩個出口 ↔ 家用路由器</td><td>直連</td></tr>
+                <tr><td>四個出口 ↔ 家用路由器</td><td>直連</td></tr>
+                <tr><td>兩個出口，第二條線路沒偵測到，沒有歷史記錄</td><td>中繼</td></tr>
+                <tr><td>兩個出口，第二條線路沒偵測到，有歷史記錄</td><td>直連</td></tr>
+                <tr><td>兩個出口 ↔ 兩個出口</td><td>直連</td></tr>
+                <tr><td>兩個出口 ↔ 連接埠隨機分配的 NAT</td><td>中繼</td></tr>
+                <tr><td>一開始打不通，之後網路恢復</td><td>先中繼，隨後直連</td></tr>
+                <tr><td>公司路由器會為外來的封包佔住連接埠</td><td>直連</td></tr>
+                <tr><td>家用路由器會為外來的封包佔住連接埠</td><td>先中繼，重試一次後直連</td></tr>
+                <tr><td>沒有伺服器，同一個網段，靠 mDNS 探索</td><td>直連</td></tr>
+                <tr><td>沒有伺服器，兩個網段，一邊記得對方位址</td><td>直連</td></tr>
+                <tr><td>沒有伺服器，兩台都擋外來連線，都記得位址</td><td>直連</td></tr>
+                <tr><td>沒有伺服器，兩台都擋外來連線，只有一邊記得</td><td>連不上（已知限制）</td></tr>
+                <tr><td>沒有伺服器，兩個網段之間被隔離</td><td>連不上</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="small">實測：一台在 4 個出口的公司網路裡的 Mac 與家裡的 Mac，改良前只能中繼，速度被伺服器頻寬限制在 0.6 MB/s；改良後可以直連，連上伺服器後約 3 秒就建立連線。</p>
+            <p class="small">量測過程、設計取捨與踩過的坑，請見<a href="../design/nat-traversal.html">技術說明</a>。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="security-title">
+      <div class="wrap">
+        <h2 id="security-title">伺服器看不到你複製了什麼</h2>
+        <div class="cols">
+          <ul class="points">
+            <li><strong>伺服器不存帳號，也不存內容。</strong>裝置身分是一把 Ed25519 金鑰，裝置 ID 由公鑰算出，伺服器不需要使用者資料表就能驗證身分。</li>
+            <li><strong>配對時由你核對安全指紋。</strong>兩邊的螢幕會顯示同樣的兩行：雙方各自公鑰的指紋。伺服器有能力替換轉送中的公鑰，但一旦替換，兩邊螢幕上的指紋就對不上了，這一步就是防範中間人攻擊的關卡。</li>
+            <li><strong>之後的每則訊息都帶有簽章，</strong>伺服器無法冒充你的裝置。直連通道的憑證在交握後還會再核對一次，不一致就立即中斷。</li>
+            <li><strong>中繼也只是轉送密文。</strong>TURN 轉送的是加密後的封包，中繼憑證按裝置個別簽發，12 小時後過期。</li>
+            <li><strong>區域網路裡也一樣。</strong>裝置在區域網路裡廣播的只是一個每天都會變的匿名識別碼，看不出是誰的電腦，只有開啟「搜索附近設備」時才會帶上裝置名稱；配對同樣要核對指紋，之後的訊息同樣帶有簽章。</li>
+          </ul>
+          <figure class="figure-card">
+            <img src="../assets/screenshots/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配對時的「核對安全指紋」對話框，顯示 R8NF-2WTC-QL5J，要求與另一台電腦上顯示的完全一致">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="fallback-title">
+      <div class="wrap">
+        <h2 id="fallback-title">出問題的時候會怎樣</h2>
+        <p class="intro">每個人的網路環境都不一樣。下面這些情況都考慮過，也都有對應的測試。</p>
+        <dl class="fallbacks">
+          <div><dt>在同一個網路裡找不到對方</dt><dd>不同網段、訪客網路、開了 AP 隔離的 Wi‑Fi，都會擋住區域網路探索。配對時輸入對方配對碼下方顯示的位址就行；之後位址會被記住，兩邊都換了位址時，在裝置清單裡幫它重新輸入一次。</dd></div>
+          <div><dt>系統擋住區域網路連線</dt><dd>從 macOS 15 起，背景服務要連線區域網路裡的裝置，需要你允許；Windows 第一次執行時，防火牆會跳出詢問。沒有允許時，App 會提示，並提供直達設定的按鈕。</dd></div>
+          <div><dt>兩台電腦打不通直連</dt><dd>常見於對稱型 NAT 和公司防火牆。會自動改走你伺服器上的 TURN 中繼，內容依然加密，裝置清單裡顯示「中轉」。</dd></div>
+          <div><dt>連不上公共 STUN 伺服器</dt><dd>在中國大陸連公共 STUN 時通時斷。伺服器內建 STUN，用戶端會優先使用它。</dd></div>
+          <div><dt>先連上了中繼</dt><dd>中繼的交握比較快，有時會搶在直連之前。連上之後，發起連線的一方會在閒置時再打一次洞，打通就換成直連；正在傳檔案時不會打擾。</dd></div>
+          <div><dt>對方睡眠、斷線或重新開機</dt><dd>連線悄悄斷了也能察覺，會立即關閉並重新連線。這段期間複製的內容會先記下來，連上後補送到對方的複製記錄裡，但不會覆蓋對方當下剪貼簿裡的內容。</dd></div>
+          <div><dt>伺服器斷線</dt><dd>自動重新連線，間隔從 1 秒開始加倍、最長 30 秒，並加上隨機抖動，避免一大群裝置同時重連。同一個網路裡的裝置不受影響，照常同步。</dd></div>
+          <div><dt>檔案太大</dt><dd>超過上限的只同步一筆記錄，需要時再拉取。拉取時如果原始檔案已經被刪除，會明確告訴你，而不是莫名其妙地失敗。</dd></div>
+          <div><dt>貼到只接受純文字的地方</dt><dd>從網頁複製的帶格式文字，會同時寫入 HTML 和純文字兩份，貼到哪裡都不會冒出標籤。</dd></div>
+          <div><dt>檔名在 Windows 上不合法</dt><dd>Mac 上可以用的冒號、問號等字元，收到時會換成對應的全形字元，檔名照樣看得懂；只差在大小寫的兩個檔案也不會互相覆蓋。</dd></div>
+          <div><dt>複製的是密碼</dt><dd>在 Windows 上，密碼管理工具複製的內容會帶一個「不要記錄」的標記，CopySync 看到就跳過：不同步，也不會進入複製記錄。</dd></div>
+          <div><dt>還沒授權讀取剪貼簿</dt><dd>不去讀取內容，否則背景程序會卡在一個看不見的系統對話框上。App 裡會提示你去授權，並提供直達設定的按鈕。</dd></div>
+          <div><dt>背景服務當掉</dt><dd>Mac 上由系統的 launchd、Windows 上由 CopySync 內建的守護程式自動重新啟動，每次至少間隔 10 秒，不會無限重啟。</dd></div>
+          <div><dt>更新了 App，或把它搬到別的位置</dt><dd>打開 App 時會自動修正登入項目，並把背景服務重新啟動到新版本。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <h2 id="install-title">安裝</h2>
+        <p class="intro">每台電腦裝一個 App。在同一個網路裡裝好就能配對；跨網路時，再選一種方式讓兩台電腦找到彼此。第一次安裝可以跟著<a href="start/">快速入門</a>做。</p>
+        <div class="install">
+          <div>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
+            <ol>
+              <li>下載 DMG，打開後把 CopySync 拖進「應用程式」。<span class="aside">Apple 晶片與 Intel 晶片各有一個版本，下載頁會告訴你怎麼查自己的 Mac 是哪一種。</span></li>
+              <li>從「應用程式」裡打開。<span class="aside">第一次會提示「無法驗證開發者」：CopySync 還沒有經過 Apple 公證。到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」，只需要這一次。</span></li>
+              <li>點「啟用後台同步」。系統詢問是否允許讀取剪貼簿、是否允許尋找區域網路上的裝置時，都選擇允許。</li>
+              <li>跨網路同步時，在「設置」裡填入伺服器位址 <code>ws://伺服器位址:8787/signal</code>，按 Enter；在同一個網路裡不用填。</li>
+            </ol>
+            <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Mac 版</a>
+          </div>
+          <div>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+            <ol>
+              <li>執行 CopySync-Setup.exe。它會安裝在目前使用者的目錄下，不需要系統管理員權限。<span class="aside">CopySync 還沒有程式碼簽章，Windows 會提示「Windows 已保護您的電腦」：點「其他資訊」，再點「仍要執行」。不想執行安裝程式的話，可以下載<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">免安裝版</a>。</span></li>
+              <li>打開 CopySync，點「啟用後台同步」。關掉視窗後，它會在右下角的通知區域繼續執行。防火牆詢問時選擇允許。</li>
+              <li>跨網路同步時，在「設置」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。</li>
+            </ol>
+            <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Windows 版</a>
+          </div>
+          <div>
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
+            <ol>
+              <li>Ubuntu、Debian 等發行版下載 .deb，執行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；其他發行版下載 tar.gz，解壓縮後執行 <code>./CopySync/install.sh</code>。</li>
+              <li>從應用程式選單打開 CopySync，點「啟用後台同步」。之後它會在登入時自動啟動。</li>
+              <li>跨網路同步時，在「設置」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。</li>
+            </ol>
+            <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Linux 版</a>
+          </div>
+        </div>
+        <div class="install-more">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>連線方式</h3>
+          <p class="small">在同一個網路裡不需要伺服器。三種方式依你的情況選一種，每種都有圖文教學：</p>
+          <ul class="opts">
+              <li><a href="lan/">同一網路</a><span>什麼都不用架設</span></li>
+              <li><a href="cloud/">雲端伺服器</a><span>在哪裡都能同步</span></li>
+              <li><a href="tailscale/">Tailscale</a><span>跨網路，不用伺服器</span></li>
+          </ul>
+          <a class="button quiet" href="start/#server">比較三種方式</a>
+        </div>
+        <p class="pairing"><strong>配對：</strong>一台點「設備 → 添加設備」產生一組 6 碼的配對碼，另一台輸入它；兩邊螢幕上的兩行安全指紋完全一致後再確認。不在同一個網段時，輸入配對碼的同時，也要輸入它下方顯示的位址。Mac、Windows、Linux 之間怎麼搭配都一樣。</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="specs-title">
+      <div class="wrap">
+        <h2 id="specs-title">技術規格</h2>
+        <div class="table-scroll">
+          <table class="specs">
+            <tbody>
+            <tr><th scope="row">版本</th><td>1.6.4，<time datetime="2026-10-13">2026 年 10 月 13 日</time>發布</td></tr>
+            <tr><th scope="row">Mac 用戶端</th><td>macOS 13 Ventura 以上；Apple 晶片與 Intel 晶片各有一個安裝檔，約 25 MB，不需要 Rosetta；也有兩種晶片通用的版本，約 47 MB</td></tr>
+            <tr><th scope="row">Windows 用戶端</th><td>Windows 10 與 Windows 11，x64；只為目前使用者安裝，不需要系統管理員權限；安裝檔約 23 MB</td></tr>
+            <tr><th scope="row">Linux 用戶端</th><td>x64 與 ARM64；.deb（Debian、Ubuntu 等）或 tar.gz（其他發行版），約 22 MB；需要 X11 桌面，或附有 XWayland 的 Wayland 桌面（GNOME、KDE 等預設都有）；GTK 3</td></tr>
+            <tr><th scope="row">伺服器</th><td>選用，只在跨網路時需要。Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 與 Apple 晶片）、Windows 10 與 11 x64（系統服務）；約佔 15 MB 記憶體</td></tr>
+            <tr><th scope="row">介面語言</th><td>簡體中文、English、日本語，預設跟隨系統，可在設定裡切換；繁體中文系統上顯示簡體中文</td></tr>
+            <tr><th scope="row">同步的內容</th><td>純文字、帶格式的文字、圖片與螢幕截圖、檔案、資料夾，可依類型個別關閉</td></tr>
+            <tr><th scope="row">傳輸</th><td>WebRTC 資料通道，優先直連，打不通時經 TURN 中繼；同一個網路裡透過 mDNS 探索、UDP 8788 交換連線資訊；多出口網路逐一偵測每個出口；檔案以 tar + zstd 串流打包</td></tr>
+            <tr><th scope="row">加密與身分</th><td>DTLS 端對端加密；裝置身分為 Ed25519 金鑰；信令訊息逐則簽章</td></tr>
+            <tr><th scope="row">配對</th><td>6 碼配對碼，5 分鐘內有效，字元集去掉了 0/O、1/I 等容易混淆的字元；配對時人工核對安全指紋</td></tr>
+            <tr><th scope="row">自動同步上限</th><td>預設 50 MB，可在 1 MB 到 1 GB 之間調整</td></tr>
+            <tr><th scope="row">記錄保留</th><td>預設 3 天，可在 1 小時到 30 天之間調整，到期自動清除</td></tr>
+            <tr><th scope="row">實測速度</th><td>區域網路直連傳輸 20 MB 檔案約 330 毫秒，檢查碼一致</td></tr>
+            <tr><th scope="row">技術堆疊</th><td>背景服務與伺服器用 Go（Windows 上以純 Go 呼叫 Win32，Linux 上以純 Go 走 X11 協定），介面用 Flutter（三個系統共用一套程式碼），訊息定義用 Protocol Buffers</td></tr>
+            <tr><th scope="row">授權</th><td><a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">常見問題</h2>
+        <div class="faq">
+          <details>
+            <summary>開著 UU 遠端時，為什麼一直出現 .uuremote_ 檔案？</summary>
+            <div class="answer"><p>UU 遠端會在系統剪貼簿裡寫入暫時的佔位檔案，舊版 CopySync 把它們當成一般檔案，反覆記錄和轉送。1.3.2 在傳送和接收時會過濾已確認的佔位檔名，啟動時清除只含佔位檔案的記錄。正常的空檔案、隱藏檔案和大檔案不受這條規則影響。50 MB 只決定是否自動傳輸，與 UU 的 UDP P2P 設定無關。建議兩端都更新；其他軟體如果也會同步剪貼簿，仍可能產生一般內容的重複記錄。</p></div>
+          </details>
+          <details>
+            <summary>和 macOS 內建的「通用剪貼板」有什麼不同？</summary>
+            <div class="answer"><p>通用剪貼板要求兩台裝置登入同一個 Apple ID、開著藍牙和 Wi‑Fi，而且距離要近，也只能在 Apple 裝置之間使用。CopySync 在同一個網路裡裝好就能用；跨網路時，只要兩台電腦都能連上你架設的伺服器，或都裝了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有複製記錄，大檔案也可以依需要再拉取。</p><p>如果你的兩台 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能就夠用了。</p></div>
+          </details>
+          <details>
+            <summary>伺服器會看到我複製的內容嗎？</summary>
+            <div class="answer"><p>不會。直連時資料根本不經過伺服器；需要中繼時，伺服器轉送的是 DTLS 加密後的封包。伺服器不存帳號，也不存任何複製的內容。程式碼是開源的，可以自己檢查。</p></div>
+          </details>
+          <details>
+            <summary>公司網路（雙線路、多出口）能直連嗎？</summary>
+            <div class="answer"><p>可以。這類網路依目的位址選擇出口，CopySync 會在同一個連接埠上向多台伺服器偵測，拿到每個出口的位址後一起傳給對方，由對方逐一嘗試。實測公司的 4 個出口與家用寬頻之間可以直連。對方是連接埠隨機分配的 NAT 時，仍會走中繼。</p></div>
+          </details>
+          <details>
+            <summary>一定要自己準備伺服器嗎？</summary>
+            <div class="answer"><p>不一定。兩台電腦在<a href="lan/">同一個網路</a>裡時，裝好 App 直接配對就行，不需要伺服器。</p><p>跨網路時有兩種做法：<a href="cloud/">雲端伺服器</a>，最低規格的雲端主機就夠，在哪裡都能同步；<a href="tailscale/">Tailscale</a>，每台電腦裝上它，配對時輸入對方的 Tailscale 位址，不需要伺服器。CopySync 不提供公共伺服器，所以任何人的資料都不會經過別人的機器。</p></div>
+          </details>
+          <details>
+            <summary>家裡沒有公用 IP，能在家和公司之間同步嗎？</summary>
+            <div class="answer"><p>可以，有兩種做法。如果有一台具備公用 IP 的伺服器，就把伺服器架在上面，家裡和公司的電腦都直接連它，見<a href="cloud/">雲端伺服器架設</a>。沒有的話，每台電腦裝上 Tailscale、登入同一個帳號，配對時輸入對方的 Tailscale 位址，見<a href="tailscale/">Tailscale 教學</a>。</p></div>
+          </details>
+          <details>
+            <summary>在同一個網路裡，為什麼找不到另一台？</summary>
+            <div class="answer"><p>先確認兩台是不是真的在同一個網段：公司裡的有線和無線、訪客網路、開了「AP 隔離」的 Wi‑Fi 常常互不相通，區域網路探索過不去。這時在輸入配對碼的那台點「不在同一網段？」，填上另一台配對碼下方顯示的位址。</p><p>在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，到「設置 → 局域網」裡點「放行」。在 Mac 上，要到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。更多說明見<a href="lan/#faq">同一網路教學</a>。</p></div>
+          </details>
+          <details>
+            <summary>支援 Windows 和 Linux 嗎？iPhone 呢？</summary>
+            <div class="answer"><p>支援 Windows 10 與 Windows 11（x64），與 Mac 互通。複製的檔案在 Windows 上貼上後就是真正的檔案，能直接貼進檔案總管、WeChat、Office。</p><p>也支援 x64 與 ARM64 的 Linux 桌面：X11，或附有 XWayland 的 Wayland 桌面（GNOME、KDE 等預設都有）。複製的檔案能直接貼進檔案管理員。</p><p>暫不支援 iPhone 和 iPad：iOS 不允許 App 在背景監聽剪貼簿，做不到複製後立即同步。</p></div>
+          </details>
+          <details>
+            <summary>為什麼第一次打開時系統會擋一下？</summary>
+            <div class="answer"><p>CopySync 還沒有經過 Apple 公證，Windows 版也還沒有程式碼簽章，兩者都需要每年付費購買的憑證。</p><p>在 Mac 上，到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」；在 Windows 上，在「Windows 已保護您的電腦」提示裡點「其他資訊」，再點「仍要執行」。都只需要這一次。</p></div>
+          </details>
+          <details>
+            <summary>大檔案怎麼處理？</summary>
+            <div class="answer"><p>預設 50 MB 以內的內容，在你複製時就推送到另一台電腦，那邊可以直接貼上；更大的檔案只同步一筆記錄，需要時在複製記錄裡點「拉取到本機」再傳。上限可以在設定裡調整。</p></div>
+          </details>
+          <details>
+            <summary>免費嗎？公司能用嗎？</summary>
+            <div class="answer"><p>免費。CopySync 以 GNU AGPL-3.0 授權開源，個人和公司都可以免費使用和修改。散布它，或透過網路提供修改過的版本時，需要以同樣的授權公開原始碼。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">兩台電腦，一個剪貼簿。</h2>
+        <div class="cta">
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 CopySync</a>
+        </div>
+        <p class="note">版本 1.6.4，免費開源。macOS 13 以上；Windows 10、11；Linux（x64 與 ARM64）。</p>
+        <a class="start-link" href="start/">第一次用？看快速入門，三個步驟就設定好 →</a>
+        <a class="source" href="https://github.com/baiyuze/copysync">在 GitHub 上檢視原始碼</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync 以 GNU AGPL-3.0 授權開源。</p>
+      <nav aria-label="頁尾連結">
+        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新記錄</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術說明</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">授權說明</a>
+        <a href="https://github.com/baiyuze/copysync/issues">回報問題</a>
+      </nav>
+      <nav aria-label="語言">
+        <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../zh-tw/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw" aria-current="page">繁體中文（台灣）</a>
+        <a href="../zh-hk/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../en/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

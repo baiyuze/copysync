@@ -22,7 +22,7 @@ Key facts:
 
 ## Docs
 
-- [Website (English)](https://baiyuze.github.io/copysync/en/), [简体中文](https://baiyuze.github.io/copysync/), [日本語](https://baiyuze.github.io/copysync/ja/)
+- [Website (English)](https://baiyuze.github.io/copysync/en/), [简体中文](https://baiyuze.github.io/copysync/), [繁體中文（台灣）](https://baiyuze.github.io/copysync/zh-tw/), [繁體中文（香港）](https://baiyuze.github.io/copysync/zh-hk/), [日本語](https://baiyuze.github.io/copysync/ja/)
 - [Quick start](https://baiyuze.github.io/copysync/en/start/): install the apps, pick a way to connect, and pair ([中文](https://baiyuze.github.io/copysync/start/), [日本語](https://baiyuze.github.io/copysync/ja/start/))
 - [On the same network](https://baiyuze.github.io/copysync/en/lan/): no server; pairing across subnets, firewall and macOS permission notes ([中文](https://baiyuze.github.io/copysync/lan/), [日本語](https://baiyuze.github.io/copysync/ja/lan/))
 - [Run the server on a public server](https://baiyuze.github.io/copysync/en/cloud/): security group, install script, checks ([中文](https://baiyuze.github.io/copysync/cloud/), [日本語](https://baiyuze.github.io/copysync/ja/cloud/))

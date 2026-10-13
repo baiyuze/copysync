@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>在區域網絡裏部署 CopySync 伺服器：Windows、Mac、Linux 教學</title>
+  <meta name="description" content="兩部電腦在同一個網絡裏時，不需要雲端伺服器：在一部長期開着的 Windows、Mac 或 Linux 電腦上執行 CopySync 的信令與 TURN 伺服器，下載後執行一個腳本即可，開機自動執行。附用戶端設定與疑難排解。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/zh-hk/server/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/server/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/server/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/server/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/server/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="在區域網絡裏部署 CopySync 伺服器：Windows、Mac、Linux 教學">
+  <meta property="og:description" content="兩部電腦在同一個網絡裏時，不需要雲端伺服器：在一部長期開着的 Windows、Mac 或 Linux 電腦上執行 CopySync 的信令與 TURN 伺服器，下載後執行一個腳本即可，開機自動執行。附用戶端設定與疑難排解。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/zh-hk/server/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-zh-hant.png">
+  <meta property="og:locale" content="zh_HK">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳至主要內容</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../zh-hk/" aria-label="CopySync 首頁"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="頁面導覽">
+        <a href="../../zh-hk/start/">快速開始</a>
+        <a class="wide" href="../../zh-hk/#how">運作原理</a>
+        <a class="wide" href="../../zh-hk/#faq">常見問題</a>
+        <a class="mid" href="../../zh-hk/start/#server" aria-current="true">連線方式</a>
+        <a href="../../zh-hk/download/">下載</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <details class="lang">
+          <summary aria-label="語言：繁體中文（香港）"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>繁體中文（香港）</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a></li>
+            <li><a href="../../zh-tw/server/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a></li>
+            <li><a href="../../zh-hk/server/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk" aria-current="page">繁體中文（香港）</a></li>
+            <li><a href="../../en/server/" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../../ja/server/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../zh-hk/">CopySync</a> / <a href="../../zh-hk/start/#server">連線方式</a></p>
+        <h1 class="display">在區域網絡裏部署伺服器</h1>
+        <p class="lede">家裏或辦公室的電腦在同一個網絡裏，就不需要雲端伺服器。找一部長期開着的電腦，下載並執行一個腳本，再把它顯示的地址填進每部電腦的 CopySync 裏。</p>
+        <p class="notice"><strong>在同一個網絡裏，現在已經不需要伺服器：</strong>安裝好 App 直接配對就能用，見<a href="../../zh-hk/lan/">同一網絡教學</a>。本文仍然適用於兩個網段之間互相連不上、要經一部兩邊都能連到的電腦中轉的情況。</p>
+        <ol class="guide-toc">
+          <li><a href="#prepare">準備</a></li>
+          <li><a href="#install">安裝伺服器</a></li>
+          <li><a href="#check">檢查</a></li>
+          <li><a href="#clients">填寫地址</a></li>
+          <li><a href="#faq">常見問題</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">伺服器只負責牽線</h2>
+        <p class="intro">每部電腦一直連着伺服器，靠它找到對方、交換連線資訊。連上之後，複製的內容在兩部電腦之間直接傳輸；只有直連打不通時，才經它中轉，內容依然加密。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 440" role="img" aria-labelledby="lan-title lan-desc">
+            <title id="lan-title">區域網絡裏的 CopySync</title>
+            <desc id="lan-desc">在同一個區域網絡裏，Mac 與 Windows 電腦透過信令連接到地址為 192.168.1.20 的伺服器，複製的內容在兩部電腦之間直連傳輸；直連不通時經伺服器的 TURN 中轉。</desc>
+            <rect class="d-lan" x="8" y="8" width="944" height="384" rx="22"/>
+            <text class="d-lan-label" x="32" y="42">區域網絡：同一個 Wi‑Fi 或有線網絡</text>
+            <rect class="d-box" x="340" y="64" width="280" height="104" rx="14"/>
+            <text class="d-title" x="480" y="106" text-anchor="middle">伺服器</text>
+            <text class="d-ip" x="480" y="138" text-anchor="middle">192.168.1.20</text>
+            <path class="d-sig" d="M150 250V96H340"/>
+            <path class="d-sig" d="M810 250V96H620"/>
+            <path class="d-relay" d="M206 250V140H340"/>
+            <path class="d-relay" d="M754 250V140H620"/>
+            <text class="d-note" x="164" y="86">信令 TCP 8787</text>
+            <text class="d-note" x="220" y="200">中轉 UDP 3478，直連不通時</text>
+            <rect class="d-box" x="40" y="250" width="240" height="112" rx="14"/>
+            <text class="d-title" x="160" y="300" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="328" text-anchor="middle">已安裝 CopySync</text>
+            <rect class="d-box" x="680" y="250" width="240" height="112" rx="14"/>
+            <text class="d-title" x="800" y="300" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="328" text-anchor="middle">已安裝 CopySync</text>
+            <path class="d-direct" d="M280 306H680"/>
+            <text class="d-label" x="480" y="292" text-anchor="middle">直連，端對端加密</text>
+            <text class="d-note" x="480" y="336" text-anchor="middle">複製的內容只在兩部電腦之間傳輸</text>
+            <g class="d-legend" transform="translate(40 424)">
+              <path class="d-direct" d="M0 0H28"/><text x="38" y="5">資料（直連）</text>
+              <path class="d-relay" d="M250 0H278"/><text x="288" y="5">資料（中轉，後備）</text>
+              <path class="d-sig" d="M560 0H588"/><text x="598" y="5">信令</text>
+            </g>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>信令，TCP 8787。</strong>每部電腦一直連着它，用來發現對方、配對、交換連線資訊。</li>
+          <li><strong>直連。</strong>在同一個區域網絡裏，內容幾乎總是在兩部電腦之間直接傳輸，速度就是區域網絡的速度。</li>
+          <li><strong>中轉，UDP 3478。</strong>只在訪客網絡、開啟了 AP 隔離的 Wi‑Fi、不同網段之間互相連不上時才會用到。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">開始之前</h2>
+        <dl class="fallbacks">
+          <div><dt>一部長期開着的電腦</dt><dd>Windows 10、11，macOS 13 或以上，或者任何 Linux 都可以，用兩部電腦中的其中一部也行。它關機或睡眠時同步會暫停，醒來後自動恢復。NAS、軟路由、Mac mini 這類長期開着的裝置最合適，只佔約 15 MB 記憶體。</dd></div>
+          <div><dt>一個固定的地址</dt><dd>在路由器的「DHCP 靜態分配」（也叫「地址保留」「IP 與 MAC 綁定」）裏給這部電腦固定一個地址。否則路由器換了地址，每部電腦都要重新填寫。</dd></div>
+          <div><dt>在同一個網絡裏</dt><dd>裝置連接同一個 Wi‑Fi 或有線網絡就可以。訪客網絡、開啟了「AP 隔離」的 Wi‑Fi 不讓裝置互相連接，需要換一個網絡或關閉隔離。</dd></div>
+          <div><dt>離開這個網絡就不會同步</dt><dd>伺服器只能在區域網絡裏連到，手提電腦帶出門後，要回來才會繼續同步。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="wrap">
+        <h2 id="install-title">安裝伺服器</h2>
+        <p class="intro">選擇伺服器所在電腦的系統。安裝腳本會自動找出本機的區域網絡地址，把伺服器設為開機自動執行，最後顯示用戶端要填的地址。</p>
+        <div class="os-tabs" data-tabs="os">
+          <div class="tablist" role="tablist" aria-label="伺服器所在電腦的系統" hidden>
+            <button type="button" role="tab" id="tab-windows" aria-controls="windows">Windows</button>
+            <button type="button" role="tab" id="tab-macos" aria-controls="macos">macOS</button>
+            <button type="button" role="tab" id="tab-linux" aria-controls="linux">Linux</button>
+          </div>
+
+          <section class="os" id="windows" role="tabpanel" aria-labelledby="tab-windows">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                <li>下載 <a href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a>，按右鍵選擇「解壓縮全部」。</li>
+                <li>開啟解壓出來的資料夾，按兩下 <code>install.cmd</code>。<span class="aside">提示「Windows 已保護您的電腦」時，按「其他資訊」，再按「仍要執行」；彈出「使用者帳戶控制」時按「是」。伺服器仍未有程式碼簽署，所以會這樣詢問一次。</span></li>
+                <li>安裝會在新開啟的視窗裏進行。最後顯示的 <code>ws://…/signal</code> 就是用戶端要填的地址。</li>
+                </ol>
+                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Windows 版伺服器</a>
+                <ul class="points">
+                <li><strong>以 Windows 服務形式執行：</strong>開機就啟動，不用登入，也沒有視窗。在「服務」裏叫 CopySync Server。</li>
+                <li><strong>防火牆已經開放：</strong>腳本加入了一條只針對 copysync-server.exe 的輸入規則，不用自己開放端口。</li>
+                <li><strong>地址認錯了</strong>（例如安裝了虛擬機或 VPN，有好幾張網卡）：在解壓出來的資料夾的網址列輸入 <code>cmd</code> 再按 Enter，執行 <code>install.cmd 192.168.1.20</code>，換成你的地址。</li>
+                <li>支援 Windows 10、11，x64。</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="explorer" role="img" aria-label="解壓出來的資料夾裏有 copysync-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd，按兩下其中的 install.cmd">
+                  <div class="t-bar win"><span class="t-tab folder">copysync-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                  <ul class="files">
+                  <li><span class="f-icon exe" aria-hidden="true"></span><span class="f-name">copysync-server.exe</span></li>
+                  <li class="hl"><span class="f-icon cmd" aria-hidden="true"></span><span class="f-name">install.cmd</span><em>按兩下</em></li>
+                  <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">install.ps1</span></li>
+                  <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">README.md</span></li>
+                  <li><span class="f-icon cmd" aria-hidden="true"></span><span class="f-name">uninstall.cmd</span></li>
+                  </ul>
+                </figure>
+                <figure class="term" role="img" aria-label="install.cmd 執行完畢的視窗：依次停止舊版本、安裝、註冊服務、開放防火牆、啟動，最後顯示用戶端要填的地址 ws://192.168.1.20:8787/signal">
+                <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>系統管理員: Windows PowerShell</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<pre class="t-body"><span class="t-step">&gt; 停止旧版本</span>
+<span class="t-step">&gt; 安装到 C:\Program Files\CopySync Server</span>
+<span class="t-step">&gt; 注册服务 CopySyncServer（中转地址 192.168.1.20）</span>
+<span class="t-step">&gt; 在 Windows 防火墙里放行</span>
+<span class="t-step">&gt; 启动</span>
+  √ 已启动
+
+安装完成：copysync-server 1.6.4，作为 Windows 服务开机自动运行
+在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  程序   C:\Program Files\CopySync Server
+  日志   C:\ProgramData\CopySync Server\server.log
+  重启   Restart-Service CopySyncServer（管理员 PowerShell）
+  卸载   双击 uninstall.cmd</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>日後會用到的</caption>
+                  <tbody>
+                  <tr><th scope="row">狀態</th><td>在系統管理員 PowerShell 執行 <code>Get-Service CopySyncServer</code>，或者在「服務」裏找 CopySync Server</td></tr>
+                  <tr><th scope="row">日誌</th><td><code>C:\ProgramData\CopySync Server\server.log</code></td></tr>
+                  <tr><th scope="row">重新啟動</th><td>在系統管理員 PowerShell 執行 <code>Restart-Service CopySyncServer</code></td></tr>
+                  <tr><th scope="row">升級</th><td>下載新版本，解壓後再按兩下 <code>install.cmd</code>，原有設定會保留</td></tr>
+                  <tr><th scope="row">解除安裝</th><td>按兩下 <code>uninstall.cmd</code>，服務、防火牆規則和檔案會一併刪除</td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+
+          <section class="os" id="macos" role="tabpanel" aria-labelledby="tab-macos">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>macOS</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>開啟「終端機」，逐行執行：
+                <div class="code">
+                  <button class="copy" type="button" data-done="已複製">複製</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
+tar xzf copysync-server-macos.tar.gz
+cd copysync-server-macos
+./install.sh</code></pre>
+                </div></li>
+                <li>最後顯示的 <code>ws://…/signal</code> 就是用戶端要填的地址。</li>
+                </ol>
+                <ul class="points">
+                <li><strong>不需要管理員權限。</strong>登入這部 Mac 後會自動在背景執行，意外結束會由系統重新啟動。</li>
+                <li><strong>這部 Mac 不能進入睡眠：</strong>在「系統設定 → 能源」（手提電腦在「電池 → 選項」）裏開啟避免自動進入睡眠的選項。</li>
+                <li><strong>如果開啟了系統防火牆，</strong>腳本最後會提供允許 copysync-server 連線的指令。</li>
+                <li>Intel 與 Apple 晶片通用，macOS 13 或以上。</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="在終端機執行 ./install.sh 的輸出：安裝、寫入 LaunchAgent、啟動，最後顯示用戶端要填的地址 ws://192.168.1.20:8787/signal">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">copysync-server-macos — zsh</span></div>
+<pre class="t-body"><span class="t-prompt">%</span> ./install.sh
+<span class="t-step">▶ 停止旧版本</span>
+<span class="t-step">▶ 安装到 /Users/me/Library/Application Support/CopySync Server</span>
+<span class="t-step">▶ 写入 LaunchAgent（中转地址 192.168.1.20）</span>
+<span class="t-step">▶ 启动</span>
+  ✓ 已启动
+
+安装完成：copysync-server 1.6.4，登录这台 Mac 后自动运行
+在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  日志   /Users/me/Library/Logs/CopySync/server.log
+  重启   launchctl kickstart -k gui/501/com.copysync.server
+  卸载   ./install.sh uninstall</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>日後會用到的</caption>
+                  <tbody>
+                  <tr><th scope="row">日誌</th><td><code>~/Library/Logs/CopySync/server.log</code></td></tr>
+                  <tr><th scope="row">重新啟動</th><td><code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code></td></tr>
+                  <tr><th scope="row">升級</th><td>下載新版本，解壓後再執行 <code>./install.sh</code>，原有設定會保留</td></tr>
+                  <tr><th scope="row">解除安裝</th><td><code>./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+
+          <section class="os" id="linux" role="tabpanel" aria-labelledby="tab-linux">
+            <h3 class="os-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Linux</h3>
+            <div class="os-grid">
+              <div class="os-steps">
+                <ol class="steps">
+                  <li>在這部機器上（或用 ssh 登入後）逐行執行：<span class="aside">ARM 裝置，例如安裝了 64 位元系統的 Raspberry Pi，請把 <code>amd64</code> 換成 <code>arm64</code>。</span>
+                <div class="code">
+                  <button class="copy" type="button" data-done="已複製">複製</button>
+<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+tar xzf copysync-server-linux-amd64.tar.gz
+cd copysync-server-linux-amd64
+sudo ./install.sh</code></pre>
+                </div></li>
+                <li>最後顯示的 <code>ws://…/signal</code> 就是用戶端要填的地址。</li>
+                </ol>
+                <ul class="points">
+                <li><strong>註冊為 systemd 服務，</strong>開機自動執行。需要 root 權限。</li>
+                <li><strong>如果開啟了 ufw 或 firewalld，</strong>腳本最後會提供開放端口的指令。</li>
+                <li><strong>也可以用 Docker：</strong>把 <code>env.example</code> 複製為 <code>.env</code>，<code>TURN_IP</code> 填這部機器的區域網絡地址，再執行 <code>docker compose up -d</code>。必須使用 host 網絡，所以只適用於 Linux。</li>
+                </ul>
+              </div>
+              <div class="os-figures">
+                <figure class="term" role="img" aria-label="執行 sudo ./install.sh 的輸出：安裝、寫入 systemd 單元、產生設定檔、啟動，最後顯示用戶端要填的地址 ws://192.168.1.20:8787/signal">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">ssh 192.168.1.20</span></div>
+<pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh
+<span class="t-step">▶ 安装二进制到 /usr/local/bin</span>
+<span class="t-step">▶ 写入 systemd 单元</span>
+<span class="t-step">▶ 生成配置 /etc/copysync/server.env（中转地址 192.168.1.20）</span>
+<span class="t-step">▶ 启动</span>
+  ✓ 已启动
+
+安装完成：copysync-server 1.6.4
+在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+
+    <span class="t-url">ws://192.168.1.20:8787/signal</span>
+
+  配置   /etc/copysync/server.env
+  日志   journalctl -u copysync-server -f
+  重启   systemctl restart copysync-server
+  卸载   sudo ./install.sh uninstall
+
+防火墙需放行：TCP 8787（信令）、UDP 3478（STUN 与 TURN）、UDP 32768-60999（中转端口，系统随机分配）</pre>
+              </figure>
+              </div>
+            </div>
+            <div class="table-scroll">
+                <table class="manage">
+                  <caption>日後會用到的</caption>
+                  <tbody>
+                  <tr><th scope="row">狀態</th><td><code>systemctl status copysync-server</code></td></tr>
+                  <tr><th scope="row">日誌</th><td><code>journalctl -u copysync-server -f</code></td></tr>
+                  <tr><th scope="row">重新啟動</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
+                  <tr><th scope="row">設定</th><td><code>/etc/copysync/server.env</code>，改完要重新啟動服務</td></tr>
+                  <tr><th scope="row">升級</th><td>下載新版本，解壓後再執行 <code>sudo ./install.sh</code>，原有設定會保留</td></tr>
+                  <tr><th scope="row">解除安裝</th><td><code>sudo ./install.sh uninstall</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <div class="wrap">
+        <h2 id="check-title">檢查其他電腦能否連到它</h2>
+        <p class="intro">在另一部電腦的瀏覽器開啟 <code>http://192.168.1.20:8787/healthz</code>（換成你的地址），看到下面這一行，就代表網絡是通的。</p>
+        <figure class="browser" role="img" aria-label="用瀏覽器開啟 http://192.168.1.20:8787/healthz，頁面顯示伺服器的狀態 ok 與版本號碼">
+          <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">http://192.168.1.20:8787/healthz</span></div>
+          <pre class="b-body">{"status":"ok","version":"1.6.4"}</pre>
+        </figure>
+        <p class="note">開啟不了的話，請看下面的<a href="#faq">常見問題</a>。</p>
+      </div>
+    </section>
+
+    <section class="section" id="clients" aria-labelledby="clients-title">
+      <div class="wrap">
+        <h2 id="clients-title">在每部電腦上填寫地址</h2>
+        <ol class="flow">
+          <li><h3>開啟設定</h3><p>在每部電腦上開啟 CopySync，進入「設置」。伺服器所在的那部電腦也一樣。</p></li>
+          <li><h3>填入地址</h3><p>在「信令服務器地址」裏填 <code>ws://192.168.1.20:8787/signal</code>（換成你的地址），按 Enter 儲存。</p></li>
+          <li><h3>查看連線狀態</h3><p>「連接狀態」變成綠色的「已連接」就完成了。接着在「設備」裏配對，之後複製的內容就會同步。</p></li>
+        </ol>
+        <figure class="shot">
+          <img src="../../assets/screenshots/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的「設置」頁：「信令服務器地址」填着 ws://192.168.1.20:8787/signal，「連接狀態」顯示「已連接」">
+        </figure>
+        <p class="note">仍未安裝 App？見<a href="../../zh-hk/start/">快速開始</a>。</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">常見問題</h2>
+        <div class="faq">
+          <details>
+            <summary>「連接狀態」一直是「未連接」？</summary>
+            <div class="answer"><p>先核對地址：以 <code>ws://</code> 開頭，端口是 8787，以 <code>/signal</code> 結尾，而且填完後按過 Enter。</p><p>再在這部電腦的瀏覽器開啟 <code>http://伺服器地址:8787/healthz</code>。開啟不了，代表到伺服器的網絡不通：伺服器沒有在執行、那部電腦進入了睡眠、被防火牆阻擋，或者它的地址改變了。</p><p>Windows 的安裝腳本已經開放了防火牆；Mac 開啟了系統防火牆時，請執行安裝腳本最後提供的指令；Linux 上的 ufw、firewalld 也一樣。</p></div>
+          </details>
+          <details>
+            <summary>裝置之間顯示「中轉」，而不是「直連」？</summary>
+            <div class="answer"><p>在同一個區域網絡裏一般都是直連。顯示中轉，代表兩部電腦之間的 UDP 不通，常見於訪客網絡、開啟了 AP 隔離的 Wi‑Fi，或者兩部電腦在不同網段、中間有防火牆。中轉會經過伺服器，內容同樣加密，只是速度受那部電腦的網絡限制。</p></div>
+          </details>
+          <details>
+            <summary>伺服器的地址改變了怎麼辦？</summary>
+            <div class="answer"><p>帶上新地址再執行一次安裝腳本：Windows 上是 <code>install.cmd 新地址</code>，Mac 上是 <code>./install.sh 新地址</code>；Linux 上編輯 <code>/etc/copysync/server.env</code> 裏的 <code>-turn-ip</code>，再重新啟動服務。然後在每部電腦上更改伺服器地址。</p><p>在路由器裏給它固定一個地址，就不會再遇到這個問題。</p></div>
+          </details>
+          <details>
+            <summary>離開區域網絡後還能同步嗎？</summary>
+            <div class="answer"><p>不能，伺服器只能在區域網絡裏連到。要在其他網絡裏也能同步，請改用<a href="../../zh-hk/cloud/">公網伺服器</a>，或者<a href="../../zh-hk/tailscale/">Tailscale</a>。</p></div>
+          </details>
+          <details>
+            <summary>伺服器所在的那部電腦也要用 CopySync，地址應該填甚麼？</summary>
+            <div class="answer"><p>填同樣的區域網絡地址就可以，填 <code>ws://127.0.0.1:8787/signal</code> 也行。伺服器和 App 互不影響。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">一部長期開着的電腦，就夠了。</h2>
+        <div class="cta">
+          <a class="button" href="../../zh-hk/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 CopySync</a>
+        </div>
+        <p class="note">版本 1.6.4，免費開源。macOS 13 或以上；Windows 10、11；Linux（x64 與 ARM64）。</p>
+        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">伺服器的完整部署說明（包括公網與 Docker）</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync 以 GNU AGPL-3.0 開源。</p>
+      <nav aria-label="頁尾連結">
+        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新記錄</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術方案</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">授權說明</a>
+        <a href="https://github.com/baiyuze/copysync/issues">回報問題</a>
+      </nav>
+      <nav aria-label="語言">
+        <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../zh-tw/server/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a>
+        <a href="../../zh-hk/server/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk" aria-current="page">繁體中文（香港）</a>
+        <a href="../../en/server/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/server/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

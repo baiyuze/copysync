@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>用 Tailscale 跨網路使用 CopySync：不用伺服器，在家和公司之間同步</title>
+  <meta name="description" content="每台電腦裝上 Tailscale、登入同一個帳號，配對時輸入對方的 Tailscale 位址：不需要公用 IP，不需要伺服器，也不需要一直開著的電腦，在公司、在外面都能同步剪貼簿。">
+  <link rel="canonical" href="https://baiyuze.github.io/copysync/zh-tw/tailscale/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/tailscale/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/tailscale/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CopySync">
+  <meta property="og:title" content="用 Tailscale 跨網路使用 CopySync：不用伺服器，在家和公司之間同步">
+  <meta property="og:description" content="每台電腦裝上 Tailscale、登入同一個帳號，配對時輸入對方的 Tailscale 位址：不需要公用 IP，不需要伺服器，也不需要一直開著的電腦，在公司、在外面都能同步剪貼簿。">
+  <meta property="og:url" content="https://baiyuze.github.io/copysync/zh-tw/tailscale/">
+  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-zh-hant.png">
+  <meta property="og:locale" content="zh_TW">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要內容</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../zh-tw/" aria-label="CopySync 首頁"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <nav aria-label="頁面導覽">
+        <a href="../../zh-tw/start/">快速入門</a>
+        <a class="wide" href="../../zh-tw/#how">運作原理</a>
+        <a class="wide" href="../../zh-tw/#faq">常見問題</a>
+        <a class="mid" href="../../zh-tw/start/#server" aria-current="true">連線方式</a>
+        <a href="../../zh-tw/download/">下載</a>
+        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <details class="lang">
+          <summary aria-label="語言：繁體中文（台灣）"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>繁體中文（台灣）</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a></li>
+            <li><a href="../../zh-tw/tailscale/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw" aria-current="page">繁體中文（台灣）</a></li>
+            <li><a href="../../zh-hk/tailscale/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../../en/tailscale/" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../../ja/tailscale/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero">
+      <div class="wrap">
+        <p class="crumb"><a href="../../zh-tw/">CopySync</a> / <a href="../../zh-tw/start/#server">連線方式</a></p>
+        <h1 class="display">用 Tailscale 跨網路使用</h1>
+        <p class="lede">沒有公用 IP，也不想架伺服器？每台電腦裝上 Tailscale，配對時輸入對方的 Tailscale 位址，在家、在公司都能同步。</p>
+        <ol class="guide-toc">
+          <li><a href="#join">安裝 Tailscale</a></li>
+          <li><a href="#address">查位址</a></li>
+          <li><a href="#pair">配對</a></li>
+          <li><a href="#faq">常見問題</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="wrap">
+        <h2 id="overview-title">就像在同一個區域網路裡</h2>
+        <p class="intro">Tailscale 是一套虛擬網路工具：裝了它、登入同一個帳號的裝置，各自會分到一個固定的 100 開頭的位址，不管實際在哪個網路裡，都能用這個位址互相連線。CopySync 配對時記住對方的這個位址，之後就像在同一個網路裡一樣直接連線。</p>
+        <figure class="diagram">
+          <svg viewBox="0 0 960 330" role="img" aria-labelledby="ts-title ts-desc">
+            <title id="ts-title">透過 Tailscale 使用 CopySync</title>
+            <desc id="ts-desc">Mac 在公司，Windows 在家裡，兩台都裝了 Tailscale，在同一個虛擬區域網路裡各有一個 100 開頭的位址。複製的內容在兩台電腦之間直接傳輸，沒有伺服器。</desc>
+            <rect class="d-ts" x="8" y="8" width="944" height="314" rx="22"/>
+            <text class="d-ts-label" x="32" y="42">Tailscale 虛擬區域網路：每台裝置一個 100 開頭的位址</text>
+            <rect class="d-box" x="40" y="100" width="240" height="160" rx="14"/>
+            <text class="d-title" x="160" y="146" text-anchor="middle">Mac</text>
+            <text class="d-sub" x="160" y="174" text-anchor="middle">在公司</text>
+            <text class="d-ip" x="160" y="226" text-anchor="middle">100.88.20.5</text>
+            <rect class="d-box" x="680" y="100" width="240" height="160" rx="14"/>
+            <text class="d-title" x="800" y="146" text-anchor="middle">Windows</text>
+            <text class="d-sub" x="800" y="174" text-anchor="middle">在家裡</text>
+            <text class="d-ip" x="800" y="226" text-anchor="middle">100.92.41.17</text>
+            <path class="d-direct" d="M280 190H680"/>
+            <text class="d-label" x="480" y="176" text-anchor="middle">直連，兩層加密</text>
+            <text class="d-note" x="480" y="218" text-anchor="middle">複製的內容只在兩台電腦之間傳輸</text>
+          </svg>
+        </figure>
+        <ul class="points ports">
+          <li><strong>不需要伺服器，</strong>也不需要一直開著的電腦：兩台電腦都開著、連著 Tailscale，就能同步。</li>
+          <li><strong>位址只要輸入一次。</strong>Tailscale 位址不會變，配對時輸入一次，之後兩台會自動找到彼此。</li>
+          <li><strong>兩層加密。</strong>Tailscale 的 WireGuard 通道裡，跑的是 CopySync 自己端對端加密的連線，Tailscale 看不到內容。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="prepare" aria-labelledby="prepare-title">
+      <div class="wrap">
+        <h2 id="prepare-title">開始之前</h2>
+        <dl class="fallbacks">
+          <div><dt>一個 Tailscale 帳號</dt><dd>個人使用免費，用 Google、Microsoft、GitHub 或 Apple 帳號就能登入。所有裝置都登入同一個帳號。</dd></div>
+          <div><dt>每台電腦都裝 Tailscale</dt><dd>Windows、macOS、Linux 都有用戶端。使用 CopySync 的電腦都要裝，並保持連線。</dd></div>
+          <div><dt>已經裝好 CopySync</dt><dd>每台電腦都裝好 App、啟用了背景同步，見<a href="../../zh-tw/start/#app">快速入門</a>。伺服器位址留空就行。</dd></div>
+          <div><dt>用 ZeroTier 也行</dt><dd>其他能幫每台裝置分配固定虛擬位址的虛擬網路工具，做法都相同：配對時輸入它分配的位址。下面以 Tailscale 為例。</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="join" aria-labelledby="join-title">
+      <div class="wrap">
+        <p class="eyebrow">第 1 步</p>
+        <h2 id="join-title">在每台電腦上安裝 Tailscale</h2>
+        <p class="intro">每台要同步的電腦都裝上，並登入同一個帳號。</p>
+        <div class="os-grid qs-grid">
+          <div class="os-steps">
+            <ol class="steps">
+              <li>到 Tailscale 官網下載對應系統的用戶端並安裝。<span class="aside">Linux 上執行 <code>curl -fsSL https://tailscale.com/install.sh | sh</code>，再執行 <code>sudo tailscale up</code>，打開它給出的連結登入。</span></li>
+              <li>打開 Tailscale 並登入。每台電腦都用同一個帳號。</li>
+              <li>登入後，在 Tailscale 的管理主控台能看到所有裝置，每台都有一個 100 開頭的位址。</li>
+            </ol>
+            <a class="button" href="https://tailscale.com/download"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Tailscale</a>
+          </div>
+          <div class="os-figures">
+            <figure class="browser listing" role="img" aria-label="Tailscale 管理主控台的裝置清單（示意）：macbook-pro 的位址是 100.88.20.5，home-pc 是 100.92.41.17">
+              <div class="b-bar"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">login.tailscale.com/admin/machines</span></div>
+              <table>
+                <thead><tr><th scope="col">裝置</th><th scope="col">Tailscale 位址</th><th scope="col">系統</th></tr></thead>
+                <tbody>
+                <tr><td>macbook-pro</td><td>100.88.20.5</td><td>macOS</td></tr>
+                <tr><td>home-pc</td><td>100.92.41.17</td><td>Windows</td></tr>
+                </tbody>
+              </table>
+            </figure>
+          </div>
+        </div>
+        <div class="server-notes">
+          <h3>讓 Tailscale 一直保持連線</h3>
+          <ul class="points">
+            <li><strong>Windows：</strong>在工作列右下角的 Tailscale 圖示上按右鍵，在「Preferences」裡勾選「Run unattended」，登出之後也會保持連線。</li>
+            <li><strong>Mac：</strong>確認 Tailscale 在登入後會自動打開。</li>
+            <li><strong>關閉金鑰過期：</strong>Tailscale 預設每 180 天要求裝置重新登入一次。長期不動的電腦，可以在管理主控台的 Machines 頁面，點那一列最右邊的選單，選「Disable key expiry」。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="address" aria-labelledby="address-title">
+      <div class="wrap">
+        <p class="eyebrow">第 2 步</p>
+        <h2 id="address-title">查對方的 Tailscale 位址</h2>
+        <p class="intro">在要配對的另一台電腦上點 Tailscale 的圖示（Mac 在選單列，Windows 在工作列右下角），選單裡能看到本機的位址；或在終端機裡執行 <code>tailscale ip -4</code>。</p>
+        <div class="address-term">
+          <figure class="term" role="img" aria-label="在 PowerShell 裡執行 tailscale ip -4，輸出本機的 Tailscale 位址 100.92.41.17">
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">home-pc — PowerShell</span></div>
+<pre class="t-body"><span class="t-prompt">&gt;</span> tailscale ip -4
+<span class="t-url">100.92.41.17</span></pre>
+              </figure>
+        </div>
+        <p class="note">下面以家裡那台 Windows 的 <code>100.92.41.17</code> 為例，請換成你的位址。</p>
+      </div>
+    </section>
+
+    <section class="section" id="pair" aria-labelledby="pair-title">
+      <div class="wrap">
+        <p class="eyebrow">第 3 步</p>
+        <h2 id="pair-title">配對時輸入這個位址</h2>
+        <p class="intro">和在同一個網路裡配對一樣，只是多輸入一個位址。</p>
+        <div class="os-grid qs-grid">
+          <div>
+            <ol class="steps">
+              <li>在家裡那台 Windows 上打開「設備」，點「添加設備」，記下 6 碼配對碼。</li>
+              <li>在公司的 Mac 上點「添加設備」，切換到「輸入配對碼」，輸入它；再點「不在同一網段？」，填上 <code>100.92.41.17</code>，點「繼續」。</li>
+              <li>兩邊螢幕會顯示同樣的兩行安全指紋，逐字核對一致後確認。之後兩台在哪裡都能同步。</li>
+            </ol>
+          </div>
+          <figure class="shot">
+            <img src="../../assets/screenshots/pairing-join-ts-dark.png" width="2112" height="1472" loading="lazy" alt="輸入配對碼：填好配對碼 K7MP2X，位址欄裡填著 Tailscale 位址 100.92.41.17">
+          </figure>
+        </div>
+        <p class="note">兩台都在家裡時，CopySync 也會在區域網路裡直接找到對方，資料不會繞遠路。</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <h2 id="faq-title">常見問題</h2>
+        <div class="faq">
+          <details>
+            <summary>裝置之間顯示「直連」，速度卻很慢？</summary>
+            <div class="answer"><p>CopySync 顯示的「直連」，是指兩台電腦在 Tailscale 的虛擬網路裡直接相連。Tailscale 自己打不通兩台電腦時，會經過它在海外的中繼伺服器（DERP）轉送，在中國大陸使用就會比較慢。</p><p>在終端機裡執行 <code>tailscale ping 對方的位址</code>：顯示 via DERP，代表 Tailscale 正在走中繼；顯示 via 一個 IP 和連接埠，就是點對點。公司網路、校園網路比較容易遇到中繼，可以自建 DERP 中繼伺服器，或換一套虛擬網路工具。</p></div>
+          </details>
+          <details>
+            <summary>配對時找不到對方？</summary>
+            <div class="answer"><p>先確認兩台的 Tailscale 都已連線：在終端機裡執行 <code>tailscale ping 對方的位址</code>，能 ping 通再試。</p><p>能 ping 通卻還是找不到，多半是對方的防火牆擋住了：對方是 Windows 的話，在它的 CopySync「設置 → 局域網」裡點「放行」；是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 CopySync Daemon。</p></div>
+          </details>
+          <details>
+            <summary>一定要每台電腦都裝 Tailscale 嗎？</summary>
+            <div class="answer"><p>是的，沒裝的電腦連不到 100 開頭的位址。兩台在同一個網路裡時，不裝也能用，見<a href="../../zh-tw/lan/">同一網路教學</a>。</p></div>
+          </details>
+          <details>
+            <summary>以前照著教學在家裡裝過伺服器，還需要它嗎？</summary>
+            <div class="answer"><p>不需要了。在每台電腦的「設置」裡清空伺服器位址，再到家裡那台電腦上解除安裝伺服器即可，已經配對的裝置不用重新配對。留著也沒關係，伺服器和 Tailscale 可以同時使用。</p></div>
+          </details>
+          <details>
+            <summary>Tailscale 能看到我複製的內容嗎？</summary>
+            <div class="answer"><p>不能。Tailscale 的連線用 WireGuard 端對端加密，裡面跑的又是 CopySync 自己的 DTLS 加密連線，兩層都只有兩台電腦能解開。Tailscale 的伺服器只交換裝置的公鑰和位址，中繼伺服器也只轉送加密後的封包。</p></div>
+          </details>
+          <details>
+            <summary>Tailscale 位址會變嗎？</summary>
+            <div class="answer"><p>一般不會。位址跟著裝置走，重新開機、換網路都不會變；只有把裝置從 Tailscale 裡刪除再重新加入，才會換一個。換了的話，在「設備」裡幫那台裝置重新輸入一次位址。</p></div>
+          </details>
+          <details>
+            <summary>我有雲端伺服器，還需要 Tailscale 嗎？</summary>
+            <div class="answer"><p>不需要。把伺服器架在有公用 IP 的機器上，所有電腦填它的位址就行，見<a href="../../zh-tw/cloud/">雲端伺服器架設教學</a>。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 class="display" id="closing-title">不用伺服器，<br>複製跟著你走。</h2>
+        <div class="cta">
+          <a class="button" href="../../zh-tw/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 CopySync</a>
+        </div>
+        <p class="note">版本 1.6.4，免費開源。macOS 13 以上；Windows 10、11；Linux（x64 與 ARM64）。</p>
+        <a class="source" href="../../zh-tw/lan/">回到同一網路教學</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>CopySync 以 GNU AGPL-3.0 授權開源。</p>
+      <nav aria-label="頁尾連結">
+        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新記錄</a>
+        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術說明</a>
+        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">授權說明</a>
+        <a href="https://github.com/baiyuze/copysync/issues">回報問題</a>
+      </nav>
+      <nav aria-label="語言">
+        <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../zh-tw/tailscale/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw" aria-current="page">繁體中文（台灣）</a>
+        <a href="../../zh-hk/tailscale/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../../en/tailscale/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/tailscale/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

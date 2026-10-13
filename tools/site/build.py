@@ -1,10 +1,10 @@
-"""生成官网：docs/index.html（简体中文）、docs/en/、docs/ja/，每种语言下还有快速开始（start/）与三种连接方式的教程——
+"""生成官网：docs/index.html（简体中文）、docs/zh-tw/ 与 docs/zh-hk/（繁体）、docs/en/、docs/ja/，每种语言下还有快速开始（start/）与三种连接方式的教程——
 同一网络（lan/，不需要服务器）、公网服务器（cloud/）、Tailscale（tailscale/），
 在局域网里自建服务器的教程（server/），以及 docs/design/ 下的技术方案页面。
 
     python3 tools/site/build.py
 
-三种语言共用同一套页面结构，文案在 tools/site/content/ 下每种语言一份。
+各语言共用同一套页面结构，文案在 tools/site/content/ 下每种语言一份。
 技术方案页面由 design/*.md 转换而来，放在网站上，不用跳到 GitHub 去看。
 改了文案、结构或技术方案后运行一次，把生成的文件一起提交。只用 Python 标准库。
 """
@@ -23,12 +23,20 @@ DL = REPO + "/releases/latest/download/"
 VERSION = "1.6.4"
 DATE = "2026-10-13"
 
-# 语言代码 → (页面目录, html 的 lang, og:locale, 语言名)
+# 语言代码 → (页面目录, html 的 lang, og:locale, 语言名)。顶栏的语言菜单按这个顺序列出。
+# 繁体的两份文案由 zh.py 转换后逐条校订，改了 zh.py 要一起改
 LANGS = {
     "zh": ("", "zh-CN", "zh_CN", "简体中文"),
+    "zh-tw": ("zh-tw/", "zh-TW", "zh_TW", "繁體中文（台灣）"),
+    "zh-hk": ("zh-hk/", "zh-HK", "zh_HK", "繁體中文（香港）"),
     "en": ("en/", "en", "en_US", "English"),
     "ja": ("ja/", "ja", "ja_JP", "日本語"),
 }
+
+
+def shots_dir(code: str) -> str:
+    """截图目录。App 没有繁体界面，在繁体系统上显示简体中文，所以繁体页面也用简体中文的截图。"""
+    return "assets/screenshots/" + ("" if code.startswith("zh") else code + "/")
 
 # Cloudflare Web Analytics：不用 Cookie，只统计浏览量、来源、国家与设备。
 # token 会出现在每个页面的源码里，本来就是公开的，只能用来上报，看不到统计数据。
@@ -66,29 +74,39 @@ SERVER = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
           'stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/>'
           '<rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>')
 LINES = '<span class="lines"><i></i><i></i><i></i></span>'
+GLOBE = ('<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">'
+         '<circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25'
+         'M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg>')
+CHEVRON = ('<svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" '
+           'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg>')
 
-# 首页按浏览器语言跳转：只在简体中文的首页（网站根目录）做，选过语言后以选的为准
+# 首页按浏览器语言跳转：只在简体中文的首页（网站根目录）做，选过语言后以选的为准。
+# 香港、澳门的繁体去香港版，其他繁体（台湾、只写了 zh-Hant 的）去台湾版
 REDIRECT = """  <script>
-    // 第一次打开时按浏览器语言跳到对应页面；在页面上点过语言链接后，以点的为准
+    // 第一次打开时按浏览器语言跳到对应页面；在页面上选过语言后，以选的为准
     (function () {
       try {
+        var paths = PATHS;
         var pick = localStorage.getItem("copysync-lang");
-        if (!pick) {
+        if (!paths.hasOwnProperty(pick)) {
+          pick = "";
           if (/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)) return;
           var list = navigator.languages || [navigator.language || ""];
           for (var i = 0; i < list.length && !pick; i++) {
             var l = String(list[i]).toLowerCase();
-            if (l.indexOf("zh") === 0) pick = "zh";
+            if (/^zh-(hk|mo|hant-hk|hant-mo)\\b/.test(l)) pick = "zh-hk";
+            else if (/^zh-(tw|hant)\\b/.test(l)) pick = "zh-tw";
+            else if (l.indexOf("zh") === 0) pick = "zh";
             else if (l.indexOf("ja") === 0) pick = "ja";
             else if (l.indexOf("en") === 0) pick = "en";
           }
           pick = pick || "en";
         }
-        if (pick === "en" || pick === "ja") location.replace(pick + "/" + location.hash);
+        if (paths[pick]) location.replace(paths[pick] + location.hash);
       } catch (e) {}
     })();
   </script>
-"""
+""".replace("PATHS", json.dumps({k: v[0] for k, v in LANGS.items()}))
 
 
 def esc(s: str) -> str:
@@ -111,14 +129,20 @@ def load(code: str) -> dict:
 # ─────────────────────────── 首页 ───────────────────────────
 
 
-def lang_links(code: str, up: str, sub: str = "") -> str:
-    """除当前语言外的其他语言链接。up 是当前页面到网站根目录的相对路径，sub 是子页面（如 server/）。"""
-    out = []
+def lang_menu(c: dict, code: str, up: str, sub: str = "") -> str:
+    """顶栏右侧的语言菜单：平时只显示当前语言，点开列出全部，链接到同一页面的其他语言版本。
+    用 <details> 做，没有脚本也能展开。up 是当前页面到网站根目录的相对路径，sub 是子页面（如 server/）。"""
+    items = []
     for other, (path, hl, _, name) in LANGS.items():
-        if other == code:
-            continue
-        out.append(f'<a href="{up}{path + sub or "./"}" hreflang="{hl}" lang="{hl}" data-lang="{other}">{name}</a>')
-    return "\n        ".join(out)
+        cur = ' aria-current="page"' if other == code else ""
+        items.append(f'<li><a href="{up}{path + sub or "./"}" hreflang="{hl}" lang="{hl}" data-lang="{other}"{cur}>{name}</a></li>')
+    name = LANGS[code][3]
+    return f"""<details class="lang">
+          <summary aria-label="{c["lang_label"]}：{name}">{GLOBE}<span>{name}</span>{CHEVRON}</summary>
+          <ul>
+            {(chr(10) + "            ").join(items)}
+          </ul>
+        </details>"""
 
 
 def footer(c: dict, code: str, up: str, sub: str = "") -> str:
@@ -151,7 +175,7 @@ def cta(c: dict, base: str, start: str = "") -> str:
 
 
 def header(c: dict, code: str, up: str, sub: str = "") -> str:
-    """顶栏。sub 是当前的教程页面（START、GUIDE 等），首页为空。窄屏只留不带 wide 的几项。
+    """顶栏。sub 是当前的教程页面（START、GUIDE 等），首页为空。窄屏只留不带 wide 的几项，手机上再收起带 mid 的。
     「连接方式」指向快速开始里三种方式的选择，在各篇教程里显示为当前所在的栏目。"""
     path = LANGS[code][0]
     if sub:
@@ -161,11 +185,11 @@ def header(c: dict, code: str, up: str, sub: str = "") -> str:
         home, base = "", ""
     if sub == START:
         start = '<a href="./" aria-current="page">'
-        deploy = '<a href="#server">'
+        deploy = '<a class="mid" href="#server">'
     else:
         start = f'<a href="{base}{START}">'
         current = ' aria-current="true"' if sub in DEPLOY_PAGES else ""
-        deploy = f'<a href="{base}{START}#server"{current}>'
+        deploy = f'<a class="mid" href="{base}{START}#server"{current}>'
     download = '<a href="./" aria-current="page">' if sub == DOWNLOAD else f'<a href="{base}{DOWNLOAD}">'
 
     return f"""  <header class="bar">
@@ -178,7 +202,7 @@ def header(c: dict, code: str, up: str, sub: str = "") -> str:
         {deploy}{c["nav_server"]}</a>
         {download}{c["nav_download"]}</a>
         <a class="wide" href="{REPO}">GitHub</a>
-        {lang_links(code, up, sub)}
+        {lang_menu(c, code, up, sub)}
       </nav>
     </div>
   </header>"""
@@ -312,7 +336,7 @@ def home(code: str) -> str:
     path, hl, locale, _ = LANGS[code]
     up = "../" * path.count("/")
     a = up + "assets/"
-    shots = "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    shots = shots_dir(code)
     alternates = "\n".join(
         f'  <link rel="alternate" hreflang="{h}" href="{SITE}{p}">' for p, h, _, _ in LANGS.values())
     others = [l for k, (_, _, l, _) in LANGS.items() if k != code]
@@ -627,7 +651,7 @@ def home(code: str) -> str:
 # 教程里的示例地址。页面上的终端输出照安装脚本的真实输出抄写，只把地址换成它
 LAN_IP = "192.168.1.20"
 
-# 安装脚本在中文系统上输出中文，其他系统输出英文；日文页面也是英文输出。
+# 安装脚本在中文系统上输出简体中文（繁体系统也一样），其他系统输出英文；日文页面也是英文输出。
 # 改了 server/deploy/ 下脚本的输出，这里跟着改。
 TRANSCRIPTS = {
     "zh": {
@@ -862,8 +886,8 @@ def server_page(code: str) -> str:
     up = "../" * (path + GUIDE).count("/")
     home_href = up + (path or "./")
     base = up + path
-    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
-    t = TRANSCRIPTS["zh" if code == "zh" else "en"]
+    shots = up + shots_dir(code)
+    t = TRANSCRIPTS["zh" if code.startswith("zh") else "en"]
 
     linux_dl = f"""curl -LO {DL}copysync-server-linux-amd64.tar.gz
 tar xzf copysync-server-linux-amd64.tar.gz
@@ -1089,8 +1113,8 @@ def cloud_page(code: str) -> str:
     up = "../" * (path + CLOUD).count("/")
     home_href = up + (path or "./")
     base = up + path
-    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
-    t = TRANSCRIPTS["zh" if code == "zh" else "en"]
+    shots = up + shots_dir(code)
+    t = TRANSCRIPTS["zh" if code.startswith("zh") else "en"]
     links = {"home": home_href, "lan": base + LAN, "server": base + GUIDE, "ts": base + TAILSCALE,
              "start": base + START, "deploy": f"{REPO}/blob/main/server/deploy/README.md"}
     d = cl["diagram"]
@@ -1275,7 +1299,7 @@ def start_page(code: str) -> str:
     up = "../" * (path + START).count("/")
     home_href = up + (path or "./")
     base = up + path
-    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    shots = up + shots_dir(code)
     links = {"home": home_href, "lan": base + LAN, "cloud": base + CLOUD, "server": base + GUIDE,
              "ts": base + TAILSCALE, "issues": REPO + "/issues"}
 
@@ -1387,7 +1411,7 @@ def lan_page(code: str) -> str:
     up = "../" * (path + LAN).count("/")
     home_href = up + (path or "./")
     base = up + path
-    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    shots = up + shots_dir(code)
     links = {"home": home_href, "cloud": base + CLOUD, "server": base + GUIDE, "ts": base + TAILSCALE,
              "start": base + START, "design": up + "design/lan-mode.html"}
     d = ln["diagram"]
@@ -1653,7 +1677,7 @@ def tailscale_page(code: str) -> str:
     up = "../" * (path + TAILSCALE).count("/")
     home_href = up + (path or "./")
     base = up + path
-    shots = up + "assets/screenshots/" + ("" if code == "zh" else code + "/")
+    shots = up + shots_dir(code)
     links = {"home": home_href, "lan": base + LAN, "cloud": base + CLOUD, "server": base + GUIDE,
              "start": base + START}
     d = ts["diagram"]

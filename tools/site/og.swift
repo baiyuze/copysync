@@ -2,7 +2,7 @@
 //
 //   swift tools/site/og.swift
 //
-// 输出 docs/assets/og.png（中文）与 docs/assets/og-en.png（英文）。
+// 输出 docs/assets/og.png（简体中文）、og-zh-hant.png（繁体中文，台湾与香港共用）与 og-en.png（英文）。
 
 import AppKit
 
@@ -11,7 +11,8 @@ let paper = NSColor(srgbRed: 0xF5 / 255.0, green: 0xF5 / 255.0, blue: 0xF4 / 255
 let ink = NSColor(srgbRed: 0x1D / 255.0, green: 0x1D / 255.0, blue: 0x1F / 255.0, alpha: 1)
 let dim = NSColor(srgbRed: 0x6E / 255.0, green: 0x6E / 255.0, blue: 0x73 / 255.0, alpha: 1)
 
-func render(title: String, note: String, to path: String) throws {
+// lang 交给 Core Text 选中文字体：繁体用苹方的繁体版，标点的位置也随之不同
+func render(title: String, note: String, lang: String = "", to path: String) throws {
     let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(W), pixelsHigh: Int(H),
                                bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
                                colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
@@ -43,12 +44,13 @@ func render(title: String, note: String, to path: String) throws {
     para.lineSpacing = 6
     let headline = NSAttributedString(string: title, attributes: [
         .font: NSFont.systemFont(ofSize: 54, weight: .bold), .foregroundColor: ink,
-        .paragraphStyle: para, .kern: -1,
+        .paragraphStyle: para, .kern: -1, NSAttributedString.Key("NSLanguage"): lang,
     ])
     headline.draw(in: NSRect(x: 80, y: y(262, 150), width: 540, height: 150))
 
     let foot = NSAttributedString(string: note, attributes: [
         .font: NSFont.systemFont(ofSize: 22, weight: .regular), .foregroundColor: dim,
+        NSAttributedString.Key("NSLanguage"): lang,
     ])
     foot.draw(at: NSPoint(x: 80, y: y(470, 28)))
 
@@ -57,6 +59,8 @@ func render(title: String, note: String, to path: String) throws {
 
 try render(title: "在这台 Mac 复制，\n到那台 Mac 粘贴。", note: "免费开源，macOS 13 及以上",
            to: "docs/assets/og.png")
+try render(title: "在這台 Mac 複製，\n到那台 Mac 貼上。", note: "免費開源，macOS 13 以上", lang: "zh-Hant",
+           to: "docs/assets/og-zh-hant.png")
 try render(title: "Copy on this Mac.\nPaste on that one.", note: "Free and open source, macOS 13+",
            to: "docs/assets/og-en.png")
-print("✓ docs/assets/og.png, og-en.png")
+print("✓ docs/assets/og.png, og-zh-hant.png, og-en.png")
