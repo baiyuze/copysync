@@ -182,6 +182,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       items: [
                         MapEntry('', l.languageSystem),
                         const MapEntry('zh-Hans', '简体中文'),
+                        const MapEntry('zh-Hant-TW', '繁體中文（台灣）'),
+                        const MapEntry('zh-Hant-HK', '繁體中文（香港）'),
                         const MapEntry('en', 'English'),
                         const MapEntry('ja', '日本語'),
                       ],

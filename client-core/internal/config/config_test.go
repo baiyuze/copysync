@@ -149,7 +149,8 @@ func TestValidateCapsCacheTTLByHistoryTTL(t *testing.T) {
 
 // 界面语言只认这几种；别的值（拼错的、以后版本新增的）退回跟随系统。
 func TestValidateLanguage(t *testing.T) {
-	for in, want := range map[string]string{"": "", "zh-Hans": "zh-Hans", "en": "en", "ja": "ja", "fr": "", "zh": ""} {
+	for in, want := range map[string]string{"": "", "zh-Hans": "zh-Hans", "zh-Hant-TW": "zh-Hant-TW", "zh-Hant-HK": "zh-Hant-HK",
+		"en": "en", "ja": "ja", "fr": "", "zh": "", "zh-Hant": ""} {
 		c := Default()
 		c.Language = in
 		c.Validate()

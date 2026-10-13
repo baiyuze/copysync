@@ -333,12 +333,12 @@ sudo ./install.sh</code></pre>
       <div class="wrap">
         <h2 id="clients-title">在每台電腦上填位址</h2>
         <ol class="flow">
-          <li><h3>打開設定</h3><p>在每台電腦上打開 CopySync，進入「設置」。伺服器所在的那台電腦也一樣。</p></li>
-          <li><h3>填入位址</h3><p>在「信令服務器地址」裡填 <code>ws://192.168.1.20:8787/signal</code>（換成你的位址），按 Enter 儲存。</p></li>
-          <li><h3>查看連線狀態</h3><p>「連接狀態」變成綠色的「已連接」就完成了。接著在「設備」裡配對，之後複製就會同步。</p></li>
+          <li><h3>打開設定</h3><p>在每台電腦上打開 CopySync，進入「設定」。伺服器所在的那台電腦也一樣。</p></li>
+          <li><h3>填入位址</h3><p>在「信令伺服器位址」裡填 <code>ws://192.168.1.20:8787/signal</code>（換成你的位址），按 Enter 儲存。</p></li>
+          <li><h3>查看連線狀態</h3><p>「連線狀態」變成綠色的「已連線」就完成了。接著在「裝置」裡配對，之後複製就會同步。</p></li>
         </ol>
         <figure class="shot">
-          <img src="../../assets/screenshots/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的設置頁：信令服務器地址填著 ws://192.168.1.20:8787/signal，連接狀態顯示已連接">
+          <img src="../../assets/screenshots/zh-tw/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的設置頁：信令服務器地址填著 ws://192.168.1.20:8787/signal，連接狀態顯示已連接">
         </figure>
         <p class="note">還沒裝 App？見<a href="../../zh-tw/start/">快速入門</a>。</p>
       </div>
@@ -349,12 +349,12 @@ sudo ./install.sh</code></pre>
         <h2 id="faq-title">常見問題</h2>
         <div class="faq">
           <details>
-            <summary>連接狀態一直是「未連接」？</summary>
+            <summary>連接狀態一直是「未連線」？</summary>
             <div class="answer"><p>先核對位址：以 <code>ws://</code> 開頭，連接埠是 8787，以 <code>/signal</code> 結尾，填完有按 Enter。</p><p>再用這台電腦的瀏覽器打開 <code>http://伺服器位址:8787/healthz</code>。打不開，代表到伺服器的網路不通：伺服器沒有在執行、那台電腦進入睡眠了、被防火牆擋住了，或是它的位址變了。</p><p>Windows 的安裝腳本已經開放了防火牆；Mac 開著系統防火牆時，請執行安裝腳本最後給出的開放指令；Linux 上的 ufw、firewalld 也一樣。</p></div>
           </details>
           <details>
-            <summary>裝置之間顯示「中轉」，不是「直連」？</summary>
-            <div class="answer"><p>在同一個區域網路裡一般都是直連。顯示「中轉」，代表兩台電腦之間的 UDP 不通，常見於訪客網路、開了 AP 隔離的 Wi‑Fi，或兩台電腦在不同網段、中間有防火牆。中繼會經過伺服器，內容同樣加密，只是速度受那台電腦的網路限制。</p></div>
+            <summary>裝置之間顯示「中繼」，不是「直連」？</summary>
+            <div class="answer"><p>在同一個區域網路裡一般都是直連。顯示「中繼」，代表兩台電腦之間的 UDP 不通，常見於訪客網路、開了 AP 隔離的 Wi‑Fi，或兩台電腦在不同網段、中間有防火牆。中繼會經過伺服器，內容同樣加密，只是速度受那台電腦的網路限制。</p></div>
           </details>
           <details>
             <summary>伺服器的位址變了怎麼辦？</summary>

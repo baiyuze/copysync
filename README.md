@@ -53,7 +53,7 @@ With CopySync you pair two computers once. After that, copy on one and paste on 
 - **No server on the same network.** Computers find each other and pair with a code; on a different subnet you also enter an address.
 - **Direct first, relay as fallback**, including office networks with several uplinks.
 - **Fingerprint check when pairing**, so neither the server nor anyone on the network can impersonate your device.
-- **Runs in the background**, starts at login, recovers from crashes. English, Chinese and Japanese.
+- **Runs in the background**, starts at login, recovers from crashes. English, Simplified and Traditional Chinese, and Japanese.
 
 <table>
   <tr>

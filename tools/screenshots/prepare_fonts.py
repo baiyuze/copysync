@@ -20,11 +20,12 @@ from fontTools.varLib.instancer import instantiateVariableFont
 out = sys.argv[1] if len(sys.argv) > 1 else "fonts"
 os.makedirs(out, exist_ok=True)
 
-# ── 中文：PingFang SC 的三个字重 ──
+# ── 中文：PingFang 的三个字重。简体用 SC；繁体按地区用 TC（台湾）、HK（香港），字形与标点位置不同 ──
 pingfang = (glob.glob("/System/Library/AssetsV2/com_apple_MobileAsset_Font*/*/AssetData/PingFang.ttc")
             + glob.glob("/System/Library/Fonts/PingFang.ttc"))[0]
-wanted = {"PingFang SC Regular": "PingFang-Regular", "PingFang SC Medium": "PingFang-Medium",
-          "PingFang SC Semibold": "PingFang-Semibold"}
+wanted = {f"PingFang {region} {weight}": f"PingFang{suffix}-{weight}"
+          for region, suffix in [("SC", ""), ("TC", "TC"), ("HK", "HK")]
+          for weight in ["Regular", "Medium", "Semibold"]}
 for font in TTCollection(pingfang).fonts:
     name = font["name"].getDebugName(4)
     if name in wanted:

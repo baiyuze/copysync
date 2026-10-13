@@ -2054,7 +2054,7 @@ class Config extends $pb.GeneratedMessage {
   @$pb.TagNumber(12)
   void clearOnlyOwnStun() => $_clearField(12);
 
-  /// 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"en"、"ja" 之一。
+  /// 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"zh-Hant-TW"、"zh-Hant-HK"、"en"、"ja" 之一。
   /// 存在后台服务这里而不是界面里：Windows 的托盘菜单由后台服务画，也要跟着变。
   @$pb.TagNumber(13)
   $core.String get language => $_getSZ(12);

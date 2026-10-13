@@ -224,12 +224,12 @@ sudo ./install.sh 203.0.113.10</code></pre>
         <p class="eyebrow">第 4 步</p>
         <h2 id="clients-title">在每台電腦上填位址</h2>
         <ol class="flow">
-          <li><h3>打開設定</h3><p>在每台電腦上打開 CopySync，進入「設置」。</p></li>
-          <li><h3>填入公用 IP 位址</h3><p>在「信令服務器地址」裡填 <code>ws://203.0.113.10:8787/signal</code>（換成你的公用 IP），按 Enter 儲存。</p></li>
-          <li><h3>查看連線狀態</h3><p>「連接狀態」變成綠色的「已連接」就完成了。還沒配對的話，到「設備」裡配對。</p></li>
+          <li><h3>打開設定</h3><p>在每台電腦上打開 CopySync，進入「設定」。</p></li>
+          <li><h3>填入公用 IP 位址</h3><p>在「信令伺服器位址」裡填 <code>ws://203.0.113.10:8787/signal</code>（換成你的公用 IP），按 Enter 儲存。</p></li>
+          <li><h3>查看連線狀態</h3><p>「連線狀態」變成綠色的「已連線」就完成了。還沒配對的話，到「裝置」裡配對。</p></li>
         </ol>
         <figure class="shot">
-          <img src="../../assets/screenshots/settings-cloud-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的設置頁：信令服務器地址填著 ws://203.0.113.10:8787/signal，連接狀態顯示已連接">
+          <img src="../../assets/screenshots/zh-tw/settings-cloud-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的設置頁：信令服務器地址填著 ws://203.0.113.10:8787/signal，連接狀態顯示已連接">
         </figure>
         <p class="note">還沒裝 App？見<a href="../../zh-tw/start/">快速入門</a>。</p>
         <div class="table-scroll">
@@ -261,8 +261,8 @@ sudo ./install.sh 203.0.113.10</code></pre>
             <div class="answer"><p>最低規格就夠了。伺服器只佔約 15 MB 記憶體，平時只轉送很少量的信令訊息。複製的內容能直連時不經過它；只有直連打不通、改走中繼時，速度才會受它的對外頻寬限制。</p></div>
           </details>
           <details>
-            <summary>裝置之間顯示「中轉」，不是「直連」？</summary>
-            <div class="answer"><p>剛連上時顯示「中轉」、過一會兒變成「直連」是正常的：先用中繼確保能用，閒置時再換成直連。一直是「中轉」的話，代表兩台電腦之間打不通，常見於連接埠隨機分配的 NAT 或嚴格的防火牆。內容同樣加密，只是速度受伺服器頻寬限制。</p></div>
+            <summary>裝置之間顯示「中繼」，不是「直連」？</summary>
+            <div class="answer"><p>剛連上時顯示「中繼」、過一會兒變成「直連」是正常的：先用中繼確保能用，閒置時再換成直連。一直是「中繼」的話，代表兩台電腦之間打不通，常見於連接埠隨機分配的 NAT 或嚴格的防火牆。內容同樣加密，只是速度受伺服器頻寬限制。</p></div>
           </details>
           <details>
             <summary>想用 HTTPS（wss://）？</summary>

@@ -93,7 +93,7 @@
           </svg>
         </figure>
         <ul class="points ports">
-          <li><strong>自動發現。</strong>每部電腦用 mDNS 在區域網絡裏廣播自己，廣播裏只有一個每天都會改變的匿名標識，看不出是誰的電腦。開啟「搜索附近設備」時才會帶上裝置名稱，關閉後就會撤下。</li>
+          <li><strong>自動發現。</strong>每部電腦用 mDNS 在區域網絡裏廣播自己，廣播裏只有一個每天都會改變的匿名標識，看不出是誰的電腦。開啟「搜尋附近裝置」時才會帶上裝置名稱，關閉後就會撤下。</li>
           <li><strong>直連。</strong>複製的內容在兩部電腦之間直接傳輸，速度就是區域網絡的速度。</li>
           <li><strong>安全依舊。</strong>配對時核對兩行安全指紋，之後的每條訊息都帶簽名，同一網絡裏的其他人無法冒充你的裝置。</li>
         </ul>
@@ -105,9 +105,9 @@
         <h2 id="prepare-title">開始之前</h2>
         <dl class="fallbacks">
           <div><dt>在同一個網絡裏</dt><dd>兩部電腦連着同一部路由器就可以，Wi‑Fi 與有線混用也行。訪客網絡、開啟了「AP 隔離」的 Wi‑Fi 不讓裝置互相連接；公司裏的有線和無線網絡往往不在同一個網段，這時請看下面的<a href="#subnet">不在同一網段</a>。</dd></div>
-          <div><dt>Windows 防火牆</dt><dd>第一次執行時，Windows 防火牆會詢問是否允許 CopySync 存取網絡，請選擇允許。如果按過取消，可在 CopySync 的「設置 → 局域網」裏按「放行」，這會請求一次管理員權限。</dd></div>
+          <div><dt>Windows 防火牆</dt><dd>第一次執行時，Windows 防火牆會詢問是否允許 CopySync 存取網絡，請選擇允許。如果按過取消，可在 CopySync 的「設定 → 區域網絡」裏按「允許」，這會請求一次管理員權限。</dd></div>
           <div><dt>macOS 的本地網絡權限</dt><dd>由 macOS 15 起，第一次連接區域網絡裏的裝置時，系統會詢問是否允許 CopySync Daemon 尋找本地網絡上的裝置，請選擇允許。如果拒絕過，可到「系統設定 → 私隱與保安 → 本地網絡」裏開啟它。</dd></div>
-          <div><dt>不用填寫伺服器</dt><dd>「設置」裏的伺服器地址留空就可以。日後要跨網絡同步，再填上伺服器或改用 Tailscale，已經配對的裝置不用重新配對。</dd></div>
+          <div><dt>不用填寫伺服器</dt><dd>「設定」裏的伺服器地址留空就可以。日後要跨網絡同步，再填上伺服器或改用 Tailscale，已經配對的裝置不用重新配對。</dd></div>
         </dl>
       </div>
     </section>
@@ -120,29 +120,29 @@
         <div class="os-grid qs-grid">
           <div>
             <ol class="steps">
-              <li>在一部電腦上開啟「設備」，按「添加設備」，會顯示一個 6 位配對碼，5 分鐘內有效。</li>
-              <li>在另一部電腦上同樣按「添加設備」，切換到「輸入配對碼」，輸入它，再按「繼續」。</li>
+              <li>在一部電腦上開啟「裝置」，按「新增裝置」，會顯示一個 6 位配對碼，5 分鐘內有效。</li>
+              <li>在另一部電腦上同樣按「新增裝置」，切換到「輸入配對碼」，輸入它，再按「繼續」。</li>
               <li>兩邊螢幕會顯示同樣的兩行安全指紋。逐字核對一致後，再按確認。之後複製的內容就會同步。</li>
             </ol>
             <figure class="figure-card qs-verify">
-              <img src="../../assets/screenshots/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配對時的「核對安全指紋」對話框，顯示 R8NF-2WTC-QL5J，要求與另一部電腦上顯示的完全一致">
+              <img src="../../assets/screenshots/zh-hk/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配對時的「核對安全指紋」對話框，顯示 R8NF-2WTC-QL5J，要求與另一部電腦上顯示的完全一致">
             </figure>
           </div>
           <figure class="shot">
-            <img src="../../assets/screenshots/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="「添加設備」：顯示配對碼 K7MP2X，下面是「本機地址」192.168.1.20">
+            <img src="../../assets/screenshots/zh-hk/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="「新增裝置」：顯示配對碼 K7MP2X，下面是「本機地址」192.168.1.20">
           </figure>
         </div>
         <div class="os-grid qs-grid">
           <div class="qs-app">
-            <h3>不用配對碼：「搜索附近設備」</h3>
+            <h3>不用配對碼：「搜尋附近裝置」</h3>
             <ol class="steps">
-              <li>兩部電腦都開啟「設備」，按「搜索附近設備」。視窗開啟期間，同一網絡裏的裝置才能看到這部電腦的名稱。</li>
+              <li>兩部電腦都開啟「裝置」，按「搜尋附近裝置」。視窗開啟期間，同一網絡裏的裝置才能看到這部電腦的名稱。</li>
               <li>對方出現在雷達上之後，按一下它。兩邊螢幕會顯示同樣的兩行安全指紋，核對一致後各自確認。</li>
               <li>只在同一網段裏有效。找不到對方時，請改用上面的配對碼。</li>
             </ol>
           </div>
           <figure class="shot">
-            <img src="../../assets/screenshots/nearby-dark.png" width="2112" height="1472" loading="lazy" alt="「附近的設備」：本機在中間，周圍是同樣開啟了這個視窗的設計部 PC、會議室 iMac，以及已經配對過的 MacBook Air">
+            <img src="../../assets/screenshots/zh-hk/nearby-dark.png" width="2112" height="1472" loading="lazy" alt="「附近的裝置」：本機在中間，周圍是同樣開啟了這個視窗的設計部 PC、會議室 iMac，以及已經配對過的 MacBook Air">
           </figure>
         </div>
       </div>
@@ -158,11 +158,11 @@
             <ol class="steps">
               <li>顯示配對碼的那部電腦，在配對碼下面能看到本機的地址，例如 <code>192.168.1.20</code>。</li>
               <li>輸入配對碼的那部電腦，按「不在同一網段？」，填上這個地址，再按「繼續」。</li>
-              <li>配對之後，兩部電腦會記住彼此的地址。其中一部換了地址時，只要另一部沒有換，就會自動重新找到；兩部都換了地址時，在「設備」裏按那部裝置的「…」選單，選擇「輸入它的地址」。</li>
+              <li>配對之後，兩部電腦會記住彼此的地址。其中一部換了地址時，只要另一部沒有換，就會自動重新找到；兩部都換了地址時，在「裝置」裏按那部裝置的「…」選單，選擇「輸入它的地址」。</li>
             </ol>
           </div>
           <figure class="shot">
-            <img src="../../assets/screenshots/pairing-join-dark.png" width="2112" height="1472" loading="lazy" alt="「輸入配對碼」：填好配對碼 K7MP2X，下面展開的地址欄裏填着 192.168.1.20">
+            <img src="../../assets/screenshots/zh-hk/pairing-join-dark.png" width="2112" height="1472" loading="lazy" alt="「輸入配對碼」：填好配對碼 K7MP2X，下面展開的地址欄裏填着 192.168.1.20">
           </figure>
         </div>
         <p class="note">兩個網段之間完全不通時（例如訪客網絡與辦公網絡分隔開），只能經一部兩邊都能連到的電腦中轉，見<a href="../../zh-hk/server/">在區域網絡裏部署伺服器</a>。</p>
@@ -175,7 +175,7 @@
         <div class="faq">
           <details>
             <summary>找不到另一部電腦？</summary>
-            <div class="answer"><p>先確認兩部電腦連着同一個網絡，而且都已啟用後台同步。再試試在輸入配對碼的那部電腦填上對方的地址：這樣能找到的話，代表兩部不在同一網段，或者網絡阻擋了 mDNS。</p><p>仍然找不到，就檢查對方的防火牆：對方是 Windows 的話，在它的「設置 → 局域網」裏按「放行」；是 Mac 的話，確認「系統設定 → 私隱與保安 → 本地網絡」裏已開啟 CopySync Daemon，系統防火牆也沒有阻擋它。</p></div>
+            <div class="answer"><p>先確認兩部電腦連着同一個網絡，而且都已啟用後台同步。再試試在輸入配對碼的那部電腦填上對方的地址：這樣能找到的話，代表兩部不在同一網段，或者網絡阻擋了 mDNS。</p><p>仍然找不到，就檢查對方的防火牆：對方是 Windows 的話，在它的「設定 → 區域網絡」裏按「允許」；是 Mac 的話，確認「系統設定 → 私隱與保安 → 本地網絡」裏已開啟 CopySync Daemon，系統防火牆也沒有阻擋它。</p></div>
           </details>
           <details>
             <summary>離開這個網絡後還能同步嗎？</summary>
@@ -183,11 +183,11 @@
           </details>
           <details>
             <summary>地址改變了怎麼辦？</summary>
-            <div class="answer"><p>一般不用理會。在同一網段裏靠 mDNS 隨時能找到；在不同網段時，只要有一部的地址沒有改變，就能自動重新連上。兩部都換了地址時，在「設備」裏為那部裝置重新輸入一次地址。</p><p>長期放着不動的桌面電腦，可以在路由器的「DHCP 靜態分配」裏給它固定一個地址。</p></div>
+            <div class="answer"><p>一般不用理會。在同一網段裏靠 mDNS 隨時能找到；在不同網段時，只要有一部的地址沒有改變，就能自動重新連上。兩部都換了地址時，在「裝置」裏為那部裝置重新輸入一次地址。</p><p>長期放着不動的桌面電腦，可以在路由器的「DHCP 靜態分配」裏給它固定一個地址。</p></div>
           </details>
           <details>
             <summary>同一網絡裏的其他人會看到我的電腦嗎？</summary>
-            <div class="answer"><p>能看到網絡裏有一部 CopySync，但看不出是誰的：廣播裏只有一個每天都會改變的匿名標識，沒有裝置名稱，也沒有裝置 ID。只有在你開啟「搜索附近設備」的那段時間，廣播裏才會帶上裝置名稱，關閉視窗後就會撤下。沒有和你配對過的裝置，傳來的訊息一律丟棄；配對時還要兩邊核對安全指紋。</p></div>
+            <div class="answer"><p>能看到網絡裏有一部 CopySync，但看不出是誰的：廣播裏只有一個每天都會改變的匿名標識，沒有裝置名稱，也沒有裝置 ID。只有在你開啟「搜尋附近裝置」的那段時間，廣播裏才會帶上裝置名稱，關閉視窗後就會撤下。沒有和你配對過的裝置，傳來的訊息一律丟棄；配對時還要兩邊核對安全指紋。</p></div>
           </details>
           <details>
             <summary>用了哪些端口？</summary>

@@ -333,12 +333,12 @@ sudo ./install.sh</code></pre>
       <div class="wrap">
         <h2 id="clients-title">在每部電腦上填寫地址</h2>
         <ol class="flow">
-          <li><h3>開啟設定</h3><p>在每部電腦上開啟 CopySync，進入「設置」。伺服器所在的那部電腦也一樣。</p></li>
-          <li><h3>填入地址</h3><p>在「信令服務器地址」裏填 <code>ws://192.168.1.20:8787/signal</code>（換成你的地址），按 Enter 儲存。</p></li>
-          <li><h3>查看連線狀態</h3><p>「連接狀態」變成綠色的「已連接」就完成了。接着在「設備」裏配對，之後複製的內容就會同步。</p></li>
+          <li><h3>開啟設定</h3><p>在每部電腦上開啟 CopySync，進入「設定」。伺服器所在的那部電腦也一樣。</p></li>
+          <li><h3>填入地址</h3><p>在「信令伺服器地址」裏填 <code>ws://192.168.1.20:8787/signal</code>（換成你的地址），按 Enter 儲存。</p></li>
+          <li><h3>查看連線狀態</h3><p>「連線狀態」變成綠色的「已連線」就完成了。接着在「裝置」裏配對，之後複製的內容就會同步。</p></li>
         </ol>
         <figure class="shot">
-          <img src="../../assets/screenshots/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的「設置」頁：「信令服務器地址」填着 ws://192.168.1.20:8787/signal，「連接狀態」顯示「已連接」">
+          <img src="../../assets/screenshots/zh-hk/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的「設定」頁：「信令伺服器地址」填着 ws://192.168.1.20:8787/signal，「連線狀態」顯示「已連線」">
         </figure>
         <p class="note">仍未安裝 App？見<a href="../../zh-hk/start/">快速開始</a>。</p>
       </div>
@@ -349,7 +349,7 @@ sudo ./install.sh</code></pre>
         <h2 id="faq-title">常見問題</h2>
         <div class="faq">
           <details>
-            <summary>「連接狀態」一直是「未連接」？</summary>
+            <summary>「連線狀態」一直是「未連線」？</summary>
             <div class="answer"><p>先核對地址：以 <code>ws://</code> 開頭，端口是 8787，以 <code>/signal</code> 結尾，而且填完後按過 Enter。</p><p>再在這部電腦的瀏覽器開啟 <code>http://伺服器地址:8787/healthz</code>。開啟不了，代表到伺服器的網絡不通：伺服器沒有在執行、那部電腦進入了睡眠、被防火牆阻擋，或者它的地址改變了。</p><p>Windows 的安裝腳本已經開放了防火牆；Mac 開啟了系統防火牆時，請執行安裝腳本最後提供的指令；Linux 上的 ufw、firewalld 也一樣。</p></div>
           </details>
           <details>

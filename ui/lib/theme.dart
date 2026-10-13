@@ -150,16 +150,21 @@ final monoFamily = Platform.isWindows
 ///
 /// Flutter 在 Windows 上默认只认 Segoe UI，汉字交给系统逐字回退：中日共用的字常落到
 /// 日文字体，简体独有的字落到雅黑或宋体，同一行里字形参差不齐。把回退顺序定死，
-/// 汉字就统一用同一套字体，和系统自带的应用一致。
-List<String> windowsFontFallback(String language) => language == 'ja'
-    ? const ['Yu Gothic UI', 'Meiryo UI', 'Microsoft YaHei UI']
-    : const ['Microsoft YaHei UI', 'Microsoft YaHei', 'Yu Gothic UI'];
+/// 汉字就统一用同一套字体，和系统自带的应用一致。繁体用微软正黑体，字形是繁体的写法。
+List<String> windowsFontFallback(String language) => switch (language) {
+      'ja' => const ['Yu Gothic UI', 'Meiryo UI', 'Microsoft YaHei UI'],
+      'zh-Hant-TW' || 'zh-Hant-HK' => const ['Microsoft JhengHei UI', 'Microsoft JhengHei', 'Microsoft YaHei UI'],
+      _ => const ['Microsoft YaHei UI', 'Microsoft YaHei', 'Yu Gothic UI'],
+    };
 
 /// Linux 上汉字用哪些字体，按界面语言 [language] 排先后。主字体跟随系统（fontconfig 默认的无衬线字体），
 /// 汉字指定字体，理由与 [windowsFontFallback] 相同。列的都是各发行版常见的开源字体，没装的会被跳过。
-List<String> linuxFontFallback(String language) => language == 'ja'
-    ? const ['Noto Sans CJK JP', 'Source Han Sans JP', 'IPAexGothic', 'Noto Sans CJK SC']
-    : const ['Noto Sans CJK SC', 'Source Han Sans SC', 'WenQuanYi Micro Hei', 'Droid Sans Fallback'];
+List<String> linuxFontFallback(String language) => switch (language) {
+      'ja' => const ['Noto Sans CJK JP', 'Source Han Sans JP', 'IPAexGothic', 'Noto Sans CJK SC'],
+      'zh-Hant-TW' => const ['Noto Sans CJK TC', 'Source Han Sans TC', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei'],
+      'zh-Hant-HK' => const ['Noto Sans CJK HK', 'Source Han Sans HK', 'Noto Sans CJK TC', 'Noto Sans CJK SC'],
+      _ => const ['Noto Sans CJK SC', 'Source Han Sans SC', 'WenQuanYi Micro Hei', 'Droid Sans Fallback'],
+    };
 
 /// [fontFamily] 只给截图渲染用：App 本身不指定。Mac 上跟随系统字体（SF Pro 与苹方），
 /// Windows 上用 Segoe UI，汉字按 [language] 用 [windowsFontFallback] 里的字体；

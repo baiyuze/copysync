@@ -1672,7 +1672,7 @@ type Config struct {
 	// 只用自己的服务器探测网络出口，不用公共 STUN 服务器。
 	// 默认 false（即允许公共服务器）：旧版界面不发这个字段时，不会被误关掉。
 	OnlyOwnStun bool `protobuf:"varint,12,opt,name=only_own_stun,json=onlyOwnStun,proto3" json:"only_own_stun,omitempty"`
-	// 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"en"、"ja" 之一。
+	// 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"zh-Hant-TW"、"zh-Hant-HK"、"en"、"ja" 之一。
 	// 存在后台服务这里而不是界面里：Windows 的托盘菜单由后台服务画，也要跟着变。
 	Language string `protobuf:"bytes,13,opt,name=language,proto3" json:"language,omitempty"`
 	// 不在局域网里查找设备、也不接受局域网里的配对请求。

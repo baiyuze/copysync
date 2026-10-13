@@ -46,9 +46,12 @@ RestartApplications=no
 ShowLanguageDialog=no
 
 [Languages]
-; 简体中文的翻译文件不是每个 Inno Setup 版本都自带，有就用
+; 简体、繁体中文的翻译文件不是每个 Inno Setup 版本都自带，有就用
 #if FileExists(AddBackslash(CompilerPath) + "Languages\ChineseSimplified.isl")
 Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+#endif
+#if FileExists(AddBackslash(CompilerPath) + "Languages\ChineseTraditional.isl")
+Name: "chinesetraditional"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
 #endif
 Name: "english"; MessagesFile: "compiler:Default.isl"
 

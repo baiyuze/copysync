@@ -61,18 +61,33 @@ AppState _demo(String language, {LinkState link = LinkState.online, ServiceState
 void main() {
   test('按系统的语言偏好取第一个支持的，都不支持时用英文', () {
     expect(resolveLocale(const [Locale('ja', 'JP')]), const Locale('ja'));
-    expect(
-      resolveLocale(const [Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW')]),
-      const Locale('zh'),
-    );
     expect(resolveLocale(const [Locale('fr'), Locale('ja')]), const Locale('ja'));
     expect(resolveLocale(const [Locale('fr')]), const Locale('en'));
     expect(resolveLocale(null), const Locale('en'));
   });
 
+  // macOS 报 zh-Hant-TW，Windows 报 zh-TW，Linux 报 zh_TW；香港、澳门用香港的繁体
+  test('中文按文字与地区分简体、台湾繁体、香港繁体', () {
+    Locale zh(String? script, String? region) =>
+        resolveLocale([Locale.fromSubtags(languageCode: 'zh', scriptCode: script, countryCode: region)]);
+    expect(zh('Hant', 'TW'), zhHantTW);
+    expect(zh(null, 'TW'), zhHantTW);
+    expect(zh('Hant', null), zhHantTW);
+    expect(zh('Hant', 'HK'), zhHantHK);
+    expect(zh(null, 'HK'), zhHantHK);
+    expect(zh(null, 'MO'), zhHantHK);
+    expect(zh('Hans', 'HK'), const Locale('zh'));
+    expect(zh('Hans', 'CN'), const Locale('zh'));
+    expect(zh(null, 'CN'), const Locale('zh'));
+    expect(zh(null, 'SG'), const Locale('zh'));
+    expect(zh(null, null), const Locale('zh'));
+  });
+
   test('设置里的空字符串表示跟随系统', () {
     expect(localeFromSetting(''), isNull);
     expect(localeFromSetting('zh-Hans'), const Locale('zh'));
+    expect(localeFromSetting('zh-Hant-TW'), zhHantTW);
+    expect(localeFromSetting('zh-Hant-HK'), zhHantHK);
     expect(localeFromSetting('en'), const Locale('en'));
     expect(localeFromSetting('ja'), const Locale('ja'));
   });
@@ -80,6 +95,12 @@ void main() {
   testWidgets('设置里选的语言优先于系统语言', (tester) async {
     await tester.pumpWidget(CopySyncApp(state: _demo('en')));
     expect(find.text('History'), findsWidgets);
+    expect(find.text('复制记录'), findsNothing);
+  });
+
+  testWidgets('设置里选了繁体，界面用繁体', (tester) async {
+    await tester.pumpWidget(CopySyncApp(state: _demo('zh-Hant-HK')));
+    expect(find.text(lookupAppLocalizations(zhHantHK).navHistory), findsWidgets);
     expect(find.text('复制记录'), findsNothing);
   });
 
@@ -108,7 +129,7 @@ void main() {
   });
 
   // 英文、日文通常比中文长：在最小窗口尺寸下把每一页、每个对话框都打开一遍，确认没有文字溢出
-  for (final language in ['en', 'ja', 'zh-Hans']) {
+  for (final language in ['en', 'ja', 'zh-Hans', 'zh-Hant-TW', 'zh-Hant-HK']) {
     group('最小窗口下的 $language 界面', () {
       setUp(() {
         final view = TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;

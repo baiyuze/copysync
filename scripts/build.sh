@@ -88,6 +88,8 @@ localize() {
 }
 localize en "CopySync finds your other computers on this network and syncs the clipboard with them directly."
 localize zh-Hans "CopySync 在局域网里查找你的其他电脑，直接与它们同步剪贴板。"
+localize zh-Hant "CopySync 會在區域網路中尋找你的其他電腦，直接與它們同步剪貼簿。"
+localize zh-HK "CopySync 會在區域網絡中尋找你的其他電腦，直接與它們同步剪貼簿。"
 localize ja "CopySync はこのネットワーク上のほかのコンピューターを見つけ、クリップボードを直接同期します。"
 # ad-hoc 签名即可让 TCC 记住授权决定；正式分发应换成 Developer ID
 codesign --force --sign - "$APP"

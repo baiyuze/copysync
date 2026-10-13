@@ -269,7 +269,7 @@ message Config {
   // 默认 false（即允许公共服务器）：旧版界面不发这个字段时，不会被误关掉。
   bool only_own_stun = 12;
 
-  // 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"en"、"ja" 之一。
+  // 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"zh-Hant-TW"、"zh-Hant-HK"、"en"、"ja" 之一。
   // 存在后台服务这里而不是界面里：Windows 的托盘菜单由后台服务画，也要跟着变。
   string language = 13;
 

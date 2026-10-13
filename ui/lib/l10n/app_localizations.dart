@@ -98,6 +98,16 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('ja'),
     Locale('zh'),
+    Locale.fromSubtags(
+      languageCode: 'zh',
+      countryCode: 'HK',
+      scriptCode: 'Hant',
+    ),
+    Locale.fromSubtags(
+      languageCode: 'zh',
+      countryCode: 'TW',
+      scriptCode: 'Hant',
+    ),
   ];
 
   /// No description provided for @navHistory.
@@ -1511,6 +1521,14 @@ class _AppLocalizationsDelegate
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when language+script+country codes are specified.
+  switch (locale.toString()) {
+    case 'zh_Hant_HK':
+      return AppLocalizationsZhHantHk();
+    case 'zh_Hant_TW':
+      return AppLocalizationsZhHantTw();
+  }
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en':

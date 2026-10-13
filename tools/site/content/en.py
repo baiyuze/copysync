@@ -276,7 +276,7 @@ C = {
         ("Linux app", "x64 and ARM64; .deb (Debian, Ubuntu and similar) or tar.gz (other distributions), about 22 MB; "
                       "needs an X11 desktop, or a Wayland desktop with XWayland (GNOME, KDE and others include it by default); GTK 3"),
         ("Server", "Optional, only for syncing across networks. Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM"),
-        ("Languages", "English, Simplified Chinese and Japanese; follows the system by default, switchable in Settings"),
+        ("Languages", "English, Simplified Chinese, Traditional Chinese (Taiwan and Hong Kong) and Japanese; follows the system by default, switchable in Settings"),
         ("Content", "Plain text, rich text, images and screenshots, files, folders; each type can be turned off"),
         ("Transport", "WebRTC data channels, direct first with TURN relay fallback; on the same network, mDNS discovery and connection details over UDP 8788; every uplink probed on multi-uplink networks; files streamed as tar + zstd"),
         ("Encryption and identity", "End-to-end DTLS; Ed25519 device keys; every signaling message signed"),
@@ -1030,6 +1030,6 @@ C = {
         "End-to-end DTLS encryption with human-verified fingerprints at pairing",
         "Items under 50 MB pushed on copy, larger files pulled on demand",
         "3-day history with image preview",
-        "Interface in English, Simplified Chinese and Japanese",
+        "Interface in English, Simplified Chinese, Traditional Chinese and Japanese",
     ],
 }

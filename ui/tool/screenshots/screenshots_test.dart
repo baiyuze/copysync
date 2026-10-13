@@ -25,13 +25,19 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// 截图的界面语言：zh、en 或 ja，由 render.sh 设置。演示数据里的文件名、文字也跟着换。
+/// 截图的界面语言：zh、zh-tw、zh-hk、en 或 ja，由 render.sh 设置。演示数据里的文件名、文字也跟着换。
 final _lang = Platform.environment['SCREENSHOT_LANG'] ?? 'zh';
-final _locale = Locale(_lang);
-String _t(String zh, String en, String ja) => switch (_lang) { 'en' => en, 'ja' => ja, _ => zh };
+final _locale = switch (_lang) { 'zh-tw' => zhHantTW, 'zh-hk' => zhHantHK, _ => Locale(_lang) };
+String _t(String zh, String en, String ja, {required String tw, required String hk}) =>
+    switch (_lang) { 'en' => en, 'ja' => ja, 'zh-tw' => tw, 'zh-hk' => hk, _ => zh };
 
-/// 汉字的字形跟着语言走：日文界面用冬青黑体，否则用苹方
-final _cjk = _lang == 'ja' ? const ['Hiragino', 'PingFang'] : const ['PingFang'];
+/// 汉字的字形跟着语言走：日文界面用冬青黑体，繁体用苹方的台湾、香港字形，否则用简体的苹方
+final _cjk = switch (_lang) {
+  'ja' => const ['Hiragino', 'PingFang'],
+  'zh-tw' => const ['PingFangTC'],
+  'zh-hk' => const ['PingFangHK'],
+  _ => const ['PingFang'],
+};
 
 /// 生成配对码、搜索附近设备都不走后台服务，直接给固定的演示数据。
 class _DemoState extends AppState {
@@ -42,9 +48,9 @@ class _DemoState extends AppState {
   @override
   Stream<List<NearbyDevice>> watchNearby() => (StreamController<List<NearbyDevice>>()
         ..add([
-          NearbyDevice(id: 'n1', name: _t('设计部的 PC', 'Design PC', 'デザイン部の PC'), platform: 'windows'),
+          NearbyDevice(id: 'n1', name: _t('设计部的 PC', 'Design PC', 'デザイン部の PC', tw: '設計部的 PC', hk: '設計部的 PC'), platform: 'windows'),
           NearbyDevice(id: 'n2', name: 'MacBook Air', platform: 'darwin', paired: true),
-          NearbyDevice(id: 'n3', name: _t('会议室的 iMac', 'Meeting room iMac', '会議室の iMac'), platform: 'darwin'),
+          NearbyDevice(id: 'n3', name: _t('会议室的 iMac', 'Meeting room iMac', '会議室の iMac', tw: '會議室的 iMac', hk: '會議室的 iMac'), platform: 'darwin'),
         ]))
       .stream;
 }
@@ -63,6 +69,8 @@ Future<void> _loadFonts() async {
 
   await family('SF', ['SF-Regular.ttf', 'SF-Medium.ttf', 'SF-Semibold.ttf']);
   await family('PingFang', ['PingFang-Regular.ttf', 'PingFang-Medium.ttf', 'PingFang-Semibold.ttf']);
+  await family('PingFangTC', ['PingFangTC-Regular.ttf', 'PingFangTC-Medium.ttf', 'PingFangTC-Semibold.ttf']);
+  await family('PingFangHK', ['PingFangHK-Regular.ttf', 'PingFangHK-Medium.ttf', 'PingFangHK-Semibold.ttf']);
   await family('Hiragino', ['Hiragino-Regular.ttf', 'Hiragino-Medium.ttf', 'Hiragino-Semibold.ttf']);
   await family(monoFamily, ['Menlo-Regular.ttf', 'Menlo-Bold.ttf']);
   // 图标字体随依赖包打进测试资源，但测试环境不会自动加载
@@ -98,7 +106,8 @@ ClipRecord _clip(
     );
 
 const _mb = 1024 * 1024;
-final _quarterly = _t('季度汇报-终版.key', 'Q3 review - final.key', '四半期報告_最終版.key');
+final _quarterly = _t('季度汇报-终版.key', 'Q3 review - final.key', '四半期報告_最終版.key',
+    tw: '季度報告-定稿.key', hk: '季度報告-最終版.key');
 
 AppState _demo({LinkState link = LinkState.online,
     ServiceState? service, Device? pending, bool empty = false,
@@ -155,7 +164,7 @@ AppState _demo({LinkState link = LinkState.online,
           preview: 'git push origin release/1.0 && gh release create v1.0.0',
           outgoing: true, size: 54, ago: const Duration(seconds: 4)),
       _clip('2', ClipKind.CLIP_KIND_IMAGE,
-          preview: _t('图片 2.4 MB', 'Image 2.4 MB', '画像 2.4 MB'), size: (2.4 * _mb).round(), ago: const Duration(minutes: 2),
+          preview: _t('图片 2.4 MB', 'Image 2.4 MB', '画像 2.4 MB', tw: '圖片 2.4 MB', hk: '圖片 2.4 MB'), size: (2.4 * _mb).round(), ago: const Duration(minutes: 2),
           items: [ClipItem(name: 'image.png', size: Int64((2.4 * _mb).round()))]),
       _clip('3', ClipKind.CLIP_KIND_FILE,
           size: (38.2 * _mb).round(), ago: const Duration(minutes: 9),
@@ -163,11 +172,13 @@ AppState _demo({LinkState link = LinkState.online,
       _clip('4', ClipKind.CLIP_KIND_FILE,
           size: (1.3 * 1024 * _mb).round(), ago: const Duration(minutes: 14),
           from: 'Mac mini', status: ClipStatus.CLIP_STATUS_REMOTE_ONLY,
-          items: [ClipItem(name: _t('发布演示录屏.mov', 'launch-demo.mov', '発表デモ.mov'), size: Int64((1.3 * 1024 * _mb).round()))]),
+          items: [ClipItem(name: _t('发布演示录屏.mov', 'launch-demo.mov', '発表デモ.mov', tw: '發表會示範錄影.mov', hk: '發佈會示範錄影.mov'), size: Int64((1.3 * 1024 * _mb).round()))]),
       _clip('5', ClipKind.CLIP_KIND_HTML,
           preview: _t('会议结论：周二灰度 10%，观察两天没问题周四全量；回滚预案见文档第 3 节',
               'Decision: ship to 10% on Tuesday, everyone on Thursday if two days look clean. Rollback plan in section 3',
-              '決定事項：火曜に 10% へ先行公開、2 日問題なければ木曜に全体公開。切り戻し手順は資料の第 3 節'),
+              '決定事項：火曜に 10% へ先行公開、2 日問題なければ木曜に全体公開。切り戻し手順は資料の第 3 節',
+              tw: '會議結論：週二先開放 10%，觀察兩天沒問題就在週四全面上線；回滾方案見文件第 3 節',
+              hk: '會議結論：星期二先開放 10%，觀察兩日沒問題便於星期四全面推出；回滾方案見文件第 3 節'),
           from: 'Mac mini', size: 2310, ago: const Duration(minutes: 26)),
       _clip('6', ClipKind.CLIP_KIND_FILE,
           outgoing: true, size: 126 * _mb, ago: const Duration(minutes: 41),
@@ -175,7 +186,7 @@ AppState _demo({LinkState link = LinkState.online,
       _clip('7', ClipKind.CLIP_KIND_FILE,
           size: (18.6 * _mb).round(), ago: const Duration(hours: 1),
           status: ClipStatus.CLIP_STATUS_FETCHING,
-          items: [ClipItem(name: _t('合同扫描件.pdf', 'signed-contract.pdf', '契約書_署名済み.pdf'), size: Int64((18.6 * _mb).round()))]),
+          items: [ClipItem(name: _t('合同扫描件.pdf', 'signed-contract.pdf', '契約書_署名済み.pdf', tw: '合約掃描檔.pdf', hk: '合約掃描本.pdf'), size: Int64((18.6 * _mb).round()))]),
       _clip('8', ClipKind.CLIP_KIND_TEXT,
           preview: 'https://github.com/baiyuze/copysync/releases', outgoing: true, size: 44,
           ago: const Duration(hours: 3)),
@@ -187,7 +198,7 @@ AppState _demo({LinkState link = LinkState.online,
             ClipItem(name: 'IMG_2043.HEIC', size: Int64((1.4 * _mb).round())),
           ]),
       _clip('10', ClipKind.CLIP_KIND_IMAGE,
-          preview: _t('图片 864 KB', 'Image 864 KB', '画像 864 KB'), outgoing: true, size: 864 * 1024, ago: const Duration(days: 1),
+          preview: _t('图片 864 KB', 'Image 864 KB', '画像 864 KB', tw: '圖片 864 KB', hk: '圖片 864 KB'), outgoing: true, size: 864 * 1024, ago: const Duration(days: 1),
           items: [ClipItem(name: 'image.png', size: Int64(864 * 1024))]),
     ],
   );

@@ -12,6 +12,8 @@ func trayLabels(lang string) (open, quit string) {
 		lang = systemLanguage()
 	}
 	switch {
+	case strings.HasPrefix(lang, "zh-Hant"): // 台湾、香港的 Windows 都这样写
+		return "開啟 CopySync", "結束 CopySync"
 	case strings.HasPrefix(lang, "zh"):
 		return "打开 CopySync", "退出 CopySync"
 	case strings.HasPrefix(lang, "ja"):

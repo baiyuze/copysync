@@ -172,13 +172,13 @@
         <div class="os-grid qs-grid">
           <div>
             <ol class="steps">
-              <li>在家裏那部 Windows 電腦上開啟「設備」，按「添加設備」，記下 6 位配對碼。</li>
-              <li>在公司的 Mac 上按「添加設備」，切換到「輸入配對碼」，輸入它；再按「不在同一網段？」，填上 <code>100.92.41.17</code>，按「繼續」。</li>
+              <li>在家裏那部 Windows 電腦上開啟「裝置」，按「新增裝置」，記下 6 位配對碼。</li>
+              <li>在公司的 Mac 上按「新增裝置」，切換到「輸入配對碼」，輸入它；再按「不在同一網段？」，填上 <code>100.92.41.17</code>，按「繼續」。</li>
               <li>兩邊螢幕會顯示同樣的兩行安全指紋，逐字核對一致後確認。之後兩部電腦在哪裏都能同步。</li>
             </ol>
           </div>
           <figure class="shot">
-            <img src="../../assets/screenshots/pairing-join-ts-dark.png" width="2112" height="1472" loading="lazy" alt="「輸入配對碼」：填好配對碼 K7MP2X，地址欄裏填着 Tailscale 地址 100.92.41.17">
+            <img src="../../assets/screenshots/zh-hk/pairing-join-ts-dark.png" width="2112" height="1472" loading="lazy" alt="「輸入配對碼」：填好配對碼 K7MP2X，地址欄裏填着 Tailscale 地址 100.92.41.17">
           </figure>
         </div>
         <p class="note">兩部電腦都在家裏時，CopySync 也會在區域網絡裏直接找到對方，資料不會繞路。</p>
@@ -195,7 +195,7 @@
           </details>
           <details>
             <summary>配對時找不到對方？</summary>
-            <div class="answer"><p>先確認兩部電腦的 Tailscale 都已連線：在終端機執行 <code>tailscale ping 對方的地址</code>，能 ping 通再試。</p><p>能 ping 通但仍找不到，多半是對方的防火牆阻擋了：對方是 Windows 的話，在它的 CopySync「設置 → 局域網」裏按「放行」；是 Mac 的話，確認「系統設定 → 私隱與保安 → 本地網絡」裏已開啟 CopySync Daemon。</p></div>
+            <div class="answer"><p>先確認兩部電腦的 Tailscale 都已連線：在終端機執行 <code>tailscale ping 對方的地址</code>，能 ping 通再試。</p><p>能 ping 通但仍找不到，多半是對方的防火牆阻擋了：對方是 Windows 的話，在它的 CopySync「設定 → 區域網絡」裏按「允許」；是 Mac 的話，確認「系統設定 → 私隱與保安 → 本地網絡」裏已開啟 CopySync Daemon。</p></div>
           </details>
           <details>
             <summary>一定要每部電腦都安裝 Tailscale 嗎？</summary>
@@ -203,7 +203,7 @@
           </details>
           <details>
             <summary>以前照教學在家裏安裝過伺服器，還需要它嗎？</summary>
-            <div class="answer"><p>不需要了。在每部電腦的「設置」裏清空伺服器地址，再在家裏那部電腦上解除安裝伺服器即可，已經配對的裝置不用重新配對。保留它也沒關係，伺服器和 Tailscale 可以同時使用。</p></div>
+            <div class="answer"><p>不需要了。在每部電腦的「設定」裏清空伺服器地址，再在家裏那部電腦上解除安裝伺服器即可，已經配對的裝置不用重新配對。保留它也沒關係，伺服器和 Tailscale 可以同時使用。</p></div>
           </details>
           <details>
             <summary>Tailscale 能看到我複製的內容嗎？</summary>
@@ -211,7 +211,7 @@
           </details>
           <details>
             <summary>Tailscale 地址會改變嗎？</summary>
-            <div class="answer"><p>一般不會。地址跟隨裝置，重新啟動、更換網絡都不會改變；只有把裝置從 Tailscale 裏刪除再重新加入，才會換一個。如果換了，在「設備」裏為那部裝置重新輸入一次地址。</p></div>
+            <div class="answer"><p>一般不會。地址跟隨裝置，重新啟動、更換網絡都不會改變；只有把裝置從 Tailscale 裏刪除再重新加入，才會換一個。如果換了，在「裝置」裏為那部裝置重新輸入一次地址。</p></div>
           </details>
           <details>
             <summary>我有公網伺服器，還需要 Tailscale 嗎？</summary>

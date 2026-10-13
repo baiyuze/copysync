@@ -783,3 +783,1565 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get svcCanDisable => '随时可以在「设置」中停用后台同步。';
 }
+
+/// The translations for Chinese, as used in Hong Kong, using the Han script (`zh_Hant_HK`).
+class AppLocalizationsZhHantHk extends AppLocalizationsZh {
+  AppLocalizationsZhHantHk() : super('zh_Hant_HK');
+
+  @override
+  String get navHistory => '複製記錄';
+
+  @override
+  String get navDevices => '裝置';
+
+  @override
+  String get navSettings => '設定';
+
+  @override
+  String get linkConnecting => '正在連線…';
+
+  @override
+  String get linkServiceNotRunning => '背景服務未在執行';
+
+  @override
+  String get linkLanMode => '在區域網絡中尋找裝置';
+
+  @override
+  String get linkServerUnreachable => '連不上伺服器，區域網絡內照常同步';
+
+  @override
+  String get linkNothingOn => '區域網絡發現已關閉，也沒有設定伺服器';
+
+  @override
+  String get linkLanBlocked => 'macOS 阻擋了區域網絡存取';
+
+  @override
+  String linkOnlinePeers(int count) {
+    return '$count 部裝置在線';
+  }
+
+  @override
+  String get linkServerConnected => '已連線到伺服器';
+
+  @override
+  String linkConnectionLost(String detail) {
+    return '連線中斷：$detail';
+  }
+
+  @override
+  String get linkServiceDisconnected => '背景服務已中斷連線';
+
+  @override
+  String get linkServiceDisabled => '背景服務已停用';
+
+  @override
+  String get errServiceNotConnected => '未連線到背景服務';
+
+  @override
+  String get errUnimplemented => '這項功能仍未提供';
+
+  @override
+  String get errUnavailable => '無法連線到背景服務';
+
+  @override
+  String errServiceStart(String detail) {
+    return '無法啟動背景服務：$detail';
+  }
+
+  @override
+  String errServiceRestart(String detail) {
+    return '無法重新啟動背景服務：$detail';
+  }
+
+  @override
+  String errAutostart(String detail) {
+    return '無法設定開機自動啟動：$detail';
+  }
+
+  @override
+  String get thisMacTitle => '這部 Mac';
+
+  @override
+  String get thisPcTitle => '這部電腦';
+
+  @override
+  String get thisMacInText => '這部 Mac ';
+
+  @override
+  String get thisPcInText => '這部電腦';
+
+  @override
+  String get bothMacs => '兩部 Mac ';
+
+  @override
+  String get bothDevices => '兩部裝置';
+
+  @override
+  String get thisDeviceShort => '本機';
+
+  @override
+  String fromDevice(String name) {
+    return '來自 $name';
+  }
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get close => '關閉';
+
+  @override
+  String get save => '儲存';
+
+  @override
+  String get retry => '重試';
+
+  @override
+  String get continueAction => '繼續';
+
+  @override
+  String get justNow => '剛剛';
+
+  @override
+  String secondsAgo(int n) {
+    return '$n 秒前';
+  }
+
+  @override
+  String minutesAgo(int n) {
+    return '$n 分鐘前';
+  }
+
+  @override
+  String hoursAgo(int n) {
+    return '$n 小時前';
+  }
+
+  @override
+  String daysAgo(int n) {
+    return '$n 天前';
+  }
+
+  @override
+  String monthDay(int month, int day) {
+    return '$month月$day日';
+  }
+
+  @override
+  String durationHours(int n) {
+    return '$n 小時';
+  }
+
+  @override
+  String durationDays(int n) {
+    return '$n 天';
+  }
+
+  @override
+  String get historyEmptySubtitle => '在任何一部裝置上複製，內容會出現在這裏';
+
+  @override
+  String historyCount(int count) {
+    return '共 $count 條';
+  }
+
+  @override
+  String historyCountKept(int count, String ttl) {
+    return '共 $count 條，保留 $ttl';
+  }
+
+  @override
+  String get filterAll => '全部';
+
+  @override
+  String get filterText => '文字';
+
+  @override
+  String get filterImage => '圖片';
+
+  @override
+  String get filterFile => '檔案';
+
+  @override
+  String get historyClearTooltip => '清除記錄';
+
+  @override
+  String get historyEmptyTitle => '仍未有記錄';
+
+  @override
+  String get historyEmptyFilteredTitle => '沒有這一類的記錄';
+
+  @override
+  String get historyEmptyBody => '在任何一部已配對的裝置上複製文字、圖片或檔案，記錄會出現在這裏。';
+
+  @override
+  String get clearConfirmTitle => '清除全部記錄？';
+
+  @override
+  String clearConfirmBody(String device) {
+    return '所有裝置同步過來的記錄和已快取的檔案都會從$device上刪除。原始檔案不受影響。';
+  }
+
+  @override
+  String get clear => '清除';
+
+  @override
+  String get historyCleared => '記錄已清除';
+
+  @override
+  String get permDeniedTitle => '已禁止 CopySync 讀取剪貼簿';
+
+  @override
+  String get permAskTitle => '允許 CopySync 讀取剪貼簿';
+
+  @override
+  String get permDeniedBody =>
+      '在這部 Mac 上複製的內容不會同步出去。請到系統設定裏把 CopySync Daemon 改為「允許」。';
+
+  @override
+  String get permAskBody =>
+      '否則 macOS 每次都會彈出視窗詢問。請到系統設定裏把 CopySync Daemon 改為「允許」。';
+
+  @override
+  String get openSystemSettings => '開啟系統設定';
+
+  @override
+  String get fetch => '拉取到本機';
+
+  @override
+  String get fetchStarted => '開始拉取';
+
+  @override
+  String get transferFailed => '傳輸失敗';
+
+  @override
+  String get expired => '已過期';
+
+  @override
+  String get putOnClipboard => '放入剪貼簿';
+
+  @override
+  String get putOnClipboardDone => '已放入剪貼簿';
+
+  @override
+  String get deleteRecord => '刪除這條記錄';
+
+  @override
+  String get deleted => '已刪除';
+
+  @override
+  String get emptyRecord => '（空）';
+
+  @override
+  String get imageRecord => '圖片';
+
+  @override
+  String itemsSummary(String name, int others, int count) {
+    return '$name 等 $count 項';
+  }
+
+  @override
+  String get imagePreviewTitle => '圖片預覽';
+
+  @override
+  String get closePreview => '關閉預覽';
+
+  @override
+  String get previousImage => '上一張';
+
+  @override
+  String get nextImage => '下一張';
+
+  @override
+  String get previewHint => '用滾輪或觸控板縮放，拖移查看';
+
+  @override
+  String get fitWindow => '符合視窗大小';
+
+  @override
+  String get previewDeleted => '這條圖片記錄已被刪除';
+
+  @override
+  String get previewExpired => '圖片已過期，無法預覽';
+
+  @override
+  String get previewDownloading => '正在下載圖片…';
+
+  @override
+  String get previewDownloadFailed => '圖片下載失敗，請重試';
+
+  @override
+  String get previewNotDownloaded => '圖片仍未下載到這部電腦';
+
+  @override
+  String get downloadAndPreview => '下載並預覽';
+
+  @override
+  String get previewUnavailable => '圖片暫時無法預覽';
+
+  @override
+  String get imageSemantic => '複製記錄中的圖片';
+
+  @override
+  String get previewUnreadable => '無法讀取圖片，檔案可能已被清理或損壞';
+
+  @override
+  String get devicesSubtitleEmpty => '配對之後，裝置之間就會同步剪貼簿';
+
+  @override
+  String devicesSubtitle(int paired, int online) {
+    return '已配對 $paired 部，$online 部在線';
+  }
+
+  @override
+  String get addDevice => '新增裝置';
+
+  @override
+  String thisDeviceFootnote(String both) {
+    return '配對時，$both會顯示同樣的兩行安全指紋：這部的和對方的。逐字核對一致才可確認。';
+  }
+
+  @override
+  String get noDevicesTitle => '仍未有已配對的裝置';
+
+  @override
+  String get noDevicesBody =>
+      '在另一部電腦上開啟 CopySync，用 6 位配對碼把兩部連起來。兩部在同一個網絡裏時，也可以在兩部上都開啟「搜尋附近裝置」，按一下對方。';
+
+  @override
+  String get pairedDevices => '已配對的裝置';
+
+  @override
+  String get pairedFootnote =>
+      '直連：資料在兩部裝置之間直接傳輸。中轉：網絡環境打不通直連時，經你的伺服器轉發，內容依然是端對端加密的。';
+
+  @override
+  String get offline => '離線';
+
+  @override
+  String get direct => '直連';
+
+  @override
+  String get relay => '中轉';
+
+  @override
+  String get online => '在線';
+
+  @override
+  String get moreActions => '更多操作';
+
+  @override
+  String get copyFingerprint => '拷貝安全指紋';
+
+  @override
+  String get unpairEllipsis => '解除配對…';
+
+  @override
+  String get fingerprintCopied => '安全指紋已拷貝';
+
+  @override
+  String unpairTitle(String name) {
+    return '解除與「$name」的配對？';
+  }
+
+  @override
+  String get unpairBody => '兩部裝置將不再同步。日後想恢復，需要重新配對並核對指紋。';
+
+  @override
+  String get unpair => '解除配對';
+
+  @override
+  String get unpaired => '已解除配對';
+
+  @override
+  String get enterAddressEllipsis => '輸入它的地址…';
+
+  @override
+  String setAddressTitle(String name) {
+    return '「$name」的地址';
+  }
+
+  @override
+  String setAddressBody(String name) {
+    return '兩部不在同一網段，或者都換了地址時使用。輸入「$name」上「新增裝置 → 產生配對碼」下面顯示的地址。';
+  }
+
+  @override
+  String get addressSaved => '已記下，正在那個地址上尋找它';
+
+  @override
+  String get lanBlockedTitle => 'macOS 阻擋了區域網絡存取';
+
+  @override
+  String lanBlockedBody(String device) {
+    return '在「系統設定 → 私隱與保安 → 本地網絡」裏開啟 CopySync Daemon。開啟之前，$device連不上同一網絡裏的裝置。';
+  }
+
+  @override
+  String get searchNearby => '搜尋附近裝置';
+
+  @override
+  String get nearbyTitle => '附近的裝置';
+
+  @override
+  String get nearbySearching => '正在尋找附近的裝置…';
+
+  @override
+  String get nearbyHint => '在另一部電腦上也開啟「搜尋附近裝置」，它就會出現在這裏，按一下即可配對。';
+
+  @override
+  String nearbyVisible(String device) {
+    return '視窗開啟期間，同一網絡裏的裝置能看到$device的名稱。';
+  }
+
+  @override
+  String get nearbyPaired => '已配對';
+
+  @override
+  String nearbyRequesting(String name) {
+    return '正在聯絡「$name」…';
+  }
+
+  @override
+  String nearbyNoReply(String name) {
+    return '「$name」沒有回應。請確認它仍開着「搜尋附近裝置」。';
+  }
+
+  @override
+  String get nearbyLanOffTitle => '區域網絡發現已關閉';
+
+  @override
+  String get nearbyLanOffBody => '在「設定」裏開啟「在區域網絡中尋找裝置」才能看到附近的裝置，或者改用配對碼。';
+
+  @override
+  String get generateCode => '產生配對碼';
+
+  @override
+  String get enterCode => '輸入配對碼';
+
+  @override
+  String get codeFailedTitle => '未能產生配對碼';
+
+  @override
+  String get enterOnOther => '在另一部裝置上輸入這個配對碼';
+
+  @override
+  String get codeCopied => '配對碼已拷貝';
+
+  @override
+  String get codeHint => '按一下即可拷貝，5 分鐘內有效';
+
+  @override
+  String afterEnterFootnote(String both) {
+    return '對方輸入後，$both會顯示同樣的兩行安全指紋，核對一致再確認。';
+  }
+
+  @override
+  String get codeInvalid => '配對碼是 6 位字母或數字';
+
+  @override
+  String get localAddress => '本機地址';
+
+  @override
+  String get addressHint => '不在同一網段時，另一部還要輸入這個地址';
+
+  @override
+  String get addressCopied => '地址已拷貝';
+
+  @override
+  String get differentSubnet => '不在同一網段？';
+
+  @override
+  String get peerAddress => '對方配對碼下面顯示的地址';
+
+  @override
+  String get pairNotFound => '找不到那部裝置。不在同一網段時，請輸入它配對碼下面顯示的地址。';
+
+  @override
+  String get pairNotFoundAddress =>
+      '那個地址沒有回應。請檢查地址是否正確、對方是否仍停留在配對碼頁面；對方的防火牆也可能阻擋了連線。';
+
+  @override
+  String get codeWrong => '配對碼不正確，或者已經失效';
+
+  @override
+  String get codeExpired => '配對碼已失效，請在另一部上重新產生';
+
+  @override
+  String get addressInvalid => '地址格式不正確，應該像 192.168.1.20 這樣';
+
+  @override
+  String get pairNoChannel => '請先在「設定」裏開啟區域網絡發現，或者填寫伺服器地址。';
+
+  @override
+  String get enterCodeShown => '輸入另一部裝置上顯示的配對碼';
+
+  @override
+  String get pairingDone => '配對完成';
+
+  @override
+  String get pairingRejected => '已拒絕配對';
+
+  @override
+  String get verifyTitle => '核對安全指紋';
+
+  @override
+  String pairingWith(String name) {
+    return '正在與「$name」配對';
+  }
+
+  @override
+  String verifyBody(String both) {
+    return '$both上顯示的這兩行應該完全相同。只要有一個字元不同，就代表連線可能被第三方篡改，請拒絕。';
+  }
+
+  @override
+  String get rejectMismatch => '不一致，拒絕';
+
+  @override
+  String get confirmMatch => '一致，確認配對';
+
+  @override
+  String get server => '伺服器（可選）';
+
+  @override
+  String get serverFootnote =>
+      '只在不同網絡之間同步時需要，例如家裏和公司；同一網絡裏的裝置不用伺服器也能直接連上。伺服器只負責讓裝置找到彼此，看不到傳輸的內容。';
+
+  @override
+  String get signalingUrl => '信令伺服器地址';
+
+  @override
+  String get signalingUrlDesc => '按 Enter 儲存。留空表示只在區域網絡裏同步';
+
+  @override
+  String get signalingUrlPlaceholder => 'ws://伺服器地址:8787/signal';
+
+  @override
+  String get publicStun => '用公共伺服器探測網絡出口';
+
+  @override
+  String get publicStunDesc => '在公司雙線這類多出口網絡裏，能找到更多可以直連的路徑。公共伺服器只會看到你的公網 IP';
+
+  @override
+  String get connectionStatus => '連線狀態';
+
+  @override
+  String get connectedDesc => '已連線到信令伺服器';
+
+  @override
+  String get disconnectedDesc => '連不上伺服器。請檢查地址是否正確、伺服器是否正在執行。';
+
+  @override
+  String get connected => '已連線';
+
+  @override
+  String get notConnected => '未連線';
+
+  @override
+  String get notSet => '未設定';
+
+  @override
+  String get notSetDesc => '只與同一網絡裏的裝置同步';
+
+  @override
+  String get serverCleared => '已清除伺服器地址，只在區域網絡裏同步';
+
+  @override
+  String get localNetwork => '區域網絡';
+
+  @override
+  String get lanFootnote => '使用 UDP 端口 8788。兩部不在同一網段時，配對時要輸入對方的地址。';
+
+  @override
+  String get lanDiscovery => '在區域網絡中尋找裝置';
+
+  @override
+  String get lanDiscoveryDesc =>
+      '不用伺服器就能配對和同步。網絡裏的其他人只能看到一個每天都會改變的匿名標識；開啟「搜尋附近裝置」期間才看得到裝置名稱';
+
+  @override
+  String get macLocalNetwork => '本地網絡權限';
+
+  @override
+  String get macLocalNetworkDesc =>
+      'macOS 會詢問一次是否允許 CopySync 連接網絡裏的裝置。如果拒絕過，請到那裏開啟 CopySync Daemon';
+
+  @override
+  String get allowLan => 'Windows 防火牆';
+
+  @override
+  String get allowLanDesc => '其他裝置連不上這部電腦時允許連線，例如從別的網段配對。會要求一次管理員權限';
+
+  @override
+  String get allow => '允許';
+
+  @override
+  String get allowLanDone => '已允許，其他裝置現在可以連到這部電腦了';
+
+  @override
+  String get deviceName => '裝置名稱';
+
+  @override
+  String get deviceNameDesc => '顯示在其他裝置的列表裏';
+
+  @override
+  String get language => '語言';
+
+  @override
+  String get languageSystem => '跟隨系統';
+
+  @override
+  String get sync => '同步';
+
+  @override
+  String get syncFootnote =>
+      '小於上限的內容在複製時直接推送到其他裝置；超過上限的只同步一條記錄，需要時在「複製記錄」裏按「拉取到本機」，避免大檔案無謂地佔用頻寬和磁碟空間。';
+
+  @override
+  String get autoSyncLimit => '自動同步上限';
+
+  @override
+  String get autoSyncLimitDesc => '超過這個大小的檔案改為手動拉取';
+
+  @override
+  String get autoApply => '收到後直接寫入剪貼簿';
+
+  @override
+  String get autoApplyDesc => '關閉後，需要在「複製記錄」裏手動放入剪貼簿';
+
+  @override
+  String get whatToSync => '同步哪些內容';
+
+  @override
+  String get syncFiles => '檔案與資料夾';
+
+  @override
+  String get syncText => '純文字';
+
+  @override
+  String get syncRich => '帶格式的文字';
+
+  @override
+  String get syncImages => '圖片與截圖';
+
+  @override
+  String get storage => '儲存空間';
+
+  @override
+  String get storageFootnote => '到期的記錄與快取檔案會自動清理。';
+
+  @override
+  String get keepHistory => '記錄保留';
+
+  @override
+  String get keepCache => '快取檔案保留';
+
+  @override
+  String get keepCacheDesc => '不會超過記錄的保留時間';
+
+  @override
+  String get cacheUsage => '快取佔用空間';
+
+  @override
+  String get backgroundSync => '背景同步';
+
+  @override
+  String get backgroundFootnote =>
+      '停用後不再同步，也不會開機啟動。歷史記錄與配對關係會保留，重新開啟 App 即可再次啟用。';
+
+  @override
+  String get backgroundService => '背景服務';
+
+  @override
+  String get backgroundServiceDesc => '隨系統登入自動啟動，關閉視窗也照常同步';
+
+  @override
+  String get restart => '重新啟動';
+
+  @override
+  String get restarted => '背景服務已重新啟動';
+
+  @override
+  String get disableEllipsis => '停用…';
+
+  @override
+  String get about => '關於';
+
+  @override
+  String get aboutDesc => '開源軟件，以 AGPL-3.0 授權';
+
+  @override
+  String get homepage => '項目主頁';
+
+  @override
+  String get feedback => '回報問題';
+
+  @override
+  String get disableTitle => '停用背景同步？';
+
+  @override
+  String disableBody(String device) {
+    return '$device將停止同步，也不再開機啟動。歷史記錄和配對關係會保留。';
+  }
+
+  @override
+  String get disable => '停用';
+
+  @override
+  String get disabled => '背景同步已停用';
+
+  @override
+  String get urlMustBeWs => '地址必須以 ws:// 或 wss:// 開頭';
+
+  @override
+  String get serverUpdated => '伺服器地址已更新，正在重新連線';
+
+  @override
+  String get deviceNameUpdated => '裝置名稱已更新';
+
+  @override
+  String get svcExtractTitle => '先解壓縮或安裝 CopySync';
+
+  @override
+  String get svcExtractBody =>
+      'CopySync 現在是直接從壓縮檔裏開啟的，關閉之後它所在的臨時資料夾就會被刪除。執行安裝程式，或者把整個資料夾解壓縮出來再開啟，就可以啟用背景同步。';
+
+  @override
+  String get svcMoveTitle => '先把 CopySync 移到「應用程式」';
+
+  @override
+  String get svcMoveBody =>
+      'CopySync 現在是直接從磁碟映像裏開啟的。把它拖進「應用程式」資料夾，推出磁碟映像，再從「應用程式」裏開啟，就可以啟用背景同步。';
+
+  @override
+  String get svcStartTitle => '開始使用 CopySync';
+
+  @override
+  String get svcStartBody =>
+      'CopySync 會在背景執行一個小型程序，用來偵測剪貼簿的變化，並與你的其他裝置保持連線。啟用後它會隨系統登入自動啟動，關閉這個視窗也會照常同步。';
+
+  @override
+  String get svcEnable => '啟用背景同步';
+
+  @override
+  String get svcStaleTitle => '重新啟用背景同步';
+
+  @override
+  String get svcStaleBodyWin =>
+      'CopySync 換了位置，開機自動啟動仍指向原來的位置。重新啟用一次，讓背景程序指向目前這份 CopySync。歷史記錄與配對關係都會保留。';
+
+  @override
+  String get svcStaleBodyMac =>
+      'CopySync 換了位置，或者之前用舊版安裝腳本安裝過。重新啟用一次，讓背景程序指向目前這個 App。歷史記錄與配對關係都會保留。';
+
+  @override
+  String get svcReenable => '重新啟用';
+
+  @override
+  String get svcStoppedTitle => '背景服務沒有執行';
+
+  @override
+  String get svcStoppedBody => '它可能剛剛結束，系統通常會在幾秒內重新啟動它。如果一直停留在這一頁，請按下面的按鈕重新啟動。';
+
+  @override
+  String get svcDevBodyWin =>
+      '這是開發版本，旁邊沒有 copysyncd.exe。在原始碼目錄執行 scripts\\build-windows.ps1 建置完整的版本。';
+
+  @override
+  String get svcDevBodyLinux =>
+      '這是開發版本，旁邊沒有 copysyncd。在原始碼目錄執行 ./scripts/package-linux.sh 建置完整的版本。';
+
+  @override
+  String get svcDevBodyMac =>
+      '這是開發版本，App 裏沒有內建背景服務。在原始碼目錄執行 ./scripts/install-macos.sh 安裝它。';
+
+  @override
+  String svcLogPath(String path) {
+    return '執行日誌：$path';
+  }
+
+  @override
+  String get svcCanDisable => '隨時可以在「設定」中停用背景同步。';
+}
+
+/// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
+class AppLocalizationsZhHantTw extends AppLocalizationsZh {
+  AppLocalizationsZhHantTw() : super('zh_Hant_TW');
+
+  @override
+  String get navHistory => '複製記錄';
+
+  @override
+  String get navDevices => '裝置';
+
+  @override
+  String get navSettings => '設定';
+
+  @override
+  String get linkConnecting => '正在連線…';
+
+  @override
+  String get linkServiceNotRunning => '背景服務未執行';
+
+  @override
+  String get linkLanMode => '在區域網路中尋找裝置';
+
+  @override
+  String get linkServerUnreachable => '連不上伺服器，區域網路內照常同步';
+
+  @override
+  String get linkNothingOn => '區域網路探索已關閉，也沒有設定伺服器';
+
+  @override
+  String get linkLanBlocked => 'macOS 阻擋了區域網路存取';
+
+  @override
+  String linkOnlinePeers(int count) {
+    return '$count 台裝置在線上';
+  }
+
+  @override
+  String get linkServerConnected => '已連線到伺服器';
+
+  @override
+  String linkConnectionLost(String detail) {
+    return '連線中斷：$detail';
+  }
+
+  @override
+  String get linkServiceDisconnected => '背景服務已中斷連線';
+
+  @override
+  String get linkServiceDisabled => '背景服務已停用';
+
+  @override
+  String get errServiceNotConnected => '背景服務未連線';
+
+  @override
+  String get errUnimplemented => '這項功能尚未提供';
+
+  @override
+  String get errUnavailable => '無法連線到背景服務';
+
+  @override
+  String errServiceStart(String detail) {
+    return '啟動背景服務失敗：$detail';
+  }
+
+  @override
+  String errServiceRestart(String detail) {
+    return '重新啟動背景服務失敗：$detail';
+  }
+
+  @override
+  String errAutostart(String detail) {
+    return '設定開機自動啟動失敗：$detail';
+  }
+
+  @override
+  String get thisMacTitle => '這台 Mac';
+
+  @override
+  String get thisPcTitle => '這台電腦';
+
+  @override
+  String get thisMacInText => '這台 Mac ';
+
+  @override
+  String get thisPcInText => '這台電腦';
+
+  @override
+  String get bothMacs => '兩台 Mac ';
+
+  @override
+  String get bothDevices => '兩台裝置';
+
+  @override
+  String get thisDeviceShort => '本機';
+
+  @override
+  String fromDevice(String name) {
+    return '來自 $name';
+  }
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get close => '關閉';
+
+  @override
+  String get save => '儲存';
+
+  @override
+  String get retry => '重試';
+
+  @override
+  String get continueAction => '繼續';
+
+  @override
+  String get justNow => '剛剛';
+
+  @override
+  String secondsAgo(int n) {
+    return '$n 秒前';
+  }
+
+  @override
+  String minutesAgo(int n) {
+    return '$n 分鐘前';
+  }
+
+  @override
+  String hoursAgo(int n) {
+    return '$n 小時前';
+  }
+
+  @override
+  String daysAgo(int n) {
+    return '$n 天前';
+  }
+
+  @override
+  String monthDay(int month, int day) {
+    return '$month月$day日';
+  }
+
+  @override
+  String durationHours(int n) {
+    return '$n 小時';
+  }
+
+  @override
+  String durationDays(int n) {
+    return '$n 天';
+  }
+
+  @override
+  String get historyEmptySubtitle => '在任何一台裝置上複製，內容會出現在這裡';
+
+  @override
+  String historyCount(int count) {
+    return '共 $count 筆';
+  }
+
+  @override
+  String historyCountKept(int count, String ttl) {
+    return '共 $count 筆，保留 $ttl';
+  }
+
+  @override
+  String get filterAll => '全部';
+
+  @override
+  String get filterText => '文字';
+
+  @override
+  String get filterImage => '圖片';
+
+  @override
+  String get filterFile => '檔案';
+
+  @override
+  String get historyClearTooltip => '清空記錄';
+
+  @override
+  String get historyEmptyTitle => '還沒有記錄';
+
+  @override
+  String get historyEmptyFilteredTitle => '沒有這一類的記錄';
+
+  @override
+  String get historyEmptyBody => '在任何一台已配對的裝置上複製文字、圖片或檔案，記錄會出現在這裡。';
+
+  @override
+  String get clearConfirmTitle => '要清空全部記錄嗎？';
+
+  @override
+  String clearConfirmBody(String device) {
+    return '從所有裝置同步過來的記錄和已快取的檔案，都會從$device上刪除。原始檔案不受影響。';
+  }
+
+  @override
+  String get clear => '清空';
+
+  @override
+  String get historyCleared => '記錄已清空';
+
+  @override
+  String get permDeniedTitle => '已禁止 CopySync 讀取剪貼簿';
+
+  @override
+  String get permAskTitle => '允許 CopySync 讀取剪貼簿';
+
+  @override
+  String get permDeniedBody =>
+      '在這台 Mac 上複製的內容不會同步出去。請到系統設定裡把 CopySync Daemon 改為「允許」。';
+
+  @override
+  String get permAskBody =>
+      '否則 macOS 每次都會跳出視窗詢問。請到系統設定裡把 CopySync Daemon 改為「允許」。';
+
+  @override
+  String get openSystemSettings => '打開系統設定';
+
+  @override
+  String get fetch => '拉取到本機';
+
+  @override
+  String get fetchStarted => '開始拉取';
+
+  @override
+  String get transferFailed => '傳輸失敗';
+
+  @override
+  String get expired => '已過期';
+
+  @override
+  String get putOnClipboard => '放入剪貼簿';
+
+  @override
+  String get putOnClipboardDone => '已放入剪貼簿';
+
+  @override
+  String get deleteRecord => '刪除這筆記錄';
+
+  @override
+  String get deleted => '已刪除';
+
+  @override
+  String get emptyRecord => '（空）';
+
+  @override
+  String get imageRecord => '圖片';
+
+  @override
+  String itemsSummary(String name, int others, int count) {
+    return '$name 等 $count 項';
+  }
+
+  @override
+  String get imagePreviewTitle => '圖片預覽';
+
+  @override
+  String get closePreview => '關閉預覽';
+
+  @override
+  String get previousImage => '上一張';
+
+  @override
+  String get nextImage => '下一張';
+
+  @override
+  String get previewHint => '用滾輪或觸控板縮放，拖曳查看';
+
+  @override
+  String get fitWindow => '符合視窗大小';
+
+  @override
+  String get previewDeleted => '這筆圖片記錄已被刪除';
+
+  @override
+  String get previewExpired => '圖片已過期，無法預覽';
+
+  @override
+  String get previewDownloading => '正在下載圖片…';
+
+  @override
+  String get previewDownloadFailed => '圖片下載失敗，請重試';
+
+  @override
+  String get previewNotDownloaded => '圖片尚未下載到這台電腦';
+
+  @override
+  String get downloadAndPreview => '下載並預覽';
+
+  @override
+  String get previewUnavailable => '圖片暫時無法預覽';
+
+  @override
+  String get imageSemantic => '複製記錄中的圖片';
+
+  @override
+  String get previewUnreadable => '無法讀取圖片，檔案可能已被清除或損毀';
+
+  @override
+  String get devicesSubtitleEmpty => '配對之後，裝置之間就會同步剪貼簿';
+
+  @override
+  String devicesSubtitle(int paired, int online) {
+    return '已配對 $paired 台，$online 台在線上';
+  }
+
+  @override
+  String get addDevice => '新增裝置';
+
+  @override
+  String thisDeviceFootnote(String both) {
+    return '配對時，$both會顯示同樣的兩行安全指紋：這台的和對方的。逐字核對一致才能確認。';
+  }
+
+  @override
+  String get noDevicesTitle => '還沒有配對的裝置';
+
+  @override
+  String get noDevicesBody =>
+      '在另一台電腦上打開 CopySync，用 6 碼配對碼把兩台連起來。兩台在同一個網路裡時，也可以在兩台上都打開「搜尋附近裝置」，點一下對方。';
+
+  @override
+  String get pairedDevices => '已配對的裝置';
+
+  @override
+  String get pairedFootnote =>
+      '直連：資料在兩台裝置之間直接傳輸。中繼：網路環境打不通直連時，經你的伺服器轉送，內容依然是端對端加密的。';
+
+  @override
+  String get offline => '離線';
+
+  @override
+  String get direct => '直連';
+
+  @override
+  String get relay => '中繼';
+
+  @override
+  String get online => '線上';
+
+  @override
+  String get moreActions => '更多操作';
+
+  @override
+  String get copyFingerprint => '複製安全指紋';
+
+  @override
+  String get unpairEllipsis => '解除配對…';
+
+  @override
+  String get fingerprintCopied => '安全指紋已複製';
+
+  @override
+  String unpairTitle(String name) {
+    return '要解除與「$name」的配對嗎？';
+  }
+
+  @override
+  String get unpairBody => '兩台裝置將不再同步。以後想恢復，需要重新配對並核對指紋。';
+
+  @override
+  String get unpair => '解除配對';
+
+  @override
+  String get unpaired => '已解除配對';
+
+  @override
+  String get enterAddressEllipsis => '輸入它的位址…';
+
+  @override
+  String setAddressTitle(String name) {
+    return '「$name」的位址';
+  }
+
+  @override
+  String setAddressBody(String name) {
+    return '兩台不在同一網段、或都換了位址時使用。輸入「$name」上「新增裝置 → 產生配對碼」下方顯示的位址。';
+  }
+
+  @override
+  String get addressSaved => '已記下，正在那個位址上尋找它';
+
+  @override
+  String get lanBlockedTitle => 'macOS 阻擋了區域網路存取';
+
+  @override
+  String lanBlockedBody(String device) {
+    return '在「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。開啟之前，$device連不上同一個網路裡的裝置。';
+  }
+
+  @override
+  String get searchNearby => '搜尋附近裝置';
+
+  @override
+  String get nearbyTitle => '附近的裝置';
+
+  @override
+  String get nearbySearching => '正在尋找附近的裝置…';
+
+  @override
+  String get nearbyHint => '在另一台電腦上也打開「搜尋附近裝置」，它就會出現在這裡，點一下即可配對。';
+
+  @override
+  String nearbyVisible(String device) {
+    return '這個視窗開著的期間，同一個網路裡的裝置能看到$device的名稱。';
+  }
+
+  @override
+  String get nearbyPaired => '已配對';
+
+  @override
+  String nearbyRequesting(String name) {
+    return '正在聯絡「$name」…';
+  }
+
+  @override
+  String nearbyNoReply(String name) {
+    return '「$name」沒有回應。請確認它還開著「搜尋附近裝置」。';
+  }
+
+  @override
+  String get nearbyLanOffTitle => '區域網路探索已關閉';
+
+  @override
+  String get nearbyLanOffBody => '在「設定」裡開啟「在區域網路中尋找裝置」才能看到附近的裝置，或者改用配對碼。';
+
+  @override
+  String get generateCode => '產生配對碼';
+
+  @override
+  String get enterCode => '輸入配對碼';
+
+  @override
+  String get codeFailedTitle => '無法產生配對碼';
+
+  @override
+  String get enterOnOther => '在另一台裝置上輸入這組配對碼';
+
+  @override
+  String get codeCopied => '配對碼已複製';
+
+  @override
+  String get codeHint => '點一下即可複製，5 分鐘內有效';
+
+  @override
+  String afterEnterFootnote(String both) {
+    return '對方輸入後，$both會顯示同樣的兩行安全指紋，核對一致再確認。';
+  }
+
+  @override
+  String get codeInvalid => '配對碼是 6 個字母或數字';
+
+  @override
+  String get localAddress => '本機位址';
+
+  @override
+  String get addressHint => '不在同一網段時，另一台還要輸入這個位址';
+
+  @override
+  String get addressCopied => '位址已複製';
+
+  @override
+  String get differentSubnet => '不在同一網段？';
+
+  @override
+  String get peerAddress => '對方配對碼下方顯示的位址';
+
+  @override
+  String get pairNotFound => '找不到那台裝置。不在同一網段時，請輸入它配對碼下方顯示的位址。';
+
+  @override
+  String get pairNotFoundAddress =>
+      '那個位址沒有回應。請檢查位址是否正確、對方是否還停在配對碼畫面；也可能是對方的防火牆擋住了。';
+
+  @override
+  String get codeWrong => '配對碼不正確，或已經失效';
+
+  @override
+  String get codeExpired => '配對碼已失效，請在另一台上重新產生';
+
+  @override
+  String get addressInvalid => '位址格式不正確，應該像 192.168.1.20 這樣';
+
+  @override
+  String get pairNoChannel => '請先在「設定」裡開啟區域網路探索，或者填寫伺服器位址。';
+
+  @override
+  String get enterCodeShown => '輸入另一台裝置上顯示的配對碼';
+
+  @override
+  String get pairingDone => '配對完成';
+
+  @override
+  String get pairingRejected => '已拒絕配對';
+
+  @override
+  String get verifyTitle => '核對安全指紋';
+
+  @override
+  String pairingWith(String name) {
+    return '正在與「$name」配對';
+  }
+
+  @override
+  String verifyBody(String both) {
+    return '$both上顯示的這兩行應該完全相同。只要有任何一個字元不同，就表示連線可能遭到第三方竄改，請拒絕。';
+  }
+
+  @override
+  String get rejectMismatch => '不一致，拒絕';
+
+  @override
+  String get confirmMatch => '一致，確認配對';
+
+  @override
+  String get server => '伺服器（選用）';
+
+  @override
+  String get serverFootnote =>
+      '只在不同網路之間同步時需要，例如家裡和公司；同一個網路裡的裝置不用伺服器也能直接連上。伺服器只負責讓裝置找到彼此，看不到傳輸的內容。';
+
+  @override
+  String get signalingUrl => '信令伺服器位址';
+
+  @override
+  String get signalingUrlDesc => '按 Enter 儲存。留空表示只在區域網路裡同步';
+
+  @override
+  String get signalingUrlPlaceholder => 'ws://伺服器位址:8787/signal';
+
+  @override
+  String get publicStun => '用公共伺服器偵測網路出口';
+
+  @override
+  String get publicStunDesc => '在公司雙線路這類多出口網路裡，能找到更多可以直連的路徑。公共伺服器只會看到你的公用 IP';
+
+  @override
+  String get connectionStatus => '連線狀態';
+
+  @override
+  String get connectedDesc => '已連線到信令伺服器';
+
+  @override
+  String get disconnectedDesc => '連不上伺服器。請檢查位址是否正確、伺服器是否在執行。';
+
+  @override
+  String get connected => '已連線';
+
+  @override
+  String get notConnected => '未連線';
+
+  @override
+  String get notSet => '未設定';
+
+  @override
+  String get notSetDesc => '只與同一個網路裡的裝置同步';
+
+  @override
+  String get serverCleared => '已清除伺服器位址，只在區域網路裡同步';
+
+  @override
+  String get localNetwork => '區域網路';
+
+  @override
+  String get lanFootnote => '使用 UDP 連接埠 8788。兩台不在同一網段時，配對時輸入對方的位址。';
+
+  @override
+  String get lanDiscovery => '在區域網路中尋找裝置';
+
+  @override
+  String get lanDiscoveryDesc =>
+      '不用伺服器就能配對和同步。網路裡的其他人只能看到一個每天都會變的匿名識別碼；打開「搜尋附近裝置」期間才看得到裝置名稱';
+
+  @override
+  String get macLocalNetwork => '本機網路權限';
+
+  @override
+  String get macLocalNetworkDesc =>
+      'macOS 會詢問一次是否允許 CopySync 連線到網路裡的裝置。拒絕過的話，到那裡開啟 CopySync Daemon';
+
+  @override
+  String get allowLan => 'Windows 防火牆';
+
+  @override
+  String get allowLanDesc => '其他裝置連不上這台時允許連入，例如從別的網段配對。會要求一次系統管理員權限';
+
+  @override
+  String get allow => '允許';
+
+  @override
+  String get allowLanDone => '已允許，其他裝置現在可以連到這台了';
+
+  @override
+  String get deviceName => '裝置名稱';
+
+  @override
+  String get deviceNameDesc => '顯示在其他裝置的清單裡';
+
+  @override
+  String get language => '語言';
+
+  @override
+  String get languageSystem => '跟隨系統';
+
+  @override
+  String get sync => '同步';
+
+  @override
+  String get syncFootnote =>
+      '小於上限的內容在複製時直接推送到其他裝置；超過上限的只同步一筆記錄，需要時在「複製記錄」裡點「拉取到本機」，避免大檔案白白佔用頻寬和磁碟空間。';
+
+  @override
+  String get autoSyncLimit => '自動同步上限';
+
+  @override
+  String get autoSyncLimitDesc => '超過這個大小的檔案改為手動拉取';
+
+  @override
+  String get autoApply => '收到後直接寫入剪貼簿';
+
+  @override
+  String get autoApplyDesc => '關閉後，需要在「複製記錄」裡手動放入剪貼簿';
+
+  @override
+  String get whatToSync => '同步哪些內容';
+
+  @override
+  String get syncFiles => '檔案與資料夾';
+
+  @override
+  String get syncText => '純文字';
+
+  @override
+  String get syncRich => '帶格式的文字';
+
+  @override
+  String get syncImages => '圖片與螢幕截圖';
+
+  @override
+  String get storage => '儲存空間';
+
+  @override
+  String get storageFootnote => '到期的記錄與快取檔案會自動清除。';
+
+  @override
+  String get keepHistory => '記錄保留';
+
+  @override
+  String get keepCache => '快取檔案保留';
+
+  @override
+  String get keepCacheDesc => '不會超過記錄的保留時間';
+
+  @override
+  String get cacheUsage => '快取佔用';
+
+  @override
+  String get backgroundSync => '背景同步';
+
+  @override
+  String get backgroundFootnote =>
+      '停用後不再同步，也不會開機自動啟動。歷史記錄與配對關係會保留，重新打開 App 即可再次啟用。';
+
+  @override
+  String get backgroundService => '背景服務';
+
+  @override
+  String get backgroundServiceDesc => '隨系統登入自動啟動，關掉視窗也照常同步';
+
+  @override
+  String get restart => '重新啟動';
+
+  @override
+  String get restarted => '背景服務已重新啟動';
+
+  @override
+  String get disableEllipsis => '停用…';
+
+  @override
+  String get about => '關於';
+
+  @override
+  String get aboutDesc => '開源軟體，採用 AGPL-3.0 授權';
+
+  @override
+  String get homepage => '專案首頁';
+
+  @override
+  String get feedback => '回報問題';
+
+  @override
+  String get disableTitle => '要停用背景同步嗎？';
+
+  @override
+  String disableBody(String device) {
+    return '$device將停止同步，也不會再開機自動啟動。歷史記錄和配對關係會保留。';
+  }
+
+  @override
+  String get disable => '停用';
+
+  @override
+  String get disabled => '背景同步已停用';
+
+  @override
+  String get urlMustBeWs => '位址必須以 ws:// 或 wss:// 開頭';
+
+  @override
+  String get serverUpdated => '伺服器位址已更新，正在重新連線';
+
+  @override
+  String get deviceNameUpdated => '裝置名稱已更新';
+
+  @override
+  String get svcExtractTitle => '先解壓縮或安裝 CopySync';
+
+  @override
+  String get svcExtractBody =>
+      'CopySync 現在是直接從壓縮檔裡打開的，關掉之後它所在的暫存資料夾就會被刪除。執行安裝程式，或者把整個資料夾解壓縮出來再打開，就可以啟用背景同步。';
+
+  @override
+  String get svcMoveTitle => '先把 CopySync 移到「應用程式」';
+
+  @override
+  String get svcMoveBody =>
+      'CopySync 現在是直接從磁碟映像檔裡打開的。把它拖進「應用程式」資料夾，退出磁碟映像檔，再從「應用程式」裡打開，就可以啟用背景同步。';
+
+  @override
+  String get svcStartTitle => '開始使用 CopySync';
+
+  @override
+  String get svcStartBody =>
+      'CopySync 會在背景執行一個小程式，用來偵測剪貼簿的變化，並與你的其他裝置保持連線。啟用後它會隨系統登入自動啟動，關掉這個視窗也會照常同步。';
+
+  @override
+  String get svcEnable => '啟用背景同步';
+
+  @override
+  String get svcStaleTitle => '重新啟用背景同步';
+
+  @override
+  String get svcStaleBodyWin =>
+      'CopySync 換了位置，開機自動啟動還指向原來的地方。重新啟用一次，讓背景程序指向目前這份 CopySync。歷史記錄與配對關係都會保留。';
+
+  @override
+  String get svcStaleBodyMac =>
+      'CopySync 換了位置，或者之前用舊版安裝腳本裝過。重新啟用一次，讓背景程序指向目前這個 App。歷史記錄與配對關係都會保留。';
+
+  @override
+  String get svcReenable => '重新啟用';
+
+  @override
+  String get svcStoppedTitle => '背景服務沒有在執行';
+
+  @override
+  String get svcStoppedBody => '它可能剛剛結束，系統通常會在幾秒內把它重新啟動。如果一直停在這一頁，請點下面的按鈕重新啟動。';
+
+  @override
+  String get svcDevBodyWin =>
+      '這是開發版本，旁邊沒有 copysyncd.exe。在原始碼資料夾執行 scripts\\build-windows.ps1 建置完整的版本。';
+
+  @override
+  String get svcDevBodyLinux =>
+      '這是開發版本，旁邊沒有 copysyncd。在原始碼資料夾執行 ./scripts/package-linux.sh 建置完整的版本。';
+
+  @override
+  String get svcDevBodyMac =>
+      '這是開發版本，App 裡沒有內建背景服務。在原始碼資料夾執行 ./scripts/install-macos.sh 安裝它。';
+
+  @override
+  String svcLogPath(String path) {
+    return '記錄檔：$path';
+  }
+
+  @override
+  String get svcCanDisable => '隨時可以在「設定」中停用背景同步。';
+}

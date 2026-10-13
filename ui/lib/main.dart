@@ -55,8 +55,9 @@ class _CopySyncAppState extends State<CopySyncApp> {
         listenable: _state,
         builder: (context, _) {
           final locale = localeFromSetting(_state.config?.language ?? '');
+          // zh、zh-Hant-TW、zh-Hant-HK、en、ja：Windows 与 Linux 上按它挑汉字字体
           final language =
-              (locale ?? resolveLocale(WidgetsBinding.instance.platformDispatcher.locales)).languageCode;
+              (locale ?? resolveLocale(WidgetsBinding.instance.platformDispatcher.locales)).toLanguageTag();
           final (light, dark) = _themes.putIfAbsent(
               language,
               () => (

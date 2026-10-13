@@ -78,7 +78,7 @@
               <ol class="steps">
                 <li>下載 DMG，開啟後把 CopySync 拖進「應用程式」。<span class="aside">Apple 晶片與 Intel 處理器的 Mac 各有一個版本，下載頁會告訴你怎樣選擇。</span></li>
                 <li>從「應用程式」裏開啟。<span class="aside">第一次會提示「無法驗證開發者」：到「系統設定 → 私隱與保安」，按頁面下方的「強制開啟」。</span></li>
-                <li>按「啟用後台同步」。系統詢問是否允許讀取剪貼簿、能否尋找本地網絡上的裝置時，都選擇允許。</li>
+                <li>按「啟用背景同步」。系統詢問是否允許讀取剪貼簿、能否尋找本地網絡上的裝置時，都選擇允許。</li>
               </ol>
               <a class="button" href="../../zh-hk/download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Mac 版</a>
             </div>
@@ -86,7 +86,7 @@
               <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
               <ol class="steps">
                 <li>執行 CopySync-Setup.exe，不需要管理員權限。<span class="aside">提示「Windows 已保護您的電腦」時，按「其他資訊」，再按「仍要執行」。</span></li>
-                <li>開啟 CopySync，按「啟用後台同步」。防火牆詢問時選擇允許。關閉視窗後，它會在右下角的系統匣裏繼續執行。</li>
+                <li>開啟 CopySync，按「啟用背景同步」。防火牆詢問時選擇允許。關閉視窗後，它會在右下角的系統匣裏繼續執行。</li>
               </ol>
               <a class="button" href="../../zh-hk/download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Windows 版</a>
             </div>
@@ -94,13 +94,13 @@
               <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
               <ol class="steps">
                 <li>Ubuntu、Debian 等發行版安裝 .deb；其他發行版解壓 tar.gz，執行裏面的 <code>install.sh</code>。</li>
-                <li>從應用程式選單開啟 CopySync，按「啟用後台同步」。</li>
+                <li>從應用程式選單開啟 CopySync，按「啟用背景同步」。</li>
               </ol>
               <a class="button" href="../../zh-hk/download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Linux 版</a>
             </div>
           </div>
           <figure class="shot">
-            <img src="../../assets/screenshots/welcome-dark.png" width="2112" height="1472" alt="第一次開啟 CopySync：提示「啟用後台同步」">
+            <img src="../../assets/screenshots/zh-hk/welcome-dark.png" width="2112" height="1472" alt="第一次開啟 CopySync：提示「啟用背景同步」">
           </figure>
         </div>
       </div>
@@ -123,7 +123,7 @@
             <div class="plan-grid">
               <div>
                 <ol class="steps">
-                  <li>每部電腦安裝好 App，按「啟用後台同步」。</li>
+                  <li>每部電腦安裝好 App，按「啟用背景同步」。</li>
                   <li>Windows 防火牆詢問時選擇允許；macOS 詢問能否尋找本地網絡上的裝置時，也選擇允許。</li>
                   <li>一部顯示配對碼，另一部輸入它，再核對指紋。不在同一網段時，還要輸入配對碼下面顯示的地址，見<a href="../../zh-hk/lan/#subnet">同一網絡教學</a>。</li>
                 </ol>
@@ -148,7 +148,7 @@
                 <ol class="steps">
                   <li>在雲端供應商的安全群組裏開放 TCP 8787、UDP 3478 和 UDP 32768–60999。</li>
                   <li>用 ssh 登入伺服器，下載並執行安裝腳本，帶上它的公網 IP：<code>sudo ./install.sh 公網IP</code>。</li>
-                  <li>在每部電腦的「設置」裏填寫伺服器地址 <code>ws://公網IP:8787/signal</code>，按 Enter，然後配對。</li>
+                  <li>在每部電腦的「設定」裏填寫伺服器地址 <code>ws://公網IP:8787/signal</code>，按 Enter，然後配對。</li>
                 </ol>
                 <p class="plan-address">在瀏覽器開啟 <code>http://公網IP:8787/healthz</code>，看到 ok 就代表安裝好了。</p>
                 <a class="button quiet" href="../../zh-hk/cloud/">公網伺服器部署教學 →</a>
@@ -198,16 +198,16 @@
         <div class="os-grid qs-grid">
           <div>
             <ol class="steps">
-              <li>在一部電腦上開啟「設備」，按「添加設備」，會顯示一個 6 位配對碼，5 分鐘內有效，下面是這部電腦的地址。</li>
-              <li>在另一部電腦上同樣按「添加設備」，切換到「輸入配對碼」，輸入它。<span class="aside">不在同一網段，或者使用 Tailscale 時，按「不在同一網段？」，再填上對方的地址。</span></li>
+              <li>在一部電腦上開啟「裝置」，按「新增裝置」，會顯示一個 6 位配對碼，5 分鐘內有效，下面是這部電腦的地址。</li>
+              <li>在另一部電腦上同樣按「新增裝置」，切換到「輸入配對碼」，輸入它。<span class="aside">不在同一網段，或者使用 Tailscale 時，按「不在同一網段？」，再填上對方的地址。</span></li>
               <li>兩邊螢幕會顯示同樣的兩行安全指紋。逐字核對一致後，再按確認。<span class="aside">這一步防止有人在中間冒充你的裝置，不要略過。</span></li>
             </ol>
             <figure class="figure-card qs-verify">
-              <img src="../../assets/screenshots/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配對時的「核對安全指紋」對話框，顯示 R8NF-2WTC-QL5J，要求與另一部電腦上顯示的完全一致">
+              <img src="../../assets/screenshots/zh-hk/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配對時的「核對安全指紋」對話框，顯示 R8NF-2WTC-QL5J，要求與另一部電腦上顯示的完全一致">
             </figure>
           </div>
           <figure class="shot">
-            <img src="../../assets/screenshots/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="「添加設備」：顯示配對碼 K7MP2X，下面是「本機地址」192.168.1.20">
+            <img src="../../assets/screenshots/zh-hk/pairing-dark.png" width="2112" height="1472" loading="lazy" alt="「新增裝置」：顯示配對碼 K7MP2X，下面是「本機地址」192.168.1.20">
           </figure>
         </div>
       </div>

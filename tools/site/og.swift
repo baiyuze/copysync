@@ -12,7 +12,8 @@ let ink = NSColor(srgbRed: 0x1D / 255.0, green: 0x1D / 255.0, blue: 0x1F / 255.0
 let dim = NSColor(srgbRed: 0x6E / 255.0, green: 0x6E / 255.0, blue: 0x73 / 255.0, alpha: 1)
 
 // lang 交给 Core Text 选中文字体：繁体用苹方的繁体版，标点的位置也随之不同
-func render(title: String, note: String, lang: String = "", to path: String) throws {
+func render(title: String, note: String, lang: String = "",
+            shot: String = "docs/assets/screenshots/history.png", to path: String) throws {
     let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(W), pixelsHigh: Int(H),
                                bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
                                colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
@@ -24,7 +25,7 @@ func render(title: String, note: String, lang: String = "", to path: String) thr
     NSRect(x: 0, y: 0, width: W, height: H).fill()
 
     // 右侧截图：带窗口外框的那张，向右下出血
-    if let shot = NSImage(contentsOfFile: "docs/assets/screenshots/history.png") {
+    if let shot = NSImage(contentsOfFile: shot) {
         let h: CGFloat = 560
         let w = h * shot.size.width / shot.size.height
         shot.draw(in: NSRect(x: 600, y: H - 70 - h, width: w, height: h))
@@ -60,6 +61,7 @@ func render(title: String, note: String, lang: String = "", to path: String) thr
 try render(title: "在这台 Mac 复制，\n到那台 Mac 粘贴。", note: "免费开源，macOS 13 及以上",
            to: "docs/assets/og.png")
 try render(title: "在這台 Mac 複製，\n到那台 Mac 貼上。", note: "免費開源，macOS 13 以上", lang: "zh-Hant",
+           shot: "docs/assets/screenshots/zh-tw/history.png",
            to: "docs/assets/og-zh-hant.png")
 try render(title: "Copy on this Mac.\nPaste on that one.", note: "Free and open source, macOS 13+",
            to: "docs/assets/og-en.png")

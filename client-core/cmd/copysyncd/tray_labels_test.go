@@ -3,7 +3,8 @@ package main
 import "testing"
 
 func TestTrayLabels(t *testing.T) {
-	cases := map[string]string{"zh-Hans": "打开 CopySync", "en": "Open CopySync", "ja": "CopySync を開く"}
+	cases := map[string]string{"zh-Hans": "打开 CopySync", "zh-Hant-TW": "開啟 CopySync", "zh-Hant-HK": "開啟 CopySync",
+		"en": "Open CopySync", "ja": "CopySync を開く"}
 	for lang, want := range cases {
 		if open, _ := trayLabels(lang); open != want {
 			t.Errorf("trayLabels(%q) = %q，应为 %q", lang, open, want)

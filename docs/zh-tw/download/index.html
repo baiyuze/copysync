@@ -80,7 +80,7 @@
                 <p class="small">不想執行安裝程式的話，可以下載<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">免安裝版</a>，解壓縮後直接執行。</p>
                 <ol class="steps">
                 <li>執行 CopySync-Setup.exe，它會安裝在目前使用者的目錄下，不需要系統管理員權限。<span class="aside">出現「Windows 已保護您的電腦」時，點「其他資訊」，再點「仍要執行」。</span></li>
-                <li>打開 CopySync，點「啟用後台同步」。防火牆詢問時選擇允許。</li>
+                <li>打開 CopySync，點「啟用背景同步」。防火牆詢問時選擇允許。</li>
                 </ol>
               </div>
               <ul class="points">
@@ -103,7 +103,7 @@
                 <ol class="steps">
                 <li>打開下載的 DMG，把 CopySync 拖進「應用程式」。</li>
                 <li>從「應用程式」裡打開。<span class="aside">第一次會提示「無法驗證開發者」：到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」。</span></li>
-                <li>點「啟用後台同步」。系統詢問是否允許讀取剪貼簿、是否允許尋找區域網路上的裝置時，都選擇允許。</li>
+                <li>點「啟用背景同步」。系統詢問是否允許讀取剪貼簿、是否允許尋找區域網路上的裝置時，都選擇允許。</li>
                 </ol>
               </div>
               <div>
@@ -146,7 +146,7 @@
                 <li>需要圖形桌面：X11，或附有 XWayland 的 Wayland 桌面，GNOME、KDE 等主流桌面預設都有。</li>
                 <li>不確定是 x64 還是 ARM64：在終端機執行 <code>uname -m</code>，顯示 <code>x86_64</code> 是 x64，<code>aarch64</code> 是 ARM64。</li>
                 <li>.deb 會裝在 /opt/CopySync，並出現在應用程式選單裡。tar.gz 解壓縮到哪裡都能執行，<code>install.sh</code> 會把它加進應用程式選單。</li>
-                <li>打開後點「啟用後台同步」，之後登入時會自動啟動。GNOME 預設不顯示系統匣圖示，請從應用程式選單打開視窗。</li>
+                <li>打開後點「啟用背景同步」，之後登入時會自動啟動。GNOME 預設不顯示系統匣圖示，請從應用程式選單打開視窗。</li>
                 <li>需要 GTK 3。已在 Ubuntu 24.04 的 GNOME（Wayland）上實測過。</li>
               </ul>
             </div>

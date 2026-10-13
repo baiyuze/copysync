@@ -35,8 +35,8 @@ LANGS = {
 
 
 def shots_dir(code: str) -> str:
-    """截图目录。App 没有繁体界面，在繁体系统上显示简体中文，所以繁体页面也用简体中文的截图。"""
-    return "assets/screenshots/" + ("" if code.startswith("zh") else code + "/")
+    """截图目录：简体中文的在 screenshots/ 下，其他语言在 screenshots/<语言>/ 下，由 tools/screenshots/render.sh 生成。"""
+    return "assets/screenshots/" + ("" if code == "zh" else code + "/")
 
 # Cloudflare Web Analytics：不用 Cookie，只统计浏览量、来源、国家与设备。
 # token 会出现在每个页面的源码里，本来就是公开的，只能用来上报，看不到统计数据。

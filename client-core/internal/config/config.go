@@ -40,7 +40,7 @@ type Config struct {
 	// 可能探测不全，直连机会变小。
 	OnlyOwnSTUN bool `json:"only_own_stun"`
 
-	// Language 是界面语言：空字符串跟随系统，否则为 "zh-Hans"、"en"、"ja" 之一。
+	// Language 是界面语言：空字符串跟随系统，否则为 "zh-Hans"、"zh-Hant-TW"、"zh-Hant-HK"、"en"、"ja" 之一。
 	// 托盘菜单（Windows）也按它显示
 	Language string `json:"language,omitempty"`
 
@@ -100,7 +100,7 @@ func (c *Config) Validate() {
 	}
 	// 不认识的语言（比如更新版本的界面写进来的）当作跟随系统
 	switch c.Language {
-	case "", "zh-Hans", "en", "ja":
+	case "", "zh-Hans", "zh-Hant-TW", "zh-Hant-HK", "en", "ja":
 	default:
 		c.Language = ""
 	}

@@ -55,7 +55,7 @@
         "downloadUrl": "https://baiyuze.github.io/copysync/zh-tw/download/",
         "codeRepository": "https://github.com/baiyuze/copysync",
         "image": "https://baiyuze.github.io/copysync/assets/icon.png",
-        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/history-dark.png",
+        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/zh-tw/history-dark.png",
         "featureList": [
           "同步純文字、帶格式的文字、圖片、檔案與資料夾",
           "Mac、Windows、Linux 互通，不必使用同一個帳號，跨網路也能用",
@@ -64,7 +64,7 @@
           "DTLS 端對端加密，配對時人工核對安全指紋",
           "50 MB 以內複製即推送，更大的檔案依需要拉取",
           "最近 3 天的複製記錄，圖片可以預覽",
-          "介面支援簡體中文、英文、日文"
+          "介面支援簡體中文、繁體中文（台灣、香港）、英文、日文"
         ],
         "author": {
           "@type": "Person",
@@ -128,7 +128,7 @@
             "name": "在同一個網路裡，為什麼找不到另一台？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "先確認兩台是不是真的在同一個網段：公司裡的有線和無線、訪客網路、開了「AP 隔離」的 Wi‑Fi 常常互不相通，區域網路探索過不去。這時在輸入配對碼的那台點「不在同一網段？」，填上另一台配對碼下方顯示的位址。 在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，到「設置 → 局域網」裡點「放行」。在 Mac 上，要到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。更多說明見同一網路教學。"
+              "text": "先確認兩台是不是真的在同一個網段：公司裡的有線和無線、訪客網路、開了「AP 隔離」的 Wi‑Fi 常常互不相通，區域網路探索過不去。這時在輸入配對碼的那台點「不在同一網段？」，填上另一台配對碼下方顯示的位址。 在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，到「設定 → 區域網路」裡點「允許」。在 Mac 上，要到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。更多說明見同一網路教學。"
             }
           },
           {
@@ -269,7 +269,7 @@
         <h2 id="history-title">所有裝置上複製過的，都在這裡</h2>
         <p class="intro">複製記錄保留最近 3 天的內容，隨時可以放回剪貼簿，圖片點一下就能預覽。50 MB 以內的檔案在你複製的時候就已經傳好了，更大的檔案等需要時再點一下拉取。</p>
         <figure class="shot">
-          <img src="../assets/screenshots/history-dark.png" width="2112" height="1472" alt="CopySync 的複製記錄：來自 MacBook Air 和 Mac mini 的檔案、圖片、文字，大檔案顯示「拉取到本機」按鈕">
+          <img src="../assets/screenshots/zh-tw/history-dark.png" width="2112" height="1472" alt="CopySync 的複製記錄：來自 MacBook Air 和 Mac mini 的檔案、圖片、文字，大檔案顯示「拉取到本機」按鈕">
         </figure>
       </div>
     </section>
@@ -407,10 +407,10 @@
             <li><strong>配對時由你核對安全指紋。</strong>兩邊的螢幕會顯示同樣的兩行：雙方各自公鑰的指紋。伺服器有能力替換轉送中的公鑰，但一旦替換，兩邊螢幕上的指紋就對不上了，這一步就是防範中間人攻擊的關卡。</li>
             <li><strong>之後的每則訊息都帶有簽章，</strong>伺服器無法冒充你的裝置。直連通道的憑證在交握後還會再核對一次，不一致就立即中斷。</li>
             <li><strong>中繼也只是轉送密文。</strong>TURN 轉送的是加密後的封包，中繼憑證按裝置個別簽發，12 小時後過期。</li>
-            <li><strong>區域網路裡也一樣。</strong>裝置在區域網路裡廣播的只是一個每天都會變的匿名識別碼，看不出是誰的電腦，只有開啟「搜索附近設備」時才會帶上裝置名稱；配對同樣要核對指紋，之後的訊息同樣帶有簽章。</li>
+            <li><strong>區域網路裡也一樣。</strong>裝置在區域網路裡廣播的只是一個每天都會變的匿名識別碼，看不出是誰的電腦，只有開啟「搜尋附近裝置」時才會帶上裝置名稱；配對同樣要核對指紋，之後的訊息同樣帶有簽章。</li>
           </ul>
           <figure class="figure-card">
-            <img src="../assets/screenshots/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配對時的「核對安全指紋」對話框，顯示 R8NF-2WTC-QL5J，要求與另一台電腦上顯示的完全一致">
+            <img src="../assets/screenshots/zh-tw/card-verify-dark.png" width="1120" height="800" loading="lazy" alt="配對時的「核對安全指紋」對話框，顯示 R8NF-2WTC-QL5J，要求與另一台電腦上顯示的完全一致">
           </figure>
         </div>
       </div>
@@ -423,7 +423,7 @@
         <dl class="fallbacks">
           <div><dt>在同一個網路裡找不到對方</dt><dd>不同網段、訪客網路、開了 AP 隔離的 Wi‑Fi，都會擋住區域網路探索。配對時輸入對方配對碼下方顯示的位址就行；之後位址會被記住，兩邊都換了位址時，在裝置清單裡幫它重新輸入一次。</dd></div>
           <div><dt>系統擋住區域網路連線</dt><dd>從 macOS 15 起，背景服務要連線區域網路裡的裝置，需要你允許；Windows 第一次執行時，防火牆會跳出詢問。沒有允許時，App 會提示，並提供直達設定的按鈕。</dd></div>
-          <div><dt>兩台電腦打不通直連</dt><dd>常見於對稱型 NAT 和公司防火牆。會自動改走你伺服器上的 TURN 中繼，內容依然加密，裝置清單裡顯示「中轉」。</dd></div>
+          <div><dt>兩台電腦打不通直連</dt><dd>常見於對稱型 NAT 和公司防火牆。會自動改走你伺服器上的 TURN 中繼，內容依然加密，裝置清單裡顯示「中繼」。</dd></div>
           <div><dt>連不上公共 STUN 伺服器</dt><dd>在中國大陸連公共 STUN 時通時斷。伺服器內建 STUN，用戶端會優先使用它。</dd></div>
           <div><dt>先連上了中繼</dt><dd>中繼的交握比較快，有時會搶在直連之前。連上之後，發起連線的一方會在閒置時再打一次洞，打通就換成直連；正在傳檔案時不會打擾。</dd></div>
           <div><dt>對方睡眠、斷線或重新開機</dt><dd>連線悄悄斷了也能察覺，會立即關閉並重新連線。這段期間複製的內容會先記下來，連上後補送到對方的複製記錄裡，但不會覆蓋對方當下剪貼簿裡的內容。</dd></div>
@@ -449,8 +449,8 @@
             <ol>
               <li>下載 DMG，打開後把 CopySync 拖進「應用程式」。<span class="aside">Apple 晶片與 Intel 晶片各有一個版本，下載頁會告訴你怎麼查自己的 Mac 是哪一種。</span></li>
               <li>從「應用程式」裡打開。<span class="aside">第一次會提示「無法驗證開發者」：CopySync 還沒有經過 Apple 公證。到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」，只需要這一次。</span></li>
-              <li>點「啟用後台同步」。系統詢問是否允許讀取剪貼簿、是否允許尋找區域網路上的裝置時，都選擇允許。</li>
-              <li>跨網路同步時，在「設置」裡填入伺服器位址 <code>ws://伺服器位址:8787/signal</code>，按 Enter；在同一個網路裡不用填。</li>
+              <li>點「啟用背景同步」。系統詢問是否允許讀取剪貼簿、是否允許尋找區域網路上的裝置時，都選擇允許。</li>
+              <li>跨網路同步時，在「設定」裡填入伺服器位址 <code>ws://伺服器位址:8787/signal</code>，按 Enter；在同一個網路裡不用填。</li>
             </ol>
             <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Mac 版</a>
           </div>
@@ -458,8 +458,8 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
               <li>執行 CopySync-Setup.exe。它會安裝在目前使用者的目錄下，不需要系統管理員權限。<span class="aside">CopySync 還沒有程式碼簽章，Windows 會提示「Windows 已保護您的電腦」：點「其他資訊」，再點「仍要執行」。不想執行安裝程式的話，可以下載<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">免安裝版</a>。</span></li>
-              <li>打開 CopySync，點「啟用後台同步」。關掉視窗後，它會在右下角的通知區域繼續執行。防火牆詢問時選擇允許。</li>
-              <li>跨網路同步時，在「設置」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。</li>
+              <li>打開 CopySync，點「啟用背景同步」。關掉視窗後，它會在右下角的通知區域繼續執行。防火牆詢問時選擇允許。</li>
+              <li>跨網路同步時，在「設定」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Windows 版</a>
           </div>
@@ -467,8 +467,8 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
             <ol>
               <li>Ubuntu、Debian 等發行版下載 .deb，執行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；其他發行版下載 tar.gz，解壓縮後執行 <code>./CopySync/install.sh</code>。</li>
-              <li>從應用程式選單打開 CopySync，點「啟用後台同步」。之後它會在登入時自動啟動。</li>
-              <li>跨網路同步時，在「設置」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。</li>
+              <li>從應用程式選單打開 CopySync，點「啟用背景同步」。之後它會在登入時自動啟動。</li>
+              <li>跨網路同步時，在「設定」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Linux 版</a>
           </div>
@@ -483,7 +483,7 @@
           </ul>
           <a class="button quiet" href="start/#server">比較三種方式</a>
         </div>
-        <p class="pairing"><strong>配對：</strong>一台點「設備 → 添加設備」產生一組 6 碼的配對碼，另一台輸入它；兩邊螢幕上的兩行安全指紋完全一致後再確認。不在同一個網段時，輸入配對碼的同時，也要輸入它下方顯示的位址。Mac、Windows、Linux 之間怎麼搭配都一樣。</p>
+        <p class="pairing"><strong>配對：</strong>一台點「裝置 → 新增裝置」產生一組 6 碼的配對碼，另一台輸入它；兩邊螢幕上的兩行安全指紋完全一致後再確認。不在同一個網段時，輸入配對碼的同時，也要輸入它下方顯示的位址。Mac、Windows、Linux 之間怎麼搭配都一樣。</p>
       </div>
     </section>
 
@@ -498,7 +498,7 @@
             <tr><th scope="row">Windows 用戶端</th><td>Windows 10 與 Windows 11，x64；只為目前使用者安裝，不需要系統管理員權限；安裝檔約 23 MB</td></tr>
             <tr><th scope="row">Linux 用戶端</th><td>x64 與 ARM64；.deb（Debian、Ubuntu 等）或 tar.gz（其他發行版），約 22 MB；需要 X11 桌面，或附有 XWayland 的 Wayland 桌面（GNOME、KDE 等預設都有）；GTK 3</td></tr>
             <tr><th scope="row">伺服器</th><td>選用，只在跨網路時需要。Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 與 Apple 晶片）、Windows 10 與 11 x64（系統服務）；約佔 15 MB 記憶體</td></tr>
-            <tr><th scope="row">介面語言</th><td>簡體中文、English、日本語，預設跟隨系統，可在設定裡切換；繁體中文系統上顯示簡體中文</td></tr>
+            <tr><th scope="row">介面語言</th><td>簡體中文、繁體中文（台灣、香港）、English、日本語，預設跟隨系統，可在設定裡切換</td></tr>
             <tr><th scope="row">同步的內容</th><td>純文字、帶格式的文字、圖片與螢幕截圖、檔案、資料夾，可依類型個別關閉</td></tr>
             <tr><th scope="row">傳輸</th><td>WebRTC 資料通道，優先直連，打不通時經 TURN 中繼；同一個網路裡透過 mDNS 探索、UDP 8788 交換連線資訊；多出口網路逐一偵測每個出口；檔案以 tar + zstd 串流打包</td></tr>
             <tr><th scope="row">加密與身分</th><td>DTLS 端對端加密；裝置身分為 Ed25519 金鑰；信令訊息逐則簽章</td></tr>
@@ -544,7 +544,7 @@
           </details>
           <details>
             <summary>在同一個網路裡，為什麼找不到另一台？</summary>
-            <div class="answer"><p>先確認兩台是不是真的在同一個網段：公司裡的有線和無線、訪客網路、開了「AP 隔離」的 Wi‑Fi 常常互不相通，區域網路探索過不去。這時在輸入配對碼的那台點「不在同一網段？」，填上另一台配對碼下方顯示的位址。</p><p>在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，到「設置 → 局域網」裡點「放行」。在 Mac 上，要到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。更多說明見<a href="lan/#faq">同一網路教學</a>。</p></div>
+            <div class="answer"><p>先確認兩台是不是真的在同一個網段：公司裡的有線和無線、訪客網路、開了「AP 隔離」的 Wi‑Fi 常常互不相通，區域網路探索過不去。這時在輸入配對碼的那台點「不在同一網段？」，填上另一台配對碼下方顯示的位址。</p><p>在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，到「設定 → 區域網路」裡點「允許」。在 Mac 上，要到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。更多說明見<a href="lan/#faq">同一網路教學</a>。</p></div>
           </details>
           <details>
             <summary>支援 Windows 和 Linux 嗎？iPhone 呢？</summary>
