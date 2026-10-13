@@ -1,5 +1,19 @@
 # 更新记录 / Changelog
 
+## 1.6.4 — 2026-10-13
+
+A fix for the Mac app: the background service no longer uses more and more memory the longer it runs.
+
+### Fixes
+
+- On a Mac, the background service (CopySync Daemon) leaked a few kilobytes every time it checked the clipboard, which it does several times a second. Its memory grew by about 1 GB a day, and Activity Monitor could show it at 1 GB or more. Copying images and files leaked their data too. Its memory now stays flat. Your clipboard history and copied files were never kept in memory: the history is stored in a database on disk and files in a cache folder, so nothing was lost.
+
+### Upgrade notes
+
+- **Mac, Windows and Linux apps**: upgrading the Mac app is recommended. Until you upgrade, quitting and reopening CopySync frees the memory. Nothing changed for Windows and Linux; upgrading them is optional.
+- **Server**: no changes; upgrading is optional.
+- The device-to-device protocol is unchanged.
+
 ## 1.6.3 — 2026-10-12
 
 The Windows app now brings the Visual C++ runtime it needs, so it also starts on computers that don't have it installed.

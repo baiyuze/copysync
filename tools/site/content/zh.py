@@ -28,7 +28,7 @@ C = {
     "dl_mac": "下载 Mac 版",
     "dl_win": "下载 Windows 版",
     "dl_linux": "下载 Linux 版",
-    "dl_note": "版本 1.6.3，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。",
+    "dl_note": "版本 1.6.4，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。",
     "start_link": "第一次用？看快速开始，三步配好 →",
     "stage_label": "演示：在 MacBook 上按下 Command C，文件化作一张纸，经直连飞到 Windows 笔记本，在那里按下 Ctrl V 粘贴出来",
     "stage_file": "季度汇报-终版.pptx",
@@ -248,7 +248,7 @@ C = {
 
     "specs_h2": "技术规格",
     "specs": [
-        ("版本", '1.6.3，<time datetime="2026-10-12">2026 年 10 月 12 日</time>发布'),
+        ("版本", '1.6.4，<time datetime="2026-10-13">2026 年 10 月 13 日</time>发布'),
         ("Mac 客户端", "macOS 13 Ventura 及以上；Apple 芯片与 Intel 芯片各有一个安装包，约 25 MB，不需要 Rosetta；也有两种芯片通用的版本，约 47 MB"),
         ("Windows 客户端", "Windows 10 与 Windows 11，x64；按用户安装，不需要管理员权限；安装包约 23 MB"),
         ("Linux 客户端", "x64 与 ARM64；.deb（Debian、Ubuntu 等）或 tar.gz（其他发行版），约 22 MB；"
