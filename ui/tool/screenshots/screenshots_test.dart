@@ -15,7 +15,6 @@ import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
 import 'package:copysync_ui/i18n.dart';
 import 'package:copysync_ui/main.dart';
 import 'package:copysync_ui/theme.dart';
-import 'package:copysync_ui/widgets/feedback_dialog.dart';
 import 'package:copysync_ui/widgets/nearby_dialog.dart';
 import 'package:copysync_ui/widgets/pairing_dialog.dart';
 import 'package:fixnum/fixnum.dart';
@@ -48,9 +47,6 @@ class _DemoState extends AppState {
   @override
   Future<ListHistoryResponse> requestSearch(String query) async =>
       ListHistoryResponse(records: records.where((r) => matchesSearch(r, query)), searched: true);
-
-  @override
-  Future<String> exportDiagnostics({int logLines = 200}) async => _sampleReport;
 
   // 不关闭的流：后台服务那边的订阅一直开着，结束就表示后台服务断开了
   @override
@@ -213,31 +209,6 @@ AppState _demo({LinkState link = LinkState.online,
   return state;
 }
 
-/// 诊断报告的样子：后台服务生成，名字、服务器、公网 IP 都已换成占位符
-const _sampleReport = '''CopySync diagnostics report
-Names, server address, public IP addresses, the user folder and file names are replaced.
-
-  Generated              2026-10-13 20:50:11 +0800
-  Background service     1.7.0
-  App                    1.7.0
-  System                 macOS 15.6 (darwin/arm64)
-
-Settings
-  Server                 ws://<server>:8787/signal
-  Find devices on LAN    on
-  Public STUN servers    on
-  Auto-sync limit        50 MB
-  History kept           3 days
-
-Devices
-  <this-device>          darwin (this device)
-  <device-1>             windows  direct
-  <device-2>             darwin   relay
-
-Log (last 200 lines)
-time=2026-10-13T20:41:02.118+08:00 level=INFO msg=信令已连接 url=ws://<server>:8787/signal
-time=2026-10-13T20:41:02.530+08:00 level=INFO msg="P2P 连接状态" device=9f2c41 state=connected''';
-
 final _boundary = GlobalKey();
 
 Future<void> _shoot(
@@ -332,21 +303,6 @@ void main() {
       addTearDown(mouse.removePointer);
       await mouse.moveTo(tester.getCenter(find.text(_quarterly)));
       await tester.pump();
-    });
-  });
-
-  // 搜索 release：命令行与链接两条都含有它，看得到多条结果和标出的匹配处
-  testWidgets('history-search', (tester) async {
-    await _shoot(tester, 'history-search', state: _demo(), settle: false, arrange: () async {
-      await tester.enterText(find.byType(TextField), 'release');
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.pump();
-    });
-  });
-
-  testWidgets('feedback', (tester) async {
-    await _shoot(tester, 'feedback', state: _demo(), section: Section.settings, arrange: () async {
-      showFeedbackDialog(tester.element(find.byType(Shell)));
     });
   });
 
