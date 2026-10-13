@@ -16,6 +16,7 @@ type verboseLog struct {
 	base    slog.Level // 关回去时的级别：用 -v 启动的一直是 Debug
 	until   time.Time
 	timer   *time.Timer
+	session int    // 每打开一次加一，计时器据此认出自己是不是这一轮的
 	changed func() // 打开、关闭时调用，让界面刷新状态
 }
 
@@ -26,6 +27,7 @@ func (v *verboseLog) Set(d time.Duration) time.Time {
 		v.timer.Stop()
 		v.timer = nil
 	}
+	v.session++
 	if d <= 0 {
 		v.until = time.Time{}
 		logLevel.Set(v.base)
@@ -35,7 +37,8 @@ func (v *verboseLog) Set(d time.Duration) time.Time {
 		v.until = until
 		logLevel.Set(slog.LevelDebug)
 		slog.Info("详细日志已打开", "到", until.Format("15:04:05"))
-		v.timer = time.AfterFunc(d, func() { v.expire(until) })
+		session := v.session
+		v.timer = time.AfterFunc(d, func() { v.expire(session) })
 	}
 	until := v.until
 	v.mu.Unlock()
@@ -45,10 +48,11 @@ func (v *verboseLog) Set(d time.Duration) time.Time {
 	return until
 }
 
-// expire 是计时器到点后的关闭。期间用户又打开过一次的话，until 已经变了，这次到点不算数
-func (v *verboseLog) expire(until time.Time) {
+// expire 是计时器到点后的关闭。期间用户又打开或关闭过的话，这次到点不算数。
+// 不按截止时间比较：Windows 的时钟精度粗，连着打开两次，两次的截止时间可能一模一样
+func (v *verboseLog) expire(session int) {
 	v.mu.Lock()
-	current := v.until.Equal(until)
+	current := v.session == session
 	v.mu.Unlock()
 	if current {
 		v.Set(0)

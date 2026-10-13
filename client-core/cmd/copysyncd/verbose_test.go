@@ -25,8 +25,10 @@ func TestVerboseLog(t *testing.T) {
 		t.Fatalf("到点后没有关闭：level=%v until=%v", logLevel.Level(), v.Until())
 	}
 
-	// 上一轮的计时器晚到一步，不能把刚刚重新打开的详细日志关掉
-	old := v.Set(time.Hour)
+	// 上一轮的计时器晚到一步，不能把刚刚重新打开的详细日志关掉。
+	// 两次紧挨着打开，在 Windows 上截止时间可能相同，所以按第几轮来认
+	v.Set(time.Hour)
+	old := v.session
 	v.Set(time.Hour)
 	v.expire(old)
 	if logLevel.Level() != slog.LevelDebug || v.Until().IsZero() {
