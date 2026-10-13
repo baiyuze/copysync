@@ -20,7 +20,7 @@ DOCS = ROOT / "docs"
 SITE = "https://baiyuze.github.io/copysync/"
 REPO = "https://github.com/baiyuze/copysync"
 DL = REPO + "/releases/latest/download/"
-VERSION = "1.6.4"
+VERSION = "1.7.0"
 DATE = "2026-10-13"
 
 # 语言代码 → (页面目录, html 的 lang, og:locale, 语言名)。顶栏的语言菜单按这个顺序列出。

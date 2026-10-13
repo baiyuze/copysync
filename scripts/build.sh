@@ -14,7 +14,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 DIST=dist
-VERSION=${VERSION:-1.6.4}
+VERSION=${VERSION:-1.7.0}
 rm -rf "$DIST" && mkdir -p "$DIST"
 
 # 支持的最低 macOS 版本，与界面工程的 MACOSX_DEPLOYMENT_TARGET、后台服务的 LSMinimumSystemVersion 一致。

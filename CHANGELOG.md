@@ -1,5 +1,21 @@
 # 更新记录 / Changelog
 
+## 1.7.0 — 2026-10-13
+
+Search your history, use CopySync in Traditional Chinese, and report problems with a diagnostics report you can read before posting.
+
+### Changes
+
+- **Search the history**: a search field on the History page finds earlier copies by their text or file name, across everything you keep, not only the newest items. Matches are highlighted, and for long text the list shows the part around the match. Press ⌘F (Ctrl+F on Windows and Linux) to jump to it and Esc to clear it. It works together with the All, Text, Images and Files filter.
+- **Traditional Chinese**: the app is now in Traditional Chinese for Taiwan and for Hong Kong, each in its own wording. It follows the system language (Hong Kong and Macau use the Hong Kong version), or you can pick it in Settings. The website has Traditional Chinese pages too, and a language menu in the top bar.
+- **Report a problem**: Settings → Report a problem shows a diagnostics report with the app version, your system, settings, connection state and recent logs. Device names, the server address, public IP addresses, your user folder and file names are replaced before you see it, and what you copy is never logged. Copy it or save it as a file, then open a GitHub issue with the version filled in; nothing is uploaded for you. For connection problems, turn on detailed logging for 30 minutes, make the problem happen again, and regenerate the report.
+
+### Upgrade notes
+
+- **Mac, Windows and Linux apps**: upgrading is recommended on every computer; search, Traditional Chinese and the problem report come with the new app.
+- **Server**: no changes; upgrading is optional.
+- The device-to-device protocol is unchanged.
+
 ## 1.6.4 — 2026-10-13
 
 A fix for the Mac app: the background service no longer uses more and more memory the longer it runs.

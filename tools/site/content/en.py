@@ -29,7 +29,7 @@ C = {
     "dl_mac": "Download for Mac",
     "dl_win": "Download for Windows",
     "dl_linux": "Download for Linux",
-    "dl_note": "Version 1.6.4, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).",
+    "dl_note": "Version 1.7.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).",
     "start_link": "New here? Set it up in three steps →",
     "stage_label": "Demo: Command C on a MacBook turns a file into a sheet that flies over a direct connection to a Windows "
                    "laptop, where Ctrl V pastes it",
@@ -109,7 +109,8 @@ C = {
 
     "history_h2": "Everything you copied, on every computer",
     "history_intro": "History keeps the last 3 days, ready to go back on the clipboard; click an image to preview it. "
-                     "Files under 50 MB have already arrived by the time you switch computers, and larger ones are a click away.",
+                     "Files under 50 MB have already arrived by the time you switch computers, and larger ones are a click away. "
+                     "To find something you copied earlier, search by its text or file name.",
     "history_alt": "CopySync history: files, images and text from a MacBook Air and a Mac mini; a large file shows a button "
                    "to pull it to this device",
 
@@ -269,7 +270,7 @@ C = {
 
     "specs_h2": "Specifications",
     "specs": [
-        ("Version", '1.6.4, released <time datetime="2026-10-13">October 13, 2026</time>'),
+        ("Version", '1.7.0, released <time datetime="2026-10-13">October 13, 2026</time>'),
         ("Mac app", "macOS 13 Ventura or later; separate downloads for Apple silicon and Intel, about 25 MB each, no Rosetta; "
                     "a universal version for both is about 47 MB"),
         ("Windows app", "Windows 10 and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
