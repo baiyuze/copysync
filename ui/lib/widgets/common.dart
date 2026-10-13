@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme.dart';
 import '../i18n.dart';
@@ -214,6 +215,90 @@ class Segmented<T> extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// 搜索框，对应 macOS 的 NSSearchField：浅灰底、左边放大镜，输入后右边出现清除按钮。
+/// 按 Esc 时有字就清空，没字就交出焦点。不给 [width] 时占满父级给的宽度。
+/// 高度定为 28，与旁边的 [Segmented] 一样高；不跟着字体变，否则换个系统字体就高低不齐。
+class SearchField extends StatelessWidget {
+  const SearchField({
+    super.key,
+    required this.controller,
+    required this.hint,
+    required this.clearTooltip,
+    required this.onChanged,
+    this.focusNode,
+    this.width,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final String clearTooltip;
+  final ValueChanged<String> onChanged;
+  final FocusNode? focusNode;
+  final double? width;
+
+  void _clear() {
+    controller.clear();
+    onChanged('');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final round = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(Radii.sm),
+      borderSide: BorderSide.none,
+    );
+    return SizedBox(
+      width: width,
+      height: 28,
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.escape): () {
+            if (controller.text.isNotEmpty) {
+              _clear();
+            } else {
+              focusNode?.unfocus();
+            }
+          },
+        },
+        child: ListenableBuilder(
+          listenable: controller,
+          builder: (context, _) => TextField(
+            controller: controller,
+            focusNode: focusNode,
+            onChanged: onChanged,
+            style: context.text.bodyMedium,
+            expands: true,
+            maxLines: null,
+            textAlignVertical: TextAlignVertical.center,
+            decoration: InputDecoration(
+              hintText: hint,
+              fillColor: p.fill,
+              contentPadding: EdgeInsets.zero,
+              border: round,
+              enabledBorder: round,
+              focusedBorder: round.copyWith(borderSide: BorderSide(color: p.accent, width: 1.5)),
+              prefixIcon: Icon(AppIcons.search, size: 14, color: p.textFaint),
+              prefixIconConstraints: const BoxConstraints(minWidth: 28, minHeight: 0),
+              suffixIcon: controller.text.isEmpty
+                  ? null
+                  : IconButton(
+                      onPressed: _clear,
+                      tooltip: clearTooltip,
+                      icon: Icon(AppIcons.clearField, size: 14, color: p.textFaint),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 28, minHeight: 0),
+                      style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                    ),
+              suffixIconConstraints: const BoxConstraints(minWidth: 28, minHeight: 0),
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -203,6 +203,25 @@
       }
     }
   },
+  "searchHint": "Search text and file names",
+  "searchClear": "Clear search",
+  "searchResultCount": "{count, plural, =1{1 match} other{{count} matches}}",
+  "@searchResultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchEmptyTitle": "No matches for “{query}”",
+  "@searchEmptyTitle": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "searchEmptyBody": "Search looks through copied text and the names of copied files.",
   "imagePreviewTitle": "Image preview",
   "closePreview": "Close preview",
   "previousImage": "Previous image",

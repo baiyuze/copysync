@@ -166,10 +166,16 @@ message ListHistoryRequest {
   int32 limit = 1;
   int64 before_unix = 2;    // 分页游标
   ClipKind kind_filter = 3; // UNSPECIFIED 表示不过滤
+
+  // 搜索词：非空时只返回文字内容或文件名包含它的记录（不分大小写），按时间倒序，
+  // 忽略 before_unix。匹配处不在预览片段里的文字记录，text_preview 换成匹配处前后的一段。
+  string query = 4;
 }
 
 message ListHistoryResponse {
   repeated ClipRecord records = 1;
+  // 按 query 搜索过。旧版后台服务不认识 query，会照常返回全部记录，界面据此识别
+  bool searched = 2;
 }
 
 message DeleteHistoryRequest {

@@ -21,6 +21,10 @@ abstract final class AppIcons {
   static IconData get checkmarkCircle =>
       _pick(CupertinoIcons.checkmark_circle, FluentIcons.checkmark_circle_24_regular);
   static IconData get xmark => _pick(CupertinoIcons.xmark, FluentIcons.dismiss_24_regular);
+  static IconData get search => _pick(CupertinoIcons.search, FluentIcons.search_24_regular);
+  // 搜索框里的清除按钮：实心圆里一个叉，与系统的搜索框一致
+  static IconData get clearField =>
+      _pick(CupertinoIcons.xmark_circle_fill, FluentIcons.dismiss_circle_20_filled);
   static IconData get textAlignLeft =>
       _pick(CupertinoIcons.text_alignleft, FluentIcons.text_align_left_24_regular);
   static IconData get questionCircle =>

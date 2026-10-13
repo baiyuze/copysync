@@ -876,10 +876,13 @@ func (*Event_PermissionChanged) isEvent_Payload() {}
 func (*Event_StatusChanged) isEvent_Payload() {}
 
 type ListHistoryRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
-	BeforeUnix    int64                  `protobuf:"varint,2,opt,name=before_unix,json=beforeUnix,proto3" json:"before_unix,omitempty"`                           // 分页游标
-	KindFilter    ClipKind               `protobuf:"varint,3,opt,name=kind_filter,json=kindFilter,proto3,enum=copysync.v1.ClipKind" json:"kind_filter,omitempty"` // UNSPECIFIED 表示不过滤
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	Limit      int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	BeforeUnix int64                  `protobuf:"varint,2,opt,name=before_unix,json=beforeUnix,proto3" json:"before_unix,omitempty"`                           // 分页游标
+	KindFilter ClipKind               `protobuf:"varint,3,opt,name=kind_filter,json=kindFilter,proto3,enum=copysync.v1.ClipKind" json:"kind_filter,omitempty"` // UNSPECIFIED 表示不过滤
+	// 搜索词：非空时只返回文字内容或文件名包含它的记录（不分大小写），按时间倒序，
+	// 忽略 before_unix。匹配处不在预览片段里的文字记录，text_preview 换成匹配处前后的一段。
+	Query         string `protobuf:"bytes,4,opt,name=query,proto3" json:"query,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -935,9 +938,18 @@ func (x *ListHistoryRequest) GetKindFilter() ClipKind {
 	return ClipKind_CLIP_KIND_UNSPECIFIED
 }
 
+func (x *ListHistoryRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
 type ListHistoryResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Records       []*ClipRecord          `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	Records []*ClipRecord          `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	// 按 query 搜索过。旧版后台服务不认识 query，会照常返回全部记录，界面据此识别
+	Searched      bool `protobuf:"varint,2,opt,name=searched,proto3" json:"searched,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -977,6 +989,13 @@ func (x *ListHistoryResponse) GetRecords() []*ClipRecord {
 		return x.Records
 	}
 	return nil
+}
+
+func (x *ListHistoryResponse) GetSearched() bool {
+	if x != nil {
+		return x.Searched
+	}
+	return false
 }
 
 type DeleteHistoryRequest struct {
@@ -2419,15 +2438,17 @@ const file_copysync_v1_daemon_proto_rawDesc = "" +
 	"\x0edevice_changed\x18\x05 \x01(\v2\x13.copysync.v1.DeviceH\x00R\rdeviceChanged\x12Q\n" +
 	"\x12permission_changed\x18\x06 \x01(\x0e2 .copysync.v1.ClipboardPermissionH\x00R\x11permissionChanged\x12<\n" +
 	"\x0estatus_changed\x18\a \x01(\v2\x13.copysync.v1.StatusH\x00R\rstatusChangedB\t\n" +
-	"\apayload\"\x83\x01\n" +
+	"\apayload\"\x99\x01\n" +
 	"\x12ListHistoryRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\x12\x1f\n" +
 	"\vbefore_unix\x18\x02 \x01(\x03R\n" +
 	"beforeUnix\x126\n" +
 	"\vkind_filter\x18\x03 \x01(\x0e2\x15.copysync.v1.ClipKindR\n" +
-	"kindFilter\"H\n" +
+	"kindFilter\x12\x14\n" +
+	"\x05query\x18\x04 \x01(\tR\x05query\"d\n" +
 	"\x13ListHistoryResponse\x121\n" +
-	"\arecords\x18\x01 \x03(\v2\x17.copysync.v1.ClipRecordR\arecords\":\n" +
+	"\arecords\x18\x01 \x03(\v2\x17.copysync.v1.ClipRecordR\arecords\x12\x1a\n" +
+	"\bsearched\x18\x02 \x01(\bR\bsearched\":\n" +
 	"\x14DeleteHistoryRequest\x12\x10\n" +
 	"\x03ids\x18\x01 \x03(\tR\x03ids\x12\x10\n" +
 	"\x03all\x18\x02 \x01(\bR\x03all\"V\n" +

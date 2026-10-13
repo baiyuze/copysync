@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../gen/copysync/v1/daemon.pb.dart';
@@ -21,6 +24,24 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   _Filter _filter = _Filter.all;
+  final _search = TextEditingController();
+  final _searchFocus = FocusNode();
+  AppState? _state;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _state = AppScope.read(context);
+  }
+
+  @override
+  void dispose() {
+    // 离开这一页就不再搜索，回来看到的是完整的列表
+    _state?.search('', notify: false);
+    _search.dispose();
+    _searchFocus.dispose();
+    super.dispose();
+  }
 
   bool _matches(ClipRecord r) => switch (_filter) {
         _Filter.all => true,
@@ -34,48 +55,80 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
-    final records = state.records.where(_matches).toList();
+    final searching = state.searching;
+    // 搜索结果还没回来时为 null，这时列表先空着，不闪一下「没有找到」
+    final records = (searching ? state.searchResults : state.records)?.where(_matches).toList();
     final ttl = state.config?.historyTtlSeconds.toInt();
     final l = context.l10n;
     final count = state.records.length;
 
-    return Column(
+    final page = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         PageHeader(
           title: l.navHistory,
-          subtitle: state.records.isEmpty
-              ? l.historyEmptySubtitle
-              : ttl == null
-                  ? l.historyCount(count)
-                  : l.historyCountKept(count, durationLabel(l, ttl)),
+          subtitle: searching && records != null
+              ? l.searchResultCount(records.length)
+              : state.records.isEmpty
+                  ? l.historyEmptySubtitle
+                  : ttl == null
+                      ? l.historyCount(count)
+                      : l.historyCountKept(count, durationLabel(l, ttl)),
           actions: [
-            if (state.records.isNotEmpty) ...[
-              Segmented<_Filter>(
-                value: _filter,
-                segments: [
-                  (_Filter.all, l.filterAll),
-                  (_Filter.text, l.filterText),
-                  (_Filter.image, l.filterImage),
-                  (_Filter.file, l.filterFile),
-                ],
-                onChanged: (f) => setState(() => _filter = f),
-              ),
+            // 搜索时不显示：清空的是全部记录，不只是搜到的这些，放在结果旁边容易误会
+            if (state.records.isNotEmpty && !searching)
               IconAction(
                 icon: AppIcons.trash,
                 tooltip: l.historyClearTooltip,
                 onTap: () => _confirmClear(context, state),
               ),
-            ],
           ],
         ),
+        // 找记录的两个办法放在一起：搜索框占满剩下的宽度，类型筛选在右边。
+        // 不放进标题栏：最小窗口下标题栏放不下搜索框
+        if (state.records.isNotEmpty || searching)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(Insets.xl, 0, Insets.xl, Insets.md),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SearchField(
+                    controller: _search,
+                    focusNode: _searchFocus,
+                    hint: l.searchHint,
+                    clearTooltip: l.searchClear,
+                    onChanged: state.search,
+                  ),
+                ),
+                const SizedBox(width: Insets.md),
+                Segmented<_Filter>(
+                  value: _filter,
+                  segments: [
+                    (_Filter.all, l.filterAll),
+                    (_Filter.text, l.filterText),
+                    (_Filter.image, l.filterImage),
+                    (_Filter.file, l.filterFile),
+                  ],
+                  onChanged: (f) => setState(() => _filter = f),
+                ),
+              ],
+            ),
+          ),
         if (_needsPermission(state.status?.clipboardPermission))
           Padding(
             padding: const EdgeInsets.fromLTRB(Insets.xl, 0, Insets.xl, Insets.md),
             child: _PermissionNotice(permission: state.status!.clipboardPermission),
           ),
         Expanded(
-          child: records.isEmpty
+          child: records == null
+              ? const SizedBox.shrink()
+              : records.isEmpty && searching
+              ? EmptyState(
+                  icon: AppIcons.search,
+                  title: l.searchEmptyTitle(state.searchQuery),
+                  description: l.searchEmptyBody,
+                )
+              : records.isEmpty
               ? EmptyState(
                   icon: _filter == _Filter.all
                       ? AppIcons.docOnClipboard
@@ -100,7 +153,8 @@ class _HistoryPageState extends State<HistoryPage> {
                           sliver: SliverList.separated(
                             itemCount: records.length,
                             separatorBuilder: (_, _) => const Divider(indent: 44, endIndent: 8),
-                            itemBuilder: (_, i) => _RecordRow(record: records[i]),
+                            itemBuilder: (_, i) =>
+                                _RecordRow(record: records[i], highlight: searching ? state.searchQuery : null),
                           ),
                         ),
                       ),
@@ -109,6 +163,15 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
         ),
       ],
+    );
+
+    // ⌘F（Windows、Linux 上是 Ctrl+F）跳到搜索框
+    return CallbackShortcuts(
+      bindings: {
+        SingleActivator(LogicalKeyboardKey.keyF, meta: Platform.isMacOS, control: !Platform.isMacOS):
+            _searchFocus.requestFocus,
+      },
+      child: Focus(autofocus: true, child: page),
     );
   }
 
@@ -172,9 +235,12 @@ class _PermissionNotice extends StatelessWidget {
 }
 
 class _RecordRow extends StatefulWidget {
-  const _RecordRow({required this.record});
+  const _RecordRow({required this.record, this.highlight});
 
   final ClipRecord record;
+
+  /// 搜索词：标题里匹配的部分标出来
+  final String? highlight;
 
   @override
   State<_RecordRow> createState() => _RecordRowState();
@@ -214,8 +280,14 @@ class _RecordRowState extends State<_RecordRow> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      recordTitle(r),
+                    Text.rich(
+                      TextSpan(
+                        children: highlightMatches(
+                          recordTitle(r, query: widget.highlight),
+                          widget.highlight,
+                          TextStyle(backgroundColor: p.accent.withValues(alpha: 0.28)),
+                        ),
+                      ),
                       style: context.text.labelLarge,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -331,7 +403,9 @@ IconData kindIcon(ClipRecord r) => switch (r.kind) {
       _ => AppIcons.questionCircle,
     };
 
-String recordTitle(ClipRecord r) {
+/// 记录在列表里的标题。搜索时传入 [query]：一次复制了多个文件、搜到的又不是第一个时，
+/// 标题改用搜到的那个文件名打头，看得出为什么搜到了它。
+String recordTitle(ClipRecord r, {String? query}) {
   // 图片和文件的标题按当前界面语言拼：后台服务存下的摘要是写入时的中文，不会跟着换语言
   if (r.kind == ClipKind.CLIP_KIND_IMAGE) return appL10n.imageRecord;
   if (r.kind != ClipKind.CLIP_KIND_FILE && r.textPreview.isNotEmpty) {
@@ -339,5 +413,24 @@ String recordTitle(ClipRecord r) {
   }
   if (r.items.isEmpty) return appL10n.emptyRecord;
   if (r.items.length == 1) return r.items.first.name;
-  return appL10n.itemsSummary(r.items.first.name, r.items.length - 1, r.items.length);
+  final q = query?.toLowerCase();
+  final lead = q == null ? null : r.items.where((i) => i.name.toLowerCase().contains(q)).firstOrNull;
+  return appL10n.itemsSummary((lead ?? r.items.first).name, r.items.length - 1, r.items.length);
+}
+
+/// 把 [text] 里所有不分大小写匹配 [query] 的片段套上 [mark] 样式。
+/// 转小写后长度变了的少数字符（如土耳其语的 İ）对不上位置，这时不标。
+List<TextSpan> highlightMatches(String text, String? query, TextStyle mark) {
+  final lower = text.toLowerCase();
+  final q = query?.toLowerCase() ?? '';
+  if (q.isEmpty || lower.length != text.length) return [TextSpan(text: text)];
+  final spans = <TextSpan>[];
+  var start = 0;
+  for (var i = lower.indexOf(q); i >= 0; i = lower.indexOf(q, start)) {
+    if (i > start) spans.add(TextSpan(text: text.substring(start, i)));
+    spans.add(TextSpan(text: text.substring(i, i + q.length), style: mark));
+    start = i + q.length;
+  }
+  if (start < text.length) spans.add(TextSpan(text: text.substring(start)));
+  return spans;
 }

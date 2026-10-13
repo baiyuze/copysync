@@ -97,6 +97,13 @@ S = [
     ("imageRecord", "Image", "图片", "画像", "圖片", "圖片"),
     ("itemsSummary", "{name} and {others, plural, =1{1 more} other{{others} more}}", "{name} 等 {count} 项", "{name} ほか {others} 件", "{name} 等 {count} 項", "{name} 等 {count} 項"),
 
+    # ── 搜索复制记录 ──
+    ("searchHint", "Search text and file names", "搜索文字和文件名", "テキストとファイル名を検索", "搜尋文字和檔名", "搜尋文字和檔案名稱"),
+    ("searchClear", "Clear search", "清除搜索", "検索をクリア", "清除搜尋", "清除搜尋"),
+    ("searchResultCount", "{count, plural, =1{1 match} other{{count} matches}}", "找到 {count} 条", "{count} 件見つかりました", "找到 {count} 筆", "找到 {count} 條"),
+    ("searchEmptyTitle", "No matches for “{query}”", "没有找到「{query}」", "「{query}」は見つかりません", "找不到「{query}」", "找不到「{query}」"),
+    ("searchEmptyBody", "Search looks through copied text and the names of copied files.", "搜索的是复制过的文字和文件名。", "コピーしたテキストとファイル名から検索します。", "搜尋範圍是複製過的文字和檔名。", "搜尋範圍是複製過的文字和檔案名稱。"),
+
     # ── 图片预览 ──
     ("imagePreviewTitle", "Image preview", "图片预览", "画像プレビュー", "圖片預覽", "圖片預覽"),
     ("closePreview", "Close preview", "关闭预览", "プレビューを閉じる", "關閉預覽", "關閉預覽"),

@@ -416,6 +416,36 @@ abstract class AppLocalizations {
   /// **'Nothing of this kind'**
   String get historyEmptyFilteredTitle;
 
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search text and file names'**
+  String get searchHint;
+
+  /// No description provided for @searchClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get searchClear;
+
+  /// No description provided for @searchResultCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 match} other{{count} matches}}'**
+  String searchResultCount(int count);
+
+  /// No description provided for @searchEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches for “{query}”'**
+  String searchEmptyTitle(String query);
+
+  /// No description provided for @searchEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Search looks through copied text and the names of copied files.'**
+  String get searchEmptyBody;
+
   /// No description provided for @historyEmptyBody.
   ///
   /// In en, this message translates to:

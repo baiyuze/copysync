@@ -42,6 +42,13 @@ class AppState extends ChangeNotifier {
   /// 正在传输的记录的进度（0–1），只在界面上展示，传完即移除。
   final Map<String, double> _progress = {};
 
+  /// 复制记录的搜索：搜索词，以及后台服务返回的结果（还没出结果时为 null）。
+  /// 界面只加载最新的 200 条，更早的记录只有后台服务能搜到，所以不在界面里筛选。
+  String _query = '';
+  List<ClipRecord>? _searchResults;
+  Timer? _searchTimer;
+  int _searchSeq = 0; // 只采用最后一次搜索的结果，先发出的请求可能后返回
+
   /// 待用户核对指纹的配对请求。非空时界面弹出确认。
   Device? _pendingPairing;
   final Set<String> _handledPairingSessions = {};
@@ -57,6 +64,13 @@ class AppState extends ChangeNotifier {
   Device? get self => _self;
   List<Device> get peers => List.unmodifiable(_peers);
   List<ClipRecord> get records => List.unmodifiable(_records);
+
+  /// 正在搜索复制记录（搜索词不是空白）。
+  bool get searching => _query.trim().isNotEmpty;
+  String get searchQuery => _query.trim();
+
+  /// 搜到的记录，按时间倒序；没在搜索、或这次搜索还没出结果时为 null。
+  List<ClipRecord>? get searchResults => _searchResults == null ? null : List.unmodifiable(_searchResults!);
 
   /// 传输进度；总量未知或尚未开始时为 null。
   double? progressOf(String clipId) => _progress[clipId];
@@ -76,6 +90,7 @@ class AppState extends ChangeNotifier {
   @override
   void dispose() {
     _retry?.cancel();
+    _searchTimer?.cancel();
     _events?.cancel();
     _conn?.close();
     super.dispose();
@@ -115,6 +130,7 @@ class AppState extends ChangeNotifier {
       _serviceState = null;
       _setLink(LinkState.online, null);
       _ensureServiceCurrent();
+      if (searching) _scheduleSearch(Duration.zero);
     } on DaemonNotRunning {
       await _refreshServiceState();
       _scheduleRetry(appL10n.linkServiceNotRunning);
@@ -241,12 +257,16 @@ class AppState extends ChangeNotifier {
       // 否则界面上会出现两行，其中「接收中」那行的进度条永远停不下来
       case Event_Payload.clipAdded:
         _upsert(ev.clipAdded);
+        // 新记录该不该出现在搜索结果里，只有后台服务知道
+        if (!_patchSearch(ev.clipAdded)) _scheduleSearch(const Duration(milliseconds: 300));
 
       case Event_Payload.clipUpdated:
         _upsert(ev.clipUpdated);
+        _patchSearch(ev.clipUpdated);
 
       case Event_Payload.clipRemoved:
         _records.removeWhere((r) => r.id == ev.clipRemoved);
+        _searchResults?.removeWhere((r) => r.id == ev.clipRemoved);
 
       case Event_Payload.deviceChanged:
         _onDeviceChanged(ev.deviceChanged);
@@ -284,6 +304,7 @@ class AppState extends ChangeNotifier {
     if (r.status == ClipStatus.CLIP_STATUS_REMOTE_ONLY) {
       // 用户点了「拉取到本机」，开始传了
       _records[i] = r.deepCopy()..status = ClipStatus.CLIP_STATUS_FETCHING;
+      _patchSearch(_records[i]);
     } else if (r.status != ClipStatus.CLIP_STATUS_FETCHING) {
       return; // 已经传完的记录，迟到的进度事件不能把它拉回「接收中」
     }
@@ -403,10 +424,65 @@ class AppState extends ChangeNotifier {
     );
     if (all) {
       _records.clear();
+      _searchResults?.clear();
     } else if (ids != null) {
       _records.removeWhere((r) => ids.contains(r.id));
+      _searchResults?.removeWhere((r) => ids.contains(r.id));
     }
     notifyListeners();
+  }
+
+  // ─────────────────────────── 搜索复制记录 ───────────────────────────
+
+  /// 输入搜索词。停顿一下再向后台服务查询，不必每敲一个字就查一次；空白表示不搜索。
+  /// [notify] 为 false 用于页面销毁时清掉搜索：那时界面树已锁定，不能再通知重建。
+  void search(String query, {bool notify = true}) {
+    _query = query;
+    _searchTimer?.cancel();
+    if (!searching) {
+      _searchSeq++;
+      _searchResults = null;
+      if (notify) notifyListeners();
+      return;
+    }
+    _scheduleSearch(const Duration(milliseconds: 200));
+  }
+
+  void _scheduleSearch(Duration delay) {
+    if (!searching) return;
+    _searchTimer?.cancel();
+    _searchTimer = Timer(delay, _runSearch);
+  }
+
+  Future<void> _runSearch() async {
+    final query = searchQuery;
+    final seq = ++_searchSeq;
+    List<ClipRecord> found;
+    try {
+      final r = await requestSearch(query);
+      // 旧版后台服务不认识搜索词，会原样返回全部记录：退回到只在已加载的记录里找
+      found = r.searched ? List.of(r.records) : _records.where((x) => matchesSearch(x, query)).toList();
+    } catch (_) {
+      found = _records.where((x) => matchesSearch(x, query)).toList();
+    }
+    if (seq != _searchSeq || query != searchQuery) return;
+    _searchResults = found;
+    notifyListeners();
+  }
+
+  /// 向后台服务搜索复制记录。界面测试与截图里由子类给出演示结果。
+  @protected
+  Future<ListHistoryResponse> requestSearch(String query) =>
+      _client.listHistory(ListHistoryRequest(limit: 200, query: query));
+
+  /// 搜索结果里的同一条记录跟着更新状态（拉取进度、失败等），预览保留搜索给的那一段。
+  /// 返回这条记录在不在结果里。
+  bool _patchSearch(ClipRecord r) {
+    final results = _searchResults;
+    final i = results?.indexWhere((x) => x.id == r.id) ?? -1;
+    if (i < 0) return false;
+    results![i] = r.deepCopy()..textPreview = results[i].textPreview;
+    return true;
   }
 
   Future<void> fetch(String clipId) =>
@@ -454,4 +530,14 @@ class AppState extends ChangeNotifier {
       _ => PairingFailure.other,
     };
   }
+}
+
+/// 在界面已有的信息里判断一条记录是否匹配搜索词：预览片段或文件名包含它，不分大小写。
+/// 只在后台服务不支持搜索时用；正常情况下由后台服务按全文搜索。
+bool matchesSearch(ClipRecord r, String query) {
+  final q = query.toLowerCase();
+  if (r.kind != ClipKind.CLIP_KIND_IMAGE && r.items.any((i) => i.name.toLowerCase().contains(q))) return true;
+  return r.kind != ClipKind.CLIP_KIND_FILE &&
+      r.kind != ClipKind.CLIP_KIND_IMAGE &&
+      r.textPreview.toLowerCase().contains(q);
 }

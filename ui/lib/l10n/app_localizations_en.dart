@@ -244,6 +244,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyEmptyFilteredTitle => 'Nothing of this kind';
 
   @override
+  String get searchHint => 'Search text and file names';
+
+  @override
+  String get searchClear => 'Clear search';
+
+  @override
+  String searchResultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matches',
+      one: '1 match',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return 'No matches for “$query”';
+  }
+
+  @override
+  String get searchEmptyBody =>
+      'Search looks through copied text and the names of copied files.';
+
+  @override
   String get historyEmptyBody =>
       'Copy text, an image or a file on any paired device and it appears here.';
 

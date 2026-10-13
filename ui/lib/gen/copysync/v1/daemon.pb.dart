@@ -831,11 +831,13 @@ class ListHistoryRequest extends $pb.GeneratedMessage {
     $core.int? limit,
     $fixnum.Int64? beforeUnix,
     ClipKind? kindFilter,
+    $core.String? query,
   }) {
     final result = ListHistoryRequest._();
     if (limit != null) result.limit = limit;
     if (beforeUnix != null) result.beforeUnix = beforeUnix;
     if (kindFilter != null) result.kindFilter = kindFilter;
+    if (query != null) result.query = query;
     return result;
   }
 
@@ -856,6 +858,7 @@ class ListHistoryRequest extends $pb.GeneratedMessage {
     ..aInt64(2, _omitFieldNames ? '' : 'beforeUnix')
     ..aE<ClipKind>(3, _omitFieldNames ? '' : 'kindFilter',
         enumValues: ClipKind.values)
+    ..aOS(4, _omitFieldNames ? '' : 'query')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -906,14 +909,27 @@ class ListHistoryRequest extends $pb.GeneratedMessage {
   $core.bool hasKindFilter() => $_has(2);
   @$pb.TagNumber(3)
   void clearKindFilter() => $_clearField(3);
+
+  /// 搜索词：非空时只返回文字内容或文件名包含它的记录（不分大小写），按时间倒序，
+  /// 忽略 before_unix。匹配处不在预览片段里的文字记录，text_preview 换成匹配处前后的一段。
+  @$pb.TagNumber(4)
+  $core.String get query => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set query($core.String value) => $_setString(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasQuery() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearQuery() => $_clearField(4);
 }
 
 class ListHistoryResponse extends $pb.GeneratedMessage {
   factory ListHistoryResponse({
     $core.Iterable<ClipRecord>? records,
+    $core.bool? searched,
   }) {
     final result = ListHistoryResponse._();
     if (records != null) result.records.addAll(records);
+    if (searched != null) result.searched = searched;
     return result;
   }
 
@@ -932,6 +948,7 @@ class ListHistoryResponse extends $pb.GeneratedMessage {
       createEmptyInstance: ListHistoryResponse.$_createMessage)
     ..pPM<ClipRecord>(1, _omitFieldNames ? '' : 'records',
         subBuilder: ClipRecord.$_createMessage)
+    ..aOB(2, _omitFieldNames ? '' : 'searched')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -959,6 +976,16 @@ class ListHistoryResponse extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $pb.PbList<ClipRecord> get records => $_getList(0);
+
+  /// 按 query 搜索过。旧版后台服务不认识 query，会照常返回全部记录，界面据此识别
+  @$pb.TagNumber(2)
+  $core.bool get searched => $_getBF(1);
+  @$pb.TagNumber(2)
+  set searched($core.bool value) => $_setBool(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasSearched() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearSearched() => $_clearField(2);
 }
 
 class DeleteHistoryRequest extends $pb.GeneratedMessage {

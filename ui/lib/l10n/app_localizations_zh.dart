@@ -192,6 +192,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyEmptyFilteredTitle => '没有这一类的记录';
 
   @override
+  String get searchHint => '搜索文字和文件名';
+
+  @override
+  String get searchClear => '清除搜索';
+
+  @override
+  String searchResultCount(int count) {
+    return '找到 $count 条';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return '没有找到「$query」';
+  }
+
+  @override
+  String get searchEmptyBody => '搜索的是复制过的文字和文件名。';
+
+  @override
   String get historyEmptyBody => '在任意一台已配对的设备上复制文本、图片或文件，记录会出现在这里。';
 
   @override
@@ -970,6 +989,25 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String get historyEmptyFilteredTitle => '沒有這一類的記錄';
+
+  @override
+  String get searchHint => '搜尋文字和檔案名稱';
+
+  @override
+  String get searchClear => '清除搜尋';
+
+  @override
+  String searchResultCount(int count) {
+    return '找到 $count 條';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return '找不到「$query」';
+  }
+
+  @override
+  String get searchEmptyBody => '搜尋範圍是複製過的文字和檔案名稱。';
 
   @override
   String get historyEmptyBody => '在任何一部已配對的裝置上複製文字、圖片或檔案，記錄會出現在這裏。';
@@ -1751,6 +1789,25 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get historyEmptyFilteredTitle => '沒有這一類的記錄';
+
+  @override
+  String get searchHint => '搜尋文字和檔名';
+
+  @override
+  String get searchClear => '清除搜尋';
+
+  @override
+  String searchResultCount(int count) {
+    return '找到 $count 筆';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return '找不到「$query」';
+  }
+
+  @override
+  String get searchEmptyBody => '搜尋範圍是複製過的文字和檔名。';
 
   @override
   String get historyEmptyBody => '在任何一台已配對的裝置上複製文字、圖片或檔案，記錄會出現在這裡。';

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"strings"
 	"time"
 
 	"google.golang.org/grpc"
@@ -44,6 +45,8 @@ type Deps struct {
 	ImagePreview           func(ctx context.Context, clipID string, index int) (path, name string, count int, err error)
 	Permission             func() clipboard.Permission
 	OpenPermissionSettings func() error
+	// SearchHistory 按文字内容与文件名搜索复制记录，见 sync.Engine.SearchHistory
+	SearchHistory func(query string, limit int) ([]store.Clip, error)
 	// Network 返回最近一轮网络出口探测的结果
 	Network           func() *pb.NetworkInfo
 	Devices           func() (self *pb.Device, peers []*pb.Device)
@@ -189,6 +192,9 @@ func (s *Server) Subscribe(req *pb.SubscribeRequest,
 
 func (s *Server) ListHistory(_ context.Context,
 	req *pb.ListHistoryRequest) (*pb.ListHistoryResponse, error) {
+	if q := strings.TrimSpace(req.GetQuery()); q != "" {
+		return s.searchHistory(q, req)
+	}
 	var before time.Time
 	if req.GetBeforeUnix() > 0 {
 		before = time.Unix(req.GetBeforeUnix(), 0)
@@ -202,6 +208,24 @@ func (s *Server) ListHistory(_ context.Context,
 		out = append(out, clipToProto(c))
 	}
 	return &pb.ListHistoryResponse{Records: out}, nil
+}
+
+func (s *Server) searchHistory(query string, req *pb.ListHistoryRequest) (*pb.ListHistoryResponse, error) {
+	if s.deps.SearchHistory == nil {
+		return nil, status.Error(codes.Unimplemented, "搜索未接入")
+	}
+	clips, err := s.deps.SearchHistory(query, int(req.GetLimit()))
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "搜索历史: %v", err)
+	}
+	out := make([]*pb.ClipRecord, 0, len(clips))
+	for _, c := range clips {
+		if k := req.GetKindFilter(); k != pb.ClipKind_CLIP_KIND_UNSPECIFIED && pb.ClipKind(c.Kind) != k {
+			continue
+		}
+		out = append(out, clipToProto(c))
+	}
+	return &pb.ListHistoryResponse{Records: out, Searched: true}, nil
 }
 
 func (s *Server) DeleteHistory(_ context.Context, req *pb.DeleteHistoryRequest) (*pb.Empty, error) {

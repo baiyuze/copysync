@@ -192,6 +192,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get historyEmptyFilteredTitle => 'この種類の履歴はありません';
 
   @override
+  String get searchHint => 'テキストとファイル名を検索';
+
+  @override
+  String get searchClear => '検索をクリア';
+
+  @override
+  String searchResultCount(int count) {
+    return '$count 件見つかりました';
+  }
+
+  @override
+  String searchEmptyTitle(String query) {
+    return '「$query」は見つかりません';
+  }
+
+  @override
+  String get searchEmptyBody => 'コピーしたテキストとファイル名から検索します。';
+
+  @override
   String get historyEmptyBody => 'ペアリングしたどのデバイスでテキスト、画像、ファイルをコピーしても、ここに表示されます。';
 
   @override

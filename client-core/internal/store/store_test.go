@@ -154,6 +154,54 @@ func TestListClipsKindFilter(t *testing.T) {
 	}
 }
 
+func TestSearchClips(t *testing.T) {
+	s := openTest(t)
+	now := time.Now().Truncate(time.Second)
+	text := sampleClip("text", now)
+	text.Kind, text.Items = KindText, nil
+	text.TextContent = "Rollback plan in section 3"
+	html := sampleClip("html", now.Add(time.Minute))
+	html.Kind, html.Items = KindHTML, nil
+	html.TextContent, html.TextPlain = `<div class="note">季度汇报</div>`, "季度汇报"
+	file := sampleClip("file", now.Add(2*time.Minute)) // a.txt 与 docs
+	image := sampleClip("image", now.Add(3*time.Minute))
+	image.Kind, image.Items = KindImage, []Item{{Name: "image.png"}}
+	percent := sampleClip("percent", now.Add(4*time.Minute))
+	percent.Kind, percent.Items, percent.TextContent = KindText, nil, "灰度 10% 发布"
+	for _, c := range []Clip{text, html, file, image, percent} {
+		if err := s.PutClip(c); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	ids := func(query string) []string {
+		got, err := s.SearchClips(query, 10)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var out []string
+		for _, c := range got {
+			out = append(out, c.ID)
+		}
+		return out
+	}
+	for query, want := range map[string]string{
+		"ROLLBACK": "text",    // 不分大小写
+		"季度":       "html",    // HTML 按存下的纯文本匹配
+		"div":      "",        // 有纯文本时，标签不算
+		"A.TXT":    "file",    // 文件名
+		"docs":     "file",    // 文件夹名
+		"image":    "",        // 剪贴板图片生成的文件名不参与
+		"10%":      "percent", // % 按字面匹配，不是通配符
+		"1_%":      "",
+	} {
+		got := ids(query)
+		if want == "" && len(got) != 0 || want != "" && (len(got) != 1 || got[0] != want) {
+			t.Errorf("搜索 %q 得到 %v，应为 %q", query, got, want)
+		}
+	}
+}
+
 // GC 依赖这个查询找出该删的记录；边界判定错了会导致缓存永不释放。
 func TestExpiredClips(t *testing.T) {
 	s := openTest(t)

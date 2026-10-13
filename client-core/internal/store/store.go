@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/baiyuze/copysync/client-core/internal/clipfilter"
@@ -294,6 +295,24 @@ func (s *Store) ListClips(limit int, before time.Time, kind Kind) ([]Clip, error
 	q += ` ORDER BY created_at DESC LIMIT ?`
 	args = append(args, limit)
 	return s.queryClips(q, args...)
+}
+
+// SearchClips 找出文字内容或文件名可能包含 query 的记录，按时间倒序，最多 limit 条。
+//
+// 这是粗筛：LIKE 只对 ASCII 不分大小写；没存纯文本的 HTML 记录按 HTML 源码匹配，
+// 标签名也会命中。由调用方按纯文本再核对一遍（见 sync.Engine.SearchHistory）。
+// 剪贴板图片的文件名是生成的（image.png），界面上也不显示，不参与匹配。
+func (s *Store) SearchClips(query string, limit int) ([]Clip, error) {
+	if limit <= 0 || limit > 500 {
+		limit = 100
+	}
+	like := "%" + strings.NewReplacer(`\`, `\\`, `%`, `\%`, `_`, `\_`).Replace(query) + "%"
+	return s.queryClips(`SELECT `+clipCols+` FROM clips
+WHERE (kind = ? AND text_content LIKE ? ESCAPE '\')
+   OR (kind = ? AND (text_plain LIKE ? ESCAPE '\' OR (text_plain = '' AND text_content LIKE ? ESCAPE '\')))
+   OR (kind <> ? AND EXISTS (SELECT 1 FROM clip_items i WHERE i.clip_id = clips.id AND i.name LIKE ? ESCAPE '\'))
+ORDER BY created_at DESC LIMIT ?`,
+		KindText, like, KindHTML, like, like, KindImage, like, limit)
 }
 
 const clipCols = `id, kind, status, origin_device_id, origin_device_name, outgoing,

@@ -331,6 +331,7 @@ const ListHistoryRequest$json = {
       '6': '.copysync.v1.ClipKind',
       '10': 'kindFilter'
     },
+    {'1': 'query', '3': 4, '4': 1, '5': 9, '10': 'query'},
   ],
 };
 
@@ -338,7 +339,7 @@ const ListHistoryRequest$json = {
 final $typed_data.Uint8List listHistoryRequestDescriptor = $convert.base64Decode(
     'ChJMaXN0SGlzdG9yeVJlcXVlc3QSFAoFbGltaXQYASABKAVSBWxpbWl0Eh8KC2JlZm9yZV91bm'
     'l4GAIgASgDUgpiZWZvcmVVbml4EjYKC2tpbmRfZmlsdGVyGAMgASgOMhUuY29weXN5bmMudjEu'
-    'Q2xpcEtpbmRSCmtpbmRGaWx0ZXI=');
+    'Q2xpcEtpbmRSCmtpbmRGaWx0ZXISFAoFcXVlcnkYBCABKAlSBXF1ZXJ5');
 
 @$core.Deprecated('Use listHistoryResponseDescriptor instead')
 const ListHistoryResponse$json = {
@@ -352,13 +353,14 @@ const ListHistoryResponse$json = {
       '6': '.copysync.v1.ClipRecord',
       '10': 'records'
     },
+    {'1': 'searched', '3': 2, '4': 1, '5': 8, '10': 'searched'},
   ],
 };
 
 /// Descriptor for `ListHistoryResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List listHistoryResponseDescriptor = $convert.base64Decode(
     'ChNMaXN0SGlzdG9yeVJlc3BvbnNlEjEKB3JlY29yZHMYASADKAsyFy5jb3B5c3luYy52MS5DbG'
-    'lwUmVjb3JkUgdyZWNvcmRz');
+    'lwUmVjb3JkUgdyZWNvcmRzEhoKCHNlYXJjaGVkGAIgASgIUghzZWFyY2hlZA==');
 
 @$core.Deprecated('Use deleteHistoryRequestDescriptor instead')
 const DeleteHistoryRequest$json = {

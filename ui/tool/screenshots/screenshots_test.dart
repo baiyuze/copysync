@@ -39,10 +39,14 @@ final _cjk = switch (_lang) {
   _ => const ['PingFang'],
 };
 
-/// 生成配对码、搜索附近设备都不走后台服务，直接给固定的演示数据。
+/// 生成配对码、搜索附近设备、搜索复制记录都不走后台服务，直接给固定的演示数据。
 class _DemoState extends AppState {
   @override
   Future<PairingCode> createPairingCode() async => (code: 'K7MP2X', addresses: ['192.168.1.20']);
+
+  @override
+  Future<ListHistoryResponse> requestSearch(String query) async =>
+      ListHistoryResponse(records: records.where((r) => matchesSearch(r, query)), searched: true);
 
   // 不关闭的流：后台服务那边的订阅一直开着，结束就表示后台服务断开了
   @override
@@ -298,6 +302,15 @@ void main() {
       await mouse.addPointer(location: Offset.zero);
       addTearDown(mouse.removePointer);
       await mouse.moveTo(tester.getCenter(find.text(_quarterly)));
+      await tester.pump();
+    });
+  });
+
+  // 搜索 release：命令行与链接两条都含有它，看得到多条结果和标出的匹配处
+  testWidgets('history-search', (tester) async {
+    await _shoot(tester, 'history-search', state: _demo(), settle: false, arrange: () async {
+      await tester.enterText(find.byType(TextField), 'release');
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.pump();
     });
   });
