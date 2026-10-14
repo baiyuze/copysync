@@ -74,7 +74,7 @@ Depends: libgtk-3-0 (>= 3.22)
 Recommends: fonts-noto-cjk
 Section: utils
 Priority: optional
-Homepage: https://baiyuze.github.io/copysync/
+Homepage: https://baiyuze.github.io/pasteferry/
 Description: Sync what you copy between your computers
  CopySync keeps the clipboard in sync across Mac, Windows and Linux:
  text, images and files, directly over the local network or through

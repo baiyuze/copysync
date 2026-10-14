@@ -303,7 +303,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         TextButton(
-                          onPressed: () => _open('https://baiyuze.github.io/copysync/'),
+                          onPressed: () => _open('https://baiyuze.github.io/pasteferry/'),
                           child: Text(l.homepage),
                         ),
                         TextButton(

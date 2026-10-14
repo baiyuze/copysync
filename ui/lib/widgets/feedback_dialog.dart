@@ -13,7 +13,7 @@ import '../theme.dart';
 import 'common.dart';
 
 /// 新建 issue 的地址：用仓库里的问题模板（.github/ISSUE_TEMPLATE/bug_report.yml），版本号预先填好
-const _newIssue = 'https://github.com/baiyuze/copysync/issues/new?template=bug_report.yml';
+const _newIssue = 'https://github.com/baiyuze/pasteferry/issues/new?template=bug_report.yml';
 
 Future<void> showFeedbackDialog(BuildContext context) =>
     showDialog<void>(context: context, builder: (_) => const FeedbackDialog());
