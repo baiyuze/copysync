@@ -11,11 +11,11 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/baiyuze/copysync/client-core/internal/identity"
-	"github.com/baiyuze/copysync/client-core/internal/transport/signed"
-	"github.com/baiyuze/copysync/proto/deviceid"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
-	"github.com/baiyuze/copysync/proto/pairingcode"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/signed"
+	"github.com/baiyuze/pasteferry/proto/deviceid"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
+	"github.com/baiyuze/pasteferry/proto/pairingcode"
 )
 
 // 在局域网里配对：显示配对码的一方把码「开放」出来（mDNS 广播里带 p=1），

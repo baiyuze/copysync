@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:copysync_ui/i18n.dart';
+import 'package:pasteferry_ui/i18n.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 

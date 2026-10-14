@@ -13,9 +13,9 @@ import (
 	"github.com/coder/websocket"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/baiyuze/copysync/proto/deviceid"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
-	"github.com/baiyuze/copysync/server/pairing"
+	"github.com/baiyuze/pasteferry/proto/deviceid"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
+	"github.com/baiyuze/pasteferry/server/pairing"
 )
 
 const (

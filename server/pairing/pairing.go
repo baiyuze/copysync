@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/baiyuze/copysync/proto/pairingcode"
+	"github.com/baiyuze/pasteferry/proto/pairingcode"
 )
 
 // 配对码的格式与局域网里设备自己生成的一致，见 proto/pairingcode。

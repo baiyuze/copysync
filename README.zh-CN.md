@@ -4,8 +4,6 @@
 
 <h1 align="center">隔空贴 PasteFerry</h1>
 
-<p align="center"><sub>原名 CopySync。应用和安装包里暂时还叫 CopySync，下个版本会改过来。</sub></p>
-
 <p align="center">
   在这台电脑复制，到那台电脑粘贴。Mac、Windows、Linux 互通。<br>
   文本、图片、文件、整个文件夹都可以，不限账号，不限是否在同一个网络。
@@ -70,9 +68,9 @@
 
 **1. 在每台电脑上安装 App**，到 **[下载页](https://baiyuze.github.io/pasteferry/download/)** 选：
 
-- **Mac**（macOS 13 以上）：[Apple 芯片版](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-mac-apple-silicon.dmg)或 [Intel 版](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-mac-intel.dmg)；也有两种芯片都能用的[通用版](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync.dmg)。
-- **Windows** 10/11：[安装程序](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-Setup.exe)或[便携版](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip)。
-- **Linux**（X11，或带 XWayland 的 Wayland 桌面）：Ubuntu、Debian 用 `.deb`（[x64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-amd64.deb)、[ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-arm64.deb)），其他发行版用 `tar.gz`（[x64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-amd64.tar.gz)、[ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-arm64.tar.gz)），解压后运行 `./CopySync/install.sh` 加进应用菜单。
+- **Mac**（macOS 13 以上）：[Apple 芯片版](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-mac-apple-silicon.dmg)或 [Intel 版](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-mac-intel.dmg)；也有两种芯片都能用的[通用版](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry.dmg)。
+- **Windows** 10/11：[安装程序](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-Setup.exe)或[便携版](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip)。
+- **Linux**（X11，或带 XWayland 的 Wayland 桌面）：Ubuntu、Debian 用 `.deb`（[x64](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-linux-amd64.deb)、[ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-linux-arm64.deb)），其他发行版用 `tar.gz`（[x64](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-linux-amd64.tar.gz)、[ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-linux-arm64.tar.gz)），解压后运行 `./PasteFerry/install.sh` 加进应用菜单。
 
 还没有公证和代码签名：Mac 上第一次打开时到 **系统设置 → 隐私与安全性** 点 **仍要打开**；Windows 上点 **更多信息 → 仍要运行**。然后点 **启用后台同步**。Windows 防火墙询问、macOS 询问能否查找本地网络上的设备时，都选择允许。
 
@@ -89,8 +87,8 @@
 公网服务器上的安装命令：
 
 ```bash
-curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz && cd copysync-server-linux-amd64
+curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz && cd pasteferry-server-linux-amd64
 sudo ./install.sh <服务器公网IP>
 ```
 

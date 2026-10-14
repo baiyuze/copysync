@@ -80,7 +80,7 @@ char *cs_types_json(void) {
 // 用 detectMetadataForTypes 探测内容类型。
 //
 // Apple 明确保证此方法不会通知用户，实测隐私机制开启时耗时 0.021s 且无弹窗。
-// CopySync 靠它在不触发授权的前提下完成"复制的是文件还是文本"的分类。
+// PasteFerry 靠它在不触发授权的前提下完成"复制的是文件还是文本"的分类。
 char *cs_detect_content_type(void) {
     @autoreleasepool {
         if (@available(macOS 15.4, *)) {
@@ -153,7 +153,7 @@ char *cs_read_html(void) {
     }
 }
 
-// 返回文件路径数组的 JSON。CopySync 的 A 端靠它拿到源文件位置。
+// 返回文件路径数组的 JSON。PasteFerry 的 A 端靠它拿到源文件位置。
 char *cs_read_file_urls_json(void) {
     @autoreleasepool {
         NSArray<NSURL *> *urls = [NSPasteboard.generalPasteboard

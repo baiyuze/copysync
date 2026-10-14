@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 func sampleInput(t *testing.T, log string) Input {

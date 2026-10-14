@@ -9,14 +9,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' show ImageByteFormat;
 
-import 'package:copysync_ui/app_state.dart';
-import 'package:copysync_ui/background_service.dart';
-import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
-import 'package:copysync_ui/i18n.dart';
-import 'package:copysync_ui/main.dart';
-import 'package:copysync_ui/theme.dart';
-import 'package:copysync_ui/widgets/nearby_dialog.dart';
-import 'package:copysync_ui/widgets/pairing_dialog.dart';
+import 'package:pasteferry_ui/app_state.dart';
+import 'package:pasteferry_ui/background_service.dart';
+import 'package:pasteferry_ui/gen/pasteferry/v1/daemon.pb.dart';
+import 'package:pasteferry_ui/i18n.dart';
+import 'package:pasteferry_ui/main.dart';
+import 'package:pasteferry_ui/theme.dart';
+import 'package:pasteferry_ui/widgets/nearby_dialog.dart';
+import 'package:pasteferry_ui/widgets/pairing_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -122,7 +122,7 @@ AppState _demo({LinkState link = LinkState.online,
     serviceState: service,
     pendingPairing: pending,
     status: Status(
-      version: '1.5.0',
+      version: '2.0.0',
       deviceName: 'MacBook Pro',
       signalingConnected: link == LinkState.online && server.isNotEmpty,
       serverConfigured: server.isNotEmpty,

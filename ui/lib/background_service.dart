@@ -56,9 +56,13 @@ abstract class BackgroundService {
 
   /// 停用并取消开机自启。数据目录保留，重新启用后历史记录与配对关系都还在。
   Future<void> uninstall();
+
+  /// 2.0.0 之前产品叫 CopySync：停掉并移除那时登记的后台服务，否则它会和新的同时监听剪贴板。
+  /// 返回旧服务原先是否启用，启用过的就该接着启用新的。数据目录由新的后台服务第一次启动时挪过来
+  Future<bool> removeLegacy();
 }
 
-/// Mac：后台服务内置在 `CopySync.app/Contents/Helpers/` 下，由界面在首次启动时
+/// Mac：后台服务内置在 `PasteFerry.app/Contents/Helpers/` 下，由界面在首次启动时
 /// 注册成 launchd 的 LaunchAgent。
 /// 用 LaunchAgent 而非 LaunchDaemon：剪贴板属于登录用户的会话，系统级进程访问不到。
 class MacBackgroundService implements BackgroundService {
@@ -66,22 +70,22 @@ class MacBackgroundService implements BackgroundService {
       : _executable = executable ?? Platform.resolvedExecutable,
         _home = home ?? Platform.environment['HOME'] ?? '';
 
-  static const label = 'com.copysync.daemon';
+  static const label = 'com.pasteferry.daemon';
 
   /// 界面 App 的 bundle ID。写进登录项，系统才知道后台服务属于哪个 App：
-  /// macOS 15 的「本地网络」权限按它记账，登录项列表里也显示成 CopySync。
-  static const _appBundleId = 'com.copysync.app';
+  /// macOS 15 的「本地网络」权限按它记账，登录项列表里也显示成 PasteFerry。
+  static const _appBundleId = 'com.pasteferry.app';
 
   final String _executable;
   final String _home;
 
-  /// `…/CopySync.app`，由可执行文件 `…/CopySync.app/Contents/MacOS/CopySync` 上溯三级。
+  /// `…/PasteFerry.app`，由可执行文件 `…/PasteFerry.app/Contents/MacOS/PasteFerry` 上溯三级。
   String get _bundle => File(_executable).parent.parent.parent.path;
 
-  String get helperApp => '$_bundle/Contents/Helpers/CopySyncDaemon.app';
-  String get helperBinary => '$helperApp/Contents/MacOS/copysyncd';
+  String get helperApp => '$_bundle/Contents/Helpers/PasteFerryDaemon.app';
+  String get helperBinary => '$helperApp/Contents/MacOS/pasteferryd';
   String get plistPath => '$_home/Library/LaunchAgents/$label.plist';
-  String get logPath => '$_home/Library/Logs/CopySync/daemon.log';
+  String get logPath => '$_home/Library/Logs/PasteFerry/daemon.log';
 
   @override
   String get displayLogPath => logPath.replaceFirst(RegExp(r'^/Users/[^/]+'), '~');
@@ -150,11 +154,21 @@ class MacBackgroundService implements BackgroundService {
     if (await plist.exists()) await plist.delete();
   }
 
-  Future<void> _bootout() async {
-    await Process.run('launchctl', ['bootout', await _target()]);
+  @override
+  Future<bool> removeLegacy() async {
+    final plist = File('$_home/Library/LaunchAgents/com.copysync.daemon.plist');
+    if (!await plist.exists()) return false;
+    await _bootout('${await _domain()}/com.copysync.daemon');
+    await plist.delete();
+    return true;
+  }
+
+  Future<void> _bootout([String? target]) async {
+    target ??= await _target();
+    await Process.run('launchctl', ['bootout', target]);
     // bootout 是异步的：旧服务没注销干净就 bootstrap 会报 "Bootstrap failed: 5"
     for (var i = 0; i < 20; i++) {
-      final r = await Process.run('launchctl', ['print', await _target()]);
+      final r = await Process.run('launchctl', ['print', target]);
       if (r.exitCode != 0) return;
       await Future<void>.delayed(const Duration(milliseconds: 250));
     }

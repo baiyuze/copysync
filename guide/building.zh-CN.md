@@ -15,7 +15,7 @@ Windows 版需要 Go、Flutter、Visual Studio（「使用 C++ 的桌面开发�
 powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1   # 安装程序与便携版到 dist\windows\
 ```
 
-后台服务是纯 Go，也可以在 Mac 上交叉编译：`GOOS=windows go build ./cmd/copysyncd`。CI 在每次提交时构建 Windows 安装包。
+后台服务是纯 Go，也可以在 Mac 上交叉编译：`GOOS=windows go build ./cmd/pasteferryd`。CI 在每次提交时构建 Windows 安装包。
 
 Linux 版需要 Go、Flutter 及其 Linux 工具链（`sudo apt install clang cmake ninja-build pkg-config libgtk-3-dev`）。Flutter 不能交叉编译 Linux 桌面程序，要在目标架构的机器上构建（CI 在 Ubuntu 22.04 上分别构建 x64 与 ARM64）：
 
@@ -23,7 +23,7 @@ Linux 版需要 Go、Flutter 及其 Linux 工具链（`sudo apt install clang cm
 ./scripts/package-linux.sh   # 按本机架构打出 .deb 与 tar.gz 到 dist/linux/
 ```
 
-Linux 的剪贴板是纯 Go 走 X11 协议，同样可以在 Mac 上交叉编译：`GOOS=linux go build ./cmd/copysyncd`。它的测试需要 X 显示：装好 `xclip` 后运行 `xvfb-run -a go test ./internal/clipboard/`。
+Linux 的剪贴板是纯 Go 走 X11 协议，同样可以在 Mac 上交叉编译：`GOOS=linux go build ./cmd/pasteferryd`。它的测试需要 X 显示：装好 `xclip` 后运行 `xvfb-run -a go test ./internal/clipboard/`。
 
 服务器也是纯 Go。`package.sh` 把它交叉编译成 Linux（amd64、arm64）、macOS 与 Windows 版本，各自带上 `server/deploy/` 里对应的安装脚本。
 
@@ -34,8 +34,8 @@ cd client-core && go test ./...          # 后台服务的测试
 ./tools/natlab/docker.sh                 # NAT 打洞实验室：11 种网络拓扑下的直连与中转
 cd ui && flutter test                    # 界面的测试
 ./scripts/install-macos.sh               # 把 dist/ 里的后台服务装成登录项
-./dist/copysync-cli status               # 查看后台服务状态
-./dist/copysync-cli watch                # 实时事件流
+./dist/pasteferry-cli status               # 查看后台服务状态
+./dist/pasteferry-cli watch                # 实时事件流
 ```
 
 改了 `.proto` 之后运行 `./scripts/gen-proto.sh` 重新生成代码（用 buf，`go install` 即可安装，无需 protoc）。改了界面之后运行 `./tools/screenshots/render.sh` 重新生成截图，截图用演示数据渲染，不会带出本机的真实内容。

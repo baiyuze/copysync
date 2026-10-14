@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	"github.com/baiyuze/copysync/client-core/internal/store"
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 func TestBacklogKeepsNewest(t *testing.T) {
@@ -61,7 +61,7 @@ func (f *fakePeers) received(peer string) []*pb.ClipOffer {
 
 func newBacklogEngine(t *testing.T, peers *fakePeers) *Engine {
 	t.Helper()
-	db, err := store.Open(filepath.Join(t.TempDir(), "copysync.db"))
+	db, err := store.Open(filepath.Join(t.TempDir(), "pasteferry.db"))
 	if err != nil {
 		t.Fatal(err)
 	}

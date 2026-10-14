@@ -4,21 +4,21 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:copysync_ui/app_state.dart';
-import 'package:copysync_ui/daemon_client.dart';
-import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
-import 'package:copysync_ui/i18n.dart';
-import 'package:copysync_ui/main.dart';
-import 'package:copysync_ui/theme.dart';
-import 'package:copysync_ui/widgets/common.dart';
-import 'package:copysync_ui/widgets/pairing_dialog.dart';
+import 'package:pasteferry_ui/app_state.dart';
+import 'package:pasteferry_ui/daemon_client.dart';
+import 'package:pasteferry_ui/gen/pasteferry/v1/daemon.pb.dart';
+import 'package:pasteferry_ui/i18n.dart';
+import 'package:pasteferry_ui/main.dart';
+import 'package:pasteferry_ui/theme.dart';
+import 'package:pasteferry_ui/widgets/common.dart';
+import 'package:pasteferry_ui/widgets/pairing_dialog.dart';
 
 void main() {
   testWidgets('应用启动后显示三个导航区', (tester) async {
-    await tester.pumpWidget(const CopySyncApp());
+    await tester.pumpWidget(const PasteFerryApp());
     await tester.pump();
 
-    expect(find.text('CopySync'), findsOneWidget);
+    expect(find.text('隔空贴'), findsOneWidget);
     // 「复制记录」同时出现在侧边栏与页面标题中
     expect(find.text('复制记录'), findsWidgets);
     expect(find.text('设备'), findsWidgets);
@@ -26,7 +26,7 @@ void main() {
   });
 
   testWidgets('daemon 未运行时给出下一步指引而非空白页', (tester) async {
-    await tester.pumpWidget(const CopySyncApp());
+    await tester.pumpWidget(const PasteFerryApp());
     await tester.pump(const Duration(milliseconds: 300));
 
     // 空状态要说明该做什么，不能只写"暂无数据"
@@ -35,7 +35,7 @@ void main() {
   });
 
   testWidgets('可以切换到设备页', (tester) async {
-    await tester.pumpWidget(const CopySyncApp());
+    await tester.pumpWidget(const PasteFerryApp());
     await tester.pump();
 
     // 点侧边栏的「设备」（第一个匹配项是导航条目）
@@ -47,7 +47,7 @@ void main() {
   });
 
   testWidgets('配对对话框里能取到 AppState', (tester) async {
-    await tester.pumpWidget(const CopySyncApp());
+    await tester.pumpWidget(const PasteFerryApp());
     await tester.pump();
 
     // 测试环境没有 daemon，「添加设备」按钮是禁用的，直接按页面里的方式弹出
@@ -129,7 +129,7 @@ void main() {
     final dir = DaemonEndpoint.defaultDataDir();
     // 路径不一致会导致 UI 根本找不到 daemon，这里锁住约定
     // Linux 按 XDG 的习惯用小写目录名，见 config.DefaultPaths
-    expect(dir, Platform.isLinux ? endsWith('/copysync') : contains('CopySync'));
+    expect(dir, Platform.isLinux ? endsWith('/pasteferry') : contains('PasteFerry'));
     expect(DaemonEndpoint.endpointFile(dir).path, endsWith('daemon.json'));
   });
 

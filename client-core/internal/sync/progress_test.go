@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // 进度上报要节流：按数据块上报会把事件队列挤满，挤掉「传输完成」的记录更新。

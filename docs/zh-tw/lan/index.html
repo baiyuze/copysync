@@ -51,7 +51,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">隔空貼原名 CopySync。App 和安裝檔裡暫時還叫 CopySync，下個版本會改過來。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
@@ -107,7 +106,7 @@
         <dl class="fallbacks">
           <div><dt>在同一個網路裡</dt><dd>兩台電腦連著同一台路由器就行，Wi‑Fi 與有線混用也可以。訪客網路、開了「AP 隔離」的 Wi‑Fi 不讓裝置互相連線；公司裡的有線和無線常常不在同一個網段，這時請看下面的<a href="#subnet">不在同一網段</a>。</dd></div>
           <div><dt>Windows 防火牆</dt><dd>第一次執行時，Windows 會詢問是否允許隔空貼通過防火牆，請選擇允許。如果按過取消，到隔空貼的「設定 → 區域網路」裡點「允許」，會要求一次系統管理員權限。</dd></div>
-          <div><dt>macOS 的本機網路權限</dt><dd>從 macOS 15 起，第一次連線區域網路裡的裝置時，系統會詢問是否允許 CopySync Daemon 尋找區域網路上的裝置，請選擇允許。拒絕過的話，到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟它。</dd></div>
+          <div><dt>macOS 的本機網路權限</dt><dd>從 macOS 15 起，第一次連線區域網路裡的裝置時，系統會詢問是否允許 PasteFerry Daemon 尋找區域網路上的裝置，請選擇允許。拒絕過的話，到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟它。</dd></div>
           <div><dt>不用填伺服器</dt><dd>「設定」裡的伺服器位址留空就行。以後要跨網路同步，再填上伺服器或改用 Tailscale，已經配對的裝置不用重新配對。</dd></div>
         </dl>
       </div>
@@ -176,7 +175,7 @@
         <div class="faq">
           <details>
             <summary>找不到另一台電腦？</summary>
-            <div class="answer"><p>先確認兩台連著同一個網路、都已啟用背景同步。再試試在輸入配對碼的那台填上對方的位址：這樣能找到的話，代表兩台不在同一個網段，或網路擋住了 mDNS。</p><p>還是找不到，就檢查對方的防火牆：對方是 Windows 的話，在它的「設定 → 區域網路」裡點「允許」；是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 CopySync Daemon，系統防火牆也沒有擋住它。</p></div>
+            <div class="answer"><p>先確認兩台連著同一個網路、都已啟用背景同步。再試試在輸入配對碼的那台填上對方的位址：這樣能找到的話，代表兩台不在同一個網段，或網路擋住了 mDNS。</p><p>還是找不到，就檢查對方的防火牆：對方是 Windows 的話，在它的「設定 → 區域網路」裡點「允許」；是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 PasteFerry Daemon，系統防火牆也沒有擋住它。</p></div>
           </details>
           <details>
             <summary>離開這個網路後還能同步嗎？</summary>

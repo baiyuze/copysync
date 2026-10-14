@@ -21,7 +21,7 @@ func writeFile(t *testing.T, path, content string) {
 func TestPackUnpackSingleFile(t *testing.T) {
 	src := t.TempDir()
 	file := filepath.Join(src, "hello.txt")
-	writeFile(t, file, "hello copysync")
+	writeFile(t, file, "hello pasteferry")
 
 	var buf bytes.Buffer
 	if err := Pack(&buf, []string{file}); err != nil {
@@ -49,8 +49,8 @@ func TestPackUnpackSingleFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("读取解包结果: %v", err)
 	}
-	if string(got) != "hello copysync" {
-		t.Errorf("内容 = %q，期望 %q", got, "hello copysync")
+	if string(got) != "hello pasteferry" {
+		t.Errorf("内容 = %q，期望 %q", got, "hello pasteferry")
 	}
 }
 

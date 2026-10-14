@@ -71,7 +71,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
       final report = await AppScope.read(context).exportDiagnostics(logLines: 1000);
       final now = DateTime.now();
       String two(int n) => n.toString().padLeft(2, '0');
-      final name = 'CopySync-diagnostics-${now.year}${two(now.month)}${two(now.day)}'
+      final name = 'PasteFerry-diagnostics-${now.year}${two(now.month)}${two(now.day)}'
           '-${two(now.hour)}${two(now.minute)}.txt';
       final file = File('${downloadsDir()}${Platform.pathSeparator}$name');
       await file.parent.create(recursive: true);

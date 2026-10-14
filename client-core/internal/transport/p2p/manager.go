@@ -12,7 +12,7 @@ import (
 	"github.com/pion/ice/v4"
 	"github.com/pion/webrtc/v4"
 
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // Manager 管理与所有已配对设备的 P2P 连接。

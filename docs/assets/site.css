@@ -1,4 +1,4 @@
-/* CopySync 官网。由 tools/site/build.py 生成的页面共用这一份样式。
+/* PasteFerry 官网。由 tools/site/build.py 生成的页面共用这一份样式。
  *
  * 整页一种深色：石墨底，系统蓝只给按钮、链接、直连的线和「被复制的那张纸」。
  * 区块之间靠留白分开，不再交替换底色。首屏的复制动画是整页唯一的动画。
@@ -160,21 +160,6 @@ caption.skip {
   justify-content: space-between;
   height: 3.5rem;
   gap: 1rem;
-}
-
-/* 顶栏下的改名说明：2026-10 从 CopySync 改名，应用改名发版后去掉 */
-.renamed {
-  margin: 0;
-  padding: 0.45rem 0;
-  border-bottom: 1px solid var(--rule);
-  background: var(--surface);
-  color: var(--dim);
-  font-size: 0.8125rem;
-  line-height: 1.5;
-}
-
-.renamed .wrap {
-  display: block;
 }
 
 .brand {
@@ -964,7 +949,7 @@ td {
   color: var(--ink-2);
 }
 
-/* 对比表：CopySync 这一列有一道浅蓝底 */
+/* 对比表：PasteFerry 这一列有一道浅蓝底 */
 .compare {
   min-width: 40rem;
 }

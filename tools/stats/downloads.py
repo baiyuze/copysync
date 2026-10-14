@@ -4,7 +4,7 @@
     python3 tools/stats/downloads.py --record   同时记一份快照，并显示与上次、7 天前相比新增了多少
 
 数据来自 GitHub 的 Release 接口（每个文件的 download_count），只有累计值，没有按天的明细，
-所以想看趋势就要定期记快照。快照默认存在 ~/.copysync-stats/downloads.jsonl，不进仓库。
+所以想看趋势就要定期记快照。快照默认存在 ~/.pasteferry-stats/downloads.jsonl，不进仓库。
 官网的下载按钮链接的就是这些文件，所以从官网下载的都算在里面；测试时自己下载的也算。
 
 只用 Python 标准库。直连 api.github.com 不通时，设置 HTTPS_PROXY 即可。
@@ -18,19 +18,22 @@ import urllib.request
 from datetime import datetime, timedelta
 from pathlib import Path
 
-REPO = "baiyuze/copysync"
-DEFAULT_LOG = Path.home() / ".copysync-stats" / "downloads.jsonl"
+REPO = "baiyuze/pasteferry"
+DEFAULT_LOG = Path.home() / ".pasteferry-stats" / "downloads.jsonl"
 
-# 文件名 → 类别。1.0.0 的文件名带版本号，后来的不带，两种都要认
+# 文件名 → 类别。1.0.0 的文件名带版本号，后来的不带，两种都要认；
+# 2.0.0 之前产品叫 CopySync，旧版本的文件名还是 CopySync-*、copysync-server-*，一并算上
 # 1.6.0 起 Mac 分 Apple 芯片、Intel 与通用三个 DMG，合在一起算；Linux 的 .deb 与 tar.gz 也合在一起
+APP = r"(PasteFerry|CopySync)"
+SERVER = r"(pasteferry|copysync)-server"
 CATEGORIES = [
-    ("Mac 客户端", re.compile(r"^CopySync.*\.dmg$")),
-    ("Windows 安装包", re.compile(r"^CopySync-Setup\.exe$")),
-    ("Windows 便携版", re.compile(r"^CopySync-windows-x64\.zip$")),
-    ("Linux 客户端", re.compile(r"^CopySync-linux-(amd64|arm64)\.(deb|tar\.gz)$")),
-    ("服务器 Linux", re.compile(r"^copysync-server.*-linux-(amd64|arm64)\.tar\.gz$")),
-    ("服务器 macOS", re.compile(r"^copysync-server.*-macos\.tar\.gz$")),
-    ("服务器 Windows", re.compile(r"^copysync-server.*-windows-amd64\.zip$")),
+    ("Mac 客户端", re.compile(rf"^{APP}.*\.dmg$")),
+    ("Windows 安装包", re.compile(rf"^{APP}-Setup\.exe$")),
+    ("Windows 便携版", re.compile(rf"^{APP}-windows-x64\.zip$")),
+    ("Linux 客户端", re.compile(rf"^{APP}-linux-(amd64|arm64)\.(deb|tar\.gz)$")),
+    ("服务器 Linux", re.compile(rf"^{SERVER}.*-linux-(amd64|arm64)\.tar\.gz$")),
+    ("服务器 macOS", re.compile(rf"^{SERVER}.*-macos\.tar\.gz$")),
+    ("服务器 Windows", re.compile(rf"^{SERVER}.*-windows-amd64\.zip$")),
 ]
 NAMES = [name for name, _ in CATEGORIES]
 CLIENTS = NAMES[:4]
@@ -48,7 +51,7 @@ def fetch() -> list[dict]:
     while True:
         req = urllib.request.Request(
             f"https://api.github.com/repos/{REPO}/releases?per_page=100&page={page}",
-            headers={"Accept": "application/vnd.github+json", "User-Agent": "copysync-stats"})
+            headers={"Accept": "application/vnd.github+json", "User-Agent": "pasteferry-stats"})
         with urllib.request.urlopen(req, timeout=30) as resp:
             batch = json.load(resp)
         releases += batch
@@ -99,7 +102,7 @@ def diff(now: dict, before: dict) -> dict:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="统计 CopySync 各版本的下载次数")
+    ap = argparse.ArgumentParser(description="统计 PasteFerry 各版本的下载次数")
     ap.add_argument("--record", action="store_true", help="记录一份快照，并显示新增")
     ap.add_argument("--log", type=Path, default=DEFAULT_LOG, help=f"快照文件（默认 {DEFAULT_LOG}）")
     args = ap.parse_args()
@@ -113,7 +116,7 @@ def main() -> None:
     totals = by_category(counts)
     clients = sum(totals[k] for k in CLIENTS)
     servers = sum(totals[k] for k in NAMES if k not in CLIENTS)
-    print(f"CopySync 下载统计，{now:%Y-%m-%d %H:%M}（GitHub Release 累计）\n")
+    print(f"PasteFerry 下载统计，{now:%Y-%m-%d %H:%M}（GitHub Release 累计）\n")
     print(table(["类别", "下载次数"], [[k, str(totals[k])] for k in NAMES]
                 + [["客户端合计", str(clients)], ["服务器合计", str(servers)]]))
 

@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get appName => 'PasteFerry';
+
+  @override
   String get navHistory => 'History';
 
   @override
@@ -84,7 +87,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String errAutostart(String detail) {
-    return 'Couldn\'t set CopySync to start at login: $detail';
+    return 'Couldn\'t set PasteFerry to start at login: $detail';
   }
 
   @override
@@ -262,18 +265,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyCleared => 'History cleared';
 
   @override
-  String get permDeniedTitle => 'CopySync can\'t read the clipboard';
+  String get permDeniedTitle => 'PasteFerry can\'t read the clipboard';
 
   @override
-  String get permAskTitle => 'Allow CopySync to read the clipboard';
+  String get permAskTitle => 'Allow PasteFerry to read the clipboard';
 
   @override
   String get permDeniedBody =>
-      'What you copy on this Mac won\'t be synced. In System Settings, set CopySync Daemon to Allow.';
+      'What you copy on this Mac won\'t be synced. In System Settings, set PasteFerry Daemon to Allow.';
 
   @override
   String get permAskBody =>
-      'Otherwise macOS asks every time. In System Settings, set CopySync Daemon to Allow.';
+      'Otherwise macOS asks every time. In System Settings, set PasteFerry Daemon to Allow.';
 
   @override
   String get openSystemSettings => 'Open System Settings';
@@ -413,7 +416,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noDevicesBody =>
-      'Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.';
+      'Open PasteFerry on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.';
 
   @override
   String get pairedDevices => 'Paired devices';
@@ -482,7 +485,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String lanBlockedBody(String device) {
-    return 'Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, $device can\'t connect to devices on this network.';
+    return 'Turn on PasteFerry Daemon in System Settings → Privacy & Security → Local Network. Until then, $device can\'t connect to devices on this network.';
   }
 
   @override
@@ -684,7 +687,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get macLocalNetworkDesc =>
-      'macOS asks once whether CopySync may connect to devices on your network. If you declined, turn on CopySync Daemon there.';
+      'macOS asks once whether PasteFerry may connect to devices on your network. If you declined, turn on PasteFerry Daemon there.';
 
   @override
   String get allowLan => 'Windows Firewall';
@@ -770,7 +773,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backgroundFootnote =>
-      'When off, nothing syncs and CopySync doesn\'t start at login. History and pairings are kept; open the app to turn it back on.';
+      'When off, nothing syncs and PasteFerry doesn\'t start at login. History and pairings are kept; open the app to turn it back on.';
 
   @override
   String get backgroundService => 'Background service';
@@ -805,7 +808,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String disableBody(String device) {
-    return 'CopySync on $device will stop syncing and won\'t start at login. History and pairings are kept.';
+    return 'PasteFerry on $device will stop syncing and won\'t start at login. History and pairings are kept.';
   }
 
   @override
@@ -875,25 +878,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get svcExtractTitle => 'Install or extract CopySync first';
+  String get svcExtractTitle => 'Install or extract PasteFerry first';
 
   @override
   String get svcExtractBody =>
-      'CopySync is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.';
+      'PasteFerry is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.';
 
   @override
-  String get svcMoveTitle => 'Move CopySync to Applications first';
+  String get svcMoveTitle => 'Move PasteFerry to Applications first';
 
   @override
   String get svcMoveBody =>
-      'CopySync is running straight from the disk image. Drag it into Applications, eject the disk image, and open it from Applications to turn on background sync.';
+      'PasteFerry is running straight from the disk image. Drag it into Applications, eject the disk image, and open it from Applications to turn on background sync.';
 
   @override
-  String get svcStartTitle => 'Get started with CopySync';
+  String get svcStartTitle => 'Get started with PasteFerry';
 
   @override
   String get svcStartBody =>
-      'CopySync runs a small background process that notices clipboard changes and stays connected to your other devices. Once on, it starts at login and keeps syncing even with this window closed.';
+      'PasteFerry runs a small background process that notices clipboard changes and stays connected to your other devices. Once on, it starts at login and keeps syncing even with this window closed.';
 
   @override
   String get svcEnable => 'Turn on background sync';
@@ -903,11 +906,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get svcStaleBodyWin =>
-      'CopySync has moved, but starting at login still points to the old place. Turn it on again so the background process uses this copy. History and pairings are kept.';
+      'PasteFerry has moved, but starting at login still points to the old place. Turn it on again so the background process uses this copy. History and pairings are kept.';
 
   @override
   String get svcStaleBodyMac =>
-      'CopySync has moved, or was installed with an old script. Turn it on again so the background process uses this app. History and pairings are kept.';
+      'PasteFerry has moved, or was installed with an old script. Turn it on again so the background process uses this app. History and pairings are kept.';
 
   @override
   String get svcReenable => 'Turn on again';
@@ -921,11 +924,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get svcDevBodyWin =>
-      'This is a development build with no copysyncd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.';
+      'This is a development build with no pasteferryd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.';
 
   @override
   String get svcDevBodyLinux =>
-      'This is a development build with no copysyncd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.';
+      'This is a development build with no pasteferryd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.';
 
   @override
   String get svcDevBodyMac =>

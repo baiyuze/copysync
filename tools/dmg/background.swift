@@ -43,8 +43,8 @@ func draw() {
     faint.setStroke()
     arrow.stroke()
 
-    text("把 CopySync 拖到「应用程序」文件夹", size: 14, weight: .medium, color: ink, centerTop: 300)
-    text("Drag CopySync to the Applications folder", size: 12, weight: .regular, color: dim, centerTop: 322)
+    text("把 PasteFerry 拖到「应用程序」文件夹", size: 14, weight: .medium, color: ink, centerTop: 300)
+    text("Drag PasteFerry to the Applications folder", size: 12, weight: .regular, color: dim, centerTop: 322)
     text("首次打开如被拦截：系统设置 → 隐私与安全性 → 仍要打开", size: 11, weight: .regular,
          color: dim, centerTop: 366)
 }

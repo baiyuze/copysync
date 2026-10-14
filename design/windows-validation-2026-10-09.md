@@ -42,20 +42,20 @@
 
 `readImage` 固定先请求 `CF_DIBV5`。当 Windows 从普通 `CF_DIB` / `CF_BITMAP` 自动合成该格式时，实测在 124 字节头部之后仍留有 12 字节颜色掩码；读取方把它当成像素，图片整体错位。
 
-复现：用 Windows Forms 把 16×16 彩色位图放入系统剪贴板，通过正式安装的 daemon 传至 Mac 测试实例。源图 `(0,0)` 为 `{0,0,0,255}`，收到 `{221,17,112,255}`。Windows 原生读取该源图像素正确，证明问题位于 CopySync 的格式选择。原有 PNG 往返测试绕过了此路径。
+复现：用 Windows Forms 把 16×16 彩色位图放入系统剪贴板，通过正式安装的 daemon 传至 Mac 测试实例。源图 `(0,0)` 为 `{0,0,0,255}`，收到 `{221,17,112,255}`。Windows 原生读取该源图像素正确，证明问题位于隔空贴的格式选择。原有 PNG 往返测试绕过了此路径。
 
 修复：PNG 仍优先；其余位图遵循 `EnumClipboardFormats` 的顺序，优先读取原生格式，再尝试系统合成格式。保留原生 DIBV5 的透明度，不猜测内存偏移。
 
 新增 `TestWindowsNativeBitmap`，覆盖无 PNG 后备的普通 DIB 和带透明度的原生 DIBV5。虚拟机上旧实现的 DIB 子用例失败，新实现两个子用例均通过，随后原生 Windows Forms 位图的端到端逐像素比较通过。
 
-代码检查：Mac 的 `go test ./internal/clipboard ./internal/pack`，Windows 目标的 `go vet ./internal/clipboard ./cmd/copysyncd`，以及虚拟机内完整 Windows 剪贴板测试全部通过。
+代码检查：Mac 的 `go test ./internal/clipboard ./internal/pack`，Windows 目标的 `go vet ./internal/clipboard ./cmd/pasteferryd`，以及虚拟机内完整 Windows 剪贴板测试全部通过。
 
 ## 结束状态
 
 - Windows 已恢复用户原有的数据、身份、配对关系和自启项，正在运行修复后的客户端，并与原 Mac 直连。
 - Mac 原生产 daemon 的 PID 始终为 10576，未重启或改动；Mac 测试 daemon 和测试信令服务已退出。
-- Parallels 共享剪贴板保持关闭，避免与 CopySync 同时转发内容。此设置需由用户手动调整。
-- 测试数据归档保留在虚拟机 `C:\CopySyncValidation-20261009\test-data-completed`，可用于复现；原用户数据已移回正常目录。
+- Parallels 共享剪贴板保持关闭，避免与隔空贴同时转发内容。此设置需由用户手动调整。
+- 测试数据归档保留在虚拟机 `C:\PasteFerryValidation-20261009\test-data-completed`，可用于复现；原用户数据已移回正常目录。
 - 修改留在 `windows` 分支工作区，未提交、推送或发布。
 
 ## 安装包与证据
@@ -64,6 +64,6 @@
 
 - 修复安装包 SHA-256：`8e9d690dd16675330e2b6f2c6fdb1a1e99387c650851b1431e36f0fa62b782a1`
 - 修复便携包 SHA-256：`479235d1cc0ecd35114a263a33572db6d9fe02ef721d4eb794e82c57a636deee`
-- 本机证据目录：`~/Library/Caches/copysync-validation-20261009/`，含安装日志、回归测试前后日志、同步断言、图片及脚本。
+- 本机证据目录：`~/Library/Caches/pasteferry-validation-20261009/`，含安装日志、回归测试前后日志、同步断言、图片及脚本。
 
 本轮 Mac 端使用文件剪贴板测试适配器；Windows 端使用真实系统剪贴板。实际 Mac 系统剪贴板交互和公网中转不属于本轮测试范围。

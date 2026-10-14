@@ -13,7 +13,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/baiyuze/copysync/proto/deviceid"
+	"github.com/baiyuze/pasteferry/proto/deviceid"
 )
 
 type Identity struct {

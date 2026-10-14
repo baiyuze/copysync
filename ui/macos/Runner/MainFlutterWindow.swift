@@ -16,7 +16,7 @@ class MainFlutterWindow: NSWindow {
     self.setContentSize(NSSize(width: 960, height: 640))
     self.center()
     // 记住用户调整过的窗口大小与位置
-    self.setFrameAutosaveName("CopySyncMainWindow")
+    self.setFrameAutosaveName("PasteFerryMainWindow")
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 

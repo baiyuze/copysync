@@ -1,6 +1,6 @@
 // Spike B — NSFilePromiseProvider 可用性与兼容性验证
 //
-// 目的：验证 CopySync 的核心机制是否成立——
+// 目的：验证 PasteFerry 的核心机制是否成立——
 //   1. 往剪贴板写 file promise 后，目标 App 粘贴时能否触发回调？
 //      （这是「感知到对方按下 Cmd+V」的唯一途径）
 //   2. 回调里能否长时间阻塞（模拟跨网络拉取）而不被系统超时杀掉？
@@ -55,7 +55,7 @@ static void say(const char *fmt, ...) {
 
 // ★ 这才是真正的「用户按下了 Cmd+V」信号。
 // 系统给我们一个目标 URL，我们在这里把数据写进去。
-// CopySync 正式实现中，这里会发出 PullRequest 并把网络流直接写入 url。
+// PasteFerry 正式实现中，这里会发出 PullRequest 并把网络流直接写入 url。
 - (void)filePromiseProvider:(NSFilePromiseProvider *)provider
           writePromiseToURL:(NSURL *)url
           completionHandler:(void (^)(NSError *))done {
@@ -81,7 +81,7 @@ static void say(const char *fmt, ...) {
 
     NSError *err = nil;
     NSString *body = [NSString stringWithFormat:
-        @"CopySync spike B\n写入时刻: %@\n阻塞时长: %.1f 秒\n用户粘贴延迟: %.1f 秒\n",
+        @"PasteFerry spike B\n写入时刻: %@\n阻塞时长: %.1f 秒\n用户粘贴延迟: %.1f 秒\n",
         NSDate.date, gFakeLatency, sincePaste];
 
     if (isFolder) {
@@ -142,13 +142,13 @@ static void say(const char *fmt, ...) {
     fprintf(stderr, "\n");
 
     // 此刻才落盘。真实实现中这里是 DataChannel → zstd → tar 的流式写入。
-    NSString *dir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"copysync-lazy"];
+    NSString *dir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"pasteferry-lazy"];
     [NSFileManager.defaultManager createDirectoryAtPath:dir
                             withIntermediateDirectories:YES attributes:nil error:nil];
-    NSString *path = [dir stringByAppendingPathComponent:@"copysync-lazy.txt"];
+    NSString *path = [dir stringByAppendingPathComponent:@"pasteferry-lazy.txt"];
     NSError *err = nil;
     [[NSString stringWithFormat:
-        @"CopySync — 延迟粘贴验证\n落盘时刻: %@\n阻塞时长: %.1f 秒\n粘贴延迟: %.1f 秒\n",
+        @"PasteFerry — 延迟粘贴验证\n落盘时刻: %@\n阻塞时长: %.1f 秒\n粘贴延迟: %.1f 秒\n",
         NSDate.date, gFakeLatency, since]
      writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&err];
 
@@ -213,7 +213,7 @@ static void writeToPasteboard(NSArray *objects, const char *what) {
 // 对照组：传统的真实文件 URL。用来区分「App 不支持 promise」和「App 完全不能粘文件」。
 static void writeRealFile(void) {
     NSURL *dir = [NSURL fileURLWithPath:NSTemporaryDirectory()];
-    NSURL *f = [dir URLByAppendingPathComponent:@"copysync-real-file.txt"];
+    NSURL *f = [dir URLByAppendingPathComponent:@"pasteferry-real-file.txt"];
     [@"这是一个真实存在的文件（对照组）\n" writeToURL:f atomically:YES
                                         encoding:NSUTF8StringEncoding error:nil];
     writeToPasteboard(@[f], "对照组 — 传统 file-url（文件已真实存在）");
@@ -226,13 +226,13 @@ static void writeRealFile(void) {
 // 返回 NO 表示命令无法识别。
 static BOOL doCommand(NSString *cmd) {
     if ([cmd isEqualToString:@"1"] || [cmd isEqualToString:@"single"]) {
-        writeToPasteboard(@[makeProvider(@"copysync-single.txt", NO)], "单个文件 promise");
+        writeToPasteboard(@[makeProvider(@"pasteferry-single.txt", NO)], "单个文件 promise");
     } else if ([cmd isEqualToString:@"2"] || [cmd isEqualToString:@"folder"]) {
-        writeToPasteboard(@[makeProvider(@"copysync-folder", YES)], "文件夹 promise");
+        writeToPasteboard(@[makeProvider(@"pasteferry-folder", YES)], "文件夹 promise");
     } else if ([cmd isEqualToString:@"3"] || [cmd isEqualToString:@"multi"]) {
-        writeToPasteboard(@[makeProvider(@"copysync-a.txt", NO),
-                            makeProvider(@"copysync-b.txt", NO),
-                            makeProvider(@"copysync-c.txt", NO)],
+        writeToPasteboard(@[makeProvider(@"pasteferry-a.txt", NO),
+                            makeProvider(@"pasteferry-b.txt", NO),
+                            makeProvider(@"pasteferry-c.txt", NO)],
                           "多文件 promise（3 个）");
     } else if ([cmd isEqualToString:@"4"] || [cmd isEqualToString:@"real"]) {
         writeRealFile();
@@ -264,7 +264,7 @@ int main(int argc, const char *argv[]) {
         gDelegate = SpikeDelegate.new;
         gLazyOwner = LazyFileOwner.new;   // 必须保持存活，否则系统回调时 owner 已释放
         gWorkQueue = NSOperationQueue.new;
-        gWorkQueue.name = @"copysync.spike.promise";
+        gWorkQueue.name = @"pasteferry.spike.promise";
         gWorkQueue.maxConcurrentOperationCount = 4;
 
         NSApplication *app = NSApplication.sharedApplication;

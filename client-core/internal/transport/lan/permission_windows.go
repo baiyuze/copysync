@@ -28,7 +28,7 @@ func RequestPermission() error {
 	}
 	script := fmt.Sprintf(
 		`/c netsh advfirewall firewall delete rule name=all dir=in program="%[1]s" & `+
-			`netsh advfirewall firewall add rule name="CopySync" dir=in action=allow program="%[1]s" protocol=UDP profile=any`,
+			`netsh advfirewall firewall add rule name="PasteFerry" dir=in action=allow program="%[1]s" protocol=UDP profile=any`,
 		exe)
 	verb, _ := windows.UTF16PtrFromString("runas")
 	file, _ := windows.UTF16PtrFromString("cmd.exe")

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:copysync_ui/app_state.dart';
-import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
-import 'package:copysync_ui/main.dart';
-import 'package:copysync_ui/widgets/feedback_dialog.dart';
+import 'package:pasteferry_ui/app_state.dart';
+import 'package:pasteferry_ui/gen/pasteferry/v1/daemon.pb.dart';
+import 'package:pasteferry_ui/main.dart';
+import 'package:pasteferry_ui/widgets/feedback_dialog.dart';
 
 /// 不连后台服务：报告与详细日志的开关都由测试给出。
 /// 「在 GitHub 上提问题」与「保存为文件」不在测试里按：一个会打开浏览器，一个会写进真的「下载」文件夹。
@@ -19,7 +19,7 @@ class _FeedbackState extends AppState {
   Future<String> exportDiagnostics({int logLines = 200}) async {
     exports++;
     if (failWith != null) throw failWith!;
-    return 'CopySync diagnostics report\n  Background service     1.7.0\n#$exports';
+    return 'PasteFerry diagnostics report\n  Background service     1.7.0\n#$exports';
   }
 
   @override
@@ -42,7 +42,7 @@ Future<void> _open(WidgetTester tester, AppState state) async {
   tester.view.physicalSize = const Size(1100, 800);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  await tester.pumpWidget(CopySyncApp(state: state));
+  await tester.pumpWidget(PasteFerryApp(state: state));
   showFeedbackDialog(tester.element(find.byType(Shell)));
   await tester.pumpAndSettle();
 }
@@ -58,7 +58,7 @@ void main() {
 
     final state = _seed();
     await _open(tester, state);
-    expect(find.textContaining('CopySync diagnostics report'), findsOneWidget);
+    expect(find.textContaining('PasteFerry diagnostics report'), findsOneWidget);
 
     await tester.tap(find.text('Copy report'));
     await tester.pumpAndSettle();
@@ -94,6 +94,6 @@ void main() {
     state.failWith = null;
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('CopySync diagnostics report'), findsOneWidget);
+    expect(find.textContaining('PasteFerry diagnostics report'), findsOneWidget);
   });
 }

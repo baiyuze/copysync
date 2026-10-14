@@ -86,14 +86,14 @@ func TestLinuxReadText(t *testing.T) {
 func TestLinuxWriteText(t *testing.T) {
 	requireX(t)
 	before := x.count.Load()
-	if err := New().Write(Content{Kind: KindText, Text: "从 CopySync 写入"}); err != nil {
+	if err := New().Write(Content{Kind: KindText, Text: "从 PasteFerry 写入"}); err != nil {
 		t.Fatal(err)
 	}
 	snap, err := New().Peek()
 	if err != nil || snap.ChangeCount <= before || snap.Kind != KindText {
 		t.Fatalf("写入后 Peek 应当看到新的计数: %+v %v（之前 %d）", snap, err, before)
 	}
-	if got := string(xclipOut(t, "UTF8_STRING")); got != "从 CopySync 写入" {
+	if got := string(xclipOut(t, "UTF8_STRING")); got != "从 PasteFerry 写入" {
 		t.Fatalf("别的程序读到 %q", got)
 	}
 	targets := string(xclipOut(t, "TARGETS"))
@@ -313,11 +313,11 @@ func TestLinuxWaylandBridge(t *testing.T) {
 	}
 
 	// X11 → Wayland
-	if err := New().Write(Content{Kind: KindText, Text: "从 CopySync 写入，Wayland 程序来粘贴"}); err != nil {
+	if err := New().Write(Content{Kind: KindText, Text: "从 PasteFerry 写入，Wayland 程序来粘贴"}); err != nil {
 		t.Fatal(err)
 	}
 	time.Sleep(300 * time.Millisecond) // 混成器接管选区需要一点时间
-	if got := string(wlPaste("text/plain;charset=utf-8")); got != "从 CopySync 写入，Wayland 程序来粘贴" {
+	if got := string(wlPaste("text/plain;charset=utf-8")); got != "从 PasteFerry 写入，Wayland 程序来粘贴" {
 		t.Fatalf("Wayland 程序粘贴到 %q", got)
 	}
 	if err := New().Write(Content{Kind: KindImage, Image: img}); err != nil {

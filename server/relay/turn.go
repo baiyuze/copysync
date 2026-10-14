@@ -55,7 +55,7 @@ func New(opts Options) (*Server, error) {
 		opts.ListenIP = "0.0.0.0"
 	}
 	if opts.Realm == "" {
-		opts.Realm = "copysync"
+		opts.Realm = "pasteferry"
 	}
 	if opts.CredentialTTL == 0 {
 		opts.CredentialTTL = 12 * time.Hour

@@ -51,7 +51,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">隔空贴原名 CopySync。应用和安装包里暂时还叫 CopySync，下个版本会改过来。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
@@ -167,15 +166,15 @@
               <li>逐行运行，最后一行换成你的公网 IP：<span class="aside">ARM 服务器把 <code>amd64</code> 换成 <code>arm64</code>。</span>
                 <div class="code">
                   <button class="copy" type="button" data-done="已复制">复制</button>
-<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz
+cd pasteferry-server-linux-amd64
 sudo ./install.sh 203.0.113.10</code></pre>
                 </div></li>
               <li>最后显示的 <code>ws://203.0.113.10:8787/signal</code> 就是客户端要填的地址。</li>
             </ol>
             <ul class="points">
-              <li><strong>注册为 systemd 服务，</strong>开机自动运行，配置在 <code>/etc/copysync/server.env</code>。</li>
+              <li><strong>注册为 systemd 服务，</strong>开机自动运行，配置在 <code>/etc/pasteferry/server.env</code>。</li>
               <li><strong>升级：</strong>下载新版本，解压后再运行 <code>sudo ./install.sh</code>，原来的配置保留。</li>
               <li><strong>也可以用 Docker：</strong>见<a href="https://github.com/baiyuze/pasteferry/blob/main/server/deploy/README.md">服务器部署说明</a>。</li>
             </ul>
@@ -186,18 +185,18 @@ sudo ./install.sh 203.0.113.10</code></pre>
 <pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 203.0.113.10
 <span class="t-step">▶ 安装二进制到 /usr/local/bin</span>
 <span class="t-step">▶ 写入 systemd 单元</span>
-<span class="t-step">▶ 生成配置 /etc/copysync/server.env（中转地址 203.0.113.10）</span>
+<span class="t-step">▶ 生成配置 /etc/pasteferry/server.env（中转地址 203.0.113.10）</span>
 <span class="t-step">▶ 启动</span>
   ✓ 已启动
 
-安装完成：copysync-server 1.7.0
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+安装完成：pasteferry-server 1.7.0
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     <span class="t-url">ws://203.0.113.10:8787/signal</span>
 
-  配置   /etc/copysync/server.env
-  日志   journalctl -u copysync-server -f
-  重启   systemctl restart copysync-server
+  配置   /etc/pasteferry/server.env
+  日志   journalctl -u pasteferry-server -f
+  重启   systemctl restart pasteferry-server
   卸载   sudo ./install.sh uninstall
 
 防火墙需放行：TCP 8787（信令）、UDP 3478（STUN 与 TURN）、UDP 32768-60999（中转端口，系统随机分配）</pre>
@@ -237,10 +236,10 @@ sudo ./install.sh 203.0.113.10</code></pre>
                 <table class="manage">
                   <caption>以后会用到的</caption>
                   <tbody>
-                  <tr><th scope="row">状态</th><td><code>systemctl status copysync-server</code></td></tr>
-                  <tr><th scope="row">日志</th><td><code>journalctl -u copysync-server -f</code></td></tr>
-                  <tr><th scope="row">重启</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
-                  <tr><th scope="row">配置</th><td><code>/etc/copysync/server.env</code>，改完重启服务</td></tr>
+                  <tr><th scope="row">状态</th><td><code>systemctl status pasteferry-server</code></td></tr>
+                  <tr><th scope="row">日志</th><td><code>journalctl -u pasteferry-server -f</code></td></tr>
+                  <tr><th scope="row">重启</th><td><code>sudo systemctl restart pasteferry-server</code></td></tr>
+                  <tr><th scope="row">配置</th><td><code>/etc/pasteferry/server.env</code>，改完重启服务</td></tr>
                   <tr><th scope="row">升级</th><td>下载新版本，解压后再运行 <code>sudo ./install.sh</code>，原来的配置保留</td></tr>
                   <tr><th scope="row">卸载</th><td><code>sudo ./install.sh uninstall</code></td></tr>
                   </tbody>

@@ -6,7 +6,7 @@
 //	natlab lanpeer -seed a -peer-seed b [-mdns] [-addr ip:port]
 //
 // infra 扮演「互联网」上的服务：信令转发、若干台 STUN 服务器、一台 TURN 中转。
-// peer 用的就是 CopySync 真实的 P2P 连接代码，只把信令换成了这里的 HTTP 转发。
+// peer 用的就是 PasteFerry 真实的 P2P 连接代码，只把信令换成了这里的 HTTP 转发。
 // lanpeer 不用服务器，信令与发现走真实的局域网通道（transport/lan）。
 package main
 
@@ -29,9 +29,9 @@ import (
 	"github.com/pion/stun/v4"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
-	turnrelay "github.com/baiyuze/copysync/server/relay"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
+	turnrelay "github.com/baiyuze/pasteferry/server/relay"
 )
 
 const turnSecret = "natlab"

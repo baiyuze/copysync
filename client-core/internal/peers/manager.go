@@ -18,16 +18,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	"github.com/baiyuze/copysync/client-core/internal/identity"
-	"github.com/baiyuze/copysync/client-core/internal/store"
-	"github.com/baiyuze/copysync/client-core/internal/transport/lan"
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
-	"github.com/baiyuze/copysync/client-core/internal/transport/signaling"
-	"github.com/baiyuze/copysync/client-core/internal/transport/signed"
-	"github.com/baiyuze/copysync/proto/deviceid"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
-	"github.com/baiyuze/copysync/proto/pairingcode"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/lan"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/signaling"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/signed"
+	"github.com/baiyuze/pasteferry/proto/deviceid"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
+	"github.com/baiyuze/pasteferry/proto/pairingcode"
 )
 
 // pendingPair 是一次等待用户核对指纹的配对。

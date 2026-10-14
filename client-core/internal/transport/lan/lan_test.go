@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/identity"
-	"github.com/baiyuze/copysync/client-core/internal/transport/signed"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/signed"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // node 是测试里的一台设备：一个 Transport 加上它认识的公钥和收到的东西。

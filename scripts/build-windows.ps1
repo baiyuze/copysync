@@ -1,8 +1,8 @@
-﻿# 在 Windows 上构建 CopySync，产物放在 dist\windows\：
+﻿# 在 Windows 上构建 PasteFerry，产物放在 dist\windows\：
 #
-#   CopySync\                    可以直接运行的目录：界面、后台服务、命令行工具
-#   CopySync-Setup.exe           安装程序（需要 Inno Setup 6）
-#   CopySync-windows-x64.zip     便携版
+#   PasteFerry\                    可以直接运行的目录：界面、后台服务、命令行工具
+#   PasteFerry-Setup.exe           安装程序（需要 Inno Setup 6）
+#   PasteFerry-windows-x64.zip     便携版
 #
 #   powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1 [-Version 1.3.2]
 #
@@ -22,7 +22,7 @@ if (-not $Version) {
 }
 
 $out = Join-Path $root 'dist\windows'
-$app = Join-Path $out 'CopySync'
+$app = Join-Path $out 'PasteFerry'
 if (Test-Path $out) { Remove-Item -Recurse -Force $out }
 New-Item -ItemType Directory -Force $app | Out-Null
 
@@ -36,8 +36,8 @@ $env:CGO_ENABLED = '0'; $env:GOOS = 'windows'; $env:GOARCH = 'amd64'
 Push-Location client-core
 try {
     # -H=windowsgui：后台服务没有控制台窗口，开机自启时不会闪一下黑框
-    Invoke-Checked { go build -trimpath -ldflags "-s -w -H=windowsgui -X main.version=$Version" -o "$app\copysyncd.exe" ./cmd/copysyncd } 'go build copysyncd'
-    Invoke-Checked { go build -trimpath -ldflags '-s -w' -o "$app\copysync-cli.exe" ./cmd/copysync-cli } 'go build copysync-cli'
+    Invoke-Checked { go build -trimpath -ldflags "-s -w -H=windowsgui -X main.version=$Version" -o "$app\pasteferryd.exe" ./cmd/pasteferryd } 'go build pasteferryd'
+    Invoke-Checked { go build -trimpath -ldflags '-s -w' -o "$app\pasteferry-cli.exe" ./cmd/pasteferry-cli } 'go build pasteferry-cli'
 } finally {
     Pop-Location
     Remove-Item Env:CGO_ENABLED, Env:GOOS, Env:GOARCH
@@ -67,7 +67,7 @@ foreach ($dll in 'msvcp140.dll', 'vcruntime140.dll', 'vcruntime140_1.dll') {
 Write-Host "  $($crt.FullName)"
 
 Write-Host '▶ 打包'
-Compress-Archive -Path $app -DestinationPath (Join-Path $out 'CopySync-windows-x64.zip')
+Compress-Archive -Path $app -DestinationPath (Join-Path $out 'PasteFerry-windows-x64.zip')
 
 $iscc = Get-Command iscc.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
 if (-not $iscc) {
@@ -78,7 +78,7 @@ if (-not $iscc) {
     ) | Where-Object { Test-Path $_ } | Select-Object -First 1
 }
 if ($iscc) {
-    Invoke-Checked { & $iscc /Qp "/DAppVersion=$Version" "/DSourceDir=$app" "/DOutputDir=$out" tools\installer\copysync.iss } 'Inno Setup'
+    Invoke-Checked { & $iscc /Qp "/DAppVersion=$Version" "/DSourceDir=$app" "/DOutputDir=$out" tools\installer\pasteferry.iss } 'Inno Setup'
 } else {
     Write-Warning '没有找到 Inno Setup 6，跳过安装程序，只出便携版 zip'
 }

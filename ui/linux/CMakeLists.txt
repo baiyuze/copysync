@@ -4,11 +4,11 @@ project(runner LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "copysync")
+set(BINARY_NAME "pasteferry")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
-# 与 Mac 的包名一致。桌面据此把运行中的窗口与 com.copysync.app.desktop 对应起来（Dock 里的图标、名字）
-set(APPLICATION_ID "com.copysync.app")
+# 与 Mac 的包名一致。桌面据此把运行中的窗口与 com.pasteferry.app.desktop 对应起来（Dock 里的图标、名字）
+set(APPLICATION_ID "com.pasteferry.app")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

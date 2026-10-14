@@ -9,7 +9,7 @@
 namespace {
 
 // 窗口的位置与大小存在这里，下次打开时恢复，相当于 Mac 上的 setFrameAutosaveName
-constexpr wchar_t kSettingsKey[] = L"Software\\CopySync";
+constexpr wchar_t kSettingsKey[] = L"Software\\PasteFerry";
 constexpr wchar_t kPlacementValue[] = L"WindowPlacement";
 
 // 窗口最小尺寸（逻辑像素），与 Mac 版一致

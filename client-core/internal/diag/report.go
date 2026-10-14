@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // Input 是生成报告要用的全部信息，由后台服务收集好传进来。
@@ -44,7 +44,7 @@ func Build(in Input) string {
 	line := func(format string, a ...any) { fmt.Fprintf(&b, format+"\n", a...) }
 	row := func(label string, value any) { line("  %-22s %v", label, value) }
 
-	line("CopySync diagnostics report")
+	line("PasteFerry diagnostics report")
 	line("Names, server address, public IP addresses, the user folder and file names are replaced.")
 	line("")
 	row("Generated", in.Now.Format("2006-01-02 15:04:05 -0700"))
@@ -117,7 +117,7 @@ func Build(in Input) string {
 		}
 		if lan := n.GetLan(); lan != nil && lan.GetEnabled() {
 			row("LAN port", fmt.Sprintf("UDP %d, addresses %s", lan.GetPort(), strings.Join(lan.GetLocalAddresses(), " ")))
-			row("Found on LAN", fmt.Sprintf("%d CopySync instances", lan.GetDiscovered()))
+			row("Found on LAN", fmt.Sprintf("%d PasteFerry instances", lan.GetDiscovered()))
 			for _, p := range lan.GetPeers() {
 				state := "not found"
 				if p.GetReachable() {

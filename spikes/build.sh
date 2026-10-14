@@ -45,10 +45,10 @@ PLIST
 }
 
 echo "编译中…"
-build_app SpikeA privacy/main.m com.copysync.spike.privacy
-build_app SpikeB promise/main.m  com.copysync.spike.promise
-build_app SpikeC writer/main.m   com.copysync.spike.writer
-build_app SpikeD receiver/main.m com.copysync.spike.receiver
+build_app SpikeA privacy/main.m com.pasteferry.spike.privacy
+build_app SpikeB promise/main.m  com.pasteferry.spike.promise
+build_app SpikeC writer/main.m   com.pasteferry.spike.writer
+build_app SpikeD receiver/main.m com.pasteferry.spike.receiver
 
 cat <<EOF
 

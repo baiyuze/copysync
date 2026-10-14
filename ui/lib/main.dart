@@ -14,19 +14,19 @@ import 'widgets/common.dart';
 import 'widgets/pairing_dialog.dart';
 import 'icons.dart';
 
-void main() => runApp(const CopySyncApp());
+void main() => runApp(const PasteFerryApp());
 
-class CopySyncApp extends StatefulWidget {
-  const CopySyncApp({super.key, this.state});
+class PasteFerryApp extends StatefulWidget {
+  const PasteFerryApp({super.key, this.state});
 
   /// 测试与截图用：注入预先填好数据的状态，不去连真实的后台服务。
   final AppState? state;
 
   @override
-  State<CopySyncApp> createState() => _CopySyncAppState();
+  State<PasteFerryApp> createState() => _PasteFerryAppState();
 }
 
-class _CopySyncAppState extends State<CopySyncApp> {
+class _PasteFerryAppState extends State<PasteFerryApp> {
   late final AppState _state;
 
   /// 按界面语言缓存的浅色、深色主题：Windows 上中文和日文的汉字用不同的字体
@@ -65,7 +65,7 @@ class _CopySyncAppState extends State<CopySyncApp> {
                     buildTheme(Brightness.dark, language: language),
                   ));
           return MaterialApp(
-            title: 'CopySync',
+            title: 'PasteFerry',
             debugShowCheckedModeBanner: false,
             theme: light,
             darkTheme: dark,
@@ -191,7 +191,7 @@ class _Sidebar extends StatelessWidget {
               children: [
                 const AppMark(size: 22),
                 const SizedBox(width: Insets.sm),
-                Text('CopySync', style: context.text.titleSmall),
+                Text(l.appName, style: context.text.titleSmall),
               ],
             ),
           ),

@@ -51,7 +51,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">PasteFerry used to be called CopySync. The app and the downloads keep the old name until the next version.</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
@@ -167,15 +166,15 @@
               <li>Run these lines, with your public IP on the last one:<span class="aside">On ARM, replace <code>amd64</code> with <code>arm64</code>.</span>
                 <div class="code">
                   <button class="copy" type="button" data-done="Copied">Copy</button>
-<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz
+cd pasteferry-server-linux-amd64
 sudo ./install.sh 203.0.113.10</code></pre>
                 </div></li>
               <li>The <code>ws://203.0.113.10:8787/signal</code> address at the end is what you enter in the apps.</li>
             </ol>
             <ul class="points">
-              <li><strong>Registers a systemd service</strong> that starts on boot; the config is <code>/etc/copysync/server.env</code>.</li>
+              <li><strong>Registers a systemd service</strong> that starts on boot; the config is <code>/etc/pasteferry/server.env</code>.</li>
               <li><strong>Upgrade:</strong> download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept.</li>
               <li><strong>Docker works too:</strong> see the <a href="https://github.com/baiyuze/pasteferry/blob/main/server/deploy/README.md">server deployment guide</a>.</li>
             </ul>
@@ -186,18 +185,18 @@ sudo ./install.sh 203.0.113.10</code></pre>
 <pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 203.0.113.10
 <span class="t-step">▶ Installing the binary to /usr/local/bin</span>
 <span class="t-step">▶ Writing the systemd unit</span>
-<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 203.0.113.10)</span>
+<span class="t-step">▶ Writing /etc/pasteferry/server.env (relay address 203.0.113.10)</span>
 <span class="t-step">▶ Starting</span>
   ✓ Running
 
-Installed: copysync-server 1.7.0
-In CopySync on each computer, set Settings → Signaling server to:
+Installed: pasteferry-server 1.7.0
+In PasteFerry on each computer, set Settings → Signaling server to:
 
     <span class="t-url">ws://203.0.113.10:8787/signal</span>
 
-  Config     /etc/copysync/server.env
-  Logs       journalctl -u copysync-server -f
-  Restart    systemctl restart copysync-server
+  Config     /etc/pasteferry/server.env
+  Logs       journalctl -u pasteferry-server -f
+  Restart    systemctl restart pasteferry-server
   Uninstall  sudo ./install.sh uninstall
 
 Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
@@ -237,10 +236,10 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
                 <table class="manage">
                   <caption>For later</caption>
                   <tbody>
-                  <tr><th scope="row">Status</th><td><code>systemctl status copysync-server</code></td></tr>
-                  <tr><th scope="row">Logs</th><td><code>journalctl -u copysync-server -f</code></td></tr>
-                  <tr><th scope="row">Restart</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
-                  <tr><th scope="row">Config</th><td><code>/etc/copysync/server.env</code>; restart the service after editing</td></tr>
+                  <tr><th scope="row">Status</th><td><code>systemctl status pasteferry-server</code></td></tr>
+                  <tr><th scope="row">Logs</th><td><code>journalctl -u pasteferry-server -f</code></td></tr>
+                  <tr><th scope="row">Restart</th><td><code>sudo systemctl restart pasteferry-server</code></td></tr>
+                  <tr><th scope="row">Config</th><td><code>/etc/pasteferry/server.env</code>; restart the service after editing</td></tr>
                   <tr><th scope="row">Upgrade</th><td>Download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept</td></tr>
                   <tr><th scope="row">Uninstall</th><td><code>sudo ./install.sh uninstall</code></td></tr>
                   </tbody>

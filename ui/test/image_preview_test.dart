@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:copysync_ui/app_state.dart';
-import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
-import 'package:copysync_ui/main.dart';
-import 'package:copysync_ui/widgets/image_preview_dialog.dart';
+import 'package:pasteferry_ui/app_state.dart';
+import 'package:pasteferry_ui/gen/pasteferry/v1/daemon.pb.dart';
+import 'package:pasteferry_ui/main.dart';
+import 'package:pasteferry_ui/widgets/image_preview_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,7 +66,7 @@ class PreviewState extends AppState {
 }
 
 Future<void> openPreview(WidgetTester tester, PreviewState state) async {
-  await tester.pumpWidget(CopySyncApp(state: state));
+  await tester.pumpWidget(PasteFerryApp(state: state));
   await tester.pump();
   await tester.tap(find.textContaining('来自 测试电脑'));
   await tester.pump(const Duration(milliseconds: 250));
@@ -217,7 +217,7 @@ void main() {
 
   for (final corrupt in [false, true]) {
     testWidgets('文件${corrupt ? "损坏" : "被清理"}时显示提示', (tester) async {
-      final dir = Directory.systemTemp.createTempSync('copysync-preview-');
+      final dir = Directory.systemTemp.createTempSync('pasteferry-preview-');
       addTearDown(() => dir.deleteSync(recursive: true));
       final file = File('${dir.path}/invalid.png');
       if (corrupt) file.writeAsStringSync('not an image');
@@ -278,7 +278,7 @@ void main() {
       ],
     );
     addTearDown(state.dispose);
-    await tester.pumpWidget(CopySyncApp(state: state));
+    await tester.pumpWidget(PasteFerryApp(state: state));
     await tester.pump();
     expect(find.text('预览'), findsNothing);
 

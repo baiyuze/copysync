@@ -4,8 +4,6 @@
 
 <h1 align="center">PasteFerry</h1>
 
-<p align="center"><sub>隔空贴 · formerly CopySync. The app and the downloads keep the old name until the next version.</sub></p>
-
 <p align="center">
   Copy on one computer, paste on the other. Mac, Windows and Linux.<br>
   Text, images, files and whole folders — across accounts and across networks.
@@ -70,9 +68,9 @@ New here? The **[quick start](https://baiyuze.github.io/pasteferry/en/start/)** 
 
 **1. Install the app** on each computer from the **[download page](https://baiyuze.github.io/pasteferry/en/download/)**:
 
-- **Mac** (macOS 13+): [Apple silicon](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-mac-apple-silicon.dmg) or [Intel](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-mac-intel.dmg); a [universal](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync.dmg) build runs on both.
-- **Windows** 10/11: [installer](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-Setup.exe) or [portable zip](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip).
-- **Linux** (X11, or Wayland with XWayland): `.deb` for Ubuntu and Debian ([x64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-amd64.deb), [ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-arm64.deb)), or `tar.gz` for other distributions ([x64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-amd64.tar.gz), [ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-arm64.tar.gz)) — extract it and run `./CopySync/install.sh` to add it to the app menu.
+- **Mac** (macOS 13+): [Apple silicon](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-mac-apple-silicon.dmg) or [Intel](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-mac-intel.dmg); a [universal](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry.dmg) build runs on both.
+- **Windows** 10/11: [installer](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-Setup.exe) or [portable zip](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip).
+- **Linux** (X11, or Wayland with XWayland): `.deb` for Ubuntu and Debian ([x64](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-linux-amd64.deb), [ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-linux-arm64.deb)), or `tar.gz` for other distributions ([x64](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-linux-amd64.tar.gz), [ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-linux-arm64.tar.gz)) — extract it and run `./PasteFerry/install.sh` to add it to the app menu.
 
 The builds aren't notarized or code-signed yet: on Mac, allow it once under **System Settings → Privacy & Security → Open Anyway**; on Windows, click **More info → Run anyway**. Then click **Turn on background sync**, and allow PasteFerry when Windows Firewall asks, or when macOS asks to find devices on your local network.
 
@@ -89,8 +87,8 @@ The builds aren't notarized or code-signed yet: on Mac, allow it once under **Sy
 On a public server:
 
 ```bash
-curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz && cd copysync-server-linux-amd64
+curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz && cd pasteferry-server-linux-amd64
 sudo ./install.sh <public IP of the server>
 ```
 

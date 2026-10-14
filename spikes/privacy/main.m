@@ -1,7 +1,7 @@
 // Spike A — macOS 剪贴板隐私机制探测
 //
 // 背景：macOS 15.4 引入了剪贴板隐私保护，目前是 developer preview（默认关闭），
-//      下一个 macOS 大版本将强制执行。CopySync 的 daemon 恰好是
+//      下一个 macOS 大版本将强制执行。PasteFerry 的 daemon 恰好是
 //      「后台程序化读取剪贴板」——完全命中被拦截的场景，必须提前验证。
 //
 // 要回答的问题：
@@ -11,7 +11,7 @@
 //   Q4. 每个阶段耗时多少？（耗时 > 1s 说明弹窗出现并等待了用户交互）
 //
 // 开启 preview 后再跑一次，即可预演未来 macOS 上的行为：
-//   defaults write com.copysync.spike.privacy EnablePasteboardPrivacyDeveloperPreview -bool yes
+//   defaults write com.pasteferry.spike.privacy EnablePasteboardPrivacyDeveloperPreview -bool yes
 
 #import <Cocoa/Cocoa.h>
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
@@ -114,10 +114,10 @@ static void probe(NSPasteboard *pb, NSInteger change) {
 
     // ── 阶段 3：detectMetadataForTypes ────────────────────────
     // Apple 官方保证「不通知用户」的元数据探测。
-    // 文档示例恰好就是 CopySync 的用例：判断文件引用的 content type。
+    // 文档示例恰好就是 PasteFerry 的用例：判断文件引用的 content type。
     // 若此处能拿到足够信息，则「分类」环节完全免提示。
     if (@available(macOS 15.4, *)) {
-        t = beginStage(3, "detectMetadataForTypes（官方保证不提示）← CopySync 依赖这个");
+        t = beginStage(3, "detectMetadataForTypes（官方保证不提示）← PasteFerry 依赖这个");
         dispatch_semaphore_t sem = dispatch_semaphore_create(0);
         [pb detectMetadataForTypes:[NSSet setWithObject:NSPasteboardMetadataTypeContentType]
                  completionHandler:^(NSDictionary<NSPasteboardMetadataType, id> *md, NSError *err) {
@@ -140,7 +140,7 @@ static void probe(NSPasteboard *pb, NSInteger change) {
     }
 
     // ── 阶段 4：读取实际内容 ───────────────────────────────────
-    // CopySync 的 A 端必须拿到源文件路径才能在对端粘贴时回源。
+    // PasteFerry 的 A 端必须拿到源文件路径才能在对端粘贴时回源。
     // 这一步几乎必然触发提示——关键是用户授权后能否永久静默。
     BOOL hasFile = [types containsObject:NSPasteboardTypeFileURL];
     if (hasFile) {
@@ -208,7 +208,7 @@ int main(int argc, const char *argv[]) {
         //   reportAccessBehavior → AppKit → ViewBridge -[NSCFRunLoopSemaphore wait]
         //                        → NSException raise → SIGSEGV
         //
-        // 这条约束对 CopySync 同样成立：Go daemon 必须把剪贴板 cgo 调用
+        // 这条约束对 PasteFerry 同样成立：Go daemon 必须把剪贴板 cgo 调用
         // 调度到主线程，不能在任意 goroutine 里直接调。
         __block NSInteger last = pb.changeCount;
         __block int rounds = 0;

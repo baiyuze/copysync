@@ -9,6 +9,9 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get appName => 'PasteFerry';
+
+  @override
   String get navHistory => '履歴';
 
   @override
@@ -209,18 +212,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get historyCleared => '履歴を消去しました';
 
   @override
-  String get permDeniedTitle => 'CopySync はクリップボードを読み取れません';
+  String get permDeniedTitle => 'PasteFerry はクリップボードを読み取れません';
 
   @override
-  String get permAskTitle => 'CopySync にクリップボードの読み取りを許可してください';
+  String get permAskTitle => 'PasteFerry にクリップボードの読み取りを許可してください';
 
   @override
   String get permDeniedBody =>
-      'この Mac でコピーした内容は同期されません。システム設定で CopySync Daemon を「許可」にしてください。';
+      'この Mac でコピーした内容は同期されません。システム設定で PasteFerry Daemon を「許可」にしてください。';
 
   @override
   String get permAskBody =>
-      '許可しないと macOS が毎回確認します。システム設定で CopySync Daemon を「許可」にしてください。';
+      '許可しないと macOS が毎回確認します。システム設定で PasteFerry Daemon を「許可」にしてください。';
 
   @override
   String get openSystemSettings => 'システム設定を開く';
@@ -345,7 +348,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get noDevicesBody =>
-      'もう一台のコンピューターで CopySync を開き、6 桁のペアリングコードでつなげます。同じネットワーク内なら、両方で「近くを検索」を開いて相手をクリックすることもできます。';
+      'もう一台のコンピューターで PasteFerry を開き、6 桁のペアリングコードでつなげます。同じネットワーク内なら、両方で「近くを検索」を開いて相手をクリックすることもできます。';
 
   @override
   String get pairedDevices => 'ペアリング済みのデバイス';
@@ -414,7 +417,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String lanBlockedBody(String device) {
-    return '「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにしてください。オンにするまで、$deviceは同じネットワークのデバイスに接続できません。';
+    return '「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で PasteFerry Daemon をオンにしてください。オンにするまで、$deviceは同じネットワークのデバイスに接続できません。';
   }
 
   @override
@@ -609,7 +612,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get macLocalNetworkDesc =>
-      'CopySync がネットワーク上のデバイスに接続してよいか、macOS が一度だけ確認します。拒否した場合は、そこで CopySync Daemon をオンにしてください';
+      'PasteFerry がネットワーク上のデバイスに接続してよいか、macOS が一度だけ確認します。拒否した場合は、そこで PasteFerry Daemon をオンにしてください';
 
   @override
   String get allowLan => 'Windows ファイアウォール';
@@ -797,25 +800,25 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get svcExtractTitle => '先に CopySync をインストールまたは展開してください';
+  String get svcExtractTitle => '先に PasteFerry をインストールまたは展開してください';
 
   @override
   String get svcExtractBody =>
-      'CopySync は zip から直接開かれていて、閉じると一時フォルダごと消えます。インストーラーを実行するか、フォルダ全体を展開してから開くと、バックグラウンド同期を有効にできます。';
+      'PasteFerry は zip から直接開かれていて、閉じると一時フォルダごと消えます。インストーラーを実行するか、フォルダ全体を展開してから開くと、バックグラウンド同期を有効にできます。';
 
   @override
-  String get svcMoveTitle => '先に CopySync を「アプリケーション」に移動してください';
+  String get svcMoveTitle => '先に PasteFerry を「アプリケーション」に移動してください';
 
   @override
   String get svcMoveBody =>
-      'CopySync はディスクイメージから直接開かれています。「アプリケーション」にドラッグしてディスクイメージを取り出し、「アプリケーション」から開くと、バックグラウンド同期を有効にできます。';
+      'PasteFerry はディスクイメージから直接開かれています。「アプリケーション」にドラッグしてディスクイメージを取り出し、「アプリケーション」から開くと、バックグラウンド同期を有効にできます。';
 
   @override
-  String get svcStartTitle => 'CopySync を始める';
+  String get svcStartTitle => 'PasteFerry を始める';
 
   @override
   String get svcStartBody =>
-      'CopySync は小さなバックグラウンドプロセスを動かし、クリップボードの変化を検知して他のデバイスとつながり続けます。有効にするとログイン時に起動し、このウィンドウを閉じても同期を続けます。';
+      'PasteFerry は小さなバックグラウンドプロセスを動かし、クリップボードの変化を検知して他のデバイスとつながり続けます。有効にするとログイン時に起動し、このウィンドウを閉じても同期を続けます。';
 
   @override
   String get svcEnable => 'バックグラウンド同期を有効にする';
@@ -825,11 +828,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get svcStaleBodyWin =>
-      'CopySync の場所が変わりましたが、自動起動は以前の場所を指しています。もう一度有効にすると、このコピーを使うようになります。履歴とペアリングは残ります。';
+      'PasteFerry の場所が変わりましたが、自動起動は以前の場所を指しています。もう一度有効にすると、このコピーを使うようになります。履歴とペアリングは残ります。';
 
   @override
   String get svcStaleBodyMac =>
-      'CopySync の場所が変わったか、古いスクリプトでインストールされています。もう一度有効にすると、このアプリを使うようになります。履歴とペアリングは残ります。';
+      'PasteFerry の場所が変わったか、古いスクリプトでインストールされています。もう一度有効にすると、このアプリを使うようになります。履歴とペアリングは残ります。';
 
   @override
   String get svcReenable => 'もう一度有効にする';
@@ -843,11 +846,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get svcDevBodyWin =>
-      '開発ビルドのため copysyncd.exe がありません。ソースフォルダで scripts\\build-windows.ps1 を実行して完全版をビルドしてください。';
+      '開発ビルドのため pasteferryd.exe がありません。ソースフォルダで scripts\\build-windows.ps1 を実行して完全版をビルドしてください。';
 
   @override
   String get svcDevBodyLinux =>
-      '開発ビルドのため copysyncd がありません。ソースフォルダで ./scripts/package-linux.sh を実行して完全版をビルドしてください。';
+      '開発ビルドのため pasteferryd がありません。ソースフォルダで ./scripts/package-linux.sh を実行して完全版をビルドしてください。';
 
   @override
   String get svcDevBodyMac =>

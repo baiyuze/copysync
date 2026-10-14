@@ -91,10 +91,10 @@ jobs:
       # 构建好的安装包与便携版留作下载，方便在真机上试
       - uses: actions/upload-artifact@v4
         with:
-          name: CopySync-windows
+          name: PasteFerry-windows
           path: |
-            dist/windows/CopySync-Setup.exe
-            dist/windows/CopySync-windows-x64.zip
+            dist/windows/PasteFerry-Setup.exe
+            dist/windows/PasteFerry-windows-x64.zip
 
   linux:
     name: Linux 客户端（${{ matrix.arch }}）
@@ -135,8 +135,8 @@ jobs:
       - run: ./scripts/package-linux.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: CopySync-linux-${{ matrix.arch }}
+          name: PasteFerry-linux-${{ matrix.arch }}
           path: |
-            dist/linux/CopySync-linux-${{ matrix.arch }}.deb
-            dist/linux/CopySync-linux-${{ matrix.arch }}.tar.gz
+            dist/linux/PasteFerry-linux-${{ matrix.arch }}.deb
+            dist/linux/PasteFerry-linux-${{ matrix.arch }}.tar.gz
           if-no-files-found: error

@@ -27,15 +27,15 @@ import (
 
 	"github.com/pion/webrtc/v4"
 
-	"github.com/baiyuze/copysync/client-core/internal/cache"
-	"github.com/baiyuze/copysync/client-core/internal/clipboard"
-	"github.com/baiyuze/copysync/client-core/internal/clipfilter"
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	"github.com/baiyuze/copysync/client-core/internal/imagepreview"
-	"github.com/baiyuze/copysync/client-core/internal/pack"
-	"github.com/baiyuze/copysync/client-core/internal/store"
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/cache"
+	"github.com/baiyuze/pasteferry/client-core/internal/clipboard"
+	"github.com/baiyuze/pasteferry/client-core/internal/clipfilter"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	"github.com/baiyuze/pasteferry/client-core/internal/imagepreview"
+	"github.com/baiyuze/pasteferry/client-core/internal/pack"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 const (

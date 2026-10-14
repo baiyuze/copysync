@@ -132,7 +132,7 @@
             "name": "在同一個網絡裏，為甚麼找不到另一部電腦？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "先看兩部是否真的在同一個網段：公司裏的有線和無線網絡、訪客網絡、開啟了「AP 隔離」的 Wi‑Fi 往往互不相通，區域網絡發現無法穿過。這時在輸入配對碼的那部電腦按「不在同一網段？」，填上另一部電腦配對碼下面顯示的地址。 在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，可在「設定 → 區域網絡」裏按「允許」。在 Mac 上，要在「系統設定 → 私隱與保安 → 本地網絡」裏開啟 CopySync Daemon。詳情見同一網絡教學。"
+              "text": "先看兩部是否真的在同一個網段：公司裏的有線和無線網絡、訪客網絡、開啟了「AP 隔離」的 Wi‑Fi 往往互不相通，區域網絡發現無法穿過。這時在輸入配對碼的那部電腦按「不在同一網段？」，填上另一部電腦配對碼下面顯示的地址。 在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，可在「設定 → 區域網絡」裏按「允許」。在 Mac 上，要在「系統設定 → 私隱與保安 → 本地網絡」裏開啟 PasteFerry Daemon。詳情見同一網絡教學。"
             }
           },
           {
@@ -199,7 +199,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">隔空貼原名 CopySync。App 和安裝檔裡暫時還叫 CopySync，下個版本會改過來。</span></p>
 
   <main id="main">
     <section class="hero">
@@ -462,7 +461,7 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
-              <li>執行 CopySync-Setup.exe。它會安裝在目前用戶的目錄下，不需要管理員權限。<span class="aside">隔空貼仍未有程式碼簽署，Windows 會提示「Windows 已保護您的電腦」：按「其他資訊」，再按「仍要執行」。不想執行安裝程式的話，可以下載<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip">免安裝版</a>。</span></li>
+              <li>執行 PasteFerry-Setup.exe。它會安裝在目前用戶的目錄下，不需要管理員權限。<span class="aside">隔空貼仍未有程式碼簽署，Windows 會提示「Windows 已保護您的電腦」：按「其他資訊」，再按「仍要執行」。不想執行安裝程式的話，可以下載<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip">免安裝版</a>。</span></li>
               <li>開啟隔空貼，按「啟用背景同步」。關閉視窗後，它會在右下角的系統匣裏繼續執行。防火牆詢問時選擇允許。</li>
               <li>跨網絡同步時，在「設定」裏填入伺服器地址，按 Enter；在同一個網絡裏則不用填。</li>
             </ol>
@@ -471,7 +470,7 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
             <ol>
-              <li>Ubuntu、Debian 等發行版下載 .deb，執行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；其他發行版下載 tar.gz，解壓後執行 <code>./CopySync/install.sh</code>。</li>
+              <li>Ubuntu、Debian 等發行版下載 .deb，執行 <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>；其他發行版下載 tar.gz，解壓後執行 <code>./PasteFerry/install.sh</code>。</li>
               <li>從應用程式選單開啟隔空貼，按「啟用背景同步」。之後它會在登入時自動啟動。</li>
               <li>跨網絡同步時，在「設定」裏填入伺服器地址，按 Enter；在同一個網絡裏則不用填。</li>
             </ol>
@@ -549,7 +548,7 @@
           </details>
           <details>
             <summary>在同一個網絡裏，為甚麼找不到另一部電腦？</summary>
-            <div class="answer"><p>先看兩部是否真的在同一個網段：公司裏的有線和無線網絡、訪客網絡、開啟了「AP 隔離」的 Wi‑Fi 往往互不相通，區域網絡發現無法穿過。這時在輸入配對碼的那部電腦按「不在同一網段？」，填上另一部電腦配對碼下面顯示的地址。</p><p>在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，可在「設定 → 區域網絡」裏按「允許」。在 Mac 上，要在「系統設定 → 私隱與保安 → 本地網絡」裏開啟 CopySync Daemon。詳情見<a href="lan/#faq">同一網絡教學</a>。</p></div>
+            <div class="answer"><p>先看兩部是否真的在同一個網段：公司裏的有線和無線網絡、訪客網絡、開啟了「AP 隔離」的 Wi‑Fi 往往互不相通，區域網絡發現無法穿過。這時在輸入配對碼的那部電腦按「不在同一網段？」，填上另一部電腦配對碼下面顯示的地址。</p><p>在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，可在「設定 → 區域網絡」裏按「允許」。在 Mac 上，要在「系統設定 → 私隱與保安 → 本地網絡」裏開啟 PasteFerry Daemon。詳情見<a href="lan/#faq">同一網絡教學</a>。</p></div>
           </details>
           <details>
             <summary>支援 Windows 和 Linux 嗎？iPhone 呢？</summary>

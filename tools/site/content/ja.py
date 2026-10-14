@@ -6,7 +6,6 @@ SITE = "https://baiyuze.github.io/pasteferry/"
 C = {
     "brand": "PasteFerry",
     "brand_alt": ["隔空贴", "CopySync"],
-    "rename_note": "PasteFerry の旧名は CopySync です。次のバージョンまで、アプリとインストーラーには CopySync と表示されます。",
     "title": "PasteFerry：Mac、Windows、Linux のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK",
     "description": "PasteFerry は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac、Windows、Linux に対応し、"
                    "テキスト、画像、ファイル、フォルダを同期します。同じアカウントは不要。同じネットワークならサーバーなしで使え、"
@@ -233,15 +232,15 @@ C = {
         "ネットワークをまたいで同期するときは、「設定」でサーバーのアドレス <code>ws://サーバーアドレス:8787/signal</code> を入力して Return を押します。同じネットワークなら空欄のままです。",
     ],
     "win_steps": [
-        "CopySync-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。"
+        "PasteFerry-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。"
         "<span class=\"aside\">PasteFerry はまだコード署名されていないため、「Windows によって PC が保護されました」と表示されます。「詳細情報」を押してから「実行」を押してください。"
-        f"インストーラーを使いたくない場合は<a href=\"{REPO}/releases/latest/download/CopySync-windows-x64.zip\">ポータブル版</a>もあります。</span>",
+        f"インストーラーを使いたくない場合は<a href=\"{REPO}/releases/latest/download/PasteFerry-windows-x64.zip\">ポータブル版</a>もあります。</span>",
         "PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても、画面右下の通知領域で動き続けます。",
         "ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。",
     ],
     "linux_steps": [
-        "Ubuntu や Debian などでは .deb をダウンロードし、<code>sudo apt install ./CopySync-linux-amd64.deb</code> を実行します。"
-        "ほかのディストリビューションでは tar.gz をダウンロードして展開し、<code>./CopySync/install.sh</code> を実行します。",
+        "Ubuntu や Debian などでは .deb をダウンロードし、<code>sudo apt install ./PasteFerry-linux-amd64.deb</code> を実行します。"
+        "ほかのディストリビューションでは tar.gz をダウンロードして展開し、<code>./PasteFerry/install.sh</code> を実行します。",
         "アプリケーションメニューから PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。以後はログイン時に自動で起動します。",
         "ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。",
     ],
@@ -309,7 +308,7 @@ C = {
             "まず本当に同じサブネットか確認してください。会社の有線と Wi‑Fi、ゲストネットワーク、クライアント分離が有効な Wi‑Fi では、デバイス同士が見えないことがよくあります。"
             "その場合は、コードを入力する側で「別のサブネットにありますか？」をクリックし、相手のコードの下に表示されたアドレスを入力します。",
             "Windows では初回起動時にファイアウォールに聞かれたら許可してください。キャンセルした場合は「設定 → ローカルネットワーク」で「許可」をクリックします。"
-            "Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。詳しくは<a href=\"{lan}#faq\">同じネットワークでの手順</a>を。",
+            "Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で PasteFerry Daemon をオンにします。詳しくは<a href=\"{lan}#faq\">同じネットワークでの手順</a>を。",
         ]),
         ("Windows や Linux に対応していますか？iPhone は？", [
             "Windows 10 と Windows 11（x64）に対応し、Mac と相互に使えます。Windows で貼り付けたファイルは本物のファイルなので、エクスプローラーや Office にそのまま貼り付けられます。",
@@ -395,7 +394,7 @@ C = {
         "manage_caption": "あとで使うもの",
         "win": {
             "steps": [
-                f'<a href="{REPO}/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> '
+                f'<a href="{REPO}/releases/latest/download/pasteferry-server-windows-amd64.zip">pasteferry-server-windows-amd64.zip</a> '
                 "をダウンロードし、右クリックで「すべて展開」します。",
                 "展開したフォルダーを開き、<code>install.cmd</code> をダブルクリックします。"
                 "<span class=\"aside\">「Windows によって PC が保護されました」と出たら「詳細情報」から「実行」を、ユーザーアカウント制御が出たら"
@@ -404,20 +403,20 @@ C = {
             ],
             "download": "Windows 版サーバーをダウンロード",
             "notes": [
-                "<strong>Windows サービスとして動作：</strong>Windows の起動とともに立ち上がり、サインイン不要で、ウィンドウも出ません。「サービス」では CopySync Server と表示されます。",
-                "<strong>ファイアウォールは設定済み：</strong>copysync-server.exe だけを対象にした受信規則をスクリプトが追加するので、ポートを開ける必要はありません。",
+                "<strong>Windows サービスとして動作：</strong>Windows の起動とともに立ち上がり、サインイン不要で、ウィンドウも出ません。「サービス」では PasteFerry Server と表示されます。",
+                "<strong>ファイアウォールは設定済み：</strong>pasteferry-server.exe だけを対象にした受信規則をスクリプトが追加するので、ポートを開ける必要はありません。",
                 "<strong>アドレスが違うものになった</strong>（仮想マシンや VPN でネットワークアダプターが複数あるなど）：展開したフォルダーのアドレスバーに "
                 "<code>cmd</code> と入力して Enter を押し、<code>install.cmd 192.168.1.20</code> のようにアドレスを指定して実行します。",
                 "Windows 10・11、x64 に対応。",
             ],
             "double_click": "ダブルクリック",
-            "explorer_label": "展開したフォルダーには copysync-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd があり、install.cmd をダブルクリックする",
+            "explorer_label": "展開したフォルダーには pasteferry-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd があり、install.cmd をダブルクリックする",
             "term_title": "管理者: Windows PowerShell",
             "term_label": "install.cmd の実行後のウィンドウ：旧バージョンの停止、インストール、サービス登録、ファイアウォール許可、起動のあと、アドレス ws://192.168.1.20:8787/signal を表示",
             "manage": [
-                ("状態", "管理者の PowerShell で <code>Get-Service CopySyncServer</code>、または「サービス」で CopySync Server を確認"),
-                ("ログ", "<code>C:\\ProgramData\\CopySync Server\\server.log</code>"),
-                ("再起動", "管理者の PowerShell で <code>Restart-Service CopySyncServer</code>"),
+                ("状態", "管理者の PowerShell で <code>Get-Service PasteFerryServer</code>、または「サービス」で PasteFerry Server を確認"),
+                ("ログ", "<code>C:\\ProgramData\\PasteFerry Server\\server.log</code>"),
+                ("再起動", "管理者の PowerShell で <code>Restart-Service PasteFerryServer</code>"),
                 ("更新", "新しいバージョンをダウンロードして展開し、もう一度 <code>install.cmd</code> をダブルクリック。設定は引き継がれます"),
                 ("アンインストール", "<code>uninstall.cmd</code> をダブルクリック。サービス、ファイアウォール規則、ファイルをすべて削除します"),
             ],
@@ -430,13 +429,13 @@ C = {
             "notes": [
                 "<strong>管理者権限は不要です。</strong>ログインしているあいだバックグラウンドで動き、終了しても macOS が再起動します。",
                 "<strong>この Mac はスリープさせないでください：</strong>「システム設定 → エネルギー」（ノートは「バッテリー → オプション」）で自動スリープを防ぐ項目をオンにします。",
-                "<strong>macOS のファイアウォールがオンなら、</strong>スクリプトの最後に copysync-server を許可するコマンドが表示されます。",
+                "<strong>macOS のファイアウォールがオンなら、</strong>スクリプトの最後に pasteferry-server を許可するコマンドが表示されます。",
                 "Intel と Apple シリコンの両方に対応、macOS 13 以降。",
             ],
             "term_label": "ターミナルで ./install.sh を実行した出力：インストール、LaunchAgent の作成、起動のあと、アドレス ws://192.168.1.20:8787/signal を表示",
             "manage": [
-                ("ログ", "<code>~/Library/Logs/CopySync/server.log</code>"),
-                ("再起動", "<code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code>"),
+                ("ログ", "<code>~/Library/Logs/PasteFerry/server.log</code>"),
+                ("再起動", "<code>launchctl kickstart -k gui/$(id -u)/com.pasteferry.server</code>"),
                 ("更新", "新しいバージョンをダウンロードして展開し、もう一度 <code>./install.sh</code> を実行。設定は引き継がれます"),
                 ("アンインストール", "<code>./install.sh uninstall</code>"),
             ],
@@ -454,10 +453,10 @@ C = {
             ],
             "term_label": "sudo ./install.sh の出力：インストール、systemd ユニットと設定の作成、起動のあと、アドレス ws://192.168.1.20:8787/signal を表示",
             "manage": [
-                ("状態", "<code>systemctl status copysync-server</code>"),
-                ("ログ", "<code>journalctl -u copysync-server -f</code>"),
-                ("再起動", "<code>sudo systemctl restart copysync-server</code>"),
-                ("設定", "<code>/etc/copysync/server.env</code>。編集したらサービスを再起動"),
+                ("状態", "<code>systemctl status pasteferry-server</code>"),
+                ("ログ", "<code>journalctl -u pasteferry-server -f</code>"),
+                ("再起動", "<code>sudo systemctl restart pasteferry-server</code>"),
+                ("設定", "<code>/etc/pasteferry/server.env</code>。編集したらサービスを再起動"),
                 ("更新", "新しいバージョンをダウンロードして展開し、もう一度 <code>sudo ./install.sh</code> を実行。設定は引き継がれます"),
                 ("アンインストール", "<code>sudo ./install.sh uninstall</code>"),
             ],
@@ -492,7 +491,7 @@ C = {
             ]),
             ("サーバーのアドレスが変わった", [
                 "新しいアドレスを付けてスクリプトをもう一度実行します。Windows は <code>install.cmd 新しいアドレス</code>、Mac は <code>./install.sh 新しいアドレス</code>。"
-                "Linux では <code>/etc/copysync/server.env</code> の <code>-turn-ip</code> を書き換えてサービスを再起動します。そのあと各コンピューターのアドレスも変更してください。",
+                "Linux では <code>/etc/pasteferry/server.env</code> の <code>-turn-ip</code> を書き換えてサービスを再起動します。そのあと各コンピューターのアドレスも変更してください。",
                 "ルーターでアドレスを固定しておけば、こうしたことは起きません。",
             ]),
             ("LAN の外でも同期できますか？", [
@@ -572,7 +571,7 @@ C = {
             "最後に表示される <code>ws://203.0.113.10:8787/signal</code> がアプリに入力するアドレスです。",
         ],
         "install_notes": [
-            "<strong>systemd サービスとして登録</strong>され、起動時に立ち上がります。設定は <code>/etc/copysync/server.env</code>。",
+            "<strong>systemd サービスとして登録</strong>され、起動時に立ち上がります。設定は <code>/etc/pasteferry/server.env</code>。",
             "<strong>更新：</strong>新しいバージョンをダウンロードして展開し、もう一度 <code>sudo ./install.sh</code> を実行。設定は引き継がれます。",
             "<strong>Docker でも動かせます：</strong><a href=\"{deploy}\">サーバーの構築手順</a>（英語・中国語）をご覧ください。",
         ],
@@ -638,7 +637,7 @@ C = {
             "「バックグラウンド同期を有効にする」をクリックします。クリップボードの読み取りと、ローカルネットワーク上のデバイスを探すことについて聞かれたら、どちらも許可します。",
         ],
         "win": [
-            "CopySync-Setup.exe を実行します。管理者権限は要りません。<span class=\"aside\">「Windows によって PC が保護されました」と出たら、"
+            "PasteFerry-Setup.exe を実行します。管理者権限は要りません。<span class=\"aside\">「Windows によって PC が保護されました」と出たら、"
             "「詳細情報」を押してから「実行」を押します。</span>",
             "PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても通知領域で動き続けます。",
         ],
@@ -702,7 +701,7 @@ C = {
                                "デバイス同士が見えず、会社では有線と Wi‑Fi のサブネットが分かれていることもよくあります。その場合は下の<a href=\"#subnet\">別のサブネット</a>へ。"),
             ("Windows ファイアウォール", "初回起動時に、PasteFerry がファイアウォールを通ってよいか Windows が聞いてくるので、許可します。キャンセルした場合は、"
                                        "PasteFerry の「設定 → ローカルネットワーク」で「許可」をクリックします。管理者の承認を一度だけ求められます。"),
-            ("macOS のローカルネットワーク", "macOS 15 以降、LAN 上のデバイスに初めて接続するとき、CopySync Daemon がローカルネットワーク上のデバイスを探してよいか聞かれるので、許可します。"
+            ("macOS のローカルネットワーク", "macOS 15 以降、LAN 上のデバイスに初めて接続するとき、PasteFerry Daemon がローカルネットワーク上のデバイスを探してよいか聞かれるので、許可します。"
                                            "拒否した場合は「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」でオンにします。"),
             ("サーバーの入力は不要", "「設定」のサーバーのアドレスは空欄のままにします。あとでネットワークをまたいで同期したくなったら、サーバーを追加するか Tailscale を使います。ペアリングはそのままです。"),
         ],
@@ -741,7 +740,7 @@ C = {
                 "まず 2 台が同じネットワークにあり、どちらもバックグラウンド同期が有効か確認します。次に、コードを入力する側で相手のアドレスを入力してみてください。"
                 "それで見つかるなら、サブネットが違うか、ネットワークが mDNS を通していません。",
                 "それでも見つからなければ、相手のファイアウォールを確認します。Windows なら「設定 → ローカルネットワーク」で「許可」をクリック、"
-                "Mac なら「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon がオンになっていて、macOS のファイアウォールに止められていないかを確かめます。",
+                "Mac なら「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で PasteFerry Daemon がオンになっていて、macOS のファイアウォールに止められていないかを確かめます。",
             ]),
             ("このネットワークの外でも同期できますか？", [
                 "できません。戻ると自動で再開し、そのあいだにコピーしたものは相手の履歴に追加されます。ネットワークをまたいで同期するなら、"
@@ -850,7 +849,7 @@ C = {
             ("ペアリングで相手が見つからない", [
                 "まず両方で Tailscale がつながっているか確かめます。ターミナルで <code>tailscale ping 相手のアドレス</code> を実行し、応答があれば再度試してください。",
                 "ping は通るのに見つからないなら、相手のファイアウォールが止めている可能性が高いです。相手が Windows なら PasteFerry の「設定 → ローカルネットワーク」で「許可」をクリック、"
-                "Mac なら「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。",
+                "Mac なら「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で PasteFerry Daemon をオンにします。",
             ]),
             ("すべてのコンピューターに Tailscale が必要ですか？", [
                 "はい。入っていないコンピューターは 100 で始まるアドレスに届きません。同じネットワークにある 2 台なら不要です（<a href=\"{lan}\">同じネットワークでの手順</a>）。",
@@ -888,7 +887,7 @@ C = {
             "setup": "インストーラーをダウンロード",
             "portable": "インストーラーを使いたくない場合は、<a href=\"{portable}\">ポータブル版</a>をダウンロードし、展開してそのまま実行できます。",
             "steps": [
-                "CopySync-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。"
+                "PasteFerry-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。"
                 "<span class=\"aside\">「Windows によって PC が保護されました」と出たら、「詳細情報」を押してから「実行」を押します。</span>",
                 "PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。",
             ],
@@ -925,7 +924,7 @@ C = {
             "notes": [
                 "グラフィカルなデスクトップが必要です。X11、または XWayland 付きの Wayland デスクトップで動きます。GNOME、KDE などの主要なデスクトップには標準で入っています。",
                 "x64 か ARM64 かわからないときは、ターミナルで <code>uname -m</code> を実行します。<code>x86_64</code> なら x64、<code>aarch64</code> なら ARM64 です。",
-                ".deb は /opt/CopySync にインストールされ、アプリケーションメニューに表示されます。tar.gz はどこに展開しても動き、<code>install.sh</code> でアプリケーションメニューに追加できます。",
+                ".deb は /opt/PasteFerry にインストールされ、アプリケーションメニューに表示されます。tar.gz はどこに展開しても動き、<code>install.sh</code> でアプリケーションメニューに追加できます。",
                 "開いたら「バックグラウンド同期を有効にする」をクリックします。以後はログイン時に自動で起動します。"
                 "GNOME は標準ではトレイアイコンを表示しないので、ウィンドウはアプリケーションメニューから開きます。",
                 "GTK 3 が必要です。Ubuntu 24.04 の GNOME（Wayland）で動作を確認しています。",

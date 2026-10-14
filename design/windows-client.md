@@ -6,10 +6,10 @@
 
 ## 一、目标
 
-让 Windows 电脑加入 CopySync：与 Mac、与其他 Windows 电脑互相同步文本、带格式文本、图片和文件，体验与 Mac 版一致。
+让 Windows 电脑加入隔空贴：与 Mac、与其他 Windows 电脑互相同步文本、带格式文本、图片和文件，体验与 Mac 版一致。
 
 - 在一台上 `Ctrl+C`，另一台上 `Ctrl+V`（或 `⌘V`）。粘贴文件时得到的是真实文件，可以直接粘贴进资源管理器、微信、Office。
-- 开机自启，关掉窗口照常同步，崩溃自动拉起。Windows 安装时创建桌面快捷方式；后台服务持有托盘图标，点击可打开界面，右键可打开界面或退出 CopySync。
+- 开机自启，关掉窗口照常同步，崩溃自动拉起。Windows 安装时创建桌面快捷方式；后台服务持有托盘图标，点击可打开界面，右键可打开界面或退出隔空贴。
 - 网络行为与 Mac 版完全相同：直连优先、多出口打洞、自动中转、端到端加密。
 - 与 Mac 版互通，Mac 端不升级也能和 Windows 配对、同步（协议不变）。
 
@@ -28,8 +28,8 @@
 后台服务除剪贴板外全部是纯 Go：数据库用的是纯 Go 的 `modernc.org/sqlite`，压缩是纯 Go 的 zstd，cgo 只出现在 `internal/clipboard/darwin.go`。实测在 Mac 上已经可以直接交叉编译出 Windows 版：
 
 ```
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ./cmd/...    # copysyncd.exe、copysync-cli.exe
-CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build ./cmd/copysyncd
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ./cmd/...    # pasteferryd.exe、pasteferry-cli.exe
+CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build ./cmd/pasteferryd
 ```
 
 | 模块 | Windows 上 | 说明 |
@@ -38,10 +38,10 @@ CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build ./cmd/copysyncd
 | P2P、出口探测、打洞、中转（`transport/p2p`） | 直接复用 | 防火墙与虚拟网卡见第七节 |
 | 同步引擎、补发、存储、缓存、回收（`sync`、`store`、`cache`、`gc`） | 直接复用 | |
 | 本机接口（`rpc`，127.0.0.1 + 一次性 token） | 直接复用 | |
-| 数据目录（`config.DefaultPaths`） | 已有 Windows 分支 | `%LOCALAPPDATA%\CopySync` |
+| 数据目录（`config.DefaultPaths`） | 已有 Windows 分支 | `%LOCALAPPDATA%\PasteFerry` |
 | 打包解包（`pack`） | 要改 | 文件名、符号链接，见第五节 |
 | 剪贴板（`clipboard`） | **要新写** | 目前是返回「不支持」的占位实现，见第四节 |
-| 进程生命周期（`cmd/copysyncd`） | 要改 | 自启、守护、日志、单实例、注销，见第六节 |
+| 进程生命周期（`cmd/pasteferryd`） | 要改 | 自启、守护、日志、单实例、注销，见第六节 |
 | 界面（`ui/`） | 要改 | 已有 Flutter 的 `windows/` 工程骨架；后台服务管理、窗口外观、文案，见第八节 |
 | 构建与发布（`scripts/`、CI） | 要新写 | Flutter 的 Windows 版只能在 Windows 上构建，见第十节 |
 
@@ -50,15 +50,15 @@ CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build ./cmd/copysyncd
 与 Mac 版同构，三个可执行文件：
 
 ```
-CopySync.exe（Flutter 界面）
-   │  gRPC，127.0.0.1 随机端口 + token（%LOCALAPPDATA%\CopySync\daemon.json）
+PasteFerry.exe（Flutter 界面）
+   │  gRPC，127.0.0.1 随机端口 + token（%LOCALAPPDATA%\PasteFerry\daemon.json）
    ▼
-copysyncd.exe（Go 后台服务，用户会话内运行，无控制台窗口）
+pasteferryd.exe（Go 后台服务，用户会话内运行，无控制台窗口）
    ├─ 剪贴板：隐藏的消息窗口 + Win32 剪贴板 API
    ├─ 同步引擎 / 存储 / 缓存
    └─ 信令（WebSocket）+ P2P（WebRTC）──► 信令服务器 / 对端设备
 
-copysync-cli.exe（命令行，排障用）
+pasteferry-cli.exe（命令行，排障用）
 ```
 
 后台服务必须作为**登录用户的普通进程**运行，不能做成 Windows 服务。Windows 服务运行在会话 0，与用户桌面隔离，访问不到用户的剪贴板。这与 Mac 上用 LaunchAgent、不用 LaunchDaemon 是同一个原因。
@@ -141,10 +141,10 @@ copysync-cli.exe（命令行，排障用）
 | 需求 | Mac 版的做法 | Windows 版的做法 |
 |---|---|---|
 | 开机自启 | LaunchAgent | `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` 下写一项。只影响当前用户，不需要管理员权限 |
-| 崩溃自动拉起 | launchd `KeepAlive`，10 秒节流 | `copysyncd.exe` 自带守护模式：父进程拉起子进程，子进程异常退出就 10 秒后重启 |
-| 只运行一个 | launchd 保证 | 命名互斥量 `Local\CopySync.Daemon`，第二个实例直接退出 |
+| 崩溃自动拉起 | launchd `KeepAlive`，10 秒节流 | `pasteferryd.exe` 自带守护模式：父进程拉起子进程，子进程异常退出就 10 秒后重启 |
+| 只运行一个 | launchd 保证 | 命名互斥量 `Local\PasteFerry.Daemon`，第二个实例直接退出 |
 | 不弹黑框 | 本来就没有 | 以 GUI 子系统编译（`-ldflags -H=windowsgui`） |
-| 日志 | launchd 把标准输出重定向到文件 | 自己写 `%LOCALAPPDATA%\CopySync\logs\daemon.log`，按大小轮转（Mac 版的日志目前不轮转，一并加上） |
+| 日志 | launchd 把标准输出重定向到文件 | 自己写 `%LOCALAPPDATA%\PasteFerry\logs\daemon.log`，按大小轮转（Mac 版的日志目前不轮转，一并加上） |
 | 注销、关机 | SIGTERM | 隐藏窗口处理 `WM_QUERYENDSESSION`/`WM_ENDSESSION`，正常收尾 |
 | 睡眠唤醒 | 靠重连巡检 | 处理 `WM_POWERBROADCAST`：唤醒后立即重新探测出口、重连，不等巡检 |
 | 升级 | 打开新版 App 时校正登录项并重启服务 | 安装程序借助「重启管理器」关掉旧进程，装完再启动；界面同样校验版本、必要时重启服务 |
@@ -183,8 +183,8 @@ Mac 版刻意做成系统自带应用的样子（石墨 + 系统蓝、透明标�
 
 | 状态 | 判定 |
 |---|---|
-| 未安装 | `Run` 下没有 CopySync 项 |
-| 指向旧位置 | `Run` 项的路径不是当前这份 `copysyncd.exe` |
+| 未安装 | `Run` 下没有隔空贴项 |
+| 指向旧位置 | `Run` 项的路径不是当前这份 `pasteferryd.exe` |
 | 已停止 | `daemon.json` 不存在，或其中的进程号已不在运行 |
 | 运行中 | 能连上，且版本与界面一致（不一致就重启服务） |
 
@@ -211,11 +211,11 @@ Mac 版刻意做成系统自带应用的样子（石墨 + 系统蓝、透明标�
 
 用 Inno Setup 做**按用户安装**的安装包（类似 VS Code 的「用户安装版」）：
 
-- 装到 `%LOCALAPPDATA%\Programs\CopySync`，不需要管理员权限，不弹 UAC。
-- 创建开始菜单项；装完直接打开 CopySync，由界面引导「启用后台同步」，流程与 Mac 一致。
+- 装到 `%LOCALAPPDATA%\Programs\PasteFerry`，不需要管理员权限，不弹 UAC。
+- 创建开始菜单项；装完直接打开隔空贴，由界面引导「启用后台同步」，流程与 Mac 一致。
 - 卸载时停掉后台服务、删掉自启项，询问是否保留复制记录与设备身份。
 - 另出一个 zip 便携版，给不想运行安装程序的人。
-- 界面程序依赖 VC++ 运行库（`msvcp140.dll`、`vcruntime140.dll`、`vcruntime140_1.dll`），Windows 不一定自带。构建时从 Visual Studio 里取这三个 DLL 放在 `CopySync.exe` 旁边（微软说的「应用本地部署」），安装包与便携版都带着，不用另装系统级的运行库。
+- 界面程序依赖 VC++ 运行库（`msvcp140.dll`、`vcruntime140.dll`、`vcruntime140_1.dll`），Windows 不一定自带。构建时从 Visual Studio 里取这三个 DLL 放在 `PasteFerry.exe` 旁边（微软说的「应用本地部署」），安装包与便携版都带着，不用另装系统级的运行库。
 
 也评估过 MSIX：好处是安装干净、能自动更新；但要求必须有受信任的签名证书，且应用写入 `%LOCALAPPDATA%` 的数据会被重定向到包的私有目录，命令行工具与后台服务对不上路径。一期不用。
 
@@ -235,7 +235,7 @@ Flutter 的 Windows 版只能在 Windows 上构建，现有的 `scripts/package.
 
 - 新增 GitHub Actions 任务（`windows-latest`）：编译 Go（`GOOS=windows`）→ `flutter build windows` → Inno Setup 打包 → 上传到同一个 Release。
 - 发布时在 Mac 上照常运行 `package.sh` 出 DMG，推送标签后 CI 补上 Windows 包。
-- 发布资源沿用「不带版本号」的命名，下载直链不会失效：`CopySync-Setup.exe`、`CopySync-windows-x64.zip`。
+- 发布资源沿用「不带版本号」的命名，下载直链不会失效：`PasteFerry-Setup.exe`、`PasteFerry-windows-x64.zip`。
 - CI 的常规检查增加 Windows：`go vet`、`go test`、`flutter analyze`、`flutter test`。
 
 ## 十一、测试与验证
@@ -255,7 +255,7 @@ Flutter 的 Windows 版只能在 Windows 上构建，现有的 `scripts/package.
 
 | 阶段 | 内容 | 产出 | 估时 |
 |---|---|---|---|
-| M1 | 剪贴板实现（第四节）与后台服务生命周期（第六节） | `copysyncd.exe` 在 Windows 上跑通：用 `copysync-cli` 能与 Mac 配对、互相同步文本与图片 | 2 周 |
+| M1 | 剪贴板实现（第四节）与后台服务生命周期（第六节） | `pasteferryd.exe` 在 Windows 上跑通：用 `pasteferry-cli` 能与 Mac 配对、互相同步文本与图片 | 2 周 |
 | M2 | 文件与内容兼容（第五节）、敏感内容过滤 | 联调清单里的内容类全部通过 | 1 周 |
 | M3 | 界面适配（第八节） | Windows 外观的界面，能启用、管理后台服务 | 1.5 周 |
 | M4 | 安装包、CI、文档与网站 | Release 里出现 Windows 安装包，README 与网站补上 Windows | 1 周 |
@@ -280,7 +280,7 @@ M1 结束时就能验证最大的不确定点：剪贴板方案、防火墙行�
 | `client-core/internal/pack/pack.go` | 文件名清洗、符号链接、垃圾文件过滤 |
 | `client-core/internal/transport/p2p/egress_history.go` | 网络标识排除虚拟网卡 |
 | `client-core/internal/identity/identity.go` | Windows 上用 DPAPI 保护私钥 |
-| `client-core/cmd/copysyncd/main.go` | 守护模式、单实例、日志文件、会话结束与电源事件 |
+| `client-core/cmd/pasteferryd/main.go` | 守护模式、单实例、日志文件、会话结束与电源事件 |
 | `ui/lib/background_service.dart` | 拆成接口与 Mac、Windows 两个实现 |
 | `ui/lib/theme.dart`、`ui/lib/main.dart` | 平台外观、自绘标题栏 |
 | `ui/windows/runner/` | Mica 背景、窗口尺寸记忆、应用图标 |

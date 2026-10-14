@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
 )
 
 // TestStreamDeliversPayloadIntact 是文件传输的核心保障。

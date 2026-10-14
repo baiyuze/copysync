@@ -9,9 +9,9 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/cache"
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	"github.com/baiyuze/copysync/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/cache"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
 )
 
 // 启动后先等一会儿再首次回收：此时 daemon 正在建连、恢复状态，

@@ -13,13 +13,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	"github.com/baiyuze/copysync/client-core/internal/identity"
-	"github.com/baiyuze/copysync/client-core/internal/store"
-	"github.com/baiyuze/copysync/client-core/internal/transport/lan"
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
-	"github.com/baiyuze/copysync/server/signal"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/lan"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
+	"github.com/baiyuze/pasteferry/server/signal"
 )
 
 // device 是测试里的一台完整设备：真实的 peers.Manager、数据库和身份。
@@ -40,7 +40,7 @@ func newDevice(t *testing.T, name string, net *lan.MemoryNetwork, cfg config.Con
 	if err != nil {
 		t.Fatal(err)
 	}
-	db, err := store.Open(filepath.Join(dir, "copysync.db"))
+	db, err := store.Open(filepath.Join(dir, "pasteferry.db"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -360,7 +360,7 @@ func TestNearbyNeedsBothWindows(t *testing.T) {
 	if list := a.m.Nearby(); len(list) != 0 {
 		t.Fatalf("b 没打开窗口，不该出现在附近: %v", list)
 	}
-	if _, _, err := a.m.PairNearby(context.Background(), "copysync-000000000000"); !errors.Is(err, lan.ErrNotFound) {
+	if _, _, err := a.m.PairNearby(context.Background(), "pasteferry-000000000000"); !errors.Is(err, lan.ErrNotFound) {
 		t.Fatalf("应当找不到，得到 %v", err)
 	}
 	if _, peers := b.m.Devices(); len(peers) != 0 {

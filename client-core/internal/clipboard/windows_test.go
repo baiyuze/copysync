@@ -26,7 +26,7 @@ var (
 	testLoopOnce sync.Once
 )
 
-// mainLoop 与 copysyncd 一样：一个锁定的线程创建窗口、泵消息，剪贴板操作都投递过去。
+// mainLoop 与 pasteferryd 一样：一个锁定的线程创建窗口、泵消息，剪贴板操作都投递过去。
 func mainLoop(t *testing.T) *MainLoop {
 	t.Helper()
 	testLoopOnce.Do(func() {

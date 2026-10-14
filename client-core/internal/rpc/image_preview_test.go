@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"

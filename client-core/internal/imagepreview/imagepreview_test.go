@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/baiyuze/copysync/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
 )
 
 func TestPreviewableAndCount(t *testing.T) {

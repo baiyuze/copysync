@@ -3,14 +3,16 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
 	"time"
 )
 
-// Config 是用户可调的全部设置。字段与 proto 的 copysync.v1.Config 一一对应。
+// Config 是用户可调的全部设置。字段与 proto 的 pasteferry.v1.Config 一一对应。
 type Config struct {
 	// Version 是配置文件的格式版本，见 migrate。
 	Version    int    `json:"config_version"`
@@ -126,7 +128,7 @@ func DefaultPaths() (Paths, error) {
 		if err != nil {
 			return Paths{}, err
 		}
-		root = filepath.Join(home, "Library", "Application Support", "CopySync")
+		root = filepath.Join(home, "Library", "Application Support", "PasteFerry")
 	case "windows":
 		base := os.Getenv("LOCALAPPDATA")
 		if base == "" {
@@ -135,7 +137,7 @@ func DefaultPaths() (Paths, error) {
 				return Paths{}, err
 			}
 		}
-		root = filepath.Join(base, "CopySync")
+		root = filepath.Join(base, "PasteFerry")
 	default:
 		// Linux 等：数据库、缓存、身份都是数据而不是配置，按 XDG 放在 ~/.local/share 下。
 		// 界面要找到同一个位置，见 ui/lib/daemon_client.dart 的 defaultDataDir
@@ -147,7 +149,7 @@ func DefaultPaths() (Paths, error) {
 			}
 			base = filepath.Join(home, ".local", "share")
 		}
-		root = filepath.Join(base, "copysync")
+		root = filepath.Join(base, "pasteferry")
 	}
 	return pathsUnder(root), nil
 }
@@ -157,13 +159,55 @@ func pathsUnder(root string) Paths {
 		Root:     root,
 		Cache:    filepath.Join(root, "cache"),
 		Config:   filepath.Join(root, "config.json"),
-		DB:       filepath.Join(root, "copysync.db"),
+		DB:       filepath.Join(root, "pasteferry.db"),
 		Endpoint: filepath.Join(root, "daemon.json"),
 	}
 }
 
 // PathsUnder 让测试把整套目录指到临时位置。
 func PathsUnder(root string) Paths { return pathsUnder(root) }
+
+// MigrateLegacy 把 2.0.0 之前产品叫 CopySync 时的数据目录整个挪到新位置：身份、配对关系、
+// 复制记录与设置都在里面，丢了就得重新配对。新目录已经存在、或者没有旧目录时什么都不做。
+// 要在任何东西写进新目录之前调用（守护进程的日志与锁文件也在数据目录里）。
+// 旧的后台服务由界面先停掉，见 ui/lib/background_service.dart 的 removeLegacy。
+func MigrateLegacy(p Paths) (bool, error) {
+	old := legacyRoot(p.Root)
+	if old == "" {
+		return false, nil
+	}
+	if _, err := os.Stat(p.Root); !errors.Is(err, fs.ErrNotExist) {
+		return false, err
+	}
+	if _, err := os.Stat(old); err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return false, nil
+		}
+		return false, err
+	}
+	if err := os.Rename(old, p.Root); err != nil {
+		return false, err
+	}
+	for _, suffix := range []string{"", "-wal", "-shm"} {
+		from := filepath.Join(p.Root, "copysync.db"+suffix)
+		if _, err := os.Stat(from); err == nil {
+			if err := os.Rename(from, p.DB+suffix); err != nil {
+				return true, err
+			}
+		}
+	}
+	return true, nil
+}
+
+func legacyRoot(root string) string {
+	switch filepath.Base(root) {
+	case "PasteFerry":
+		return filepath.Join(filepath.Dir(root), "CopySync")
+	case "pasteferry":
+		return filepath.Join(filepath.Dir(root), "copysync")
+	}
+	return ""
+}
 
 func (p Paths) EnsureDirs() error {
 	for _, d := range []string{p.Root, p.Cache} {

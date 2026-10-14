@@ -2,13 +2,13 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:copysync_ui/app_state.dart';
-import 'package:copysync_ui/background_service.dart';
-import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
-import 'package:copysync_ui/i18n.dart';
-import 'package:copysync_ui/main.dart';
-import 'package:copysync_ui/widgets/feedback_dialog.dart';
-import 'package:copysync_ui/widgets/pairing_dialog.dart';
+import 'package:pasteferry_ui/app_state.dart';
+import 'package:pasteferry_ui/background_service.dart';
+import 'package:pasteferry_ui/gen/pasteferry/v1/daemon.pb.dart';
+import 'package:pasteferry_ui/i18n.dart';
+import 'package:pasteferry_ui/main.dart';
+import 'package:pasteferry_ui/widgets/feedback_dialog.dart';
+import 'package:pasteferry_ui/widgets/pairing_dialog.dart';
 
 class _DemoState extends AppState {
   @override
@@ -16,7 +16,7 @@ class _DemoState extends AppState {
 
   @override
   Future<String> exportDiagnostics({int logLines = 200}) async =>
-      'CopySync diagnostics report\n${List.filled(40, 'time=2026-10-13T20:41:02 level=INFO msg=信令已连接').join('\n')}';
+      'PasteFerry diagnostics report\n${List.filled(40, 'time=2026-10-13T20:41:02 level=INFO msg=信令已连接').join('\n')}';
 }
 
 AppState _demo(String language, {LinkState link = LinkState.online, ServiceState? service}) =>
@@ -98,25 +98,25 @@ void main() {
   });
 
   testWidgets('设置里选的语言优先于系统语言', (tester) async {
-    await tester.pumpWidget(CopySyncApp(state: _demo('en')));
+    await tester.pumpWidget(PasteFerryApp(state: _demo('en')));
     expect(find.text('History'), findsWidgets);
     expect(find.text('复制记录'), findsNothing);
   });
 
   testWidgets('设置里选了繁体，界面用繁体', (tester) async {
-    await tester.pumpWidget(CopySyncApp(state: _demo('zh-Hant-HK')));
+    await tester.pumpWidget(PasteFerryApp(state: _demo('zh-Hant-HK')));
     expect(find.text(lookupAppLocalizations(zhHantHK).navHistory), findsWidgets);
     expect(find.text('复制记录'), findsNothing);
   });
 
   testWidgets('跟随系统时用系统语言', (tester) async {
-    await tester.pumpWidget(CopySyncApp(state: _demo('')));
+    await tester.pumpWidget(PasteFerryApp(state: _demo('')));
     expect(find.text('复制记录'), findsWidgets);
   });
 
   testWidgets('配置里的语言一变，界面立即换过来', (tester) async {
     final state = _demo('');
-    await tester.pumpWidget(CopySyncApp(state: state));
+    await tester.pumpWidget(PasteFerryApp(state: state));
     expect(find.text('复制记录'), findsWidgets);
 
     state.config!.language = 'ja';
@@ -127,7 +127,7 @@ void main() {
   });
 
   testWidgets('图片与文件的标题按界面语言显示，不用后台服务存下的中文摘要', (tester) async {
-    await tester.pumpWidget(CopySyncApp(state: _demo('en')));
+    await tester.pumpWidget(PasteFerryApp(state: _demo('en')));
     expect(find.text('Image'), findsOneWidget);
     expect(find.text('report.key and 1 more'), findsOneWidget);
     expect(find.textContaining('图片'), findsNothing);
@@ -144,7 +144,7 @@ void main() {
       tearDown(() => TestWidgetsFlutterBinding.instance.platformDispatcher.views.first.reset());
 
       Future<AppLocalizations> open(WidgetTester tester, AppState state) async {
-        await tester.pumpWidget(CopySyncApp(state: state));
+        await tester.pumpWidget(PasteFerryApp(state: state));
         await tester.pump();
         return AppLocalizations.of(tester.element(find.byType(Shell)));
       }

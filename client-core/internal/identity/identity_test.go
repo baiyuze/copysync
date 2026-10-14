@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/baiyuze/copysync/proto/deviceid"
+	"github.com/baiyuze/pasteferry/proto/deviceid"
 )
 
 func TestCreateThenLoadIsStable(t *testing.T) {

@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/baiyuze/copysync/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
 )
 
 // MaxPixels 是转换出来的预览图长边的上限，与界面解码时的限制一致。
@@ -60,7 +60,7 @@ func Prepare(path string) (string, error) {
 		return "", err
 	}
 	sum := sha256.Sum256([]byte(fmt.Sprintf("%s|%d|%d", path, info.Size(), info.ModTime().UnixNano())))
-	dir := filepath.Join(os.TempDir(), "CopySync-preview")
+	dir := filepath.Join(os.TempDir(), "PasteFerry-preview")
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return "", err
 	}

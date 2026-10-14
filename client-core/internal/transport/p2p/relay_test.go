@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 	// 测试内已有一个名为 relay 的信令转发桩，这里给 TURN 包起别名以示区分
-	turnrelay "github.com/baiyuze/copysync/server/relay"
+	turnrelay "github.com/baiyuze/pasteferry/server/relay"
 )
 
 // TestRelayFallback 验证「打洞失败就走服务器中转」这条兜底路径确实可用。

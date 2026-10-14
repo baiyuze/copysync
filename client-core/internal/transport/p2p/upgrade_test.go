@@ -9,7 +9,7 @@ import (
 
 	"github.com/pion/webrtc/v4"
 
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // signalBus 把几个 Manager 直接对接起来。异步、不保序地投递，

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 把解压出来的 CopySync 加进当前用户的应用菜单（不需要 root）。
+# 把解压出来的 PasteFerry 加进当前用户的应用菜单（不需要 root）。
 #
 #   ./install.sh
 #
@@ -10,10 +10,10 @@ data=${XDG_DATA_HOME:-$HOME/.local/share}
 
 mkdir -p "$data/applications" "$data/icons/hicolor/256x256/apps" "$data/icons/hicolor/512x512/apps"
 # Exec 里的路径按 Desktop Entry 规范放在引号里，允许文件夹名带空格
-sed "s#@EXEC@#\"$here/copysync\"#" "$here/share/com.copysync.app.desktop" > "$data/applications/com.copysync.app.desktop"
-cp "$here/share/com.copysync.app-256.png" "$data/icons/hicolor/256x256/apps/com.copysync.app.png"
-cp "$here/share/com.copysync.app-512.png" "$data/icons/hicolor/512x512/apps/com.copysync.app.png"
+sed "s#@EXEC@#\"$here/pasteferry\"#" "$here/share/com.pasteferry.app.desktop" > "$data/applications/com.pasteferry.app.desktop"
+cp "$here/share/com.pasteferry.app-256.png" "$data/icons/hicolor/256x256/apps/com.pasteferry.app.png"
+cp "$here/share/com.pasteferry.app-512.png" "$data/icons/hicolor/512x512/apps/com.pasteferry.app.png"
 command -v update-desktop-database >/dev/null && update-desktop-database -q "$data/applications" || true
 command -v gtk-update-icon-cache >/dev/null && gtk-update-icon-cache -q -t "$data/icons/hicolor" || true
 
-echo "已把 CopySync 加进应用菜单。也可以直接运行：$here/copysync"
+echo "已把 PasteFerry 加进应用菜单。也可以直接运行：$here/pasteferry"

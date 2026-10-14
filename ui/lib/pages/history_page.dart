@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../app_state.dart';
-import '../gen/copysync/v1/daemon.pb.dart';
+import '../gen/pasteferry/v1/daemon.pb.dart';
 import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';

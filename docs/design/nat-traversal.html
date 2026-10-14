@@ -41,7 +41,7 @@
 <p>结论：公司网络等于 4 个并列的、各自「端点无关映射」的 NAT，按目标 IP 选择走哪一个。单看每一条都很好打洞，难点只在于「发往对端的包走哪一条」事先不知道。</p>
 <p>公司路由器不支持 UPnP 与 NAT-PMP，也没有 IPv6。</p>
 <h3 id="家里这台">家里这台</h3>
-<div class="table-scroll"><table><thead><tr><th scope="col">项目</th><th scope="col">结果</th></tr></thead><tbody><tr><td>国内目标</td><td>同一本地端口发往不同服务器，公网地址与端口都相同：端点无关映射，好打洞</td></tr><tr><td>国外目标</td><td>经本机的代理出去，与 CopySync 无关</td></tr><tr><td>路由器</td><td>支持 UPnP，但它自己的外网地址与服务器看到的地址不同：运营商还有一层 NAT，在路由器上映射端口没用</td></tr><tr><td>IPv6</td><td>只有内网地址</td></tr></tbody></table></div>
+<div class="table-scroll"><table><thead><tr><th scope="col">项目</th><th scope="col">结果</th></tr></thead><tbody><tr><td>国内目标</td><td>同一本地端口发往不同服务器，公网地址与端口都相同：端点无关映射，好打洞</td></tr><tr><td>国外目标</td><td>经本机的代理出去，与隔空贴无关</td></tr><tr><td>路由器</td><td>支持 UPnP，但它自己的外网地址与服务器看到的地址不同：运营商还有一层 NAT，在路由器上映射端口没用</td></tr><tr><td>IPv6</td><td>只有内网地址</td></tr></tbody></table></div>
 <h3 id="旧版本为什么打不通">旧版本为什么打不通</h3>
 <ol><li><strong>只问了一台服务器</strong>。客户端只从自己的服务器得知本机公网地址，即出口 A，也只把它告诉对端。发往对端的包按目标 IP 很可能从另外三个出口之一出去，对端收到的源地址与告诉它的不一致，被它的路由器当作陌生来源丢弃。</li><li><strong>多配几台 STUN 也没用</strong>。pion 每问一台 STUN 服务器都单独开一个本地端口，问到的地址只对那个端口成立，互相用不上。</li></ol>
 <h2 id="三-方案">三、方案</h2>
@@ -55,14 +55,14 @@
 <p>每个出口的公网地址作为一条 srflx candidate，在 offer 或 answer 之后经信令发给对端，最多 8 条。对端为每条建立 candidate pair 做连通性检查，与实际出口吻合的那一条能打通。</p>
 <ul><li>优先级按 RFC 8445 计算，实测地址排在推算地址之前。</li><li>会改写端口的线路，探测拿到的就是这个端口在该线路上的真实映射，不需要猜。</li><li>首轮探测还没结束时最多等 4 秒，免得刚上线就发一份空结果。这是在发出 offer/answer 之后的后台里等，不耽误握手，但要短于中转的等待时限。</li></ul>
 <h3 id="4-记住见过的出口">4. 记住见过的出口</h3>
-<p>某一轮的探测服务器可能恰好都没落到某条线路上（实测出口 D 就时有时无）。本端按「本机各网卡的 IPv4 地址」区分网络，记下每个网络见过的出口 IP 及其是否改写端口，保存 7 天（<code>~/Library/Application Support/CopySync/egress.json</code>）。</p>
+<p>某一轮的探测服务器可能恰好都没落到某条线路上（实测出口 D 就时有时无）。本端按「本机各网卡的 IPv4 地址」区分网络，记下每个网络见过的出口 IP 及其是否改写端口，保存 7 天（<code>~/Library/Application Support/PasteFerry/egress.json</code>）。</p>
 <p>不改写端口的线路，地址就是「出口 IP + 本地端口」，这一轮没探测到也可以推算出来补发给对端；会改写端口的线路无法推算，不补。</p>
 <h3 id="5-优先直连">5. 优先直连</h3>
 <p>中转路径经服务器，握手往往比直连快。若不加约束，常常在直连打通之前就选中了中转，之后不再更换。中转路径要等一段时间才允许被选中（<code>SetRelayAcceptanceMinWait</code>）：1.1.0 是 3 秒，1.1.1 放宽到 5 秒，见第 8 节。</p>
 <h3 id="6-两端显示一致">6. 两端显示一致</h3>
 <p>只有发送方能确定自己的数据是否走 TURN：对端经中转发来的包，在本端看来可能只是一个普通的 peer-reflexive 地址。连接就绪后两端经控制通道交换 <code>LinkInfo{relayed}</code>，任一端经中转，两端都显示「中转」（1.0.2 引入）。</p>
 <h3 id="7-隐私开关与诊断">7. 隐私开关与诊断</h3>
-<ul><li>设置「用公共服务器探测网络出口」，默认开启。公共 STUN 服务器能看到本机公网 IP，与任何 WebRTC 应用相同，看不到内容。关闭后只用自己的服务器探测。配置字段 <code>only_own_stun</code> 刻意设计为「关闭」语义：旧版界面不发这个字段时，默认值 false 不会把功能误关。</li><li><code>copysync-cli nat</code>（后台接口 <code>GetNetwork</code>）显示打洞端口、每个出口的地址与来源，以及各设备当前走直连还是中转。</li></ul>
+<ul><li>设置「用公共服务器探测网络出口」，默认开启。公共 STUN 服务器能看到本机公网 IP，与任何 WebRTC 应用相同，看不到内容。关闭后只用自己的服务器探测。配置字段 <code>only_own_stun</code> 刻意设计为「关闭」语义：旧版界面不发这个字段时，默认值 false 不会把功能误关。</li><li><code>pasteferry-cli nat</code>（后台接口 <code>GetNetwork</code>）显示打洞端口、每个出口的地址与来源，以及各设备当前走直连还是中转。</li></ul>
 <h3 id="8-落到中转后-再试直连-1-1-1">8. 落到中转后，再试直连（1.1.1）</h3>
 <p><strong>问题。</strong>1.1.0 实机验收直连之后约 10 分钟，家里那台重启了后台服务，重连后变成了中转，之后一直是中转：</p>
 <pre><code>23:19:42  P2P 连接状态  direct
@@ -106,7 +106,7 @@
 <p><code>p2p/upgrade_test.go</code>（1.1.1）：ICE 重启期间两端状态一直是直连、重启中发出的消息照样送达；中转时发起方自己重启并改回直连，礼让方不主动重启；对端换了证书时本端重建连接（去掉这个处理，测试会卡在「连接中」）；连接断开时发送报错。信令桩异步、不保序地投递，比真实服务器更苛刻。<code>TestEgressOrder</code>（1.1.2）核对出口地址的收发顺序：初次握手发起方先收到对方的再发自己的，请应答方等的重启反过来；去掉等待，这个测试会失败。</p>
 <p><code>sync/backlog_test.go</code>（1.1.1）：连不上的设备在连接恢复后按复制先后收到补发、带补发标记，已送达的不重复；太旧的、已删除的不补发，补发途中又断开的留到下次；收到补发的文件不写进剪贴板。</p>
 <h3 id="nat-打洞实验室">NAT 打洞实验室</h3>
-<p><code>tools/natlab/run.sh</code> 用 Linux 网络命名空间与 iptables 搭出真实拓扑，<code>client-core/cmd/natlab</code> 用 CopySync 真实的 P2P 代码扮演两台设备：</p>
+<p><code>tools/natlab/run.sh</code> 用 Linux 网络命名空间与 iptables 搭出真实拓扑，<code>client-core/cmd/natlab</code> 用隔空贴真实的 P2P 代码扮演两台设备：</p>
 <pre><code>[a] 192.168.10.2 ── [rA] 出口 10.255.0.11–14 ──┐
                                                [inet] 信令  TURN  STUN×4
 [b] 192.168.20.2 ── [rB] 出口 10.254.0.21–22 ──┘</code></pre>

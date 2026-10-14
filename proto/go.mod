@@ -1,4 +1,4 @@
-module github.com/baiyuze/copysync/proto
+module github.com/baiyuze/pasteferry/proto
 
 go 1.26.3
 

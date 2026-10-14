@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
-	turnrelay "github.com/baiyuze/copysync/server/relay"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
+	turnrelay "github.com/baiyuze/pasteferry/server/relay"
 )
 
 // TestManagerAdvertisesProbedEgress 验证：管理器在共享端口上做出口探测，

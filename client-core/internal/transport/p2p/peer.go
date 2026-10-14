@@ -19,7 +19,7 @@ import (
 	"github.com/pion/webrtc/v4"
 	"google.golang.org/protobuf/proto"
 
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // ConnState 是对端连接的状态，会上报给界面。

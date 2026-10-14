@@ -132,7 +132,7 @@
             "name": "Both computers are on the same network. Why can't they find each other?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code. On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. More in the same network guide."
+              "text": "Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code. On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on PasteFerry Daemon in System Settings → Privacy & Security → Local Network. More in the same network guide."
             }
           },
           {
@@ -199,7 +199,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">PasteFerry used to be called CopySync. The app and the downloads keep the old name until the next version.</span></p>
 
   <main id="main">
     <section class="hero">
@@ -462,7 +461,7 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
-              <li>Run CopySync-Setup.exe. It installs for the current user, no administrator rights needed.<span class="aside">PasteFerry isn't code-signed yet, so Windows says "Windows protected your PC": click More info, then Run anyway. To skip the installer, get the <a href="https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip">portable zip</a>.</span></li>
+              <li>Run PasteFerry-Setup.exe. It installs for the current user, no administrator rights needed.<span class="aside">PasteFerry isn't code-signed yet, so Windows says "Windows protected your PC": click More info, then Run anyway. To skip the installer, get the <a href="https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip">portable zip</a>.</span></li>
               <li>Open PasteFerry and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it keeps running in the notification area.</li>
               <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
             </ol>
@@ -471,7 +470,7 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
             <ol>
-              <li>On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./CopySync-linux-amd64.deb</code>; on other distributions, download the tar.gz, extract it and run <code>./CopySync/install.sh</code>.</li>
+              <li>On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>; on other distributions, download the tar.gz, extract it and run <code>./PasteFerry/install.sh</code>.</li>
               <li>Open PasteFerry from the app menu and click Turn on background sync. From then on it starts when you log in.</li>
               <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
             </ol>
@@ -549,7 +548,7 @@
           </details>
           <details>
             <summary>Both computers are on the same network. Why can't they find each other?</summary>
-            <div class="answer"><p>Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code.</p><p>On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy &amp; Security → Local Network. More in the <a href="lan/#faq">same network guide</a>.</p></div>
+            <div class="answer"><p>Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code.</p><p>On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on PasteFerry Daemon in System Settings → Privacy &amp; Security → Local Network. More in the <a href="lan/#faq">same network guide</a>.</p></div>
           </details>
           <details>
             <summary>Windows? Linux? iPhone?</summary>

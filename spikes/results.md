@@ -14,7 +14,7 @@
 - 需 `defaults write <bundle_id> EnablePasteboardPrivacyDeveloperPreview -bool yes` 才生效
 - **下一个 macOS 大版本将强制执行**
 
-所以今天不做任何事也能正常工作，但这是颗定时炸弹。CopySync 的 daemon 正是
+所以今天不做任何事也能正常工作，但这是颗定时炸弹。隔空贴的 daemon 正是
 「后台程序化读剪贴板」，完全命中被拦截的场景，必须现在就按新机制设计。
 
 参考：[macOS 16 will warn when apps access pasteboard](https://appletreats.substack.com/p/macos-16-will-warn-when-apps-access)
@@ -39,7 +39,7 @@
 `detectMetadataForTypes:` 成功返回 `ContentType = public.plain-text`，
 并能正确判断 `conformsToType:` 的文件夹 / 图片 / 纯文本归属。
 
-意味着 CopySync 可以**免提示地**完成：
+意味着隔空贴可以**免提示地**完成：
 - 感知剪贴板变化（changeCount）
 - 判断复制的是文件 / 文件夹 / 文本 / 图片（detectMetadata + types）
 

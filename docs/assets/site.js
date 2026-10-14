@@ -154,7 +154,7 @@
   // 选过语言，以后打开首页就直接是这种语言，不再按浏览器语言跳转
   document.querySelectorAll("a[data-lang]").forEach(function (link) {
     link.addEventListener("click", function () {
-      try { localStorage.setItem("copysync-lang", link.dataset.lang); } catch (e) {}
+      try { localStorage.setItem("pasteferry-lang", link.dataset.lang); } catch (e) {}
     });
   });
 })();

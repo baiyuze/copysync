@@ -1,4 +1,4 @@
-# CopySync Android / iOS 客户端方案
+# 隔空贴 Android / iOS 客户端方案
 
 > 评审稿 · 2026-10-09 · 基于仓库提交 `59ba977`（客户端 1.3.1）
 >
@@ -31,17 +31,17 @@
 
 **Android：**
 
-1. 在浏览器、相册、聊天软件或文件管理器中，选择内容并点击“分享 → CopySync”。
-2. CopySync 打开接收分享的页面，选择目标设备，预览后发送。
+1. 在浏览器、相册、聊天软件或文件管理器中，选择内容并点击“分享 → 隔空贴”。
+2. 隔空贴打开接收分享的页面，选择目标设备，预览后发送。
 3. 电脑收到后按现有设置写入剪贴板或复制记录，随后可直接粘贴。
 4. 电脑离线时显示“等待设备上线”；用户重新打开手机 App 且电脑在线后重试，不把排队显示成发送成功。
 
-已经复制的文字，也可以打开 CopySync，点击“粘贴并发送”。不自动读取每次进入 App 时的剪贴板。
+已经复制的文字，也可以打开隔空贴，点击“粘贴并发送”。不自动读取每次进入 App 时的剪贴板。
 
 **iOS：**
 
-- 最可靠的主流程：打开 CopySync → 使用系统粘贴控件或选择照片 / 文件 → 选择电脑 → 发送。
-- 一期系统分享入口：分享扩展把内容保存为发送草稿，提示“已保存到 CopySync，请打开 App 发送”；用户随后手动打开主 App 完成传输。
+- 最可靠的主流程：打开隔空贴 → 使用系统粘贴控件或选择照片 / 文件 → 选择电脑 → 发送。
+- 一期系统分享入口：分享扩展把内容保存为发送草稿，提示“已保存到隔空贴，请打开 App 发送”；用户随后手动打开主 App 完成传输。
 - “在分享面板里直接发完”作为后续优化，必须先验证扩展的内存、运行时间、网络握手与宿主退出行为。**不承诺分享扩展能自动拉起主 App，也不把仅保存草稿标为已发送。**
 
 后一条意味着 iOS 一期比 Android 多一步，需要在内测时确认用户能否接受。
@@ -49,7 +49,7 @@
 ### 2.2 电脑发送到手机
 
 1. 在电脑复制文字、图片或文件。
-2. 手机打开 CopySync，建立连接并接收当前内容或仍可补发的记录。
+2. 手机打开隔空贴，建立连接并接收当前内容或仍可补发的记录。
 3. 文字点击“复制”，图片点击“复制 / 保存 / 分享”，文件点击“保存到文件 / 分享”。
 4. 手机切回微信、邮件等目标 App 粘贴；图片能否直接粘贴取决于目标 App 支持的格式。
 
@@ -136,9 +136,9 @@ iOS Share Extension → App Group 中的导入草稿
 
 ### 5.1 桥接与核心拆分
 
-首选 `gomobile bind`：Android 产出 AAR，iOS 产出 XCFramework，经 Kotlin / Swift 接给 Flutter。桌面仍使用现有 gRPC 适配器；移动端在应用进程内嵌入核心，不启动 `copysyncd` 子进程。
+首选 `gomobile bind`：Android 产出 AAR，iOS 产出 XCFramework，经 Kotlin / Swift 接给 Flutter。桌面仍使用现有 gRPC 适配器；移动端在应用进程内嵌入核心，不启动 `pasteferryd` 子进程。
 
-建议新增 `client-core/mobile/` 门面与 `internal/runtime/`，从 `cmd/copysyncd/main.go` 抽出可启停的组装逻辑。门面只暴露绑定支持的基本类型、字节数组、简单接口，不直接暴露 Go 泛型、channel、context 或复杂 Protobuf 类型。
+建议新增 `client-core/mobile/` 门面与 `internal/runtime/`，从 `cmd/pasteferryd/main.go` 抽出可启停的组装逻辑。门面只暴露绑定支持的基本类型、字节数组、简单接口，不直接暴露 Go 泛型、channel、context 或复杂 Protobuf 类型。
 
 建议接口语义（名称待实现时确定）：
 
@@ -300,7 +300,7 @@ Android 首个可用内测目标约 **6–8 周**，两端达到可发布质量�
 - [项目现状与已知限制](../README.zh-CN.md)：桌面功能、50 MiB 自动推送、iOS 尚不支持。
 - [同步引擎](../client-core/internal/sync/engine.go)、[内存补发队列](../client-core/internal/sync/backlog.go)：剪贴板输入依赖、自动写入、补发限制。
 - [Flutter daemon 客户端](../ui/lib/daemon_client.dart)、[后台服务管理](../ui/lib/background_service.dart)：桌面进程和本机 RPC 耦合。
-- [线上协议](../proto/copysync/v1/wire.proto)：签名、配对、offer / fetch、传输结束消息。
+- [线上协议](../proto/pasteferry/v1/wire.proto)：签名、配对、offer / fetch、传输结束消息。
 - [平台剪贴板](../client-core/internal/clipboard/darwin.go)、[非 Windows 密钥存储](../client-core/internal/identity/protect_other.go)：Cocoa 绑定、移动安全存储改造点。
 - [Go 依赖](../client-core/go.mod)、[TURN 实现](../server/relay/turn.go)：依赖版本与当前 UDP / IPv4 中转配置。
 

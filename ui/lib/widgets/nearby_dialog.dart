@@ -5,7 +5,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
-import '../gen/copysync/v1/daemon.pb.dart';
+import '../gen/pasteferry/v1/daemon.pb.dart';
 import '../i18n.dart';
 import '../icons.dart';
 import '../main.dart';

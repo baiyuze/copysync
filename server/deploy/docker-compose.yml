@@ -1,4 +1,4 @@
-# CopySync 信令服务器
+# PasteFerry 信令服务器
 #
 #   cp env.example .env      然后把 .env 里的 TURN_IP 改成这台服务器的公网 IP
 #   docker compose up -d
@@ -8,10 +8,10 @@
 # 必须用 host 网络：TURN 中转为每个会话随机分配 UDP 端口，
 # 端口映射模式下这些端口不可达，P2P 打不通时的兜底就会失效。
 services:
-  copysync-server:
+  pasteferry-server:
     build: .
-    image: copysync-server:local
-    container_name: copysync-server
+    image: pasteferry-server:local
+    container_name: pasteferry-server
     network_mode: host
     restart: unless-stopped
     command: >

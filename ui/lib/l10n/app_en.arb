@@ -1,5 +1,6 @@
 {
   "@@locale": "en",
+  "appName": "PasteFerry",
   "navHistory": "History",
   "navDevices": "Devices",
   "navSettings": "Settings",
@@ -47,7 +48,7 @@
       }
     }
   },
-  "errAutostart": "Couldn't set CopySync to start at login: {detail}",
+  "errAutostart": "Couldn't set PasteFerry to start at login: {detail}",
   "@errAutostart": {
     "placeholders": {
       "detail": {
@@ -174,10 +175,10 @@
   },
   "clear": "Clear",
   "historyCleared": "History cleared",
-  "permDeniedTitle": "CopySync can't read the clipboard",
-  "permAskTitle": "Allow CopySync to read the clipboard",
-  "permDeniedBody": "What you copy on this Mac won't be synced. In System Settings, set CopySync Daemon to Allow.",
-  "permAskBody": "Otherwise macOS asks every time. In System Settings, set CopySync Daemon to Allow.",
+  "permDeniedTitle": "PasteFerry can't read the clipboard",
+  "permAskTitle": "Allow PasteFerry to read the clipboard",
+  "permDeniedBody": "What you copy on this Mac won't be synced. In System Settings, set PasteFerry Daemon to Allow.",
+  "permAskBody": "Otherwise macOS asks every time. In System Settings, set PasteFerry Daemon to Allow.",
   "openSystemSettings": "Open System Settings",
   "fetch": "Pull to this device",
   "fetchStarted": "Pulling…",
@@ -259,7 +260,7 @@
     }
   },
   "noDevicesTitle": "No paired devices yet",
-  "noDevicesBody": "Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.",
+  "noDevicesBody": "Open PasteFerry on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.",
   "pairedDevices": "Paired devices",
   "pairedFootnote": "Direct: data goes straight between the two devices. Relay: when the network blocks a direct path, data goes through your server and stays end-to-end encrypted.",
   "offline": "Offline",
@@ -300,7 +301,7 @@
   },
   "addressSaved": "Looking for it at that address",
   "lanBlockedTitle": "macOS is blocking the local network",
-  "lanBlockedBody": "Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, {device} can't connect to devices on this network.",
+  "lanBlockedBody": "Turn on PasteFerry Daemon in System Settings → Privacy & Security → Local Network. Until then, {device} can't connect to devices on this network.",
   "@lanBlockedBody": {
     "placeholders": {
       "device": {
@@ -407,7 +408,7 @@
   "lanDiscovery": "Find devices on this network",
   "lanDiscoveryDesc": "Pair and sync without a server. Others on the network only see an anonymous entry that changes daily, and the device name only while Search nearby is open.",
   "macLocalNetwork": "Local Network access",
-  "macLocalNetworkDesc": "macOS asks once whether CopySync may connect to devices on your network. If you declined, turn on CopySync Daemon there.",
+  "macLocalNetworkDesc": "macOS asks once whether PasteFerry may connect to devices on your network. If you declined, turn on PasteFerry Daemon there.",
   "allowLan": "Windows Firewall",
   "allowLanDesc": "Allow this when other devices can't reach this one, for example when pairing from another subnet. Asks for administrator approval once.",
   "allow": "Allow",
@@ -434,7 +435,7 @@
   "keepCacheDesc": "Never longer than the history",
   "cacheUsage": "Cache size",
   "backgroundSync": "Background sync",
-  "backgroundFootnote": "When off, nothing syncs and CopySync doesn't start at login. History and pairings are kept; open the app to turn it back on.",
+  "backgroundFootnote": "When off, nothing syncs and PasteFerry doesn't start at login. History and pairings are kept; open the app to turn it back on.",
   "backgroundService": "Background service",
   "backgroundServiceDesc": "Starts at login and keeps syncing with the window closed",
   "restart": "Restart",
@@ -445,7 +446,7 @@
   "homepage": "Website",
   "feedback": "Report a problem",
   "disableTitle": "Turn off background sync?",
-  "disableBody": "CopySync on {device} will stop syncing and won't start at login. History and pairings are kept.",
+  "disableBody": "PasteFerry on {device} will stop syncing and won't start at login. History and pairings are kept.",
   "@disableBody": {
     "placeholders": {
       "device": {
@@ -493,21 +494,21 @@
       }
     }
   },
-  "svcExtractTitle": "Install or extract CopySync first",
-  "svcExtractBody": "CopySync is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.",
-  "svcMoveTitle": "Move CopySync to Applications first",
-  "svcMoveBody": "CopySync is running straight from the disk image. Drag it into Applications, eject the disk image, and open it from Applications to turn on background sync.",
-  "svcStartTitle": "Get started with CopySync",
-  "svcStartBody": "CopySync runs a small background process that notices clipboard changes and stays connected to your other devices. Once on, it starts at login and keeps syncing even with this window closed.",
+  "svcExtractTitle": "Install or extract PasteFerry first",
+  "svcExtractBody": "PasteFerry is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.",
+  "svcMoveTitle": "Move PasteFerry to Applications first",
+  "svcMoveBody": "PasteFerry is running straight from the disk image. Drag it into Applications, eject the disk image, and open it from Applications to turn on background sync.",
+  "svcStartTitle": "Get started with PasteFerry",
+  "svcStartBody": "PasteFerry runs a small background process that notices clipboard changes and stays connected to your other devices. Once on, it starts at login and keeps syncing even with this window closed.",
   "svcEnable": "Turn on background sync",
   "svcStaleTitle": "Turn background sync on again",
-  "svcStaleBodyWin": "CopySync has moved, but starting at login still points to the old place. Turn it on again so the background process uses this copy. History and pairings are kept.",
-  "svcStaleBodyMac": "CopySync has moved, or was installed with an old script. Turn it on again so the background process uses this app. History and pairings are kept.",
+  "svcStaleBodyWin": "PasteFerry has moved, but starting at login still points to the old place. Turn it on again so the background process uses this copy. History and pairings are kept.",
+  "svcStaleBodyMac": "PasteFerry has moved, or was installed with an old script. Turn it on again so the background process uses this app. History and pairings are kept.",
   "svcReenable": "Turn on again",
   "svcStoppedTitle": "The background service isn't running",
   "svcStoppedBody": "It may have just quit; the system usually restarts it within seconds. If you stay on this page, restart it with the button below.",
-  "svcDevBodyWin": "This is a development build with no copysyncd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.",
-  "svcDevBodyLinux": "This is a development build with no copysyncd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.",
+  "svcDevBodyWin": "This is a development build with no pasteferryd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.",
+  "svcDevBodyLinux": "This is a development build with no pasteferryd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.",
   "svcDevBodyMac": "This is a development build without the background service. Run ./scripts/install-macos.sh in the source folder to install it.",
   "svcLogPath": "Log: {path}",
   "@svcLogPath": {

@@ -110,6 +110,12 @@ abstract class AppLocalizations {
     ),
   ];
 
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'PasteFerry'**
+  String get appName;
+
   /// No description provided for @navHistory.
   ///
   /// In en, this message translates to:
@@ -227,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @errAutostart.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t set CopySync to start at login: {detail}'**
+  /// **'Couldn\'t set PasteFerry to start at login: {detail}'**
   String errAutostart(String detail);
 
   /// No description provided for @thisMacTitle.
@@ -449,25 +455,25 @@ abstract class AppLocalizations {
   /// No description provided for @permDeniedTitle.
   ///
   /// In en, this message translates to:
-  /// **'CopySync can\'t read the clipboard'**
+  /// **'PasteFerry can\'t read the clipboard'**
   String get permDeniedTitle;
 
   /// No description provided for @permAskTitle.
   ///
   /// In en, this message translates to:
-  /// **'Allow CopySync to read the clipboard'**
+  /// **'Allow PasteFerry to read the clipboard'**
   String get permAskTitle;
 
   /// No description provided for @permDeniedBody.
   ///
   /// In en, this message translates to:
-  /// **'What you copy on this Mac won\'t be synced. In System Settings, set CopySync Daemon to Allow.'**
+  /// **'What you copy on this Mac won\'t be synced. In System Settings, set PasteFerry Daemon to Allow.'**
   String get permDeniedBody;
 
   /// No description provided for @permAskBody.
   ///
   /// In en, this message translates to:
-  /// **'Otherwise macOS asks every time. In System Settings, set CopySync Daemon to Allow.'**
+  /// **'Otherwise macOS asks every time. In System Settings, set PasteFerry Daemon to Allow.'**
   String get permAskBody;
 
   /// No description provided for @openSystemSettings.
@@ -695,7 +701,7 @@ abstract class AppLocalizations {
   /// No description provided for @noDevicesBody.
   ///
   /// In en, this message translates to:
-  /// **'Open CopySync on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.'**
+  /// **'Open PasteFerry on your other computer and link the two with a 6-character pairing code. On the same network, you can also open Search nearby on both and click the other one.'**
   String get noDevicesBody;
 
   /// No description provided for @pairedDevices.
@@ -815,7 +821,7 @@ abstract class AppLocalizations {
   /// No description provided for @lanBlockedBody.
   ///
   /// In en, this message translates to:
-  /// **'Turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. Until then, {device} can\'t connect to devices on this network.'**
+  /// **'Turn on PasteFerry Daemon in System Settings → Privacy & Security → Local Network. Until then, {device} can\'t connect to devices on this network.'**
   String lanBlockedBody(String device);
 
   /// No description provided for @searchNearby.
@@ -1163,7 +1169,7 @@ abstract class AppLocalizations {
   /// No description provided for @macLocalNetworkDesc.
   ///
   /// In en, this message translates to:
-  /// **'macOS asks once whether CopySync may connect to devices on your network. If you declined, turn on CopySync Daemon there.'**
+  /// **'macOS asks once whether PasteFerry may connect to devices on your network. If you declined, turn on PasteFerry Daemon there.'**
   String get macLocalNetworkDesc;
 
   /// No description provided for @allowLan.
@@ -1325,7 +1331,7 @@ abstract class AppLocalizations {
   /// No description provided for @backgroundFootnote.
   ///
   /// In en, this message translates to:
-  /// **'When off, nothing syncs and CopySync doesn\'t start at login. History and pairings are kept; open the app to turn it back on.'**
+  /// **'When off, nothing syncs and PasteFerry doesn\'t start at login. History and pairings are kept; open the app to turn it back on.'**
   String get backgroundFootnote;
 
   /// No description provided for @backgroundService.
@@ -1391,7 +1397,7 @@ abstract class AppLocalizations {
   /// No description provided for @disableBody.
   ///
   /// In en, this message translates to:
-  /// **'CopySync on {device} will stop syncing and won\'t start at login. History and pairings are kept.'**
+  /// **'PasteFerry on {device} will stop syncing and won\'t start at login. History and pairings are kept.'**
   String disableBody(String device);
 
   /// No description provided for @disable.
@@ -1511,37 +1517,37 @@ abstract class AppLocalizations {
   /// No description provided for @svcExtractTitle.
   ///
   /// In en, this message translates to:
-  /// **'Install or extract CopySync first'**
+  /// **'Install or extract PasteFerry first'**
   String get svcExtractTitle;
 
   /// No description provided for @svcExtractBody.
   ///
   /// In en, this message translates to:
-  /// **'CopySync is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.'**
+  /// **'PasteFerry is running straight from the zip, and its temporary folder disappears when you close it. Run the installer, or extract the whole folder and open it from there, to turn on background sync.'**
   String get svcExtractBody;
 
   /// No description provided for @svcMoveTitle.
   ///
   /// In en, this message translates to:
-  /// **'Move CopySync to Applications first'**
+  /// **'Move PasteFerry to Applications first'**
   String get svcMoveTitle;
 
   /// No description provided for @svcMoveBody.
   ///
   /// In en, this message translates to:
-  /// **'CopySync is running straight from the disk image. Drag it into Applications, eject the disk image, and open it from Applications to turn on background sync.'**
+  /// **'PasteFerry is running straight from the disk image. Drag it into Applications, eject the disk image, and open it from Applications to turn on background sync.'**
   String get svcMoveBody;
 
   /// No description provided for @svcStartTitle.
   ///
   /// In en, this message translates to:
-  /// **'Get started with CopySync'**
+  /// **'Get started with PasteFerry'**
   String get svcStartTitle;
 
   /// No description provided for @svcStartBody.
   ///
   /// In en, this message translates to:
-  /// **'CopySync runs a small background process that notices clipboard changes and stays connected to your other devices. Once on, it starts at login and keeps syncing even with this window closed.'**
+  /// **'PasteFerry runs a small background process that notices clipboard changes and stays connected to your other devices. Once on, it starts at login and keeps syncing even with this window closed.'**
   String get svcStartBody;
 
   /// No description provided for @svcEnable.
@@ -1559,13 +1565,13 @@ abstract class AppLocalizations {
   /// No description provided for @svcStaleBodyWin.
   ///
   /// In en, this message translates to:
-  /// **'CopySync has moved, but starting at login still points to the old place. Turn it on again so the background process uses this copy. History and pairings are kept.'**
+  /// **'PasteFerry has moved, but starting at login still points to the old place. Turn it on again so the background process uses this copy. History and pairings are kept.'**
   String get svcStaleBodyWin;
 
   /// No description provided for @svcStaleBodyMac.
   ///
   /// In en, this message translates to:
-  /// **'CopySync has moved, or was installed with an old script. Turn it on again so the background process uses this app. History and pairings are kept.'**
+  /// **'PasteFerry has moved, or was installed with an old script. Turn it on again so the background process uses this app. History and pairings are kept.'**
   String get svcStaleBodyMac;
 
   /// No description provided for @svcReenable.
@@ -1589,13 +1595,13 @@ abstract class AppLocalizations {
   /// No description provided for @svcDevBodyWin.
   ///
   /// In en, this message translates to:
-  /// **'This is a development build with no copysyncd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.'**
+  /// **'This is a development build with no pasteferryd.exe next to it. Run scripts\\build-windows.ps1 in the source folder to build a complete version.'**
   String get svcDevBodyWin;
 
   /// No description provided for @svcDevBodyLinux.
   ///
   /// In en, this message translates to:
-  /// **'This is a development build with no copysyncd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.'**
+  /// **'This is a development build with no pasteferryd next to it. Run ./scripts/package-linux.sh in the source folder to build a complete version.'**
   String get svcDevBodyLinux;
 
   /// No description provided for @svcDevBodyMac.

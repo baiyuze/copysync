@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# 在 Linux 上安装 copysync-server 并注册为开机自启的 systemd 服务。
+# 在 Linux 上安装 pasteferry-server 并注册为开机自启的 systemd 服务。
 #
 #   sudo ./install.sh                 用本机的局域网地址启用 TURN 中转（局域网部署）
 #   sudo ./install.sh <公网IP>        用公网 IP 启用 TURN 中转（云服务器，跨公网使用）
 #   sudo ./install.sh uninstall       卸载
 #
-# 重复执行即为升级：替换二进制并重启，已有的 /etc/copysync/server.env 不会被覆盖。
+# 重复执行即为升级：替换二进制并重启，已有的 /etc/pasteferry/server.env 不会被覆盖。
 
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -16,12 +16,12 @@ say() { if [[ $ZH ]]; then echo "$1"; else echo "$2"; fi; }
 
 [[ $EUID -eq 0 ]] || { say "请用 root 运行：sudo $0 $*" "Run as root: sudo $0 $*"; exit 1; }
 
-ENV_FILE=/etc/copysync/server.env
+ENV_FILE=/etc/pasteferry/server.env
 
 if [[ ${1:-} == uninstall ]]; then
-    systemctl disable --now copysync-server 2>/dev/null || true
-    rm -f /usr/local/bin/copysync-server /etc/systemd/system/copysync-server.service
-    rm -rf /etc/copysync
+    systemctl disable --now pasteferry-server 2>/dev/null || true
+    rm -f /usr/local/bin/pasteferry-server /etc/systemd/system/pasteferry-server.service
+    rm -rf /etc/pasteferry
     systemctl daemon-reload
     say "✓ 已卸载" "✓ Uninstalled"
     exit 0
@@ -39,18 +39,30 @@ lan_ip() {
     echo "$ip"
 }
 
+# 2.0.0 之前叫 copysync-server：停掉旧服务（它占着 8787 与 3478 端口），配置挪过来接着用
+if [[ -f /etc/systemd/system/copysync-server.service ]]; then
+    say "▶ 停用旧的 copysync-server" "▶ Removing the old copysync-server"
+    systemctl disable --now copysync-server 2>/dev/null || true
+    rm -f /usr/local/bin/copysync-server /etc/systemd/system/copysync-server.service
+    if [[ -f /etc/copysync/server.env && ! -f $ENV_FILE ]]; then
+        mkdir -p /etc/pasteferry
+        mv /etc/copysync/server.env "$ENV_FILE"
+    fi
+    rm -rf /etc/copysync
+fi
+
 say "▶ 安装二进制到 /usr/local/bin" "▶ Installing the binary to /usr/local/bin"
-install -m 755 copysync-server /usr/local/bin/copysync-server
+install -m 755 pasteferry-server /usr/local/bin/pasteferry-server
 
 say "▶ 写入 systemd 单元" "▶ Writing the systemd unit"
-install -m 644 copysync-server.service /etc/systemd/system/copysync-server.service
+install -m 644 pasteferry-server.service /etc/systemd/system/pasteferry-server.service
 
 if [[ -f $ENV_FILE ]]; then
     say "▶ 保留已有配置 $ENV_FILE" "▶ Keeping the existing config $ENV_FILE"
     TURN_IP=$(sed -n 's/.*-turn-ip \([^ "]*\).*/\1/p' "$ENV_FILE")
     if [[ -n ${1:-} && ${1:-} != "$TURN_IP" ]]; then
-        say "  要改用 $1，编辑 $ENV_FILE 里的 -turn-ip 后执行 systemctl restart copysync-server" \
-            "  To switch to $1, edit -turn-ip in $ENV_FILE and run systemctl restart copysync-server"
+        say "  要改用 $1，编辑 $ENV_FILE 里的 -turn-ip 后执行 systemctl restart pasteferry-server" \
+            "  To switch to $1, edit -turn-ip in $ENV_FILE and run systemctl restart pasteferry-server"
     fi
 else
     TURN_IP=${1:-$(lan_ip)}
@@ -59,7 +71,7 @@ else
         exit 1
     }
     say "▶ 生成配置 $ENV_FILE（中转地址 $TURN_IP）" "▶ Writing $ENV_FILE (relay address $TURN_IP)"
-    mkdir -p /etc/copysync
+    mkdir -p /etc/pasteferry
     # 固定 secret：自动生成的话每次重启都会让已签发的 TURN 凭证失效
     # STUN 优先用自己：国内网络访问公共 STUN（如 Google 的）时通时断
     OPTIONS="-addr :8787 -turn-ip $TURN_IP -turn-secret $(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
@@ -70,32 +82,32 @@ fi
 
 say "▶ 启动" "▶ Starting"
 systemctl daemon-reload
-systemctl enable copysync-server >/dev/null 2>&1
-systemctl restart copysync-server
+systemctl enable pasteferry-server >/dev/null 2>&1
+systemctl restart pasteferry-server
 sleep 1
 
-if systemctl is-active --quiet copysync-server; then
+if systemctl is-active --quiet pasteferry-server; then
     say "  ✓ 已启动" "  ✓ Running"
 else
-    say "  ✗ 启动失败，查看日志：journalctl -u copysync-server -n 50" \
-        "  ✗ Failed to start. See the log: journalctl -u copysync-server -n 50"
+    say "  ✗ 启动失败，查看日志：journalctl -u pasteferry-server -n 50" \
+        "  ✗ Failed to start. See the log: journalctl -u pasteferry-server -n 50"
     exit 1
 fi
 
 ADDR=${TURN_IP:-$(lan_ip)}
 PORTS=$(tr '\t' '-' < /proc/sys/net/ipv4/ip_local_port_range 2>/dev/null || echo 32768-60999)
-VERSION=$(/usr/local/bin/copysync-server -version)
+VERSION=$(/usr/local/bin/pasteferry-server -version)
 if [[ $ZH ]]; then
     cat <<EOF
 
 安装完成：$VERSION
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     ws://$ADDR:8787/signal
 
   配置   $ENV_FILE
-  日志   journalctl -u copysync-server -f
-  重启   systemctl restart copysync-server
+  日志   journalctl -u pasteferry-server -f
+  重启   systemctl restart pasteferry-server
   卸载   sudo $0 uninstall
 
 防火墙需放行：TCP 8787（信令）、UDP 3478（STUN 与 TURN）、UDP $PORTS（中转端口，系统随机分配）
@@ -104,13 +116,13 @@ else
     cat <<EOF
 
 Installed: $VERSION
-In CopySync on each computer, set Settings → Signaling server to:
+In PasteFerry on each computer, set Settings → Signaling server to:
 
     ws://$ADDR:8787/signal
 
   Config     $ENV_FILE
-  Logs       journalctl -u copysync-server -f
-  Restart    systemctl restart copysync-server
+  Logs       journalctl -u pasteferry-server -f
+  Restart    systemctl restart pasteferry-server
   Uninstall  sudo $0 uninstall
 
 Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP $PORTS (relay ports, assigned by the OS)

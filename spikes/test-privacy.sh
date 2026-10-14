@@ -4,21 +4,21 @@
 # 同一套读取操作，分别在「隐私机制关闭」和「隐私机制开启」下各跑一轮，
 # 直接对比哪些操作会被拦截。开启的那一轮预演的就是下一个 macOS 大版本的行为。
 #
-# 读方 = SpikeA (com.copysync.spike.privacy)
-# 写方 = SpikeC (com.copysync.spike.writer)  ← 独立 bundle id 的真实 GUI App，
+# 读方 = SpikeA (com.pasteferry.spike.privacy)
+# 写方 = SpikeC (com.pasteferry.spike.writer)  ← 独立 bundle id 的真实 GUI App，
 #        这点很重要：pbcopy/osascript 是命令行工具，TCC 可能不当作「其他 App」
 
 set -uo pipefail
 cd "$(dirname "$0")"
 
-BUNDLE=com.copysync.spike.privacy
+BUNDLE=com.pasteferry.spike.privacy
 A=./build/SpikeA.app/Contents/MacOS/SpikeA
 C=./build/SpikeC.app/Contents/MacOS/SpikeC
-TESTFILE=/tmp/copysync-spike-test.txt
+TESTFILE=/tmp/pasteferry-spike-test.txt
 MODE=${1:-file}     # file | text | image
 
 [[ -x "$A" && -x "$C" ]] || { echo "请先运行 ./build.sh"; exit 1; }
-echo "CopySync spike 测试文件 $(date)" > "$TESTFILE"
+echo "PasteFerry spike 测试文件 $(date)" > "$TESTFILE"
 
 # 等待进程结束，最多 $2 秒。返回 1 表示超时（通常意味着弹窗在等待用户点击）
 wait_pid() {
@@ -73,7 +73,7 @@ cat <<EOF
 对比要点
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   · 阶段 1/2/3 在两轮中是否都无阻塞？
-      → 决定 CopySync 能否免提示地「感知变化 + 判断类型」
+      → 决定 PasteFerry 能否免提示地「感知变化 + 判断类型」
   · 阶段 4（读实际内容）在第 2 轮是否阻塞/弹窗？
       → 决定 A 端拿源文件路径是否需要用户授权
   · 阶段 5 的 accessBehavior 是否从 Default 迁移到 Ask？

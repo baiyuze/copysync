@@ -10,7 +10,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // 「搜索附近设备」：窗口打开期间在局域网里公开设备名，看得到附近同样打开了窗口的设备，
@@ -258,7 +258,7 @@ func (t *Transport) nearbyAdvertLocked(text map[string]string) {
 func (t *Transport) nearbySelfLocked() (name, platform string) {
 	name = t.visibleName
 	if name == "" {
-		name = "CopySync"
+		name = "PasteFerry"
 	}
 	return truncateUTF8(name, maxNearbyName), t.visiblePlatform
 }

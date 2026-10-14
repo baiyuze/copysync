@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 
-	"github.com/baiyuze/copysync/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
 )
 
 // plainText 返回记录的纯文本形式：写入剪贴板的纯文本类型、生成预览都用它。

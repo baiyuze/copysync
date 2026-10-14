@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
 )
 
 // 探测本地网络权限的目标在默认路由所在的网段里，又不是本机。没有网络的机器上跳过。

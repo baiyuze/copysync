@@ -132,7 +132,7 @@
             "name": "同じネットワークなのに、もう一台が見つからないのはなぜ？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "まず本当に同じサブネットか確認してください。会社の有線と Wi‑Fi、ゲストネットワーク、クライアント分離が有効な Wi‑Fi では、デバイス同士が見えないことがよくあります。その場合は、コードを入力する側で「別のサブネットにありますか？」をクリックし、相手のコードの下に表示されたアドレスを入力します。 Windows では初回起動時にファイアウォールに聞かれたら許可してください。キャンセルした場合は「設定 → ローカルネットワーク」で「許可」をクリックします。Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。詳しくは同じネットワークでの手順を。"
+              "text": "まず本当に同じサブネットか確認してください。会社の有線と Wi‑Fi、ゲストネットワーク、クライアント分離が有効な Wi‑Fi では、デバイス同士が見えないことがよくあります。その場合は、コードを入力する側で「別のサブネットにありますか？」をクリックし、相手のコードの下に表示されたアドレスを入力します。 Windows では初回起動時にファイアウォールに聞かれたら許可してください。キャンセルした場合は「設定 → ローカルネットワーク」で「許可」をクリックします。Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で PasteFerry Daemon をオンにします。詳しくは同じネットワークでの手順を。"
             }
           },
           {
@@ -199,7 +199,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">PasteFerry の旧名は CopySync です。次のバージョンまで、アプリとインストーラーには CopySync と表示されます。</span></p>
 
   <main id="main">
     <section class="hero">
@@ -462,7 +461,7 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
-              <li>CopySync-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。<span class="aside">PasteFerry はまだコード署名されていないため、「Windows によって PC が保護されました」と表示されます。「詳細情報」を押してから「実行」を押してください。インストーラーを使いたくない場合は<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip">ポータブル版</a>もあります。</span></li>
+              <li>PasteFerry-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。<span class="aside">PasteFerry はまだコード署名されていないため、「Windows によって PC が保護されました」と表示されます。「詳細情報」を押してから「実行」を押してください。インストーラーを使いたくない場合は<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip">ポータブル版</a>もあります。</span></li>
               <li>PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても、画面右下の通知領域で動き続けます。</li>
               <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
             </ol>
@@ -471,7 +470,7 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
             <ol>
-              <li>Ubuntu や Debian などでは .deb をダウンロードし、<code>sudo apt install ./CopySync-linux-amd64.deb</code> を実行します。ほかのディストリビューションでは tar.gz をダウンロードして展開し、<code>./CopySync/install.sh</code> を実行します。</li>
+              <li>Ubuntu や Debian などでは .deb をダウンロードし、<code>sudo apt install ./PasteFerry-linux-amd64.deb</code> を実行します。ほかのディストリビューションでは tar.gz をダウンロードして展開し、<code>./PasteFerry/install.sh</code> を実行します。</li>
               <li>アプリケーションメニューから PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。以後はログイン時に自動で起動します。</li>
               <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
             </ol>
@@ -549,7 +548,7 @@
           </details>
           <details>
             <summary>同じネットワークなのに、もう一台が見つからないのはなぜ？</summary>
-            <div class="answer"><p>まず本当に同じサブネットか確認してください。会社の有線と Wi‑Fi、ゲストネットワーク、クライアント分離が有効な Wi‑Fi では、デバイス同士が見えないことがよくあります。その場合は、コードを入力する側で「別のサブネットにありますか？」をクリックし、相手のコードの下に表示されたアドレスを入力します。</p><p>Windows では初回起動時にファイアウォールに聞かれたら許可してください。キャンセルした場合は「設定 → ローカルネットワーク」で「許可」をクリックします。Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。詳しくは<a href="lan/#faq">同じネットワークでの手順</a>を。</p></div>
+            <div class="answer"><p>まず本当に同じサブネットか確認してください。会社の有線と Wi‑Fi、ゲストネットワーク、クライアント分離が有効な Wi‑Fi では、デバイス同士が見えないことがよくあります。その場合は、コードを入力する側で「別のサブネットにありますか？」をクリックし、相手のコードの下に表示されたアドレスを入力します。</p><p>Windows では初回起動時にファイアウォールに聞かれたら許可してください。キャンセルした場合は「設定 → ローカルネットワーク」で「許可」をクリックします。Mac では「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で PasteFerry Daemon をオンにします。詳しくは<a href="lan/#faq">同じネットワークでの手順</a>を。</p></div>
           </details>
           <details>
             <summary>Windows や Linux に対応していますか？iPhone は？</summary>

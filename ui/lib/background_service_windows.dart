@@ -3,10 +3,10 @@ import 'dart:io';
 import 'background_service.dart';
 import 'i18n.dart';
 
-/// Windows：后台服务 `copysyncd.exe` 与 `CopySync.exe` 放在同一个目录。
+/// Windows：后台服务 `pasteferryd.exe` 与 `PasteFerry.exe` 放在同一个目录。
 ///
 /// 开机自启登记在 `HKCU\...\Run`，只影响当前用户，不需要管理员权限。登记的命令是
-/// `copysyncd.exe -supervise`：守护进程拉起真正干活的子进程，子进程崩溃就隔 10 秒
+/// `pasteferryd.exe -supervise`：守护进程拉起真正干活的子进程，子进程崩溃就隔 10 秒
 /// 再拉起，相当于 Mac 上 launchd 的 KeepAlive。
 ///
 /// 不做成 Windows 服务：服务运行在会话 0，与用户桌面隔离，访问不到用户的剪贴板。
@@ -16,8 +16,8 @@ class WindowsBackgroundService implements BackgroundService {
         _env = environment ?? Platform.environment;
 
   static const _runKey = r'HKCU\Software\Microsoft\Windows\CurrentVersion\Run';
-  static const _valueName = 'CopySync';
-  static const _image = 'copysyncd.exe';
+  static const _valueName = 'PasteFerry';
+  static const _image = 'pasteferryd.exe';
 
   final String _executable;
   final Map<String, String> _env;
@@ -29,7 +29,7 @@ class WindowsBackgroundService implements BackgroundService {
 
   String get _localAppData => _env['LOCALAPPDATA'] ?? '${_env['USERPROFILE']}\\AppData\\Local';
 
-  String get logPath => '$_localAppData\\CopySync\\logs\\daemon.log';
+  String get logPath => '$_localAppData\\PasteFerry\\logs\\daemon.log';
 
   @override
   String get displayLogPath => logPath.replaceFirst(_localAppData, '%LOCALAPPDATA%');
@@ -79,17 +79,26 @@ class WindowsBackgroundService implements BackgroundService {
     await _stop();
   }
 
+  @override
+  Future<bool> removeLegacy() async {
+    const legacyValue = 'CopySync', legacyImage = 'copysyncd.exe';
+    final enabled = (await Process.run('reg', ['query', _runKey, '/v', legacyValue])).exitCode == 0;
+    if (enabled) await Process.run('reg', ['delete', _runKey, '/v', legacyValue, '/f']);
+    if (await _running(legacyImage)) await _stop(legacyImage);
+    return enabled;
+  }
+
   /// 守护进程与后台服务一起结束：只结束后台服务的话，守护进程会把它重新拉起来
-  Future<void> _stop() async {
-    await Process.run('taskkill', ['/F', '/T', '/IM', _image]);
-    for (var i = 0; i < 20 && await _running(); i++) {
+  Future<void> _stop([String image = _image]) async {
+    await Process.run('taskkill', ['/F', '/T', '/IM', image]);
+    for (var i = 0; i < 20 && await _running(image); i++) {
       await Future<void>.delayed(const Duration(milliseconds: 250));
     }
   }
 
-  Future<bool> _running() async {
-    final r = await Process.run('tasklist', ['/FI', 'IMAGENAME eq $_image', '/NH']);
-    return '${r.stdout}'.toLowerCase().contains(_image);
+  Future<bool> _running([String image = _image]) async {
+    final r = await Process.run('tasklist', ['/FI', 'IMAGENAME eq $image', '/NH']);
+    return '${r.stdout}'.toLowerCase().contains(image);
   }
 
   /// 自启项里登记的命令；没有登记时为 null。
@@ -97,7 +106,7 @@ class WindowsBackgroundService implements BackgroundService {
   /// `reg query` 的输出形如：
   ///
   ///     HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
-  ///         CopySync    REG_SZ    "C:\...\copysyncd.exe" -supervise
+  ///         PasteFerry    REG_SZ    "C:\...\pasteferryd.exe" -supervise
   Future<String?> _registeredCommand() async {
     final r = await Process.run('reg', ['query', _runKey, '/v', _valueName]);
     if (r.exitCode != 0) return null;

@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
 SITE = "https://baiyuze.github.io/pasteferry/"
 REPO = "https://github.com/baiyuze/pasteferry"
-# 网站所在的路径，404 页面用绝对路径引用资源。2026-10 从 /copysync/ 改名而来，
+# 网站所在的路径，404 页面用绝对路径引用资源。2.0.0 改名前在 /copysync/，
 # 旧路径由 baiyuze.github.io 仓库里的跳转页接住
 BASE = "/pasteferry/"
 DL = REPO + "/releases/latest/download/"
@@ -90,7 +90,7 @@ REDIRECT = """  <script>
     (function () {
       try {
         var paths = PATHS;
-        var pick = localStorage.getItem("copysync-lang");
+        var pick = localStorage.getItem("pasteferry-lang");
         if (!paths.hasOwnProperty(pick)) {
           pick = "";
           if (/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)) return;
@@ -208,8 +208,7 @@ def header(c: dict, code: str, up: str, sub: str = "") -> str:
         {lang_menu(c, code, up, sub)}
       </nav>
     </div>
-  </header>
-  <p class="renamed"><span class="wrap">{c["rename_note"]}</span></p>"""
+  </header>"""
 
 
 # 三种连接方式的小插图：设备是笔记本与服务器的轮廓，虚线框是一个网络，蓝线是复制的内容走的路
@@ -661,98 +660,98 @@ LAN_IP = "192.168.1.20"
 TRANSCRIPTS = {
     "zh": {
         "win": f"""> 停止旧版本
-> 安装到 C:\\Program Files\\CopySync Server
-> 注册服务 CopySyncServer（中转地址 {LAN_IP}）
+> 安装到 C:\\Program Files\\PasteFerry Server
+> 注册服务 PasteFerryServer（中转地址 {LAN_IP}）
 > 在 Windows 防火墙里放行
 > 启动
   √ 已启动
 
-安装完成：copysync-server {VERSION}，作为 Windows 服务开机自动运行
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+安装完成：pasteferry-server {VERSION}，作为 Windows 服务开机自动运行
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     ws://{LAN_IP}:8787/signal
 
-  程序   C:\\Program Files\\CopySync Server
-  日志   C:\\ProgramData\\CopySync Server\\server.log
-  重启   Restart-Service CopySyncServer（管理员 PowerShell）
+  程序   C:\\Program Files\\PasteFerry Server
+  日志   C:\\ProgramData\\PasteFerry Server\\server.log
+  重启   Restart-Service PasteFerryServer（管理员 PowerShell）
   卸载   双击 uninstall.cmd""",
         "mac": f"""▶ 停止旧版本
-▶ 安装到 /Users/me/Library/Application Support/CopySync Server
+▶ 安装到 /Users/me/Library/Application Support/PasteFerry Server
 ▶ 写入 LaunchAgent（中转地址 {LAN_IP}）
 ▶ 启动
   ✓ 已启动
 
-安装完成：copysync-server {VERSION}，登录这台 Mac 后自动运行
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+安装完成：pasteferry-server {VERSION}，登录这台 Mac 后自动运行
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     ws://{LAN_IP}:8787/signal
 
-  日志   /Users/me/Library/Logs/CopySync/server.log
-  重启   launchctl kickstart -k gui/501/com.copysync.server
+  日志   /Users/me/Library/Logs/PasteFerry/server.log
+  重启   launchctl kickstart -k gui/501/com.pasteferry.server
   卸载   ./install.sh uninstall""",
         "linux": f"""▶ 安装二进制到 /usr/local/bin
 ▶ 写入 systemd 单元
-▶ 生成配置 /etc/copysync/server.env（中转地址 {LAN_IP}）
+▶ 生成配置 /etc/pasteferry/server.env（中转地址 {LAN_IP}）
 ▶ 启动
   ✓ 已启动
 
-安装完成：copysync-server {VERSION}
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+安装完成：pasteferry-server {VERSION}
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     ws://{LAN_IP}:8787/signal
 
-  配置   /etc/copysync/server.env
-  日志   journalctl -u copysync-server -f
-  重启   systemctl restart copysync-server
+  配置   /etc/pasteferry/server.env
+  日志   journalctl -u pasteferry-server -f
+  重启   systemctl restart pasteferry-server
   卸载   sudo ./install.sh uninstall
 
 防火墙需放行：TCP 8787（信令）、UDP 3478（STUN 与 TURN）、UDP 32768-60999（中转端口，系统随机分配）""",
     },
     "en": {
         "win": f"""> Stopping the running version
-> Installing to C:\\Program Files\\CopySync Server
-> Registering the service CopySyncServer (relay address {LAN_IP})
+> Installing to C:\\Program Files\\PasteFerry Server
+> Registering the service PasteFerryServer (relay address {LAN_IP})
 > Allowing it through Windows Firewall
 > Starting
   √ Running
 
-Installed: copysync-server {VERSION}. It runs as a Windows service and starts with Windows.
-In CopySync on each computer, set Settings > Signaling server to:
+Installed: pasteferry-server {VERSION}. It runs as a Windows service and starts with Windows.
+In PasteFerry on each computer, set Settings > Signaling server to:
 
     ws://{LAN_IP}:8787/signal
 
-  Program    C:\\Program Files\\CopySync Server
-  Logs       C:\\ProgramData\\CopySync Server\\server.log
-  Restart    Restart-Service CopySyncServer (in an administrator PowerShell)
+  Program    C:\\Program Files\\PasteFerry Server
+  Logs       C:\\ProgramData\\PasteFerry Server\\server.log
+  Restart    Restart-Service PasteFerryServer (in an administrator PowerShell)
   Uninstall  double-click uninstall.cmd""",
         "mac": f"""▶ Stopping the running version
-▶ Installing to /Users/me/Library/Application Support/CopySync Server
+▶ Installing to /Users/me/Library/Application Support/PasteFerry Server
 ▶ Writing the LaunchAgent (relay address {LAN_IP})
 ▶ Starting
   ✓ Running
 
-Installed: copysync-server {VERSION}. It starts whenever you log in to this Mac.
-In CopySync on each computer, set Settings → Signaling server to:
+Installed: pasteferry-server {VERSION}. It starts whenever you log in to this Mac.
+In PasteFerry on each computer, set Settings → Signaling server to:
 
     ws://{LAN_IP}:8787/signal
 
-  Logs       /Users/me/Library/Logs/CopySync/server.log
-  Restart    launchctl kickstart -k gui/501/com.copysync.server
+  Logs       /Users/me/Library/Logs/PasteFerry/server.log
+  Restart    launchctl kickstart -k gui/501/com.pasteferry.server
   Uninstall  ./install.sh uninstall""",
         "linux": f"""▶ Installing the binary to /usr/local/bin
 ▶ Writing the systemd unit
-▶ Writing /etc/copysync/server.env (relay address {LAN_IP})
+▶ Writing /etc/pasteferry/server.env (relay address {LAN_IP})
 ▶ Starting
   ✓ Running
 
-Installed: copysync-server {VERSION}
-In CopySync on each computer, set Settings → Signaling server to:
+Installed: pasteferry-server {VERSION}
+In PasteFerry on each computer, set Settings → Signaling server to:
 
     ws://{LAN_IP}:8787/signal
 
-  Config     /etc/copysync/server.env
-  Logs       journalctl -u copysync-server -f
-  Restart    systemctl restart copysync-server
+  Config     /etc/pasteferry/server.env
+  Logs       journalctl -u pasteferry-server -f
+  Restart    systemctl restart pasteferry-server
   Uninstall  sudo ./install.sh uninstall
 
 Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)""",
@@ -894,18 +893,18 @@ def server_page(code: str) -> str:
     shots = up + shots_dir(code)
     t = TRANSCRIPTS["zh" if code.startswith("zh") else "en"]
 
-    linux_dl = f"""curl -LO {DL}copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
+    linux_dl = f"""curl -LO {DL}pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz
+cd pasteferry-server-linux-amd64
 sudo ./install.sh"""
-    mac_dl = f"""curl -LO {DL}copysync-server-macos.tar.gz
-tar xzf copysync-server-macos.tar.gz
-cd copysync-server-macos
+    mac_dl = f"""curl -LO {DL}pasteferry-server-macos.tar.gz
+tar xzf pasteferry-server-macos.tar.gz
+cd pasteferry-server-macos
 ./install.sh"""
 
     w, m, l = g["win"], g["mac"], g["linux"]
     explorer = []
-    for name, kind in [("copysync-server.exe", "exe"), ("install.cmd", "cmd"), ("install.ps1", "doc"),
+    for name, kind in [("pasteferry-server.exe", "exe"), ("install.cmd", "cmd"), ("install.ps1", "doc"),
                        ("README.md", "doc"), ("uninstall.cmd", "cmd")]:
         # 要双击的那个文件标出来
         mark = f'<em>{w["double_click"]}</em>' if name == "install.cmd" else ""
@@ -999,14 +998,14 @@ cd copysync-server-macos
                 <ol class="steps">
 {items(w["steps"])}
                 </ol>
-                <a class="button" href="{DL}copysync-server-windows-amd64.zip">{DOWN}{w["download"]}</a>
+                <a class="button" href="{DL}pasteferry-server-windows-amd64.zip">{DOWN}{w["download"]}</a>
                 <ul class="points">
 {items(w["notes"])}
                 </ul>
               </div>
               <div class="os-figures">
                 <figure class="explorer" role="img" aria-label="{esc(w["explorer_label"])}">
-                  <div class="t-bar win"><span class="t-tab folder">copysync-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                  <div class="t-bar win"><span class="t-tab folder">pasteferry-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
                   <ul class="files">
 {explorer}
                   </ul>
@@ -1031,7 +1030,7 @@ cd copysync-server-macos
                 </ul>
               </div>
               <div class="os-figures">
-                {term("mac", "copysync-server-macos — zsh", transcript(t["mac"], "%", "./install.sh"), m["term_label"])}
+                {term("mac", "pasteferry-server-macos — zsh", transcript(t["mac"], "%", "./install.sh"), m["term_label"])}
               </div>
             </div>
             {manage(g["manage_caption"], m["manage"])}
@@ -1123,9 +1122,9 @@ def cloud_page(code: str) -> str:
     links = {"home": home_href, "lan": base + LAN, "server": base + GUIDE, "ts": base + TAILSCALE,
              "start": base + START, "deploy": f"{REPO}/blob/main/server/deploy/README.md"}
     d = cl["diagram"]
-    install = f"""curl -LO {DL}copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
+    install = f"""curl -LO {DL}pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz
+cd pasteferry-server-linux-amd64
 sudo ./install.sh {CLOUD_IP}"""
     rules = "\n".join(
         "                <tr>" + "".join(f"<td>{x}</td>" for x in row) + "</tr>" for row in cl["rules"])
@@ -1559,7 +1558,7 @@ def download_page(code: str) -> str:
     home_href = up + (path or "./")
     base = up + path
     links = {"start": base + START, "server": base + START + "#server", "releases": REPO + "/releases",
-             "sums": DL + "SHA256SUMS", "universal": DL + "CopySync.dmg", "portable": DL + "CopySync-windows-x64.zip",
+             "sums": DL + "SHA256SUMS", "universal": DL + "PasteFerry.dmg", "portable": DL + "PasteFerry-windows-x64.zip",
              "notes": REPO + "/releases/latest", "lan": base + LAN}
     w, m, lx = d["win"], d["mac"], d["linux"]
 
@@ -1592,7 +1591,7 @@ def download_page(code: str) -> str:
             <div class="os-grid">
               <div class="os-steps">
                 <div class="dl-row">
-                  {button("CopySync-Setup.exe", w["setup"])}
+                  {button("PasteFerry-Setup.exe", w["setup"])}
                 </div>
                 <p class="small">{fill(w["portable"], links)}</p>
                 <ol class="steps">
@@ -1610,8 +1609,8 @@ def download_page(code: str) -> str:
             <div class="os-grid">
               <div class="os-steps">
                 <div class="dl-row" data-mac-chip>
-                  {button("CopySync-mac-apple-silicon.dmg", m["apple"])}
-                  {button("CopySync-mac-intel.dmg", m["intel"], True)}
+                  {button("PasteFerry-mac-apple-silicon.dmg", m["apple"])}
+                  {button("PasteFerry-mac-intel.dmg", m["intel"], True)}
                 </div>
                 <p class="small">{fill(m["universal"], links)}</p>
                 <ol class="steps">
@@ -1633,16 +1632,16 @@ def download_page(code: str) -> str:
               <div class="os-steps">
                 <h4>{lx["deb_h"]}</h4>
                 <div class="dl-row">
-                  {button("CopySync-linux-amd64.deb", lx["x64"])}
-                  {button("CopySync-linux-arm64.deb", lx["arm64"], True)}
+                  {button("PasteFerry-linux-amd64.deb", lx["x64"])}
+                  {button("PasteFerry-linux-arm64.deb", lx["arm64"], True)}
                 </div>
-                {code_block(c, "sudo apt install ./CopySync-linux-amd64.deb")}
+                {code_block(c, "sudo apt install ./PasteFerry-linux-amd64.deb")}
                 <h4>{lx["tar_h"]}</h4>
                 <div class="dl-row">
-                  {button("CopySync-linux-amd64.tar.gz", lx["x64"], True)}
-                  {button("CopySync-linux-arm64.tar.gz", lx["arm64"], True)}
+                  {button("PasteFerry-linux-amd64.tar.gz", lx["x64"], True)}
+                  {button("PasteFerry-linux-arm64.tar.gz", lx["arm64"], True)}
                 </div>
-                {code_block(c, "tar xzf CopySync-linux-amd64.tar.gz" + chr(10) + "./CopySync/install.sh")}
+                {code_block(c, "tar xzf PasteFerry-linux-amd64.tar.gz" + chr(10) + "./PasteFerry/install.sh")}
               </div>
               <ul class="points">
 {items(lx["notes"])}

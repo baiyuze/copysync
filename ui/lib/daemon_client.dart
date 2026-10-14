@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:grpc/grpc.dart';
 
-import 'gen/copysync/v1/daemon.pbgrpc.dart';
+import 'gen/pasteferry/v1/daemon.pbgrpc.dart';
 
 /// daemon 写在数据目录下的握手信息。
 ///
@@ -35,23 +35,23 @@ class DaemonEndpoint {
   ///
   /// 刻意不用 path_provider：它在 macOS 上返回的是
   /// `~/Library/Application Support/<bundle_id>`，与 daemon 用的
-  /// `~/Library/Application Support/CopySync` 并不是同一个位置。
+  /// `~/Library/Application Support/PasteFerry` 并不是同一个位置。
   static String defaultDataDir() {
     if (Platform.isMacOS) {
       final home = Platform.environment['HOME'] ?? '';
-      return '$home/Library/Application Support/CopySync';
+      return '$home/Library/Application Support/PasteFerry';
     }
     if (Platform.isWindows) {
       final base = Platform.environment['LOCALAPPDATA'] ??
           Platform.environment['APPDATA'] ??
           '';
-      return '$base\\CopySync';
+      return '$base\\PasteFerry';
     }
     // Linux：按 XDG 放在 ~/.local/share 下，XDG_DATA_HOME 是绝对路径时以它为准
     final env = Platform.environment;
     final data = env['XDG_DATA_HOME'] ?? '';
     final base = data.startsWith('/') ? data : '${env['HOME'] ?? ''}/.local/share';
-    return '$base/copysync';
+    return '$base/pasteferry';
   }
 
   static File endpointFile([String? dataDir]) =>
@@ -95,7 +95,7 @@ class DaemonConnection {
     );
     final client = DaemonServiceClient(
       channel,
-      options: CallOptions(metadata: {'x-copysync-token': ep.token}),
+      options: CallOptions(metadata: {'x-pasteferry-token': ep.token}),
     );
     return DaemonConnection._(channel, client, ep);
   }

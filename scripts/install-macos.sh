@@ -8,23 +8,23 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 
 # 发布包里 app 与本脚本同级；源码仓库里则在 dist/ 下
-if [[ -d "$HERE/CopySyncDaemon.app" ]]; then
-    APP_SRC="$HERE/CopySyncDaemon.app"
+if [[ -d "$HERE/PasteFerryDaemon.app" ]]; then
+    APP_SRC="$HERE/PasteFerryDaemon.app"
 else
-    APP_SRC="$HERE/../dist/CopySyncDaemon.app"
+    APP_SRC="$HERE/../dist/PasteFerryDaemon.app"
 fi
 INSTALL_DIR="$HOME/Applications"
-APP_DST="$INSTALL_DIR/CopySyncDaemon.app"
-BIN="$APP_DST/Contents/MacOS/copysyncd"
-LABEL="com.copysync.daemon"
+APP_DST="$INSTALL_DIR/PasteFerryDaemon.app"
+BIN="$APP_DST/Contents/MacOS/pasteferryd"
+LABEL="com.pasteferry.daemon"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
-LOG_DIR="$HOME/Library/Logs/CopySync"
+LOG_DIR="$HOME/Library/Logs/PasteFerry"
 
 [[ -d "$APP_SRC" ]] || { echo "找不到 $APP_SRC，请先运行 ./scripts/build.sh"; exit 1; }
 
 echo "▶ 停止已在运行的实例"
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
-pkill -f copysyncd 2>/dev/null || true
+pkill -f pasteferryd 2>/dev/null || true
 # bootout 是异步的：旧服务没注销干净就 bootstrap 会报 "Bootstrap failed: 5"
 for _ in {1..20}; do
     launchctl print "gui/$(id -u)/$LABEL" &>/dev/null || break
@@ -65,7 +65,7 @@ echo "▶ 启动"
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
 sleep 2
 
-if pgrep -f copysyncd > /dev/null; then
+if pgrep -f pasteferryd > /dev/null; then
     echo "  ✓ daemon 已启动"
 else
     echo "  ✗ 启动失败，查看 $LOG_DIR/daemon.log"
@@ -77,12 +77,12 @@ cat <<EOF
 安装完成。
 
   日志      $LOG_DIR/daemon.log
-  数据目录  ~/Library/Application Support/CopySync
+  数据目录  ~/Library/Application Support/PasteFerry
   停止      launchctl bootout gui/\$(id -u)/$LABEL
   卸载      上面的命令 + rm -rf "$APP_DST" "$PLIST"
 
 接下来：
-  1. 打开 CopySync.app 配置信令服务器地址并配对设备
+  1. 打开 PasteFerry.app 配置信令服务器地址并配对设备
   2. 若系统弹出「想要从其他 App 粘贴」，选择允许；
      之后可在 系统设置 → 隐私与安全性 → 从其他 App 粘贴 中改为「始终允许」
 EOF

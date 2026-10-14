@@ -18,7 +18,7 @@ int main(int argc, const char *argv[]) {
         NSApplication *app = NSApplication.sharedApplication;
         [app setActivationPolicy:NSApplicationActivationPolicyAccessory];
 
-        NSString *destPath = argc > 1 ? @(argv[1]) : @"/tmp/copysync-paste-dest";
+        NSString *destPath = argc > 1 ? @(argv[1]) : @"/tmp/pasteferry-paste-dest";
         NSURL *dest = [NSURL fileURLWithPath:destPath];
         [NSFileManager.defaultManager createDirectoryAtURL:dest
                                withIntermediateDirectories:YES attributes:nil error:nil];

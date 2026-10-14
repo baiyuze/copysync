@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 在 Mac 上安装 copysync-server，登录后自动在后台运行（launchd LaunchAgent），不需要管理员权限。
-# 发布包 copysync-server-macos.tar.gz 里的 install.sh 就是这个文件。
+# 在 Mac 上安装 pasteferry-server，登录后自动在后台运行（launchd LaunchAgent），不需要管理员权限。
+# 发布包 pasteferry-server-macos.tar.gz 里的 install.sh 就是这个文件。
 #
 #   ./install.sh                 用本机的局域网地址启用 TURN 中转
 #   ./install.sh <IP>            指定 TURN 对外公布的地址
@@ -16,12 +16,12 @@ LANGS=$(defaults read -g AppleLanguages 2>/dev/null | tr -d ' \n' || true)
 [[ ${LANGS#(\"} == zh* || ${LC_ALL:-${LANG:-}} == zh* ]] && ZH=1 || ZH=
 say() { if [[ $ZH ]]; then echo "$1"; else echo "$2"; fi; }
 
-LABEL=com.copysync.server
-DIR="$HOME/Library/Application Support/CopySync Server"
-BIN="$DIR/copysync-server"
+LABEL=com.pasteferry.server
+DIR="$HOME/Library/Application Support/PasteFerry Server"
+BIN="$DIR/pasteferry-server"
 CONF="$DIR/server.conf"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
-LOG="$HOME/Library/Logs/CopySync/server.log"
+LOG="$HOME/Library/Logs/PasteFerry/server.log"
 DOMAIN="gui/$(id -u)"
 
 stop() {
@@ -56,6 +56,19 @@ lan_ip() {
     echo "$ip"
 }
 
+# 2.0.0 之前叫 CopySync Server：停掉旧服务（它占着 8787 与 3478 端口），配置挪过来接着用
+OLD_DIR="$HOME/Library/Application Support/CopySync Server"
+OLD_PLIST="$HOME/Library/LaunchAgents/com.copysync.server.plist"
+if [[ -f $OLD_PLIST || -d $OLD_DIR ]]; then
+    say "▶ 停用旧的 CopySync Server" "▶ Removing the old CopySync Server"
+    launchctl bootout "$DOMAIN/com.copysync.server" 2>/dev/null || true
+    if [[ -f $OLD_DIR/server.conf && ! -f $CONF ]]; then
+        mkdir -p "$DIR"
+        cp "$OLD_DIR/server.conf" "$CONF"
+    fi
+    rm -rf "$OLD_DIR" "$OLD_PLIST"
+fi
+
 TURN_IP= TURN_SECRET=
 # shellcheck source=/dev/null
 [[ -f $CONF ]] && source "$CONF"
@@ -76,7 +89,7 @@ stop
 
 say "▶ 安装到 $DIR" "▶ Installing to $DIR"
 mkdir -p "$DIR" "$(dirname "$LOG")" "$(dirname "$PLIST")"
-cp copysync-server "$BIN"
+cp pasteferry-server "$BIN"
 chmod 755 "$BIN"
 # 用浏览器下载的包带隔离属性，Gatekeeper 会拦下没有公证的程序，而 launchd 拉起时没有弹窗可以放行
 xattr -d com.apple.quarantine "$BIN" 2>/dev/null || true
@@ -129,7 +142,7 @@ if [[ $ZH ]]; then
     cat <<EOF
 
 安装完成：$VERSION，登录这台 Mac 后自动运行
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     ws://$TURN_IP:8787/signal
 
@@ -141,7 +154,7 @@ else
     cat <<EOF
 
 Installed: $VERSION. It starts whenever you log in to this Mac.
-In CopySync on each computer, set Settings → Signaling server to:
+In PasteFerry on each computer, set Settings → Signaling server to:
 
     ws://$TURN_IP:8787/signal
 
@@ -155,7 +168,7 @@ fi
 FW=/usr/libexec/ApplicationFirewall/socketfilterfw
 if [[ -x $FW ]] && "$FW" --getglobalstate 2>/dev/null | grep -q "enabled"; then
     echo
-    say "系统防火墙已开启，放行 copysync-server（需要输入密码）：" \
-        "The macOS firewall is on. Allow copysync-server through it (asks for your password):"
+    say "系统防火墙已开启，放行 pasteferry-server（需要输入密码）：" \
+        "The macOS firewall is on. Allow pasteferry-server through it (asks for your password):"
     echo "  sudo $FW --add \"$BIN\" && sudo $FW --unblockapp \"$BIN\""
 fi

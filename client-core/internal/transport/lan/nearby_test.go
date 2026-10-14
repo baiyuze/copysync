@@ -107,7 +107,7 @@ func TestNearbyPairing(t *testing.T) {
 	if time.Since(start) > 2*time.Second {
 		t.Errorf("被拒收后应当很快返回，用了 %v", time.Since(start))
 	}
-	if _, err := a.t.PairNearby(ctx2, "copysync-nobody"); !errors.Is(err, ErrNotFound) {
+	if _, err := a.t.PairNearby(ctx2, "pasteferry-nobody"); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("不认识的实例应当找不到，得到 %v", err)
 	}
 }

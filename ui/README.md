@@ -1,10 +1,10 @@
-# CopySync 界面
+# 隔空贴界面
 
-CopySync 的 macOS 界面（Flutter）：复制记录、设备配对、设置，以及首次启动时启用后台同步。
+隔空贴的 macOS 界面（Flutter）：复制记录、设备配对、设置，以及首次启动时启用后台同步。
 
-界面本身不碰剪贴板，也不联网：所有操作都经本机 gRPC 交给后台服务 `copysyncd`
+界面本身不碰剪贴板，也不联网：所有操作都经本机 gRPC 交给后台服务 `pasteferryd`
 （见 `../client-core`）。连接信息由后台服务写在
-`~/Library/Application Support/CopySync/daemon.json`。
+`~/Library/Application Support/PasteFerry/daemon.json`。
 
 ```bash
 flutter run -d macos     # 开发运行，需要后台服务已在运行（../scripts/install-macos.sh）

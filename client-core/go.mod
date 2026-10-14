@@ -1,4 +1,4 @@
-module github.com/baiyuze/copysync/client-core
+module github.com/baiyuze/pasteferry/client-core
 
 go 1.26.3
 
@@ -34,16 +34,16 @@ require (
 )
 
 require (
-	github.com/baiyuze/copysync/proto v0.0.0
+	github.com/baiyuze/pasteferry/proto v0.0.0
 	github.com/coder/websocket v1.8.15
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
 )
 
-replace github.com/baiyuze/copysync/proto => ../proto
+replace github.com/baiyuze/pasteferry/proto => ../proto
 
 require (
-	github.com/baiyuze/copysync/server v0.0.0
+	github.com/baiyuze/pasteferry/server v0.0.0
 	github.com/jezek/xgb v1.3.1
 	github.com/klauspost/compress v1.20.0
 	github.com/pion/ice/v4 v4.4.2
@@ -56,4 +56,4 @@ require (
 	golang.org/x/text v0.40.0
 )
 
-replace github.com/baiyuze/copysync/server => ../server
+replace github.com/baiyuze/pasteferry/server => ../server

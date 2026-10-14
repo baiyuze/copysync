@@ -189,7 +189,7 @@ func ResolveAddress(ctx context.Context, s string) ([]netip.AddrPort, error) {
 // 广播里不放设备名和 ID：同一网络里的其他人看到的只是一串每天都变的字符。
 // 已配对的设备知道对方的 ID，自己算一遍就能认出来。
 func presenceToken(deviceID string, day time.Time) string {
-	sum := sha256.Sum256([]byte("copysync-lan|" + deviceID + "|" + day.UTC().Format("2006-01-02")))
+	sum := sha256.Sum256([]byte("pasteferry-lan|" + deviceID + "|" + day.UTC().Format("2006-01-02")))
 	return hex.EncodeToString(sum[:8])
 }
 

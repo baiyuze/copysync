@@ -51,7 +51,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">PasteFerry の旧名は CopySync です。次のバージョンまで、アプリとインストーラーには CopySync と表示されます。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
@@ -141,23 +140,23 @@
             <div class="os-grid">
               <div class="os-steps">
                 <ol class="steps">
-                <li><a href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> をダウンロードし、右クリックで「すべて展開」します。</li>
+                <li><a href="https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-windows-amd64.zip">pasteferry-server-windows-amd64.zip</a> をダウンロードし、右クリックで「すべて展開」します。</li>
                 <li>展開したフォルダーを開き、<code>install.cmd</code> をダブルクリックします。<span class="aside">「Windows によって PC が保護されました」と出たら「詳細情報」から「実行」を、ユーザーアカウント制御が出たら「はい」を押します。サーバーはまだコード署名していないため、一度だけ確認されます。</span></li>
                 <li>インストールは新しく開くウィンドウで進みます。最後に表示される <code>ws://…/signal</code> がアプリに入力するアドレスです。</li>
                 </ol>
-                <a class="button" href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版サーバーをダウンロード</a>
+                <a class="button" href="https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版サーバーをダウンロード</a>
                 <ul class="points">
-                <li><strong>Windows サービスとして動作：</strong>Windows の起動とともに立ち上がり、サインイン不要で、ウィンドウも出ません。「サービス」では CopySync Server と表示されます。</li>
-                <li><strong>ファイアウォールは設定済み：</strong>copysync-server.exe だけを対象にした受信規則をスクリプトが追加するので、ポートを開ける必要はありません。</li>
+                <li><strong>Windows サービスとして動作：</strong>Windows の起動とともに立ち上がり、サインイン不要で、ウィンドウも出ません。「サービス」では PasteFerry Server と表示されます。</li>
+                <li><strong>ファイアウォールは設定済み：</strong>pasteferry-server.exe だけを対象にした受信規則をスクリプトが追加するので、ポートを開ける必要はありません。</li>
                 <li><strong>アドレスが違うものになった</strong>（仮想マシンや VPN でネットワークアダプターが複数あるなど）：展開したフォルダーのアドレスバーに <code>cmd</code> と入力して Enter を押し、<code>install.cmd 192.168.1.20</code> のようにアドレスを指定して実行します。</li>
                 <li>Windows 10・11、x64 に対応。</li>
                 </ul>
               </div>
               <div class="os-figures">
-                <figure class="explorer" role="img" aria-label="展開したフォルダーには copysync-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd があり、install.cmd をダブルクリックする">
-                  <div class="t-bar win"><span class="t-tab folder">copysync-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                <figure class="explorer" role="img" aria-label="展開したフォルダーには pasteferry-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd があり、install.cmd をダブルクリックする">
+                  <div class="t-bar win"><span class="t-tab folder">pasteferry-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
                   <ul class="files">
-                  <li><span class="f-icon exe" aria-hidden="true"></span><span class="f-name">copysync-server.exe</span></li>
+                  <li><span class="f-icon exe" aria-hidden="true"></span><span class="f-name">pasteferry-server.exe</span></li>
                   <li class="hl"><span class="f-icon cmd" aria-hidden="true"></span><span class="f-name">install.cmd</span><em>ダブルクリック</em></li>
                   <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">install.ps1</span></li>
                   <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">README.md</span></li>
@@ -167,20 +166,20 @@
                 <figure class="term" role="img" aria-label="install.cmd の実行後のウィンドウ：旧バージョンの停止、インストール、サービス登録、ファイアウォール許可、起動のあと、アドレス ws://192.168.1.20:8787/signal を表示">
                 <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>管理者: Windows PowerShell</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
 <pre class="t-body"><span class="t-step">&gt; Stopping the running version</span>
-<span class="t-step">&gt; Installing to C:\Program Files\CopySync Server</span>
-<span class="t-step">&gt; Registering the service CopySyncServer (relay address 192.168.1.20)</span>
+<span class="t-step">&gt; Installing to C:\Program Files\PasteFerry Server</span>
+<span class="t-step">&gt; Registering the service PasteFerryServer (relay address 192.168.1.20)</span>
 <span class="t-step">&gt; Allowing it through Windows Firewall</span>
 <span class="t-step">&gt; Starting</span>
   √ Running
 
-Installed: copysync-server 1.7.0. It runs as a Windows service and starts with Windows.
-In CopySync on each computer, set Settings &gt; Signaling server to:
+Installed: pasteferry-server 1.7.0. It runs as a Windows service and starts with Windows.
+In PasteFerry on each computer, set Settings &gt; Signaling server to:
 
     <span class="t-url">ws://192.168.1.20:8787/signal</span>
 
-  Program    C:\Program Files\CopySync Server
-  Logs       C:\ProgramData\CopySync Server\server.log
-  Restart    Restart-Service CopySyncServer (in an administrator PowerShell)
+  Program    C:\Program Files\PasteFerry Server
+  Logs       C:\ProgramData\PasteFerry Server\server.log
+  Restart    Restart-Service PasteFerryServer (in an administrator PowerShell)
   Uninstall  double-click uninstall.cmd</pre>
               </figure>
               </div>
@@ -189,9 +188,9 @@ In CopySync on each computer, set Settings &gt; Signaling server to:
                 <table class="manage">
                   <caption>あとで使うもの</caption>
                   <tbody>
-                  <tr><th scope="row">状態</th><td>管理者の PowerShell で <code>Get-Service CopySyncServer</code>、または「サービス」で CopySync Server を確認</td></tr>
-                  <tr><th scope="row">ログ</th><td><code>C:\ProgramData\CopySync Server\server.log</code></td></tr>
-                  <tr><th scope="row">再起動</th><td>管理者の PowerShell で <code>Restart-Service CopySyncServer</code></td></tr>
+                  <tr><th scope="row">状態</th><td>管理者の PowerShell で <code>Get-Service PasteFerryServer</code>、または「サービス」で PasteFerry Server を確認</td></tr>
+                  <tr><th scope="row">ログ</th><td><code>C:\ProgramData\PasteFerry Server\server.log</code></td></tr>
+                  <tr><th scope="row">再起動</th><td>管理者の PowerShell で <code>Restart-Service PasteFerryServer</code></td></tr>
                   <tr><th scope="row">更新</th><td>新しいバージョンをダウンロードして展開し、もう一度 <code>install.cmd</code> をダブルクリック。設定は引き継がれます</td></tr>
                   <tr><th scope="row">アンインストール</th><td><code>uninstall.cmd</code> をダブルクリック。サービス、ファイアウォール規則、ファイルをすべて削除します</td></tr>
                   </tbody>
@@ -207,9 +206,9 @@ In CopySync on each computer, set Settings &gt; Signaling server to:
                   <li>「ターミナル」を開き、次の行を順に実行します：
                 <div class="code">
                   <button class="copy" type="button" data-done="コピーしました">コピー</button>
-<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-macos.tar.gz
-tar xzf copysync-server-macos.tar.gz
-cd copysync-server-macos
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-macos.tar.gz
+tar xzf pasteferry-server-macos.tar.gz
+cd pasteferry-server-macos
 ./install.sh</code></pre>
                 </div></li>
                 <li>最後に表示される <code>ws://…/signal</code> がアプリに入力するアドレスです。</li>
@@ -217,27 +216,27 @@ cd copysync-server-macos
                 <ul class="points">
                 <li><strong>管理者権限は不要です。</strong>ログインしているあいだバックグラウンドで動き、終了しても macOS が再起動します。</li>
                 <li><strong>この Mac はスリープさせないでください：</strong>「システム設定 → エネルギー」（ノートは「バッテリー → オプション」）で自動スリープを防ぐ項目をオンにします。</li>
-                <li><strong>macOS のファイアウォールがオンなら、</strong>スクリプトの最後に copysync-server を許可するコマンドが表示されます。</li>
+                <li><strong>macOS のファイアウォールがオンなら、</strong>スクリプトの最後に pasteferry-server を許可するコマンドが表示されます。</li>
                 <li>Intel と Apple シリコンの両方に対応、macOS 13 以降。</li>
                 </ul>
               </div>
               <div class="os-figures">
                 <figure class="term" role="img" aria-label="ターミナルで ./install.sh を実行した出力：インストール、LaunchAgent の作成、起動のあと、アドレス ws://192.168.1.20:8787/signal を表示">
-                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">copysync-server-macos — zsh</span></div>
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">pasteferry-server-macos — zsh</span></div>
 <pre class="t-body"><span class="t-prompt">%</span> ./install.sh
 <span class="t-step">▶ Stopping the running version</span>
-<span class="t-step">▶ Installing to /Users/me/Library/Application Support/CopySync Server</span>
+<span class="t-step">▶ Installing to /Users/me/Library/Application Support/PasteFerry Server</span>
 <span class="t-step">▶ Writing the LaunchAgent (relay address 192.168.1.20)</span>
 <span class="t-step">▶ Starting</span>
   ✓ Running
 
-Installed: copysync-server 1.7.0. It starts whenever you log in to this Mac.
-In CopySync on each computer, set Settings → Signaling server to:
+Installed: pasteferry-server 1.7.0. It starts whenever you log in to this Mac.
+In PasteFerry on each computer, set Settings → Signaling server to:
 
     <span class="t-url">ws://192.168.1.20:8787/signal</span>
 
-  Logs       /Users/me/Library/Logs/CopySync/server.log
-  Restart    launchctl kickstart -k gui/501/com.copysync.server
+  Logs       /Users/me/Library/Logs/PasteFerry/server.log
+  Restart    launchctl kickstart -k gui/501/com.pasteferry.server
   Uninstall  ./install.sh uninstall</pre>
               </figure>
               </div>
@@ -246,8 +245,8 @@ In CopySync on each computer, set Settings → Signaling server to:
                 <table class="manage">
                   <caption>あとで使うもの</caption>
                   <tbody>
-                  <tr><th scope="row">ログ</th><td><code>~/Library/Logs/CopySync/server.log</code></td></tr>
-                  <tr><th scope="row">再起動</th><td><code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code></td></tr>
+                  <tr><th scope="row">ログ</th><td><code>~/Library/Logs/PasteFerry/server.log</code></td></tr>
+                  <tr><th scope="row">再起動</th><td><code>launchctl kickstart -k gui/$(id -u)/com.pasteferry.server</code></td></tr>
                   <tr><th scope="row">更新</th><td>新しいバージョンをダウンロードして展開し、もう一度 <code>./install.sh</code> を実行。設定は引き継がれます</td></tr>
                   <tr><th scope="row">アンインストール</th><td><code>./install.sh uninstall</code></td></tr>
                   </tbody>
@@ -263,9 +262,9 @@ In CopySync on each computer, set Settings → Signaling server to:
                   <li>そのマシン上で（または ssh でログインして）次の行を順に実行します：<span class="aside">ARM（64 ビット OS の Raspberry Pi など）では <code>amd64</code> を <code>arm64</code> に置き換えます。</span>
                 <div class="code">
                   <button class="copy" type="button" data-done="コピーしました">コピー</button>
-<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz
+cd pasteferry-server-linux-amd64
 sudo ./install.sh</code></pre>
                 </div></li>
                 <li>最後に表示される <code>ws://…/signal</code> がアプリに入力するアドレスです。</li>
@@ -282,18 +281,18 @@ sudo ./install.sh</code></pre>
 <pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh
 <span class="t-step">▶ Installing the binary to /usr/local/bin</span>
 <span class="t-step">▶ Writing the systemd unit</span>
-<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 192.168.1.20)</span>
+<span class="t-step">▶ Writing /etc/pasteferry/server.env (relay address 192.168.1.20)</span>
 <span class="t-step">▶ Starting</span>
   ✓ Running
 
-Installed: copysync-server 1.7.0
-In CopySync on each computer, set Settings → Signaling server to:
+Installed: pasteferry-server 1.7.0
+In PasteFerry on each computer, set Settings → Signaling server to:
 
     <span class="t-url">ws://192.168.1.20:8787/signal</span>
 
-  Config     /etc/copysync/server.env
-  Logs       journalctl -u copysync-server -f
-  Restart    systemctl restart copysync-server
+  Config     /etc/pasteferry/server.env
+  Logs       journalctl -u pasteferry-server -f
+  Restart    systemctl restart pasteferry-server
   Uninstall  sudo ./install.sh uninstall
 
 Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
@@ -304,10 +303,10 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
                 <table class="manage">
                   <caption>あとで使うもの</caption>
                   <tbody>
-                  <tr><th scope="row">状態</th><td><code>systemctl status copysync-server</code></td></tr>
-                  <tr><th scope="row">ログ</th><td><code>journalctl -u copysync-server -f</code></td></tr>
-                  <tr><th scope="row">再起動</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
-                  <tr><th scope="row">設定</th><td><code>/etc/copysync/server.env</code>。編集したらサービスを再起動</td></tr>
+                  <tr><th scope="row">状態</th><td><code>systemctl status pasteferry-server</code></td></tr>
+                  <tr><th scope="row">ログ</th><td><code>journalctl -u pasteferry-server -f</code></td></tr>
+                  <tr><th scope="row">再起動</th><td><code>sudo systemctl restart pasteferry-server</code></td></tr>
+                  <tr><th scope="row">設定</th><td><code>/etc/pasteferry/server.env</code>。編集したらサービスを再起動</td></tr>
                   <tr><th scope="row">更新</th><td>新しいバージョンをダウンロードして展開し、もう一度 <code>sudo ./install.sh</code> を実行。設定は引き継がれます</td></tr>
                   <tr><th scope="row">アンインストール</th><td><code>sudo ./install.sh uninstall</code></td></tr>
                   </tbody>
@@ -359,7 +358,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
           </details>
           <details>
             <summary>サーバーのアドレスが変わった</summary>
-            <div class="answer"><p>新しいアドレスを付けてスクリプトをもう一度実行します。Windows は <code>install.cmd 新しいアドレス</code>、Mac は <code>./install.sh 新しいアドレス</code>。Linux では <code>/etc/copysync/server.env</code> の <code>-turn-ip</code> を書き換えてサービスを再起動します。そのあと各コンピューターのアドレスも変更してください。</p><p>ルーターでアドレスを固定しておけば、こうしたことは起きません。</p></div>
+            <div class="answer"><p>新しいアドレスを付けてスクリプトをもう一度実行します。Windows は <code>install.cmd 新しいアドレス</code>、Mac は <code>./install.sh 新しいアドレス</code>。Linux では <code>/etc/pasteferry/server.env</code> の <code>-turn-ip</code> を書き換えてサービスを再起動します。そのあと各コンピューターのアドレスも変更してください。</p><p>ルーターでアドレスを固定しておけば、こうしたことは起きません。</p></div>
           </details>
           <details>
             <summary>LAN の外でも同期できますか？</summary>

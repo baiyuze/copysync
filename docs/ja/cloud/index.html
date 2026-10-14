@@ -51,7 +51,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">PasteFerry の旧名は CopySync です。次のバージョンまで、アプリとインストーラーには CopySync と表示されます。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
@@ -167,15 +166,15 @@
               <li>次の行を順に実行します。最後の行はあなたのグローバル IP に置き換えます：<span class="aside">ARM では <code>amd64</code> を <code>arm64</code> に置き換えます。</span>
                 <div class="code">
                   <button class="copy" type="button" data-done="コピーしました">コピー</button>
-<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz
+cd pasteferry-server-linux-amd64
 sudo ./install.sh 203.0.113.10</code></pre>
                 </div></li>
               <li>最後に表示される <code>ws://203.0.113.10:8787/signal</code> がアプリに入力するアドレスです。</li>
             </ol>
             <ul class="points">
-              <li><strong>systemd サービスとして登録</strong>され、起動時に立ち上がります。設定は <code>/etc/copysync/server.env</code>。</li>
+              <li><strong>systemd サービスとして登録</strong>され、起動時に立ち上がります。設定は <code>/etc/pasteferry/server.env</code>。</li>
               <li><strong>更新：</strong>新しいバージョンをダウンロードして展開し、もう一度 <code>sudo ./install.sh</code> を実行。設定は引き継がれます。</li>
               <li><strong>Docker でも動かせます：</strong><a href="https://github.com/baiyuze/pasteferry/blob/main/server/deploy/README.md">サーバーの構築手順</a>（英語・中国語）をご覧ください。</li>
             </ul>
@@ -186,18 +185,18 @@ sudo ./install.sh 203.0.113.10</code></pre>
 <pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh 203.0.113.10
 <span class="t-step">▶ Installing the binary to /usr/local/bin</span>
 <span class="t-step">▶ Writing the systemd unit</span>
-<span class="t-step">▶ Writing /etc/copysync/server.env (relay address 203.0.113.10)</span>
+<span class="t-step">▶ Writing /etc/pasteferry/server.env (relay address 203.0.113.10)</span>
 <span class="t-step">▶ Starting</span>
   ✓ Running
 
-Installed: copysync-server 1.7.0
-In CopySync on each computer, set Settings → Signaling server to:
+Installed: pasteferry-server 1.7.0
+In PasteFerry on each computer, set Settings → Signaling server to:
 
     <span class="t-url">ws://203.0.113.10:8787/signal</span>
 
-  Config     /etc/copysync/server.env
-  Logs       journalctl -u copysync-server -f
-  Restart    systemctl restart copysync-server
+  Config     /etc/pasteferry/server.env
+  Logs       journalctl -u pasteferry-server -f
+  Restart    systemctl restart pasteferry-server
   Uninstall  sudo ./install.sh uninstall
 
 Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768-60999 (relay ports, assigned by the OS)</pre>
@@ -237,10 +236,10 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
                 <table class="manage">
                   <caption>あとで使うもの</caption>
                   <tbody>
-                  <tr><th scope="row">状態</th><td><code>systemctl status copysync-server</code></td></tr>
-                  <tr><th scope="row">ログ</th><td><code>journalctl -u copysync-server -f</code></td></tr>
-                  <tr><th scope="row">再起動</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
-                  <tr><th scope="row">設定</th><td><code>/etc/copysync/server.env</code>。編集したらサービスを再起動</td></tr>
+                  <tr><th scope="row">状態</th><td><code>systemctl status pasteferry-server</code></td></tr>
+                  <tr><th scope="row">ログ</th><td><code>journalctl -u pasteferry-server -f</code></td></tr>
+                  <tr><th scope="row">再起動</th><td><code>sudo systemctl restart pasteferry-server</code></td></tr>
+                  <tr><th scope="row">設定</th><td><code>/etc/pasteferry/server.env</code>。編集したらサービスを再起動</td></tr>
                   <tr><th scope="row">更新</th><td>新しいバージョンをダウンロードして展開し、もう一度 <code>sudo ./install.sh</code> を実行。設定は引き継がれます</td></tr>
                   <tr><th scope="row">アンインストール</th><td><code>sudo ./install.sh uninstall</code></td></tr>
                   </tbody>

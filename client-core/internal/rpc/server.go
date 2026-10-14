@@ -17,16 +17,16 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/baiyuze/copysync/client-core/internal/clipboard"
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	"github.com/baiyuze/copysync/client-core/internal/diag"
-	"github.com/baiyuze/copysync/client-core/internal/peers"
-	"github.com/baiyuze/copysync/client-core/internal/store"
-	"github.com/baiyuze/copysync/client-core/internal/transport/lan"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/clipboard"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	"github.com/baiyuze/pasteferry/client-core/internal/diag"
+	"github.com/baiyuze/pasteferry/client-core/internal/peers"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/lan"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
-const tokenHeader = "x-copysync-token"
+const tokenHeader = "x-pasteferry-token"
 
 // Deps 是 Server 依赖的 daemon 内部能力。用接口而非具体类型，
 // 让 rpc 层不必反向依赖尚未实现的 sync / transport 包。

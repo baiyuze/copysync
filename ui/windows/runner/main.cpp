@@ -11,9 +11,9 @@
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
                       _In_ wchar_t *command_line, _In_ int show_command) {
   // 只开一个窗口：再次打开时把已有的窗口提到前面，与 Mac 上点 Dock 图标一致
-  HANDLE single_instance = ::CreateMutexW(nullptr, TRUE, L"Local\\CopySync.UI");
+  HANDLE single_instance = ::CreateMutexW(nullptr, TRUE, L"Local\\PasteFerry.UI");
   if (::GetLastError() == ERROR_ALREADY_EXISTS) {
-    HWND existing = ::FindWindowW(L"FLUTTER_RUNNER_WIN32_WINDOW", L"CopySync");
+    HWND existing = ::FindWindowW(L"FLUTTER_RUNNER_WIN32_WINDOW", L"PasteFerry");
     if (existing) {
       if (::IsIconic(existing)) {
         ::ShowWindow(existing, SW_RESTORE);
@@ -54,7 +54,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   Win32Window::Point origin(static_cast<unsigned int>(std::max(0.0, left)),
                             static_cast<unsigned int>(std::max(0.0, top)));
   Win32Window::Size size(kWidth, kHeight);
-  if (!window.Create(L"CopySync", origin, size)) {
+  if (!window.Create(L"PasteFerry", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

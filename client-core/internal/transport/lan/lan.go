@@ -26,9 +26,9 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/baiyuze/copysync/client-core/internal/identity"
-	"github.com/baiyuze/copysync/client-core/internal/transport/signed"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/signed"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 const (
@@ -36,7 +36,7 @@ const (
 	// 端口号随 mDNS 广播和 hello 里的地址告诉对方。
 	DefaultPort = 8788
 
-	magic     = "CSL1"
+	magic     = "PFL1" // PasteFerry LAN v1；2.0.0 之前是 CSL1，新旧版本的局域网包互不相认
 	maxPacket = 16 << 10
 
 	helloInterval     = 10 * time.Second // 对方还没连通时
@@ -209,7 +209,7 @@ func New(opts Options) *Transport {
 		id:        opts.Identity,
 		discovery: d,
 		// 实例名每次启动随机，不带设备名：同一网络里的其他人看不出这是谁的电脑
-		instance:  "copysync-" + hex.EncodeToString(suffix),
+		instance:  "pasteferry-" + hex.EncodeToString(suffix),
 		boot:      boot,
 		peers:     make(map[string]*peerState),
 		instances: make(map[string]seenInstance),
@@ -445,7 +445,7 @@ type PeerStatus struct {
 	LastSeen  time.Time
 }
 
-// Info 是局域网直连的诊断信息，见 copysync-cli nat。
+// Info 是局域网直连的诊断信息，见 pasteferry-cli nat。
 type Info struct {
 	Running    bool
 	Port       int

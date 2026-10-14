@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:copysync_ui/app_state.dart';
-import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
-import 'package:copysync_ui/main.dart';
-import 'package:copysync_ui/widgets/nearby_dialog.dart';
-import 'package:copysync_ui/widgets/pairing_dialog.dart';
+import 'package:pasteferry_ui/app_state.dart';
+import 'package:pasteferry_ui/gen/pasteferry/v1/daemon.pb.dart';
+import 'package:pasteferry_ui/main.dart';
+import 'package:pasteferry_ui/widgets/nearby_dialog.dart';
+import 'package:pasteferry_ui/widgets/pairing_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:grpc/grpc.dart';
@@ -85,7 +85,7 @@ class PairingState extends AppState {
 }
 
 Future<void> openSetup(WidgetTester tester, PairingState state) async {
-  await tester.pumpWidget(CopySyncApp(state: state));
+  await tester.pumpWidget(PasteFerryApp(state: state));
   await tester.tap(find.text('设备').first);
   await tester.pumpAndSettle();
   await tester.tap(find.text('添加设备').first);
@@ -94,7 +94,7 @@ Future<void> openSetup(WidgetTester tester, PairingState state) async {
 
 /// 打开「搜索附近设备」。雷达的波纹一直在动，不能用 pumpAndSettle 等它停下。
 Future<void> openNearby(WidgetTester tester, PairingState state) async {
-  await tester.pumpWidget(CopySyncApp(state: state));
+  await tester.pumpWidget(PasteFerryApp(state: state));
   await tester.tap(find.text('设备').first);
   await tester.pumpAndSettle();
   await tester.tap(find.text('搜索附近设备').first);
@@ -103,8 +103,8 @@ Future<void> openNearby(WidgetTester tester, PairingState state) async {
 }
 
 final nearbyDevices = [
-  NearbyDevice(id: 'copysync-1', name: '光光的电脑', platform: 'windows'),
-  NearbyDevice(id: 'copysync-2', name: '旧 Mac', platform: 'darwin', paired: true),
+  NearbyDevice(id: 'pasteferry-1', name: '光光的电脑', platform: 'windows'),
+  NearbyDevice(id: 'pasteferry-2', name: '旧 Mac', platform: 'darwin', paired: true),
 ];
 
 void expectSingleConfirmation() {
@@ -182,7 +182,7 @@ void main() {
   testWidgets('未打开添加设备时收到请求仍主动确认，过期后不会反复弹出', (tester) async {
     final state = PairingState()..failConfirmation = true;
     addTearDown(state.dispose);
-    await tester.pumpWidget(CopySyncApp(state: state));
+    await tester.pumpWidget(PasteFerryApp(state: state));
     state.receive(pendingPeer());
     await tester.pumpAndSettle();
     expectSingleConfirmation();
@@ -288,7 +288,7 @@ void main() {
 
       await tester.tap(find.text('光光的电脑'));
       await tester.pumpAndSettle();
-      expect(state.pairedNearby, ['copysync-1']);
+      expect(state.pairedNearby, ['pasteferry-1']);
       expectSingleConfirmation();
       expect(find.byType(NearbyDialog, skipOffstage: false), findsNothing);
       expect(state.nearbyCancelled, isTrue, reason: '雷达关掉后要撤下本机');
@@ -331,7 +331,7 @@ void main() {
       final state = PairingState();
       addTearDown(state.dispose);
       state.debugSeed(status: status, config: Config(), self: Device(id: 'self', name: '本机'));
-      await tester.pumpWidget(CopySyncApp(state: state));
+      await tester.pumpWidget(PasteFerryApp(state: state));
       await tester.pumpAndSettle();
     }
 

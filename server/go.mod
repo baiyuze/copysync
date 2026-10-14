@@ -1,11 +1,11 @@
-module github.com/baiyuze/copysync/server
+module github.com/baiyuze/pasteferry/server
 
 go 1.26.3
 
-replace github.com/baiyuze/copysync/proto => ../proto
+replace github.com/baiyuze/pasteferry/proto => ../proto
 
 require (
-	github.com/baiyuze/copysync/proto v0.0.0-00010101000000-000000000000
+	github.com/baiyuze/pasteferry/proto v0.0.0-00010101000000-000000000000
 	github.com/coder/websocket v1.8.15
 	github.com/pion/turn/v4 v4.1.4
 	golang.org/x/sys v0.47.0

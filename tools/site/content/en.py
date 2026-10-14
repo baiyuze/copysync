@@ -6,7 +6,6 @@ SITE = "https://baiyuze.github.io/pasteferry/"
 C = {
     "brand": "PasteFerry",
     "brand_alt": ["隔空贴", "CopySync"],
-    "rename_note": "PasteFerry used to be called CopySync. The app and the downloads keep the old name until the next version.",
     "title": "PasteFerry: sync the clipboard and files between Mac, Windows and Linux, across accounts and networks",
     "description": "PasteFerry lets you copy on one computer and paste on another, Mac, Windows or Linux: text, images, files and folders. "
                    "No shared account required. On the same network it works with no server at all; across networks, use a server "
@@ -249,16 +248,16 @@ C = {
         "Return. On the same network, leave it empty.",
     ],
     "win_steps": [
-        "Run CopySync-Setup.exe. It installs for the current user, no administrator rights needed."
+        "Run PasteFerry-Setup.exe. It installs for the current user, no administrator rights needed."
         "<span class=\"aside\">PasteFerry isn't code-signed yet, so Windows says \"Windows protected your PC\": click More info, "
-        f"then Run anyway. To skip the installer, get the <a href=\"{REPO}/releases/latest/download/CopySync-windows-x64.zip\">portable zip</a>.</span>",
+        f"then Run anyway. To skip the installer, get the <a href=\"{REPO}/releases/latest/download/PasteFerry-windows-x64.zip\">portable zip</a>.</span>",
         "Open PasteFerry and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it "
         "keeps running in the notification area.",
         "To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.",
     ],
     "linux_steps": [
-        "On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./CopySync-linux-amd64.deb</code>; "
-        "on other distributions, download the tar.gz, extract it and run <code>./CopySync/install.sh</code>.",
+        "On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>; "
+        "on other distributions, download the tar.gz, extract it and run <code>./PasteFerry/install.sh</code>.",
         "Open PasteFerry from the app menu and click Turn on background sync. From then on it starts when you log in.",
         "To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.",
     ],
@@ -332,7 +331,7 @@ C = {
             "isolation don't let devices see each other. In that case, on the computer entering the code, click On a different "
             "subnet? and enter the address shown under the other computer's code.",
             "On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → "
-            "Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy &amp; Security → Local Network. More in "
+            "Local network. On a Mac, turn on PasteFerry Daemon in System Settings → Privacy &amp; Security → Local Network. More in "
             "the <a href=\"{lan}#faq\">same network guide</a>.",
         ]),
         ("Windows? Linux? iPhone?", [
@@ -427,7 +426,7 @@ C = {
         "manage_caption": "For later",
         "win": {
             "steps": [
-                f'Download <a href="{REPO}/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> '
+                f'Download <a href="{REPO}/releases/latest/download/pasteferry-server-windows-amd64.zip">pasteferry-server-windows-amd64.zip</a> '
                 "and choose Extract All.",
                 "Open the extracted folder and double-click <code>install.cmd</code>."
                 "<span class=\"aside\">If you see \"Windows protected your PC\", click More info, then Run anyway; when User Account "
@@ -436,20 +435,20 @@ C = {
             ],
             "download": "Download the Windows server",
             "notes": [
-                "<strong>Runs as a Windows service:</strong> starts with Windows, no sign-in needed, no window. It appears as CopySync Server in Services.",
-                "<strong>Firewall already allowed:</strong> the script adds an inbound rule for copysync-server.exe only, so there are no ports to open.",
+                "<strong>Runs as a Windows service:</strong> starts with Windows, no sign-in needed, no window. It appears as PasteFerry Server in Services.",
+                "<strong>Firewall already allowed:</strong> the script adds an inbound rule for pasteferry-server.exe only, so there are no ports to open.",
                 "<strong>Wrong address picked</strong> (several network adapters, say from a VM or VPN): type <code>cmd</code> in the "
                 "address bar of the extracted folder, press Enter and run <code>install.cmd 192.168.1.20</code> with your address.",
                 "Windows 10 and 11, x64.",
             ],
             "double_click": "Double-click",
-            "explorer_label": "The extracted folder holds copysync-server.exe, install.cmd, install.ps1, README.md and uninstall.cmd; double-click install.cmd",
+            "explorer_label": "The extracted folder holds pasteferry-server.exe, install.cmd, install.ps1, README.md and uninstall.cmd; double-click install.cmd",
             "term_title": "Administrator: Windows PowerShell",
             "term_label": "The window after install.cmd finishes: it stops the old version, installs, registers the service, allows it through the firewall and starts it, then prints the address ws://192.168.1.20:8787/signal",
             "manage": [
-                ("Status", "<code>Get-Service CopySyncServer</code> in an administrator PowerShell, or find CopySync Server in Services"),
-                ("Logs", "<code>C:\\ProgramData\\CopySync Server\\server.log</code>"),
-                ("Restart", "<code>Restart-Service CopySyncServer</code> in an administrator PowerShell"),
+                ("Status", "<code>Get-Service PasteFerryServer</code> in an administrator PowerShell, or find PasteFerry Server in Services"),
+                ("Logs", "<code>C:\\ProgramData\\PasteFerry Server\\server.log</code>"),
+                ("Restart", "<code>Restart-Service PasteFerryServer</code> in an administrator PowerShell"),
                 ("Upgrade", "Download the new version, extract it and double-click <code>install.cmd</code> again; your settings are kept"),
                 ("Uninstall", "Double-click <code>uninstall.cmd</code>; it removes the service, the firewall rule and the files"),
             ],
@@ -462,13 +461,13 @@ C = {
             "notes": [
                 "<strong>No administrator rights needed.</strong> It runs in the background whenever you're logged in, and macOS restarts it if it exits.",
                 "<strong>Keep this Mac awake:</strong> in System Settings → Energy (Battery → Options on a laptop), turn on the option that prevents automatic sleep.",
-                "<strong>If the macOS firewall is on,</strong> the script ends with the command to allow copysync-server.",
+                "<strong>If the macOS firewall is on,</strong> the script ends with the command to allow pasteferry-server.",
                 "Intel and Apple silicon, macOS 13 or later.",
             ],
             "term_label": "Output of ./install.sh in Terminal: it installs, writes the LaunchAgent and starts the server, then prints the address ws://192.168.1.20:8787/signal",
             "manage": [
-                ("Logs", "<code>~/Library/Logs/CopySync/server.log</code>"),
-                ("Restart", "<code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code>"),
+                ("Logs", "<code>~/Library/Logs/PasteFerry/server.log</code>"),
+                ("Restart", "<code>launchctl kickstart -k gui/$(id -u)/com.pasteferry.server</code>"),
                 ("Upgrade", "Download the new version, extract it and run <code>./install.sh</code> again; your settings are kept"),
                 ("Uninstall", "<code>./install.sh uninstall</code>"),
             ],
@@ -486,10 +485,10 @@ C = {
             ],
             "term_label": "Output of sudo ./install.sh: it installs, writes the systemd unit and config and starts the server, then prints the address ws://192.168.1.20:8787/signal",
             "manage": [
-                ("Status", "<code>systemctl status copysync-server</code>"),
-                ("Logs", "<code>journalctl -u copysync-server -f</code>"),
-                ("Restart", "<code>sudo systemctl restart copysync-server</code>"),
-                ("Config", "<code>/etc/copysync/server.env</code>; restart the service after editing"),
+                ("Status", "<code>systemctl status pasteferry-server</code>"),
+                ("Logs", "<code>journalctl -u pasteferry-server -f</code>"),
+                ("Restart", "<code>sudo systemctl restart pasteferry-server</code>"),
+                ("Config", "<code>/etc/pasteferry/server.env</code>; restart the service after editing"),
                 ("Upgrade", "Download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept"),
                 ("Uninstall", "<code>sudo ./install.sh uninstall</code>"),
             ],
@@ -526,7 +525,7 @@ C = {
             ]),
             ("The server's address changed", [
                 "Run the script again with the new address: <code>install.cmd new-address</code> on Windows, <code>./install.sh new-address</code> "
-                "on a Mac. On Linux, edit <code>-turn-ip</code> in <code>/etc/copysync/server.env</code> and restart the service. Then update "
+                "on a Mac. On Linux, edit <code>-turn-ip</code> in <code>/etc/pasteferry/server.env</code> and restart the service. Then update "
                 "the address on each computer.",
                 "Reserving the address in your router avoids this.",
             ]),
@@ -612,7 +611,7 @@ C = {
             "The <code>ws://203.0.113.10:8787/signal</code> address at the end is what you enter in the apps.",
         ],
         "install_notes": [
-            "<strong>Registers a systemd service</strong> that starts on boot; the config is <code>/etc/copysync/server.env</code>.",
+            "<strong>Registers a systemd service</strong> that starts on boot; the config is <code>/etc/pasteferry/server.env</code>.",
             "<strong>Upgrade:</strong> download the new version, extract it and run <code>sudo ./install.sh</code> again; your config is kept.",
             "<strong>Docker works too:</strong> see the <a href=\"{deploy}\">server deployment guide</a>.",
         ],
@@ -682,7 +681,7 @@ C = {
             "allow both.",
         ],
         "win": [
-            "Run CopySync-Setup.exe; no administrator rights needed.<span class=\"aside\">If you see \"Windows protected your PC\", "
+            "Run PasteFerry-Setup.exe; no administrator rights needed.<span class=\"aside\">If you see \"Windows protected your PC\", "
             "click More info, then Run anyway.</span>",
             "Open PasteFerry and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it "
             "keeps running in the notification area.",
@@ -757,7 +756,7 @@ C = {
                                  "clicked Cancel, click Allow under Settings → Local network in PasteFerry, which asks for "
                                  "administrator approval once."),
             ("Local Network on macOS", "From macOS 15, the first time it reaches a device on your network, macOS asks whether "
-                                       "CopySync Daemon may find devices on your local network; allow it. If you declined, turn "
+                                       "PasteFerry Daemon may find devices on your local network; allow it. If you declined, turn "
                                        "it on in System Settings → Privacy &amp; Security → Local Network."),
             ("No server address", "Leave the server field in Settings empty. To sync across networks later, add a server or use "
                                   "Tailscale; paired devices stay paired."),
@@ -797,7 +796,7 @@ C = {
                 "Make sure both are on the network with background sync on. Then try entering the other computer's address on the "
                 "one entering the code: if that works, they're on different subnets, or the network blocks mDNS.",
                 "Still nothing? Check the other computer's firewall. On Windows, click Allow under Settings → Local network; on a "
-                "Mac, make sure CopySync Daemon is on under System Settings → Privacy &amp; Security → Local Network and the "
+                "Mac, make sure PasteFerry Daemon is on under System Settings → Privacy &amp; Security → Local Network and the "
                 "macOS firewall isn't blocking it.",
             ]),
             ("Does it sync away from this network?", [
@@ -921,7 +920,7 @@ C = {
                 "First make sure Tailscale is connected on both: run <code>tailscale ping other-address</code> and try again once "
                 "it answers.",
                 "If ping works but pairing doesn't, the other computer's firewall is likely blocking it. On Windows, click Allow "
-                "under Settings → Local network in PasteFerry; on a Mac, turn on CopySync Daemon under System Settings → Privacy "
+                "under Settings → Local network in PasteFerry; on a Mac, turn on PasteFerry Daemon under System Settings → Privacy "
                 "&amp; Security → Local Network.",
             ]),
             ("Does every computer need Tailscale?", [
@@ -963,7 +962,7 @@ C = {
             "setup": "Download the installer",
             "portable": "Rather not run an installer? Get the <a href=\"{portable}\">portable zip</a>, extract it and run PasteFerry from there.",
             "steps": [
-                "Run CopySync-Setup.exe. It installs for the current user, no administrator rights needed."
+                "Run PasteFerry-Setup.exe. It installs for the current user, no administrator rights needed."
                 "<span class=\"aside\">If you see \"Windows protected your PC\", click More info, then Run anyway.</span>",
                 "Open PasteFerry and click Turn on background sync. Allow it if Windows Firewall asks.",
             ],
@@ -1003,7 +1002,7 @@ C = {
                 "Needs a graphical desktop: X11, or Wayland with XWayland, which GNOME, KDE and other major desktops include by default.",
                 "Not sure whether you have x64 or ARM64? Run <code>uname -m</code> in a terminal: <code>x86_64</code> means x64, "
                 "<code>aarch64</code> means ARM64.",
-                "The .deb installs to /opt/CopySync and adds PasteFerry to the app menu. The tar.gz runs from wherever you extract "
+                "The .deb installs to /opt/PasteFerry and adds PasteFerry to the app menu. The tar.gz runs from wherever you extract "
                 "it, and <code>install.sh</code> adds it to the app menu.",
                 "Once it's open, click Turn on background sync; from then on it starts when you log in. GNOME shows no tray icon "
                 "by default, so open the window from the app menu.",

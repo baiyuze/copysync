@@ -11,11 +11,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/identity"
-	"github.com/baiyuze/copysync/client-core/internal/transport/lan"
-	"github.com/baiyuze/copysync/client-core/internal/transport/p2p"
-	"github.com/baiyuze/copysync/client-core/internal/transport/signed"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/lan"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/signed"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // runLANPeer 不经任何服务器，只靠局域网通道（mDNS 发现 + UDP 信令）连接对端。

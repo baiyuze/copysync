@@ -9,8 +9,8 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/baiyuze/copysync/client-core/internal/identity"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 func newIdentity(t *testing.T) *identity.Identity {

@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 # 构建并打出可分发的发布包到 release/。
 #
-#   CopySync-mac-apple-silicon.dmg        macOS 客户端，Apple 芯片（M1 及更新）
-#   CopySync-mac-intel.dmg                macOS 客户端，Intel 芯片
-#   CopySync.dmg                          macOS 客户端，两种芯片通用（体积约为单芯片版的两倍；
+#   PasteFerry-mac-apple-silicon.dmg        macOS 客户端，Apple 芯片（M1 及更新）
+#   PasteFerry-mac-intel.dmg                macOS 客户端，Intel 芯片
+#   PasteFerry.dmg                          macOS 客户端，两种芯片通用（体积约为单芯片版的两倍；
 #                                         早期版本的下载链接指向它，一直保留）
-#   copysync-server-linux-amd64.tar.gz    信令服务器 + systemd / Docker 部署文件
-#   copysync-server-linux-arm64.tar.gz
-#   copysync-server-macos.tar.gz          把服务器放在其中一台 Mac 上时用（LaunchAgent 安装脚本）
-#   copysync-server-windows-amd64.zip     把服务器放在 Windows 电脑上时用（注册为系统服务）
+#   pasteferry-server-linux-amd64.tar.gz    信令服务器 + systemd / Docker 部署文件
+#   pasteferry-server-linux-arm64.tar.gz
+#   pasteferry-server-macos.tar.gz          把服务器放在其中一台 Mac 上时用（LaunchAgent 安装脚本）
+#   pasteferry-server-windows-amd64.zip     把服务器放在 Windows 电脑上时用（注册为系统服务）
 #
-# Windows 的安装程序与便携版（CopySync-Setup.exe、CopySync-windows-x64.zip）只能在 Windows 上
+# Windows 的安装程序与便携版（PasteFerry-Setup.exe、PasteFerry-windows-x64.zip）只能在 Windows 上
 # 构建：由 CI 的 Windows 任务运行 scripts/build-windows.ps1 产出，发布时从构建产物里取。
 # Linux 的 .deb 与 tar.gz 同理，由 CI 的 Linux 任务运行 scripts/package-linux.sh 产出。
 #
 # 文件名不带版本号：网站与 README 用 releases/latest/download/<文件名> 直链下载，
-# 带版本号的话每发一版这些链接都会失效。版本号见 Release 标题与 copysync-server -version。
+# 带版本号的话每发一版这些链接都会失效。版本号见 Release 标题与 pasteferry-server -version。
 #   SHA256SUMS
 #
 # 服务器是纯 Go，直接交叉编译；客户端依赖 cgo 与 Flutter，只能在 Mac 上构建。
@@ -51,7 +51,7 @@ tell application "Finder"
         set icon size of opts to 112
         set text size of opts to 13
         set background picture of opts to file ".background:background.tiff"
-        set position of item "CopySync.app" of container window to {160, 190}
+        set position of item "PasteFerry.app" of container window to {160, 190}
         set position of item "Applications" of container window to {480, 190}
         update without registering applications
         delay 1
@@ -80,8 +80,8 @@ thin_app() { # <通用 App> <输出 App> <arm64 | x86_64>
             mv "$f.thin" "$f"
         fi
     done < <(find "$dst" -type f -print0)
-    codesign --force --sign - "$dst/Contents/Helpers/copysync-cli"
-    codesign --force --sign - "$dst/Contents/Helpers/CopySyncDaemon.app"
+    codesign --force --sign - "$dst/Contents/Helpers/pasteferry-cli"
+    codesign --force --sign - "$dst/Contents/Helpers/PasteFerryDaemon.app"
     codesign --force --sign - "$dst/Contents/Frameworks/App.framework"
     codesign --force --sign - "$dst/Contents/Frameworks/FlutterMacOS.framework"
     codesign --force --sign - --preserve-metadata=entitlements,requirements,flags "$dst"
@@ -94,9 +94,9 @@ tiffutil -cathidpicheck "$STAGE/bg/background.png" "$STAGE/bg/background@2x.png"
     -out "$STAGE/background.tiff" 2>/dev/null
 
 make_dmg() { # <App> <输出文件名>
-    local app=$1 name=$2 vol=CopySync src="$STAGE/dmg-$2" mnt
+    local app=$1 name=$2 vol=PasteFerry src="$STAGE/dmg-$2" mnt
     mkdir -p "$src/.background"
-    ditto "$app" "$src/CopySync.app"
+    ditto "$app" "$src/PasteFerry.app"
     ln -s /Applications "$src/Applications"
     cp "$STAGE/background.tiff" "$src/.background/background.tiff"
 
@@ -122,41 +122,41 @@ make_dmg() { # <App> <输出文件名>
 }
 
 echo "▶ 打包 DMG"
-thin_app dist/CopySync.app "$STAGE/arm64/CopySync.app" arm64
-thin_app dist/CopySync.app "$STAGE/x86_64/CopySync.app" x86_64
-make_dmg "$STAGE/arm64/CopySync.app" CopySync-mac-apple-silicon.dmg
-make_dmg "$STAGE/x86_64/CopySync.app" CopySync-mac-intel.dmg
-make_dmg dist/CopySync.app CopySync.dmg
+thin_app dist/PasteFerry.app "$STAGE/arm64/PasteFerry.app" arm64
+thin_app dist/PasteFerry.app "$STAGE/x86_64/PasteFerry.app" x86_64
+make_dmg "$STAGE/arm64/PasteFerry.app" PasteFerry-mac-apple-silicon.dmg
+make_dmg "$STAGE/x86_64/PasteFerry.app" PasteFerry-mac-intel.dmg
+make_dmg dist/PasteFerry.app PasteFerry.dmg
 
 # ─────────────────────────── 服务器 ───────────────────────────
 
 echo "▶ 打包服务器"
 for arch in amd64 arm64; do
-    name="copysync-server-linux-$arch"
+    name="pasteferry-server-linux-$arch"
     d="$STAGE/$name"
     mkdir -p "$d"
     (cd server && CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -trimpath \
         -ldflags "-s -w -X main.version=$VERSION" \
-        -o "$d/copysync-server" ./cmd/copysync-server)
-    cp server/deploy/{install.sh,copysync-server.service,Dockerfile,docker-compose.yml,env.example,README.md} "$d/"
+        -o "$d/pasteferry-server" ./cmd/pasteferry-server)
+    cp server/deploy/{install.sh,pasteferry-server.service,Dockerfile,docker-compose.yml,env.example,README.md} "$d/"
     tar -C "$STAGE" -czf "$OUT/$name.tar.gz" "$name"
     echo "  ✓ $name.tar.gz"
 done
 
-name="copysync-server-macos"
+name="pasteferry-server-macos"
 mkdir -p "$STAGE/$name"
-cp dist/copysync-server server/deploy/README.md "$STAGE/$name/"
+cp dist/pasteferry-server server/deploy/README.md "$STAGE/$name/"
 install -m 755 server/deploy/install-macos.sh "$STAGE/$name/install.sh"
 tar -C "$STAGE" -czf "$OUT/$name.tar.gz" "$name"
 echo "  ✓ $name.tar.gz"
 
 # Windows 用 zip：系统自带解压。install.ps1 与 .cmd 必须保持带 BOM 的 UTF-8 与 CRLF，原样拷贝
-name="copysync-server-windows-amd64"
+name="pasteferry-server-windows-amd64"
 d="$STAGE/$name"
 mkdir -p "$d"
 (cd server && CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath \
     -ldflags "-s -w -X main.version=$VERSION" \
-    -o "$d/copysync-server.exe" ./cmd/copysync-server)
+    -o "$d/pasteferry-server.exe" ./cmd/pasteferry-server)
 cp server/deploy/{install.ps1,install.cmd,uninstall.cmd,README.md} "$d/"
 zip_out="$PWD/$OUT/$name.zip"
 (cd "$STAGE" && zip -qr -X "$zip_out" "$name")

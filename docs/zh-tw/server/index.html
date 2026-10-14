@@ -51,7 +51,6 @@
       </nav>
     </div>
   </header>
-  <p class="renamed"><span class="wrap">隔空貼原名 CopySync。App 和安裝檔裡暫時還叫 CopySync，下個版本會改過來。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
@@ -141,23 +140,23 @@
             <div class="os-grid">
               <div class="os-steps">
                 <ol class="steps">
-                <li>下載 <a href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a>，按右鍵選「解壓縮全部」。</li>
+                <li>下載 <a href="https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-windows-amd64.zip">pasteferry-server-windows-amd64.zip</a>，按右鍵選「解壓縮全部」。</li>
                 <li>打開解壓縮後的資料夾，按兩下 <code>install.cmd</code>。<span class="aside">出現「Windows 已保護您的電腦」時，點「其他資訊」，再點「仍要執行」；跳出「使用者帳戶控制」時點「是」。伺服器還沒有程式碼簽章，所以會詢問這一次。</span></li>
                 <li>安裝會在新開的視窗裡進行。最後顯示的 <code>ws://…/signal</code> 就是用戶端要填的位址。</li>
                 </ol>
-                <a class="button" href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Windows 版伺服器</a>
+                <a class="button" href="https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Windows 版伺服器</a>
                 <ul class="points">
-                <li><strong>以 Windows 服務執行：</strong>開機就啟動，不用登入，也沒有視窗。在「服務」裡的名稱是 CopySync Server。</li>
-                <li><strong>防火牆已經開放：</strong>腳本新增了一條只針對 copysync-server.exe 的輸入規則，不用自己開連接埠。</li>
+                <li><strong>以 Windows 服務執行：</strong>開機就啟動，不用登入，也沒有視窗。在「服務」裡的名稱是 PasteFerry Server。</li>
+                <li><strong>防火牆已經開放：</strong>腳本新增了一條只針對 pasteferry-server.exe 的輸入規則，不用自己開連接埠。</li>
                 <li><strong>位址抓錯了</strong>（例如裝了虛擬機或 VPN，有好幾張網路卡）：在解壓縮後資料夾的網址列輸入 <code>cmd</code> 再按 Enter，執行 <code>install.cmd 192.168.1.20</code>，換成你的位址。</li>
                 <li>支援 Windows 10、11，x64。</li>
                 </ul>
               </div>
               <div class="os-figures">
-                <figure class="explorer" role="img" aria-label="解壓縮後的資料夾裡有 copysync-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd，按兩下其中的 install.cmd">
-                  <div class="t-bar win"><span class="t-tab folder">copysync-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                <figure class="explorer" role="img" aria-label="解壓縮後的資料夾裡有 pasteferry-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd，按兩下其中的 install.cmd">
+                  <div class="t-bar win"><span class="t-tab folder">pasteferry-server-windows-amd64</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
                   <ul class="files">
-                  <li><span class="f-icon exe" aria-hidden="true"></span><span class="f-name">copysync-server.exe</span></li>
+                  <li><span class="f-icon exe" aria-hidden="true"></span><span class="f-name">pasteferry-server.exe</span></li>
                   <li class="hl"><span class="f-icon cmd" aria-hidden="true"></span><span class="f-name">install.cmd</span><em>按兩下</em></li>
                   <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">install.ps1</span></li>
                   <li><span class="f-icon doc" aria-hidden="true"></span><span class="f-name">README.md</span></li>
@@ -167,20 +166,20 @@
                 <figure class="term" role="img" aria-label="install.cmd 執行完的視窗：依序停止舊版本、安裝、註冊服務、開放防火牆、啟動，最後顯示用戶端要填的位址 ws://192.168.1.20:8787/signal">
                 <div class="t-bar win"><span class="t-tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.4 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>系統管理員: Windows PowerShell</span><span class="t-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
 <pre class="t-body"><span class="t-step">&gt; 停止旧版本</span>
-<span class="t-step">&gt; 安装到 C:\Program Files\CopySync Server</span>
-<span class="t-step">&gt; 注册服务 CopySyncServer（中转地址 192.168.1.20）</span>
+<span class="t-step">&gt; 安装到 C:\Program Files\PasteFerry Server</span>
+<span class="t-step">&gt; 注册服务 PasteFerryServer（中转地址 192.168.1.20）</span>
 <span class="t-step">&gt; 在 Windows 防火墙里放行</span>
 <span class="t-step">&gt; 启动</span>
   √ 已启动
 
-安装完成：copysync-server 1.7.0，作为 Windows 服务开机自动运行
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+安装完成：pasteferry-server 1.7.0，作为 Windows 服务开机自动运行
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     <span class="t-url">ws://192.168.1.20:8787/signal</span>
 
-  程序   C:\Program Files\CopySync Server
-  日志   C:\ProgramData\CopySync Server\server.log
-  重启   Restart-Service CopySyncServer（管理员 PowerShell）
+  程序   C:\Program Files\PasteFerry Server
+  日志   C:\ProgramData\PasteFerry Server\server.log
+  重启   Restart-Service PasteFerryServer（管理员 PowerShell）
   卸载   双击 uninstall.cmd</pre>
               </figure>
               </div>
@@ -189,9 +188,9 @@
                 <table class="manage">
                   <caption>之後會用到的</caption>
                   <tbody>
-                  <tr><th scope="row">狀態</th><td>在系統管理員 PowerShell 裡執行 <code>Get-Service CopySyncServer</code>，或在「服務」裡找 CopySync Server</td></tr>
-                  <tr><th scope="row">記錄檔</th><td><code>C:\ProgramData\CopySync Server\server.log</code></td></tr>
-                  <tr><th scope="row">重新啟動</th><td>在系統管理員 PowerShell 裡執行 <code>Restart-Service CopySyncServer</code></td></tr>
+                  <tr><th scope="row">狀態</th><td>在系統管理員 PowerShell 裡執行 <code>Get-Service PasteFerryServer</code>，或在「服務」裡找 PasteFerry Server</td></tr>
+                  <tr><th scope="row">記錄檔</th><td><code>C:\ProgramData\PasteFerry Server\server.log</code></td></tr>
+                  <tr><th scope="row">重新啟動</th><td>在系統管理員 PowerShell 裡執行 <code>Restart-Service PasteFerryServer</code></td></tr>
                   <tr><th scope="row">升級</th><td>下載新版本，解壓縮後再按兩下 <code>install.cmd</code>，原本的設定會保留</td></tr>
                   <tr><th scope="row">解除安裝</th><td>按兩下 <code>uninstall.cmd</code>，服務、防火牆規則和檔案會一併刪除</td></tr>
                   </tbody>
@@ -207,9 +206,9 @@
                   <li>打開「終端機」，逐行執行：
                 <div class="code">
                   <button class="copy" type="button" data-done="已複製">複製</button>
-<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-macos.tar.gz
-tar xzf copysync-server-macos.tar.gz
-cd copysync-server-macos
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-macos.tar.gz
+tar xzf pasteferry-server-macos.tar.gz
+cd pasteferry-server-macos
 ./install.sh</code></pre>
                 </div></li>
                 <li>最後顯示的 <code>ws://…/signal</code> 就是用戶端要填的位址。</li>
@@ -217,27 +216,27 @@ cd copysync-server-macos
                 <ul class="points">
                 <li><strong>不需要管理者權限。</strong>登入這台 Mac 後會自動在背景執行，意外結束時會被系統重新啟動。</li>
                 <li><strong>這台 Mac 不能進入睡眠：</strong>在「系統設定 → 能源」（筆電在「電池 → 選項」）裡開啟防止自動進入睡眠的選項。</li>
-                <li><strong>開著系統防火牆的話，</strong>腳本最後會給出開放 copysync-server 的指令。</li>
+                <li><strong>開著系統防火牆的話，</strong>腳本最後會給出開放 pasteferry-server 的指令。</li>
                 <li>Intel 與 Apple 晶片通用，macOS 13 以上。</li>
                 </ul>
               </div>
               <div class="os-figures">
                 <figure class="term" role="img" aria-label="在終端機裡執行 ./install.sh 的輸出：安裝、寫入 LaunchAgent、啟動，最後顯示用戶端要填的位址 ws://192.168.1.20:8787/signal">
-                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">copysync-server-macos — zsh</span></div>
+                <div class="t-bar mac"><span class="t-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="t-title">pasteferry-server-macos — zsh</span></div>
 <pre class="t-body"><span class="t-prompt">%</span> ./install.sh
 <span class="t-step">▶ 停止旧版本</span>
-<span class="t-step">▶ 安装到 /Users/me/Library/Application Support/CopySync Server</span>
+<span class="t-step">▶ 安装到 /Users/me/Library/Application Support/PasteFerry Server</span>
 <span class="t-step">▶ 写入 LaunchAgent（中转地址 192.168.1.20）</span>
 <span class="t-step">▶ 启动</span>
   ✓ 已启动
 
-安装完成：copysync-server 1.7.0，登录这台 Mac 后自动运行
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+安装完成：pasteferry-server 1.7.0，登录这台 Mac 后自动运行
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     <span class="t-url">ws://192.168.1.20:8787/signal</span>
 
-  日志   /Users/me/Library/Logs/CopySync/server.log
-  重启   launchctl kickstart -k gui/501/com.copysync.server
+  日志   /Users/me/Library/Logs/PasteFerry/server.log
+  重启   launchctl kickstart -k gui/501/com.pasteferry.server
   卸载   ./install.sh uninstall</pre>
               </figure>
               </div>
@@ -246,8 +245,8 @@ cd copysync-server-macos
                 <table class="manage">
                   <caption>之後會用到的</caption>
                   <tbody>
-                  <tr><th scope="row">記錄檔</th><td><code>~/Library/Logs/CopySync/server.log</code></td></tr>
-                  <tr><th scope="row">重新啟動</th><td><code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code></td></tr>
+                  <tr><th scope="row">記錄檔</th><td><code>~/Library/Logs/PasteFerry/server.log</code></td></tr>
+                  <tr><th scope="row">重新啟動</th><td><code>launchctl kickstart -k gui/$(id -u)/com.pasteferry.server</code></td></tr>
                   <tr><th scope="row">升級</th><td>下載新版本，解壓縮後再執行 <code>./install.sh</code>，原本的設定會保留</td></tr>
                   <tr><th scope="row">解除安裝</th><td><code>./install.sh uninstall</code></td></tr>
                   </tbody>
@@ -263,9 +262,9 @@ cd copysync-server-macos
                   <li>在這台機器上（或用 ssh 登入後）逐行執行：<span class="aside">ARM 裝置，例如裝了 64 位元系統的樹莓派，把 <code>amd64</code> 換成 <code>arm64</code>。</span>
                 <div class="code">
                   <button class="copy" type="button" data-done="已複製">複製</button>
-<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
-tar xzf copysync-server-linux-amd64.tar.gz
-cd copysync-server-linux-amd64
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
+tar xzf pasteferry-server-linux-amd64.tar.gz
+cd pasteferry-server-linux-amd64
 sudo ./install.sh</code></pre>
                 </div></li>
                 <li>最後顯示的 <code>ws://…/signal</code> 就是用戶端要填的位址。</li>
@@ -282,18 +281,18 @@ sudo ./install.sh</code></pre>
 <pre class="t-body"><span class="t-prompt">$</span> sudo ./install.sh
 <span class="t-step">▶ 安装二进制到 /usr/local/bin</span>
 <span class="t-step">▶ 写入 systemd 单元</span>
-<span class="t-step">▶ 生成配置 /etc/copysync/server.env（中转地址 192.168.1.20）</span>
+<span class="t-step">▶ 生成配置 /etc/pasteferry/server.env（中转地址 192.168.1.20）</span>
 <span class="t-step">▶ 启动</span>
   ✓ 已启动
 
-安装完成：copysync-server 1.7.0
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+安装完成：pasteferry-server 1.7.0
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     <span class="t-url">ws://192.168.1.20:8787/signal</span>
 
-  配置   /etc/copysync/server.env
-  日志   journalctl -u copysync-server -f
-  重启   systemctl restart copysync-server
+  配置   /etc/pasteferry/server.env
+  日志   journalctl -u pasteferry-server -f
+  重启   systemctl restart pasteferry-server
   卸载   sudo ./install.sh uninstall
 
 防火墙需放行：TCP 8787（信令）、UDP 3478（STUN 与 TURN）、UDP 32768-60999（中转端口，系统随机分配）</pre>
@@ -304,10 +303,10 @@ sudo ./install.sh</code></pre>
                 <table class="manage">
                   <caption>之後會用到的</caption>
                   <tbody>
-                  <tr><th scope="row">狀態</th><td><code>systemctl status copysync-server</code></td></tr>
-                  <tr><th scope="row">記錄檔</th><td><code>journalctl -u copysync-server -f</code></td></tr>
-                  <tr><th scope="row">重新啟動</th><td><code>sudo systemctl restart copysync-server</code></td></tr>
-                  <tr><th scope="row">設定</th><td><code>/etc/copysync/server.env</code>，改完要重新啟動服務</td></tr>
+                  <tr><th scope="row">狀態</th><td><code>systemctl status pasteferry-server</code></td></tr>
+                  <tr><th scope="row">記錄檔</th><td><code>journalctl -u pasteferry-server -f</code></td></tr>
+                  <tr><th scope="row">重新啟動</th><td><code>sudo systemctl restart pasteferry-server</code></td></tr>
+                  <tr><th scope="row">設定</th><td><code>/etc/pasteferry/server.env</code>，改完要重新啟動服務</td></tr>
                   <tr><th scope="row">升級</th><td>下載新版本，解壓縮後再執行 <code>sudo ./install.sh</code>，原本的設定會保留</td></tr>
                   <tr><th scope="row">解除安裝</th><td><code>sudo ./install.sh uninstall</code></td></tr>
                   </tbody>
@@ -359,7 +358,7 @@ sudo ./install.sh</code></pre>
           </details>
           <details>
             <summary>伺服器的位址變了怎麼辦？</summary>
-            <div class="answer"><p>帶上新位址再執行一次安裝腳本：Windows 上是 <code>install.cmd 新位址</code>，Mac 上是 <code>./install.sh 新位址</code>；Linux 上編輯 <code>/etc/copysync/server.env</code> 裡的 <code>-turn-ip</code>，再重新啟動服務。然後在每台電腦上改掉伺服器位址。</p><p>在路由器裡幫它固定一個位址，就不會再遇到這種事。</p></div>
+            <div class="answer"><p>帶上新位址再執行一次安裝腳本：Windows 上是 <code>install.cmd 新位址</code>，Mac 上是 <code>./install.sh 新位址</code>；Linux 上編輯 <code>/etc/pasteferry/server.env</code> 裡的 <code>-turn-ip</code>，再重新啟動服務。然後在每台電腦上改掉伺服器位址。</p><p>在路由器裡幫它固定一個位址，就不會再遇到這種事。</p></div>
           </details>
           <details>
             <summary>離開區域網路以後還能同步嗎？</summary>

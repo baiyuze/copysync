@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-/// CopySync 的设计系统。
+/// PasteFerry 的设计系统。
 ///
 /// 这是一个常驻后台的系统工具，界面要像 macOS 自带的应用一样安静：
 /// 大面积中性的石墨灰，强调色只出现在按钮、选中态和链接上。

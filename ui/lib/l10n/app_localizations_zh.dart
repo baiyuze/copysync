@@ -9,6 +9,9 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get appName => '隔空贴';
+
+  @override
   String get navHistory => '复制记录';
 
   @override
@@ -209,17 +212,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyCleared => '记录已清空';
 
   @override
-  String get permDeniedTitle => '已禁止 CopySync 读取剪贴板';
+  String get permDeniedTitle => '已禁止隔空贴读取剪贴板';
 
   @override
-  String get permAskTitle => '允许 CopySync 读取剪贴板';
+  String get permAskTitle => '允许隔空贴读取剪贴板';
 
   @override
   String get permDeniedBody =>
-      '在这台 Mac 上复制的内容不会同步出去。到系统设置里把 CopySync Daemon 改为「允许」。';
+      '在这台 Mac 上复制的内容不会同步出去。到系统设置里把 PasteFerry Daemon 改为「允许」。';
 
   @override
-  String get permAskBody => '否则 macOS 每次都会弹窗询问。到系统设置里把 CopySync Daemon 改为「允许」。';
+  String get permAskBody =>
+      '否则 macOS 每次都会弹窗询问。到系统设置里把 PasteFerry Daemon 改为「允许」。';
 
   @override
   String get openSystemSettings => '打开系统设置';
@@ -344,7 +348,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noDevicesBody =>
-      '在另一台电脑上打开 CopySync，用 6 位配对码把两台连起来。两台在同一个网络里时，也可以在两台上都打开「搜索附近设备」，点一下对方。';
+      '在另一台电脑上打开隔空贴，用 6 位配对码把两台连起来。两台在同一个网络里时，也可以在两台上都打开「搜索附近设备」，点一下对方。';
 
   @override
   String get pairedDevices => '已配对的设备';
@@ -412,7 +416,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String lanBlockedBody(String device) {
-    return '在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。打开之前，$device连不上同一网络里的设备。';
+    return '在「系统设置 → 隐私与安全性 → 本地网络」里打开 PasteFerry Daemon。打开之前，$device连不上同一网络里的设备。';
   }
 
   @override
@@ -603,7 +607,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get macLocalNetworkDesc =>
-      'macOS 会问一次是否允许 CopySync 连接网络里的设备。拒绝过的话，到那里打开 CopySync Daemon';
+      'macOS 会问一次是否允许隔空贴连接网络里的设备。拒绝过的话，到那里打开 PasteFerry Daemon';
 
   @override
   String get allowLan => 'Windows 防火墙';
@@ -788,25 +792,25 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get svcExtractTitle => '先解压或安装 CopySync';
+  String get svcExtractTitle => '先解压或安装隔空贴';
 
   @override
   String get svcExtractBody =>
-      'CopySync 现在是直接从压缩包里打开的，关掉之后它所在的临时文件夹就会被删除。运行安装程序，或者把整个文件夹解压出来再打开，就可以启用后台同步。';
+      '隔空贴现在是直接从压缩包里打开的，关掉之后它所在的临时文件夹就会被删除。运行安装程序，或者把整个文件夹解压出来再打开，就可以启用后台同步。';
 
   @override
-  String get svcMoveTitle => '先把 CopySync 移到「应用程序」';
+  String get svcMoveTitle => '先把隔空贴移到「应用程序」';
 
   @override
   String get svcMoveBody =>
-      'CopySync 现在是直接从安装盘里打开的。把它拖进「应用程序」文件夹，推出安装盘，再从「应用程序」里打开，就可以启用后台同步。';
+      '隔空贴现在是直接从安装盘里打开的。把它拖进「应用程序」文件夹，推出安装盘，再从「应用程序」里打开，就可以启用后台同步。';
 
   @override
-  String get svcStartTitle => '开始使用 CopySync';
+  String get svcStartTitle => '开始使用隔空贴';
 
   @override
   String get svcStartBody =>
-      'CopySync 会在后台运行一个小进程，用来感知剪贴板的变化，并与你的其他设备保持连接。启用后它随系统登录自动启动，关掉这个窗口也会照常同步。';
+      '隔空贴会在后台运行一个小进程，用来感知剪贴板的变化，并与你的其他设备保持连接。启用后它随系统登录自动启动，关掉这个窗口也会照常同步。';
 
   @override
   String get svcEnable => '启用后台同步';
@@ -816,11 +820,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get svcStaleBodyWin =>
-      'CopySync 换了位置，开机自启还指向原来的地方。重新启用一次，让后台进程指向当前这份 CopySync。历史记录与配对关系都会保留。';
+      '隔空贴换了位置，开机自启还指向原来的地方。重新启用一次，让后台进程指向当前这份隔空贴。历史记录与配对关系都会保留。';
 
   @override
   String get svcStaleBodyMac =>
-      'CopySync 换了位置，或者之前用旧版安装脚本装过。重新启用一次，让后台进程指向当前这个 App。历史记录与配对关系都会保留。';
+      '隔空贴换了位置，或者之前用旧版安装脚本装过。重新启用一次，让后台进程指向当前这个 App。历史记录与配对关系都会保留。';
 
   @override
   String get svcReenable => '重新启用';
@@ -833,11 +837,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get svcDevBodyWin =>
-      '这是开发构建，旁边没有 copysyncd.exe。在源码目录运行 scripts\\build-windows.ps1 构建完整的版本。';
+      '这是开发构建，旁边没有 pasteferryd.exe。在源码目录运行 scripts\\build-windows.ps1 构建完整的版本。';
 
   @override
   String get svcDevBodyLinux =>
-      '这是开发构建，旁边没有 copysyncd。在源码目录运行 ./scripts/package-linux.sh 构建完整的版本。';
+      '这是开发构建，旁边没有 pasteferryd。在源码目录运行 ./scripts/package-linux.sh 构建完整的版本。';
 
   @override
   String get svcDevBodyMac =>
@@ -855,6 +859,9 @@ class AppLocalizationsZh extends AppLocalizations {
 /// The translations for Chinese, as used in Hong Kong, using the Han script (`zh_Hant_HK`).
 class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   AppLocalizationsZhHantHk() : super('zh_Hant_HK');
+
+  @override
+  String get appName => '隔空貼';
 
   @override
   String get navHistory => '複製記錄';
@@ -1057,18 +1064,18 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get historyCleared => '記錄已清除';
 
   @override
-  String get permDeniedTitle => '已禁止 CopySync 讀取剪貼簿';
+  String get permDeniedTitle => '已禁止隔空貼讀取剪貼簿';
 
   @override
-  String get permAskTitle => '允許 CopySync 讀取剪貼簿';
+  String get permAskTitle => '允許隔空貼讀取剪貼簿';
 
   @override
   String get permDeniedBody =>
-      '在這部 Mac 上複製的內容不會同步出去。請到系統設定裏把 CopySync Daemon 改為「允許」。';
+      '在這部 Mac 上複製的內容不會同步出去。請到系統設定裏把 PasteFerry Daemon 改為「允許」。';
 
   @override
   String get permAskBody =>
-      '否則 macOS 每次都會彈出視窗詢問。請到系統設定裏把 CopySync Daemon 改為「允許」。';
+      '否則 macOS 每次都會彈出視窗詢問。請到系統設定裏把 PasteFerry Daemon 改為「允許」。';
 
   @override
   String get openSystemSettings => '開啟系統設定';
@@ -1193,7 +1200,7 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String get noDevicesBody =>
-      '在另一部電腦上開啟 CopySync，用 6 位配對碼把兩部連起來。兩部在同一個網絡裏時，也可以在兩部上都開啟「搜尋附近裝置」，按一下對方。';
+      '在另一部電腦上開啟隔空貼，用 6 位配對碼把兩部連起來。兩部在同一個網絡裏時，也可以在兩部上都開啟「搜尋附近裝置」，按一下對方。';
 
   @override
   String get pairedDevices => '已配對的裝置';
@@ -1261,7 +1268,7 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String lanBlockedBody(String device) {
-    return '在「系統設定 → 私隱與保安 → 本地網絡」裏開啟 CopySync Daemon。開啟之前，$device連不上同一網絡裏的裝置。';
+    return '在「系統設定 → 私隱與保安 → 本地網絡」裏開啟 PasteFerry Daemon。開啟之前，$device連不上同一網絡裏的裝置。';
   }
 
   @override
@@ -1452,7 +1459,7 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String get macLocalNetworkDesc =>
-      'macOS 會詢問一次是否允許 CopySync 連接網絡裏的裝置。如果拒絕過，請到那裏開啟 CopySync Daemon';
+      'macOS 會詢問一次是否允許隔空貼連接網絡裏的裝置。如果拒絕過，請到那裏開啟 PasteFerry Daemon';
 
   @override
   String get allowLan => 'Windows 防火牆';
@@ -1637,25 +1644,25 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   }
 
   @override
-  String get svcExtractTitle => '先解壓縮或安裝 CopySync';
+  String get svcExtractTitle => '先解壓縮或安裝隔空貼';
 
   @override
   String get svcExtractBody =>
-      'CopySync 現在是直接從壓縮檔裏開啟的，關閉之後它所在的臨時資料夾就會被刪除。執行安裝程式，或者把整個資料夾解壓縮出來再開啟，就可以啟用背景同步。';
+      '隔空貼現在是直接從壓縮檔裏開啟的，關閉之後它所在的臨時資料夾就會被刪除。執行安裝程式，或者把整個資料夾解壓縮出來再開啟，就可以啟用背景同步。';
 
   @override
-  String get svcMoveTitle => '先把 CopySync 移到「應用程式」';
+  String get svcMoveTitle => '先把隔空貼移到「應用程式」';
 
   @override
   String get svcMoveBody =>
-      'CopySync 現在是直接從磁碟映像裏開啟的。把它拖進「應用程式」資料夾，推出磁碟映像，再從「應用程式」裏開啟，就可以啟用背景同步。';
+      '隔空貼現在是直接從磁碟映像裏開啟的。把它拖進「應用程式」資料夾，推出磁碟映像，再從「應用程式」裏開啟，就可以啟用背景同步。';
 
   @override
-  String get svcStartTitle => '開始使用 CopySync';
+  String get svcStartTitle => '開始使用隔空貼';
 
   @override
   String get svcStartBody =>
-      'CopySync 會在背景執行一個小型程序，用來偵測剪貼簿的變化，並與你的其他裝置保持連線。啟用後它會隨系統登入自動啟動，關閉這個視窗也會照常同步。';
+      '隔空貼會在背景執行一個小型程序，用來偵測剪貼簿的變化，並與你的其他裝置保持連線。啟用後它會隨系統登入自動啟動，關閉這個視窗也會照常同步。';
 
   @override
   String get svcEnable => '啟用背景同步';
@@ -1665,11 +1672,11 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String get svcStaleBodyWin =>
-      'CopySync 換了位置，開機自動啟動仍指向原來的位置。重新啟用一次，讓背景程序指向目前這份 CopySync。歷史記錄與配對關係都會保留。';
+      '隔空貼換了位置，開機自動啟動仍指向原來的位置。重新啟用一次，讓背景程序指向目前這份隔空貼。歷史記錄與配對關係都會保留。';
 
   @override
   String get svcStaleBodyMac =>
-      'CopySync 換了位置，或者之前用舊版安裝腳本安裝過。重新啟用一次，讓背景程序指向目前這個 App。歷史記錄與配對關係都會保留。';
+      '隔空貼換了位置，或者之前用舊版安裝腳本安裝過。重新啟用一次，讓背景程序指向目前這個 App。歷史記錄與配對關係都會保留。';
 
   @override
   String get svcReenable => '重新啟用';
@@ -1682,11 +1689,11 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String get svcDevBodyWin =>
-      '這是開發版本，旁邊沒有 copysyncd.exe。在原始碼目錄執行 scripts\\build-windows.ps1 建置完整的版本。';
+      '這是開發版本，旁邊沒有 pasteferryd.exe。在原始碼目錄執行 scripts\\build-windows.ps1 建置完整的版本。';
 
   @override
   String get svcDevBodyLinux =>
-      '這是開發版本，旁邊沒有 copysyncd。在原始碼目錄執行 ./scripts/package-linux.sh 建置完整的版本。';
+      '這是開發版本，旁邊沒有 pasteferryd。在原始碼目錄執行 ./scripts/package-linux.sh 建置完整的版本。';
 
   @override
   String get svcDevBodyMac =>
@@ -1704,6 +1711,9 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 /// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
 class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   AppLocalizationsZhHantTw() : super('zh_Hant_TW');
+
+  @override
+  String get appName => '隔空貼';
 
   @override
   String get navHistory => '複製記錄';
@@ -1906,18 +1916,18 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get historyCleared => '記錄已清空';
 
   @override
-  String get permDeniedTitle => '已禁止 CopySync 讀取剪貼簿';
+  String get permDeniedTitle => '已禁止隔空貼讀取剪貼簿';
 
   @override
-  String get permAskTitle => '允許 CopySync 讀取剪貼簿';
+  String get permAskTitle => '允許隔空貼讀取剪貼簿';
 
   @override
   String get permDeniedBody =>
-      '在這台 Mac 上複製的內容不會同步出去。請到系統設定裡把 CopySync Daemon 改為「允許」。';
+      '在這台 Mac 上複製的內容不會同步出去。請到系統設定裡把 PasteFerry Daemon 改為「允許」。';
 
   @override
   String get permAskBody =>
-      '否則 macOS 每次都會跳出視窗詢問。請到系統設定裡把 CopySync Daemon 改為「允許」。';
+      '否則 macOS 每次都會跳出視窗詢問。請到系統設定裡把 PasteFerry Daemon 改為「允許」。';
 
   @override
   String get openSystemSettings => '打開系統設定';
@@ -2042,7 +2052,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get noDevicesBody =>
-      '在另一台電腦上打開 CopySync，用 6 碼配對碼把兩台連起來。兩台在同一個網路裡時，也可以在兩台上都打開「搜尋附近裝置」，點一下對方。';
+      '在另一台電腦上打開隔空貼，用 6 碼配對碼把兩台連起來。兩台在同一個網路裡時，也可以在兩台上都打開「搜尋附近裝置」，點一下對方。';
 
   @override
   String get pairedDevices => '已配對的裝置';
@@ -2110,7 +2120,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String lanBlockedBody(String device) {
-    return '在「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。開啟之前，$device連不上同一個網路裡的裝置。';
+    return '在「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 PasteFerry Daemon。開啟之前，$device連不上同一個網路裡的裝置。';
   }
 
   @override
@@ -2301,7 +2311,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get macLocalNetworkDesc =>
-      'macOS 會詢問一次是否允許 CopySync 連線到網路裡的裝置。拒絕過的話，到那裡開啟 CopySync Daemon';
+      'macOS 會詢問一次是否允許隔空貼連線到網路裡的裝置。拒絕過的話，到那裡開啟 PasteFerry Daemon';
 
   @override
   String get allowLan => 'Windows 防火牆';
@@ -2486,25 +2496,25 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   }
 
   @override
-  String get svcExtractTitle => '先解壓縮或安裝 CopySync';
+  String get svcExtractTitle => '先解壓縮或安裝隔空貼';
 
   @override
   String get svcExtractBody =>
-      'CopySync 現在是直接從壓縮檔裡打開的，關掉之後它所在的暫存資料夾就會被刪除。執行安裝程式，或者把整個資料夾解壓縮出來再打開，就可以啟用背景同步。';
+      '隔空貼現在是直接從壓縮檔裡打開的，關掉之後它所在的暫存資料夾就會被刪除。執行安裝程式，或者把整個資料夾解壓縮出來再打開，就可以啟用背景同步。';
 
   @override
-  String get svcMoveTitle => '先把 CopySync 移到「應用程式」';
+  String get svcMoveTitle => '先把隔空貼移到「應用程式」';
 
   @override
   String get svcMoveBody =>
-      'CopySync 現在是直接從磁碟映像檔裡打開的。把它拖進「應用程式」資料夾，退出磁碟映像檔，再從「應用程式」裡打開，就可以啟用背景同步。';
+      '隔空貼現在是直接從磁碟映像檔裡打開的。把它拖進「應用程式」資料夾，退出磁碟映像檔，再從「應用程式」裡打開，就可以啟用背景同步。';
 
   @override
-  String get svcStartTitle => '開始使用 CopySync';
+  String get svcStartTitle => '開始使用隔空貼';
 
   @override
   String get svcStartBody =>
-      'CopySync 會在背景執行一個小程式，用來偵測剪貼簿的變化，並與你的其他裝置保持連線。啟用後它會隨系統登入自動啟動，關掉這個視窗也會照常同步。';
+      '隔空貼會在背景執行一個小程式，用來偵測剪貼簿的變化，並與你的其他裝置保持連線。啟用後它會隨系統登入自動啟動，關掉這個視窗也會照常同步。';
 
   @override
   String get svcEnable => '啟用背景同步';
@@ -2514,11 +2524,11 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get svcStaleBodyWin =>
-      'CopySync 換了位置，開機自動啟動還指向原來的地方。重新啟用一次，讓背景程序指向目前這份 CopySync。歷史記錄與配對關係都會保留。';
+      '隔空貼換了位置，開機自動啟動還指向原來的地方。重新啟用一次，讓背景程序指向目前這份隔空貼。歷史記錄與配對關係都會保留。';
 
   @override
   String get svcStaleBodyMac =>
-      'CopySync 換了位置，或者之前用舊版安裝腳本裝過。重新啟用一次，讓背景程序指向目前這個 App。歷史記錄與配對關係都會保留。';
+      '隔空貼換了位置，或者之前用舊版安裝腳本裝過。重新啟用一次，讓背景程序指向目前這個 App。歷史記錄與配對關係都會保留。';
 
   @override
   String get svcReenable => '重新啟用';
@@ -2531,11 +2541,11 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get svcDevBodyWin =>
-      '這是開發版本，旁邊沒有 copysyncd.exe。在原始碼資料夾執行 scripts\\build-windows.ps1 建置完整的版本。';
+      '這是開發版本，旁邊沒有 pasteferryd.exe。在原始碼資料夾執行 scripts\\build-windows.ps1 建置完整的版本。';
 
   @override
   String get svcDevBodyLinux =>
-      '這是開發版本，旁邊沒有 copysyncd。在原始碼資料夾執行 ./scripts/package-linux.sh 建置完整的版本。';
+      '這是開發版本，旁邊沒有 pasteferryd。在原始碼資料夾執行 ./scripts/package-linux.sh 建置完整的版本。';
 
   @override
   String get svcDevBodyMac =>

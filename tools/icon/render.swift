@@ -1,4 +1,4 @@
-// 绘制 CopySync 的 App 图标，输出各尺寸 PNG。
+// 绘制 PasteFerry 的 App 图标，输出各尺寸 PNG。
 //
 //   swift tools/icon/render.swift <输出目录>
 //   swift tools/icon/render.swift <输出目录> --windows   # Windows 用：主体放大填满画布，再用 ico.py 打包

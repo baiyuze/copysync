@@ -1,0 +1,368 @@
+// Flutter UI ↔ Go daemon 之间的接口。
+//
+// daemon 是常驻后台的核心进程，UI 只是控制台——关掉 UI 不影响同步。
+// 事件走 server-streaming 主动推送，避免 UI 轮询。
+
+syntax = "proto3";
+
+package pasteferry.v1;
+
+option go_package = "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1;pasteferryv1";
+
+service DaemonService {
+  // 订阅事件流。UI 启动后第一件事，断线需重连。
+  rpc Subscribe(SubscribeRequest) returns (stream Event);
+
+  rpc ListHistory(ListHistoryRequest) returns (ListHistoryResponse);
+  rpc DeleteHistory(DeleteHistoryRequest) returns (Empty);
+
+  // 拉取仅有元数据的大文件记录。立即返回，进度走事件流。
+  rpc Fetch(FetchRequest) returns (Empty);
+  // 把某条已就绪的记录重新放进本机剪贴板
+  rpc ApplyToClipboard(ApplyToClipboardRequest) returns (Empty);
+  // 只返回已就绪图片（或图片文件）在本机的路径，不改动剪贴板，也不把路径发给对端。
+  rpc GetImagePreview(GetImagePreviewRequest) returns (GetImagePreviewResponse);
+
+  rpc ListDevices(Empty) returns (ListDevicesResponse);
+  rpc CreatePairingCode(Empty) returns (CreatePairingCodeResponse);
+  rpc RedeemPairingCode(RedeemPairingCodeRequest) returns (RedeemPairingCodeResponse);
+  // 配对双方各自确认指纹后才真正互信
+  rpc ConfirmPairing(ConfirmPairingRequest) returns (Empty);
+  rpc Unpair(UnpairRequest) returns (Empty);
+  // 手动告诉后台服务某台设备的局域网地址：跨网段、或两边都换了地址时用
+  rpc SetDeviceAddress(SetDeviceAddressRequest) returns (Empty);
+  // 「搜索附近设备」窗口打开期间保持这个调用，窗口关掉时取消。期间本机在局域网里公开设备名，
+  // 并在附近同样打开了这个窗口的设备有变化时推送最新的列表
+  rpc WatchNearby(Empty) returns (stream NearbyDevices);
+  // 向附近的一台设备发起配对。之后与 RedeemPairingCode 一样，双方核对指纹后各自 ConfirmPairing
+  rpc PairNearby(PairNearbyRequest) returns (RedeemPairingCodeResponse);
+
+  rpc GetConfig(Empty) returns (Config);
+  rpc UpdateConfig(Config) returns (Config);
+
+  rpc GetStatus(Empty) returns (Status);
+  // 引导用户授予剪贴板权限（打开系统设置面板）
+  rpc RequestClipboardPermission(Empty) returns (Empty);
+  // 让系统放行局域网访问：macOS 打开「本地网络」设置面板；
+  // Windows 申请管理员权限，在防火墙里放行后台服务。其他平台返回 UNIMPLEMENTED。
+  rpc RequestLocalNetworkPermission(Empty) returns (Empty);
+
+  // 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 pasteferry-cli nat
+  rpc GetNetwork(Empty) returns (NetworkInfo);
+
+  // 反馈问题用的诊断报告：版本、系统、设置、设备与网络状态、最近的日志。
+  // 设备名、服务器地址、公网 IP、用户目录、文件名已换成占位符，用户看过后自己贴进 issue
+  rpc ExportDiagnostics(ExportDiagnosticsRequest) returns (Diagnostics);
+  // 临时打开详细日志（调试级别），到时间自动关回去；minutes 为 0 立即关闭
+  rpc SetVerboseLog(SetVerboseLogRequest) returns (Status);
+}
+
+message Empty {}
+
+// ─────────────────────────── 剪贴板记录 ───────────────────────────
+
+enum ClipKind {
+  CLIP_KIND_UNSPECIFIED = 0;
+  CLIP_KIND_TEXT = 1;
+  CLIP_KIND_HTML = 2;
+  CLIP_KIND_IMAGE = 3;
+  CLIP_KIND_FILE = 4;   // 文件或文件夹，可多个
+}
+
+enum ClipStatus {
+  CLIP_STATUS_UNSPECIFIED = 0;
+  CLIP_STATUS_READY = 1;        // 内容已在本地，可直接粘贴
+  CLIP_STATUS_REMOTE_ONLY = 2;  // 超过阈值，只有元数据，需手动拉取
+  CLIP_STATUS_FETCHING = 3;
+  CLIP_STATUS_FAILED = 4;
+  CLIP_STATUS_EXPIRED = 5;      // 超过 cache_ttl，内容已被 GC 删除
+}
+
+message ClipItem {
+  string name = 1;
+  int64 size = 2;
+  bool is_dir = 3;
+  string content_type = 4;  // UTType 标识符，如 public.plain-text
+}
+
+message ClipRecord {
+  string id = 1;
+  ClipKind kind = 2;
+  ClipStatus status = 3;
+
+  string origin_device_id = 4;
+  string origin_device_name = 5;
+  bool outgoing = 6;              // true=本机复制的  false=从对端收到的
+
+  repeated ClipItem items = 7;
+  int64 total_size = 8;
+  string text_preview = 9;        // 文本/HTML 的预览片段，列表展示用
+
+  int64 created_at_unix = 10;
+  int64 expires_at_unix = 11;
+  string error = 12;              // status=FAILED 时的具体原因
+
+  // 能在界面里预览的图片数：剪贴板图片为 1，文件记录是其中图片文件的个数。
+  // 由本机后台服务按文件名判断，HEIC、TIFF 这类格式只有能转换它的平台才算。
+  int32 image_count = 13;
+}
+
+// ─────────────────────────── 事件流 ───────────────────────────
+
+message SubscribeRequest {
+  // 断线重连时带上最后收到的记录时间，daemon 补发这之后的记录
+  int64 since_unix = 1;
+}
+
+message TransferProgress {
+  string clip_id = 1;
+  int64 transferred = 2;
+  int64 total = 3;              // 0 表示总量未知（流式打包时）
+  double bytes_per_second = 4;
+}
+
+enum ConnectionKind {
+  CONNECTION_KIND_UNSPECIFIED = 0;
+  CONNECTION_KIND_OFFLINE = 1;
+  CONNECTION_KIND_DIRECT = 2;   // P2P 打洞成功
+  CONNECTION_KIND_RELAY = 3;    // 经 TURN 中转
+}
+
+message Device {
+  string id = 1;
+  string name = 2;
+  string platform = 3;            // darwin / windows / linux
+  bool online = 4;
+  ConnectionKind connection = 5;
+  string public_key_fingerprint = 6;
+  int64 paired_at_unix = 7;
+
+  // 非空表示这是一条**待用户核对指纹**的配对请求，而非已配对设备。
+  // 用此值调 ConfirmPairing 完成或拒绝配对。
+  // 配对码的发起方是被动收到兑换通知的，靠这个字段把确认入口推给界面。
+  string pairing_session = 8;
+}
+
+// macOS 剪贴板授权状态，对应 NSPasteboardAccessBehavior。
+// 非 ALWAYS_ALLOW 时 daemon 不会去读剪贴板内容，避免卡在授权弹窗上。
+enum ClipboardPermission {
+  CLIPBOARD_PERMISSION_UNSPECIFIED = 0;
+  CLIPBOARD_PERMISSION_NOT_APPLICABLE = 1;  // 未启用隐私机制的系统
+  CLIPBOARD_PERMISSION_DEFAULT = 2;
+  CLIPBOARD_PERMISSION_ASK = 3;
+  CLIPBOARD_PERMISSION_ALWAYS_ALLOW = 4;
+  CLIPBOARD_PERMISSION_ALWAYS_DENY = 5;
+}
+
+message Event {
+  oneof payload {
+    ClipRecord clip_added = 1;
+    ClipRecord clip_updated = 2;
+    string clip_removed = 3;              // clip id
+    TransferProgress progress = 4;
+    Device device_changed = 5;
+    ClipboardPermission permission_changed = 6;
+    Status status_changed = 7;
+  }
+}
+
+// ─────────────────────────── 查询与操作 ───────────────────────────
+
+message ListHistoryRequest {
+  int32 limit = 1;
+  int64 before_unix = 2;    // 分页游标
+  ClipKind kind_filter = 3; // UNSPECIFIED 表示不过滤
+
+  // 搜索词：非空时只返回文字内容或文件名包含它的记录（不分大小写），按时间倒序，
+  // 忽略 before_unix。匹配处不在预览片段里的文字记录，text_preview 换成匹配处前后的一段。
+  string query = 4;
+}
+
+message ListHistoryResponse {
+  repeated ClipRecord records = 1;
+  // 按 query 搜索过。旧版后台服务不认识 query，会照常返回全部记录，界面据此识别
+  bool searched = 2;
+}
+
+message DeleteHistoryRequest {
+  repeated string ids = 1;
+  bool all = 2;
+}
+
+message FetchRequest {
+  string clip_id = 1;
+  bool preserve_clipboard = 2; // 预览下载：收完后不覆盖用户的剪贴板
+}
+
+message ApplyToClipboardRequest {
+  string clip_id = 1;
+}
+
+// ─────────────────────────── 设备与配对 ───────────────────────────
+
+message ListDevicesResponse {
+  Device self = 1;
+  repeated Device peers = 2;
+}
+
+message CreatePairingCodeResponse {
+  string code = 1;
+  int64 expires_at_unix = 2;
+  // 本机的局域网地址，默认路由所在的网卡排第一。不在同一网段时，
+  // 另一台要在输入配对码的同时输入其中一个。端口是默认值时省略端口。
+  repeated string lan_addresses = 3;
+}
+
+// 在局域网和服务器上都找不到这个配对码时返回 NOT_FOUND；
+// 找到了但配对码不对返回 INVALID_ARGUMENT；配对码已失效返回 FAILED_PRECONDITION。
+message RedeemPairingCodeRequest {
+  string code = 1;
+  // 可选：对方配对码下面显示的地址（ip 或 ip:port），不在同一网段时填写
+  string address = 2;
+}
+
+message RedeemPairingCodeResponse {
+  // 返回对端信息供用户肉眼核对指纹，确认后再调 ConfirmPairing
+  Device peer = 1;
+  string pairing_session = 2;
+}
+
+message ConfirmPairingRequest {
+  string pairing_session = 1;
+  bool accept = 2;
+}
+
+// 附近一台打开了「搜索附近设备」窗口的设备。
+message NearbyDevice {
+  string id = 1;                  // 对方这次启动的 mDNS 实例名，用来发起配对
+  string name = 2;
+  string platform = 3;            // darwin / windows / linux
+  bool paired = 4;                // 已经与本机配对
+}
+
+message NearbyDevices {
+  repeated NearbyDevice devices = 1;
+}
+
+message PairNearbyRequest {
+  string id = 1;
+}
+
+message UnpairRequest {
+  string device_id = 1;
+}
+
+message SetDeviceAddressRequest {
+  string device_id = 1;
+  string address = 2;             // ip 或 ip:port
+}
+
+// ─────────────────────────── 配置与状态 ───────────────────────────
+
+message Config {
+  // 小于此值自动预取，大于此值只同步元数据等用户手动拉取
+  int64 auto_sync_threshold_bytes = 1;
+  int64 history_ttl_seconds = 2;
+  int64 cache_ttl_seconds = 3;
+
+  bool sync_text = 4;
+  bool sync_html = 5;
+  bool sync_image = 6;
+  bool sync_file = 7;
+
+  // 收到对端内容后是否自动覆盖本机剪贴板
+  bool auto_apply_to_clipboard = 8;
+  bool launch_at_login = 9;
+
+  string device_name = 10;
+  string signaling_url = 11;
+
+  // 只用自己的服务器探测网络出口，不用公共 STUN 服务器。
+  // 默认 false（即允许公共服务器）：旧版界面不发这个字段时，不会被误关掉。
+  bool only_own_stun = 12;
+
+  // 界面语言：空字符串表示跟随系统；否则是 "zh-Hans"、"zh-Hant-TW"、"zh-Hant-HK"、"en"、"ja" 之一。
+  // 存在后台服务这里而不是界面里：Windows 的托盘菜单由后台服务画，也要跟着变。
+  string language = 13;
+
+  // 不在局域网里查找设备、也不接受局域网里的配对请求。
+  // 默认 false（即开启）：写成反向的，旧配置不用迁移。
+  bool lan_disabled = 14;
+}
+
+// 最近一轮网络出口探测的结果。
+message NetworkInfo {
+  int32 local_port = 1;           // 打洞共用的本地 UDP 端口
+  repeated NetworkEgress egresses = 2;
+  int32 probed = 3;               // 探测的服务器数（按 IP 去重后）
+  int32 answered = 4;             // 有响应的服务器数
+  int64 probed_at_unix = 5;
+  LanInfo lan = 6;
+}
+
+// 局域网直连的诊断信息，见 pasteferry-cli nat。
+message LanInfo {
+  bool enabled = 1;
+  int32 port = 2;                 // 局域网信令的 UDP 端口
+  repeated string local_addresses = 3;
+  int32 discovered = 4;           // mDNS 发现的 PasteFerry 实例数（含未配对的）
+  repeated LanPeer peers = 5;
+  bool blocked = 6;               // 系统拦下了本机发往局域网的包（macOS 本地网络权限）
+}
+
+message LanPeer {
+  string device_id = 1;
+  string device_name = 2;
+  bool reachable = 3;
+  string address = 4;             // 最近一次收到对方消息的地址
+  repeated string known_addresses = 5;
+  int64 last_seen_unix = 6;
+}
+
+message NetworkEgress {
+  string address = 1;             // 本机在这个出口上的公网 ip:port
+  bool port_preserved = 2;        // 这个出口不改端口
+  bool guessed = 3;               // 按历史推算，而非本轮实测
+  repeated string via = 4;        // 经由哪些探测服务器发现
+}
+
+message Status {
+  string device_id = 1;
+  string device_name = 2;
+  bool signaling_connected = 3;
+  ClipboardPermission clipboard_permission = 4;
+  int64 cache_bytes_used = 5;
+  int32 peers_online = 6;
+  string version = 7;
+  // 设置里填了服务器地址。没填时只在局域网里同步，不算异常。
+  bool server_configured = 8;
+  bool lan_enabled = 9;
+  // 系统拦下了本机发往局域网的包：macOS 上是没允许「本地网络」权限
+  bool lan_blocked = 10;
+  // 详细日志打开到什么时候；0 表示没打开
+  int64 verbose_log_until_unix = 11;
+}
+
+message ExportDiagnosticsRequest {
+  int32 log_lines = 1;     // 带上最近多少行日志
+  string ui_version = 2;   // 界面的版本，写进报告
+}
+
+message Diagnostics {
+  string report = 1;
+}
+
+message SetVerboseLogRequest {
+  int32 minutes = 1;
+}
+
+message GetImagePreviewRequest {
+  string clip_id = 1;
+  int32 index = 2;   // 一条记录里有多张图片时看第几张，从 0 开始
+}
+
+message GetImagePreviewResponse {
+  string path = 1;   // 界面可以直接解码的图片文件；HEIC 等格式是转换出来的 PNG
+  int32 count = 2;   // 这条记录在本机实际能预览的图片数
+  string name = 3;   // 文件名；剪贴板里的图片没有文件名，为空
+}

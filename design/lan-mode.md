@@ -50,13 +50,13 @@
 处理办法：
 
 - 后台服务的 Info.plist 加上 `NSLocalNetworkUsageDescription`（中英日本地化）与 `NSBonjourServices`。
-- LaunchAgent 写上 `AssociatedBundleIdentifiers`，让系统知道后台服务属于 CopySync.app（TN3179 的建议）。
+- LaunchAgent 写上 `AssociatedBundleIdentifiers`，让系统知道后台服务属于 PasteFerry.app（TN3179 的建议）。
 - 后台服务发现发往本机直连网段的包持续返回 `EHOSTUNREACH` 时，报告「被系统拦截」，界面提示用户去「系统设置 → 隐私与安全性 → 本地网络」打开。
 - 但对方不在线时也会得到 `EHOSTUNREACH`：ARP 解析失败的那一次发送返回它，之后 20 秒（`net.link.ether.inet.host_down_time`）里返回 `EHOSTDOWN`。被权限拦下的包到不了 ARP 那一步，立即再发还是 `EHOSTUNREACH`。所以遇到 `EHOSTUNREACH` 就立即再发一次，仍是它才算被拦。两种情况都在真机上测过（1.6.0 之后）：launchd 启动的新签名程序头 2.5 秒里，在线和不在线的地址都是两次 `EHOSTUNREACH`；之后发往不在线地址的是 `EHOSTUNREACH` 加 `EHOSTDOWN`。
 
 后来用正式打包方式（同样的 Info.plist，由 launchd 带着 `AssociatedBundleIdentifiers` 启动）在解锁的屏幕上复测：
 
-- 系统会弹出授权窗，授权记在后台服务自己的 bundle ID 名下，没有因为 `AssociatedBundleIdentifiers` 算到 CopySync.app 头上。用户允许后，mDNS 与单播都正常。
+- 系统会弹出授权窗，授权记在后台服务自己的 bundle ID 名下，没有因为 `AssociatedBundleIdentifiers` 算到 PasteFerry.app 头上。用户允许后，mDNS 与单播都正常。
 - 换了程序文件（ad-hoc 重新签名）后没有再问，授权仍然有效；但新程序刚启动的几秒到十几秒里，发往局域网的包仍会被拦下，之后自动放行。所以「被系统拦截」要持续 30 秒才报告，否则每次升级都会闪一下提示。
 - 这段拦截还会让 mDNS 失效：pion/mdns 启动时在哪块网卡上加入组播失败，就再也不用那块网卡。于是启动 mDNS 之前先探测一次，被拦期间每一轮都探测，探测一通过就重启 mDNS。用户后来才在系统设置里允许，也走同一条路恢复。判断拦截解除只认探测包：被拦时，发给先联系过本机的设备照样能成功。
 - 还没配对任何设备时，后台服务不往局域网发单播，就发现不了自己被拦着。于是在 macOS 上定期往本网段里一个普通地址的丢弃端口发几个字节探测（不用网关：发往网关的包可能不受这项限制）。往本机自己的地址发包也不受限制，不能当作「没被拦」的证据——Parallels 的 NAT 会让虚拟机的包看起来来自本机地址。
@@ -75,15 +75,15 @@
 
 ### 2. 发现
 
-- 服务类型 `_copysync._udp`，实例名每次启动随机（`copysync-` 加 12 位十六进制），不带设备名。
+- 服务类型 `_pasteferry._udp`，实例名每次启动随机（`pasteferry-` 加 12 位十六进制），不带设备名。
 - TXT：`v=1`，`t=当日令牌`，配对码开放期间加 `p=1`。
-- 令牌是 `sha256("copysync-lan|" + device_id + "|" + UTC 日期)` 的前 8 字节。已配对的设备按昨天、今天、明天各算一遍就能认出对方；同一网络里的其他人看到的只是一串每天都变的字符，无法跨天关联。
+- 令牌是 `sha256("pasteferry-lan|" + device_id + "|" + UTC 日期)` 的前 8 字节。已配对的设备按昨天、今天、明天各算一遍就能认出对方；同一网络里的其他人看到的只是一串每天都变的字符，无法跨天关联。
 - Windows 上由系统的 DNS-SD 服务回答查询（见上一节），其他平台由 pion/mdns 回答。网络变化时（本机地址集合变了）重新加入组播、重新广播。
 
 ### 3. 局域网信令
 
 - 固定 UDP 端口 8788，被占用时（同一台 Mac 上两个用户都登录着）退回随机端口，端口随 mDNS 和地址一起告诉对方。
-- 每个包是 4 字节魔数 `CSL1` 加 `LanPacket`，上限 16 KB，按来源限速。
+- 每个包是 4 字节魔数 `PFL1`（2.0.0 之前是 `CSL1`） 加 `LanPacket`，上限 16 KB，按来源限速。
 - 已配对设备之间收发的就是服务器转发的那种 `Signed`。上线通知是 `SignalMessage` 里新增的 `LanHello`：自报的地址、要不要回一条、自己多久发一次。
 - 对每台还没连通的设备，每 10 秒往它可能在的地址发 hello（已连通时 30 秒保活）。候选地址按顺序取：最近一次收到它消息的来源、mDNS 发现的、它自报的、地址簿里的，最多 12 个。
 - 收到有效消息就记下来源地址，并标记可达；超过对方声明间隔的三倍没收到，视为不可达。
@@ -130,7 +130,7 @@ hello 里带一个每次启动随机生成的启动标识。收到已配对设�
 - 服务器地址默认为空。1.4.0 之前的默认值 `ws://127.0.0.1:8787/signal` 其实没有服务器在跑，升级时清空一次（配置文件记 `config_version`，只迁移一次）。
 - 没有服务器时不探测公共 STUN：只在局域网里连，探测出口没有用，还会把公网 IP 暴露给公共服务器。
 - 解除配对时断开 P2P 连接（以前不断开）。
-- `copysync-cli`：`join CODE [ADDRESS]`、`address DEVICE ADDR`，`nat` 里加了局域网一节；1.5.0 加了 `nearby [NAME]`（搜索附近设备，给了 NAME 就在它出现时发起配对）。
+- `pasteferry-cli`：`join CODE [ADDRESS]`、`address DEVICE ADDR`，`nat` 里加了局域网一节；1.5.0 加了 `nearby [NAME]`（搜索附近设备，给了 NAME 就在它出现时发起配对）。
 
 ### 代码位置
 
@@ -213,7 +213,7 @@ Mac 与 Windows 11 虚拟机，各跑一个用 `-tags fakeclip` 编译的后台�
 - Mac 装上新版后，局域网发现正常工作，没有误报「被系统拦截」（修复前见「六、踩过的坑」）。
 - 没测：睡眠唤醒、Mac 上开关 Wi-Fi、两台 Windows 之间、真实的跨网段与 Tailscale（只在 NAT 打洞实验室里测过）。
 
-第四轮（1.5.0，搜索附近设备）：Mac 与 Windows 11 虚拟机各跑一个 `-tags fakeclip` 的后台服务（独立数据目录，与两边正式安装的 1.4.0 同时运行，局域网端口因此都退回随机端口），Windows 上的程序是新的路径，没有任何防火墙规则，用 `copysync-cli nearby` 代替界面：
+第四轮（1.5.0，搜索附近设备）：Mac 与 Windows 11 虚拟机各跑一个 `-tags fakeclip` 的后台服务（独立数据目录，与两边正式安装的 1.4.0 同时运行，局域网端口因此都退回随机端口），Windows 上的程序是新的路径，没有任何防火墙规则，用 `pasteferry-cli nearby` 代替界面：
 
 - Mac 打开后立刻看到 Windows，设备名经 Windows 的系统 DNS-SD 服务转发后完好；点它不到 1 秒收到回应，两边指纹一致，确认后直连。没放行防火墙的 Windows 照样收到了请求（它先发过 ping）。
 - 两边都只打开、不点：Mac 打开后 1 秒内出现在 Windows 的列表里，并认出是已配对的设备；Mac 关掉后 1 秒内从 Windows 的列表里消失（广播里撤下设备名，pion 报了更新）。

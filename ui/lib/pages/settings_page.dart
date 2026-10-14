@@ -5,7 +5,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
-import '../gen/copysync/v1/daemon.pb.dart';
+import '../gen/pasteferry/v1/daemon.pb.dart';
 import '../i18n.dart';
 import '../main.dart';
 import '../theme.dart';
@@ -297,7 +297,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: l.about,
                 child: GroupBox(children: [
                   SettingRow(
-                    title: 'CopySync ${state.status?.version ?? ''}',
+                    title: '${l.appName} ${state.status?.version ?? ''}',
                     description: l.aboutDesc,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

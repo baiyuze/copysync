@@ -3,7 +3,7 @@ package sync
 import (
 	"testing"
 
-	"github.com/baiyuze/copysync/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
 )
 
 func TestHTMLToText(t *testing.T) {

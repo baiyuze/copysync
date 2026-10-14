@@ -1,13 +1,13 @@
 # Linux 客户端
 
 > 状态：已实现，随 1.6.0 发布
-> 代码：`client-core/internal/clipboard/linux.go`（剪贴板）、`client-core/cmd/copysyncd/platform_linux.go` 与 `supervisor.go`（后台服务）、`ui/linux/`（GTK 外壳）、`ui/lib/background_service_linux.dart`（开机自启）、`scripts/package-linux.sh` 与 `tools/linux/`（打包）
+> 代码：`client-core/internal/clipboard/linux.go`（剪贴板）、`client-core/cmd/pasteferryd/platform_linux.go` 与 `supervisor.go`（后台服务）、`ui/linux/`（GTK 外壳）、`ui/lib/background_service_linux.dart`（开机自启）、`scripts/package-linux.sh` 与 `tools/linux/`（打包）
 > 验证：`internal/clipboard/linux_test.go`（Xvfb + xclip、Wayland + wl-clipboard）、CI 的 Linux 任务（x64 与 ARM64）、Ubuntu 24.04 GNOME（Wayland）虚拟机实测
 > 相关：[Windows 客户端](windows-client.md)、[局域网直连](lan-mode.md)
 
 ## 一、目标
 
-让 Linux 电脑加入 CopySync，与 Mac、Windows 互相同步文本、带格式文本、图片和文件，体验与另外两个平台一致：开机自启、关掉窗口照常同步、崩溃自动拉起，网络行为完全相同。
+让 Linux 电脑加入隔空贴，与 Mac、Windows 互相同步文本、带格式文本、图片和文件，体验与另外两个平台一致：开机自启、关掉窗口照常同步、崩溃自动拉起，网络行为完全相同。
 
 支持：x64 与 ARM64；X11 桌面，或者带 XWayland 的 Wayland 桌面（GNOME、KDE 等主流桌面默认都带）；GTK 3。
 
@@ -67,11 +67,11 @@ KeePassXC 等密码管理器复制密码时带着 KDE 约定的 `x-kde-passwordM
 
 | | Mac | Windows | Linux |
 |---|---|---|---|
-| 开机自启 | LaunchAgent | HKCU\...\Run | XDG 自启动项（`~/.config/autostart/copysync-daemon.desktop`） |
-| 崩溃拉起 | launchd 的 KeepAlive | `copysyncd -supervise` 守护进程 | 同 Windows |
+| 开机自启 | LaunchAgent | HKCU\...\Run | XDG 自启动项（`~/.config/autostart/pasteferry-daemon.desktop`） |
+| 崩溃拉起 | launchd 的 KeepAlive | `pasteferryd -supervise` 守护进程 | 同 Windows |
 | 只运行一个 | launchd | 命名互斥量 | `flock`（数据目录下的 daemon.lock、supervisor.lock） |
 | 日志 | launchd 重定向 | `logs/daemon.log`，10 MB 轮转 | 同 Windows |
-| 数据目录 | `~/Library/Application Support/CopySync` | `%LOCALAPPDATA%\CopySync` | `$XDG_DATA_HOME/copysync`，默认 `~/.local/share/copysync` |
+| 数据目录 | `~/Library/Application Support/PasteFerry` | `%LOCALAPPDATA%\PasteFerry` | `$XDG_DATA_HOME/pasteferry`，默认 `~/.local/share/pasteferry` |
 
 用 XDG 自启动项而不是 systemd 的用户服务：自启动项在登录后的图形会话里启动，带着 DISPLAY、XAUTHORITY，后台服务才连得上剪贴板；systemd 用户服务不一定拿得到这些环境变量，各发行版的做法也不一致。GNOME、KDE、Xfce 都认 XDG 自启动项。
 
@@ -79,8 +79,8 @@ KeePassXC 等密码管理器复制密码时带着 KDE 约定的 `x-kde-passwordM
 
 ## 四、界面
 
-- **GTK 外壳**（`ui/linux/`）：应用 ID `com.copysync.app`（与 Mac 的包名一致，桌面据此把窗口与应用菜单项对应起来，Dock 里显示正确的图标）；默认 960×640、最小 760×520；只运行一个实例，再次打开时激活已有的窗口；窗口图标随程序发布。为了在 Ubuntu 22.04（GLib 2.72）上编译，不用 2.74 才有的 `G_APPLICATION_DEFAULT_FLAGS`。
-- **开机自启**（`background_service_linux.dart`）：写自启动项，路径按 Desktop Entry 规范加引号转义（文件夹名可能带空格）；状态按自启动项里的路径与 `pgrep` 判断；重启时结束当前用户的 copysyncd 再脱离界面启动守护进程，环境变量随之传下去。
+- **GTK 外壳**（`ui/linux/`）：应用 ID `com.pasteferry.app`（与 Mac 的包名一致，桌面据此把窗口与应用菜单项对应起来，Dock 里显示正确的图标）；默认 960×640、最小 760×520；只运行一个实例，再次打开时激活已有的窗口；窗口图标随程序发布。为了在 Ubuntu 22.04（GLib 2.72）上编译，不用 2.74 才有的 `G_APPLICATION_DEFAULT_FLAGS`。
+- **开机自启**（`background_service_linux.dart`）：写自启动项，路径按 Desktop Entry 规范加引号转义（文件夹名可能带空格）；状态按自启动项里的路径与 `pgrep` 判断；重启时结束当前用户的 pasteferryd 再脱离界面启动守护进程，环境变量随之传下去。
 - **字体**：主字体跟随系统（fontconfig 默认的无衬线字体）；汉字指定 Noto Sans CJK SC 等（日文界面用 JP），理由与 Windows 相同：系统逐字回退时，中日共用的汉字可能落到另一种语言的字形上。等宽字体交给 fontconfig 的 `monospace` 别名。
 - **叫法与图标**：与 Windows 一样说「这台电脑」，用 Fluent 图标（线条风格与 GNOME、KDE 的图标接近）；打开网址用 `xdg-open`。
 
@@ -88,8 +88,8 @@ KeePassXC 等密码管理器复制密码时带着 KDE 约定的 `x-kde-passwordM
 
 `scripts/package-linux.sh` 在 Linux 上构建后台服务、命令行与界面，产出：
 
-- `CopySync-linux-<arch>.deb`：装在 `/opt/CopySync`，应用菜单项与图标装进系统目录，`/usr/bin` 下有 `copysync`、`copysync-cli`。依赖只写 `libgtk-3-0`（Ubuntu 24.04 起改名为 libgtk-3-0t64，新包也提供旧名字，两边都能装），推荐 `fonts-noto-cjk`。卸载时结束正在运行的后台服务。
-- `CopySync-linux-<arch>.tar.gz`：解压即用，`install.sh` 把应用菜单项和图标装进用户目录（不需要 root），`uninstall.sh` 撤销并停用后台服务。
+- `PasteFerry-linux-<arch>.deb`：装在 `/opt/PasteFerry`，应用菜单项与图标装进系统目录，`/usr/bin` 下有 `pasteferry`、`pasteferry-cli`。依赖只写 `libgtk-3-0`（Ubuntu 24.04 起改名为 libgtk-3-0t64，新包也提供旧名字，两边都能装），推荐 `fonts-noto-cjk`。卸载时结束正在运行的后台服务。
+- `PasteFerry-linux-<arch>.tar.gz`：解压即用，`install.sh` 把应用菜单项和图标装进用户目录（不需要 root），`uninstall.sh` 撤销并停用后台服务。
 
 Flutter 不能交叉编译 Linux 桌面程序，CI 在 GitHub 的 x64 与 ARM64 两种 Ubuntu 22.04 机器上各跑一次：先在 Xvfb 里跑后台服务的全部测试（含 X11 剪贴板），再跑界面测试，最后打包上传。在 22.04 上构建，产物依赖的 glibc 与 GTK 版本较老，新的发行版也能运行。
 

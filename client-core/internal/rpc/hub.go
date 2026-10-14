@@ -3,7 +3,7 @@ package rpc
 import (
 	"sync"
 
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // Hub 把 daemon 内部发生的事件广播给所有已连接的 UI。

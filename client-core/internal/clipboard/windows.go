@@ -155,7 +155,7 @@ var wndProcCallback = windows.NewCallback(wndProc)
 
 func createOwnerWindow() error {
 	instance, _, _ := procGetModuleHandleW.Call(0)
-	className, _ := windows.UTF16PtrFromString("CopySyncClipboardOwner")
+	className, _ := windows.UTF16PtrFromString("PasteFerryClipboardOwner")
 	wc := wndClassEx{
 		Size:      uint32(unsafe.Sizeof(wndClassEx{})),
 		WndProc:   wndProcCallback,
@@ -165,7 +165,7 @@ func createOwnerWindow() error {
 	if r, _, err := procRegisterClassExW.Call(uintptr(unsafe.Pointer(&wc))); r == 0 {
 		return fmt.Errorf("注册窗口类: %w", err)
 	}
-	title, _ := windows.UTF16PtrFromString("CopySync")
+	title, _ := windows.UTF16PtrFromString("PasteFerry")
 	// 样式为 0、尺寸为 0，且从不 ShowWindow：用户看不到，任务栏上也没有
 	hwnd, _, err := procCreateWindowExW.Call(0,
 		uintptr(unsafe.Pointer(className)), uintptr(unsafe.Pointer(title)),

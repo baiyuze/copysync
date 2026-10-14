@@ -6,7 +6,6 @@ SITE = "https://baiyuze.github.io/pasteferry/"
 C = {
     "brand": "隔空贴",
     "brand_alt": ["PasteFerry", "CopySync"],
-    "rename_note": "隔空贴原名 CopySync。应用和安装包里暂时还叫 CopySync，下个版本会改过来。",
     "title": "隔空贴 PasteFerry：在 Mac、Windows 与 Linux 之间同步剪贴板与文件，跨账号跨网络",
     "description": "隔空贴让你在一台电脑上复制，另一台上直接粘贴，Mac、Windows、Linux 互通。支持文本、图片、文件和文件夹，"
                    "不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。"
@@ -230,15 +229,15 @@ C = {
         "跨网络同步时，在「设置」里填入服务器地址 <code>ws://服务器地址:8787/signal</code>，按回车；同一个网络里不用填。",
     ],
     "win_steps": [
-        "运行 CopySync-Setup.exe。装在当前用户目录下，不需要管理员权限。"
+        "运行 PasteFerry-Setup.exe。装在当前用户目录下，不需要管理员权限。"
         "<span class=\"aside\">隔空贴还没有代码签名，Windows 会提示「Windows 已保护你的电脑」：点「更多信息」，再点「仍要运行」。"
-        f"不想运行安装程序的话，可以下载<a href=\"{REPO}/releases/latest/download/CopySync-windows-x64.zip\">便携版</a>。</span>",
+        f"不想运行安装程序的话，可以下载<a href=\"{REPO}/releases/latest/download/PasteFerry-windows-x64.zip\">便携版</a>。</span>",
         "打开隔空贴，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。防火墙询问时选择允许。",
         "跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。",
     ],
     "linux_steps": [
-        "Ubuntu、Debian 等下载 .deb，运行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；"
-        "其他发行版下载 tar.gz，解压后运行 <code>./CopySync/install.sh</code>。",
+        "Ubuntu、Debian 等下载 .deb，运行 <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>；"
+        "其他发行版下载 tar.gz，解压后运行 <code>./PasteFerry/install.sh</code>。",
         "从应用菜单里打开隔空贴，点「启用后台同步」。之后它随登录自动启动。",
         "跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。",
     ],
@@ -303,7 +302,7 @@ C = {
             "先看两台是不是真的在同一个网段：公司里有线和无线、访客网络、开了「AP 隔离」的 Wi‑Fi 常常不互通，局域网发现过不去。"
             "这时在输入配对码的那台点「不在同一网段？」，填上另一台配对码下面显示的地址。",
             "Windows 上，第一次运行时防火墙会询问，要选允许；点过取消的话，在「设置 → 局域网」里点「放行」。"
-            "Mac 上，要在「系统设置 → 隐私与安全性 → 本地网络」里打开 CopySync Daemon。更多见<a href=\"{lan}#faq\">同一网络教程</a>。",
+            "Mac 上，要在「系统设置 → 隐私与安全性 → 本地网络」里打开 PasteFerry Daemon。更多见<a href=\"{lan}#faq\">同一网络教程</a>。",
         ]),
         ("支持 Windows 和 Linux 吗？iPhone 呢？", [
             "支持 Windows 10 与 Windows 11（x64），与 Mac 互通。复制的文件在 Windows 上粘贴出来就是真实文件，能直接粘进资源管理器、微信、Office。",
@@ -386,7 +385,7 @@ C = {
         "manage_caption": "以后会用到的",
         "win": {
             "steps": [
-                f'下载 <a href="{REPO}/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a>，'
+                f'下载 <a href="{REPO}/releases/latest/download/pasteferry-server-windows-amd64.zip">pasteferry-server-windows-amd64.zip</a>，'
                 "右键选「全部解压缩」。",
                 "打开解压出的文件夹，双击 <code>install.cmd</code>。"
                 "<span class=\"aside\">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」；弹出用户账户控制时点「是」。"
@@ -395,20 +394,20 @@ C = {
             ],
             "download": "下载 Windows 版服务器",
             "notes": [
-                "<strong>作为 Windows 服务运行：</strong>开机就启动，不用登录，也没有窗口。在「服务」里叫 CopySync Server。",
-                "<strong>防火墙已经放行：</strong>脚本添加了一条只针对 copysync-server.exe 的入站规则，不用自己开端口。",
+                "<strong>作为 Windows 服务运行：</strong>开机就启动，不用登录，也没有窗口。在「服务」里叫 PasteFerry Server。",
+                "<strong>防火墙已经放行：</strong>脚本添加了一条只针对 pasteferry-server.exe 的入站规则，不用自己开端口。",
                 "<strong>地址认错了</strong>（比如装了虚拟机或 VPN，有好几块网卡）：在解压出的文件夹的地址栏里输入 <code>cmd</code> 回车，"
                 "运行 <code>install.cmd 192.168.1.20</code>，换成你的地址。",
                 "支持 Windows 10、11，x64。",
             ],
             "double_click": "双击",
-            "explorer_label": "解压出的文件夹里有 copysync-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd，双击其中的 install.cmd",
+            "explorer_label": "解压出的文件夹里有 pasteferry-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd，双击其中的 install.cmd",
             "term_title": "管理员: Windows PowerShell",
             "term_label": "install.cmd 运行完的窗口：依次停止旧版本、安装、注册服务、放行防火墙、启动，最后显示客户端要填的地址 ws://192.168.1.20:8787/signal",
             "manage": [
-                ("状态", "管理员 PowerShell 里运行 <code>Get-Service CopySyncServer</code>，或者在「服务」里找 CopySync Server"),
-                ("日志", "<code>C:\\ProgramData\\CopySync Server\\server.log</code>"),
-                ("重启", "管理员 PowerShell 里运行 <code>Restart-Service CopySyncServer</code>"),
+                ("状态", "管理员 PowerShell 里运行 <code>Get-Service PasteFerryServer</code>，或者在「服务」里找 PasteFerry Server"),
+                ("日志", "<code>C:\\ProgramData\\PasteFerry Server\\server.log</code>"),
+                ("重启", "管理员 PowerShell 里运行 <code>Restart-Service PasteFerryServer</code>"),
                 ("升级", "下载新版本，解压后再双击 <code>install.cmd</code>，原来的设置保留"),
                 ("卸载", "双击 <code>uninstall.cmd</code>，服务、防火墙规则和文件一并删除"),
             ],
@@ -421,13 +420,13 @@ C = {
             "notes": [
                 "<strong>不需要管理员权限。</strong>登录这台 Mac 后自动在后台运行，意外退出会被系统重新拉起。",
                 "<strong>这台 Mac 不能睡眠：</strong>在「系统设置 → 能耗」（笔记本在「电池 → 选项」）里打开防止自动进入睡眠的选项。",
-                "<strong>开着系统防火墙的话，</strong>脚本最后会给出放行 copysync-server 的命令。",
+                "<strong>开着系统防火墙的话，</strong>脚本最后会给出放行 pasteferry-server 的命令。",
                 "Intel 与 Apple 芯片通用，macOS 13 及以上。",
             ],
             "term_label": "在终端里运行 ./install.sh 的输出：安装、写入 LaunchAgent、启动，最后显示客户端要填的地址 ws://192.168.1.20:8787/signal",
             "manage": [
-                ("日志", "<code>~/Library/Logs/CopySync/server.log</code>"),
-                ("重启", "<code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code>"),
+                ("日志", "<code>~/Library/Logs/PasteFerry/server.log</code>"),
+                ("重启", "<code>launchctl kickstart -k gui/$(id -u)/com.pasteferry.server</code>"),
                 ("升级", "下载新版本，解压后再运行 <code>./install.sh</code>，原来的设置保留"),
                 ("卸载", "<code>./install.sh uninstall</code>"),
             ],
@@ -445,10 +444,10 @@ C = {
             ],
             "term_label": "运行 sudo ./install.sh 的输出：安装、写入 systemd 单元、生成配置、启动，最后显示客户端要填的地址 ws://192.168.1.20:8787/signal",
             "manage": [
-                ("状态", "<code>systemctl status copysync-server</code>"),
-                ("日志", "<code>journalctl -u copysync-server -f</code>"),
-                ("重启", "<code>sudo systemctl restart copysync-server</code>"),
-                ("配置", "<code>/etc/copysync/server.env</code>，改完重启服务"),
+                ("状态", "<code>systemctl status pasteferry-server</code>"),
+                ("日志", "<code>journalctl -u pasteferry-server -f</code>"),
+                ("重启", "<code>sudo systemctl restart pasteferry-server</code>"),
+                ("配置", "<code>/etc/pasteferry/server.env</code>，改完重启服务"),
                 ("升级", "下载新版本，解压后再运行 <code>sudo ./install.sh</code>，原来的配置保留"),
                 ("卸载", "<code>sudo ./install.sh uninstall</code>"),
             ],
@@ -482,7 +481,7 @@ C = {
             ]),
             ("服务器的地址变了怎么办？", [
                 "带上新地址再运行一次安装脚本：Windows 上是 <code>install.cmd 新地址</code>，Mac 上是 <code>./install.sh 新地址</code>；"
-                "Linux 上编辑 <code>/etc/copysync/server.env</code> 里的 <code>-turn-ip</code>，再重启服务。然后在每台电脑上改掉服务器地址。",
+                "Linux 上编辑 <code>/etc/pasteferry/server.env</code> 里的 <code>-turn-ip</code>，再重启服务。然后在每台电脑上改掉服务器地址。",
                 "在路由器里给它固定一个地址，就不会再遇到这件事。",
             ]),
             ("离开局域网以后还能同步吗？", [
@@ -562,7 +561,7 @@ C = {
             "最后显示的 <code>ws://203.0.113.10:8787/signal</code> 就是客户端要填的地址。",
         ],
         "install_notes": [
-            "<strong>注册为 systemd 服务，</strong>开机自动运行，配置在 <code>/etc/copysync/server.env</code>。",
+            "<strong>注册为 systemd 服务，</strong>开机自动运行，配置在 <code>/etc/pasteferry/server.env</code>。",
             "<strong>升级：</strong>下载新版本，解压后再运行 <code>sudo ./install.sh</code>，原来的配置保留。",
             "<strong>也可以用 Docker：</strong>见<a href=\"{deploy}\">服务器部署说明</a>。",
         ],
@@ -625,7 +624,7 @@ C = {
             "点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。",
         ],
         "win": [
-            "运行 CopySync-Setup.exe，不需要管理员权限。<span class=\"aside\">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span>",
+            "运行 PasteFerry-Setup.exe，不需要管理员权限。<span class=\"aside\">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span>",
             "打开隔空贴，点「启用后台同步」。防火墙询问时选择允许。关掉窗口后它在右下角的托盘里继续运行。",
         ],
         "linux": [
@@ -688,7 +687,7 @@ C = {
                              "公司里有线和无线常常不在一个网段，这时看下面的<a href=\"#subnet\">不在同一网段</a>。"),
             ("Windows 防火墙", "第一次运行时，Windows 会问是否允许隔空贴通过防火墙，选允许。点过取消的话，"
                               "在隔空贴的「设置 → 局域网」里点「放行」，会请求一次管理员权限。"),
-            ("macOS 的本地网络权限", "macOS 15 起，第一次连接局域网里的设备时，系统会问是否允许 CopySync Daemon 查找本地网络上的设备，选允许。"
+            ("macOS 的本地网络权限", "macOS 15 起，第一次连接局域网里的设备时，系统会问是否允许 PasteFerry Daemon 查找本地网络上的设备，选允许。"
                                     "拒绝过的话，到「系统设置 → 隐私与安全性 → 本地网络」里打开它。"),
             ("不用填服务器", "「设置」里的服务器地址留空就行。以后要跨网络同步，再填上服务器或者改用 Tailscale，已经配对的设备不用重新配对。"),
         ],
@@ -726,7 +725,7 @@ C = {
                 "先确认两台连着同一个网络、都启用了后台同步。再试试在输入配对码的那台填上对方的地址："
                 "这样能找到的话，说明两台不在同一网段，或者网络挡住了 mDNS。",
                 "还是找不到，就看对方的防火墙：对方是 Windows 的话，在它的「设置 → 局域网」里点「放行」；"
-                "是 Mac 的话，确认「系统设置 → 隐私与安全性 → 本地网络」里打开了 CopySync Daemon，系统防火墙也没有拦着它。",
+                "是 Mac 的话，确认「系统设置 → 隐私与安全性 → 本地网络」里打开了 PasteFerry Daemon，系统防火墙也没有拦着它。",
             ]),
             ("离开这个网络后还能同步吗？", [
                 "不能，回到这个网络后自动恢复，这期间复制的内容会补发到对方的复制记录里。"
@@ -833,7 +832,7 @@ C = {
             ("配对时找不到对方？", [
                 "先确认两台的 Tailscale 都已连接：在终端里运行 <code>tailscale ping 对方的地址</code>，能 ping 通再试。",
                 "能 ping 通还找不到，多半是对方的防火墙挡住了：对方是 Windows 的话，在它的隔空贴「设置 → 局域网」里点「放行」；"
-                "是 Mac 的话，确认「系统设置 → 隐私与安全性 → 本地网络」里打开了 CopySync Daemon。",
+                "是 Mac 的话，确认「系统设置 → 隐私与安全性 → 本地网络」里打开了 PasteFerry Daemon。",
             ]),
             ("一定要每台电脑都装 Tailscale 吗？", [
                 "是的，没装的电脑访问不到 100 开头的地址。两台在同一个网络里时，不装也能用，见<a href=\"{lan}\">同一网络教程</a>。",
@@ -871,7 +870,7 @@ C = {
             "setup": "下载安装程序",
             "portable": "不想运行安装程序的话，可以下载<a href=\"{portable}\">便携版</a>，解压后直接运行。",
             "steps": [
-                "运行 CopySync-Setup.exe，装在当前用户目录下，不需要管理员权限。"
+                "运行 PasteFerry-Setup.exe，装在当前用户目录下，不需要管理员权限。"
                 "<span class=\"aside\">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span>",
                 "打开隔空贴，点「启用后台同步」。防火墙询问时选择允许。",
             ],
@@ -906,7 +905,7 @@ C = {
             "notes": [
                 "需要图形桌面：X11，或者带 XWayland 的 Wayland 桌面，GNOME、KDE 等主流桌面默认都带。",
                 "不确定是 x64 还是 ARM64：在终端运行 <code>uname -m</code>，显示 <code>x86_64</code> 是 x64，<code>aarch64</code> 是 ARM64。",
-                ".deb 装在 /opt/CopySync，出现在应用菜单里。tar.gz 解压到哪里都能运行，<code>install.sh</code> 把它加进应用菜单。",
+                ".deb 装在 /opt/PasteFerry，出现在应用菜单里。tar.gz 解压到哪里都能运行，<code>install.sh</code> 把它加进应用菜单。",
                 "打开后点「启用后台同步」，之后随登录自动启动。GNOME 默认不显示托盘图标，从应用菜单打开窗口。",
                 "需要 GTK 3。在 Ubuntu 24.04 的 GNOME（Wayland）上实测过。",
             ],

@@ -1,6 +1,6 @@
 package clipboard
 
-// Windows 剪贴板格式与 CopySync 内部表示之间的转换。
+// Windows 剪贴板格式与 PasteFerry 内部表示之间的转换。
 //
 // 都是纯函数，不依赖 Win32 API，放在没有构建标签的文件里：任何平台都能编译和测试，
 // 在 Mac 上开发时就能验证。实际调用在 windows.go。

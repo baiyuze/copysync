@@ -1,5 +1,5 @@
 ﻿<#
-在 Windows 上安装 copysync-server：注册为开机自启的系统服务，并在 Windows 防火墙里放行。
+在 Windows 上安装 pasteferry-server：注册为开机自启的系统服务，并在 Windows 防火墙里放行。
 
   双击 install.cmd               用本机的局域网地址启用 TURN 中转
   install.cmd 192.168.1.20       指定 TURN 对外公布的地址
@@ -39,11 +39,11 @@ if (-not $admin) {
     exit 0
 }
 
-$Name = 'CopySyncServer'
-$Display = 'CopySync Server'
-$InstallDir = Join-Path $env:ProgramFiles 'CopySync Server'
-$DataDir = Join-Path $env:ProgramData 'CopySync Server'
-$Exe = Join-Path $InstallDir 'copysync-server.exe'
+$Name = 'PasteFerryServer'
+$Display = 'PasteFerry Server'
+$InstallDir = Join-Path $env:ProgramFiles 'PasteFerry Server'
+$DataDir = Join-Path $env:ProgramData 'PasteFerry Server'
+$Exe = Join-Path $InstallDir 'pasteferry-server.exe'
 $Conf = Join-Path $DataDir 'server.conf'
 $Log = Join-Path $DataDir 'server.log'
 
@@ -52,7 +52,7 @@ function Stop-Server {
         Stop-Service $Name -Force -ErrorAction SilentlyContinue
     }
     # 服务停了进程不一定立刻退出，退出前替换不了程序文件
-    for ($i = 0; $i -lt 20 -and (Get-Process copysync-server -ErrorAction SilentlyContinue); $i++) {
+    for ($i = 0; $i -lt 20 -and (Get-Process pasteferry-server -ErrorAction SilentlyContinue); $i++) {
         Start-Sleep -Milliseconds 250
     }
 }
@@ -78,9 +78,28 @@ function Get-LanIp {
     }
 }
 
-$src = Join-Path $PSScriptRoot 'copysync-server.exe'
+$src = Join-Path $PSScriptRoot 'pasteferry-server.exe'
 if (-not (Test-Path $src)) {
     throw (Say "找不到 $src，请把压缩包完整解压后再运行" "$src not found. Extract the whole zip first.")
+}
+
+# 2.0.0 之前叫 CopySync Server：停掉并删除旧服务（它占着 8787 与 3478 端口），配置挪过来接着用
+$OldName = 'CopySyncServer'
+if (Get-Service $OldName -ErrorAction SilentlyContinue) {
+    Write-Host (Say '停用旧的 CopySync Server' 'Removing the old CopySync Server')
+    Stop-Service $OldName -Force -ErrorAction SilentlyContinue
+    for ($i = 0; $i -lt 20 -and (Get-Process copysync-server -ErrorAction SilentlyContinue); $i++) {
+        Start-Sleep -Milliseconds 250
+    }
+    sc.exe delete $OldName | Out-Null
+    Get-NetFirewallRule -DisplayName 'CopySync Server' -ErrorAction SilentlyContinue | Remove-NetFirewallRule
+    $OldConf = Join-Path $env:ProgramData 'CopySync Server\server.conf'
+    if ((Test-Path $OldConf) -and -not (Test-Path $Conf)) {
+        New-Item -ItemType Directory -Force $DataDir | Out-Null
+        Copy-Item $OldConf $Conf
+    }
+    Remove-Item (Join-Path $env:ProgramFiles 'CopySync Server'), (Join-Path $env:ProgramData 'CopySync Server') `
+        -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 # 读取已有设置
@@ -118,7 +137,7 @@ icacls $Conf /inheritance:r /grant:r '*S-1-5-32-544:F' '*S-1-5-18:F' | Out-Null
 Step "注册服务 $Name（中转地址 $turnIp）" "Registering the service $Name (relay address $turnIp)"
 $bin = "`"$Exe`" -addr :8787 -turn-ip $turnIp -turn-secret $($cfg.TURN_SECRET) " +
        "-stun stun:${turnIp}:3478,stun:stun.l.google.com:19302 -log `"$Log`""
-$desc = Say 'CopySync 的信令与 TURN 中转服务器' 'Signaling and TURN relay server for CopySync'
+$desc = Say 'PasteFerry 的信令与 TURN 中转服务器' 'Signaling and TURN relay server for PasteFerry'
 $existing = Get-CimInstance Win32_Service -Filter "Name='$Name'"
 if ($existing) {
     $r = $existing | Invoke-CimMethod -MethodName Change -Arguments @{ PathName = $bin; StartMode = 'Automatic' }
@@ -157,7 +176,7 @@ if ($zh) {
     Write-Host @"
 
 安装完成：$version，作为 Windows 服务开机自动运行
-在每台电脑的 CopySync「设置 → 信令服务器地址」填：
+在每台电脑的 PasteFerry「设置 → 信令服务器地址」填：
 
     ws://${turnIp}:8787/signal
 
@@ -170,7 +189,7 @@ if ($zh) {
     Write-Host @"
 
 Installed: $version. It runs as a Windows service and starts with Windows.
-In CopySync on each computer, set Settings > Signaling server to:
+In PasteFerry on each computer, set Settings > Signaling server to:
 
     ws://${turnIp}:8787/signal
 

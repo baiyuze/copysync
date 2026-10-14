@@ -3,11 +3,11 @@ package rpc
 import (
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/clipboard"
-	"github.com/baiyuze/copysync/client-core/internal/config"
-	"github.com/baiyuze/copysync/client-core/internal/imagepreview"
-	"github.com/baiyuze/copysync/client-core/internal/store"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
+	"github.com/baiyuze/pasteferry/client-core/internal/clipboard"
+	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	"github.com/baiyuze/pasteferry/client-core/internal/imagepreview"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
 )
 
 // 内部类型与 proto 类型的互转。store 层刻意不直接用 proto 类型，

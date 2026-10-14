@@ -6,8 +6,8 @@ import 'package:grpc/grpc.dart';
 import 'background_service.dart';
 import 'daemon_client.dart';
 import 'i18n.dart';
-import 'gen/copysync/v1/daemon.pb.dart';
-import 'gen/copysync/v1/daemon.pbgrpc.dart' show DaemonServiceClient;
+import 'gen/pasteferry/v1/daemon.pb.dart';
+import 'gen/pasteferry/v1/daemon.pbgrpc.dart' show DaemonServiceClient;
 
 /// daemon 连接的生命周期状态。
 enum LinkState { connecting, online, offline }
@@ -107,6 +107,7 @@ class AppState extends ChangeNotifier {
   Future<void> connect() async {
     _retry?.cancel();
     _setLink(LinkState.connecting, null);
+    await _replaceLegacyService();
 
     try {
       final conn = await DaemonConnection.connect();
@@ -143,6 +144,20 @@ class AppState extends ChangeNotifier {
     } catch (e) {
       await _refreshServiceState();
       _scheduleRetry(_describe(e));
+    }
+  }
+
+  bool _legacyChecked = false;
+
+  /// 2.0.0 之前叫 CopySync 时登记的后台服务先停掉；原先启用着的，改为启用新的，
+  /// 新的后台服务第一次启动时会把旧的数据目录挪过来，配对关系与复制记录都还在
+  Future<void> _replaceLegacyService() async {
+    if (_legacyChecked || !service.available) return;
+    _legacyChecked = true;
+    try {
+      if (await service.removeLegacy()) await service.install();
+    } catch (_) {
+      // 清理失败不影响使用：用户还可以在界面上手动启用后台同步
     }
   }
 

@@ -1,5 +1,5 @@
-name: copysync_ui
-description: "CopySync 的 macOS 界面：查看复制记录、配对设备、管理设置。"
+name: pasteferry_ui
+description: "PasteFerry 的 macOS 界面：查看复制记录、配对设备、管理设置。"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/proto/pairingcode"
+	"github.com/baiyuze/pasteferry/proto/pairingcode"
 )
 
 func peerNamed(id string) Peer {

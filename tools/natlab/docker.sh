@@ -17,7 +17,7 @@ echo "▶ 编译 natlab（linux/$ARCH）"
 (cd client-core && CGO_ENABLED=0 GOOS=linux GOARCH=$ARCH go build -o "$OUT/natlab" ./cmd/natlab)
 
 echo "▶ 准备实验室镜像"
-docker build -q -t copysync-natlab --build-arg APK_MIRROR="${APK_MIRROR:-}" tools/natlab >/dev/null
+docker build -q -t pasteferry-natlab --build-arg APK_MIRROR="${APK_MIRROR:-}" tools/natlab >/dev/null
 
 docker run --rm --privileged -e NATLAB_ONLY -v "$OUT:/lab:ro" -v "$PWD/tools/natlab:/scripts:ro" \
-    copysync-natlab bash /scripts/run.sh /lab/natlab
+    pasteferry-natlab bash /scripts/run.sh /lab/natlab

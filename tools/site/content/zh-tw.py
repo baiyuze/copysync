@@ -6,7 +6,6 @@ SITE = "https://baiyuze.github.io/pasteferry/"
 C = {
     "brand": "隔空貼",
     "brand_alt": ["PasteFerry", "CopySync"],
-    "rename_note": "隔空貼原名 CopySync。App 和安裝檔裡暫時還叫 CopySync，下個版本會改過來。",
     "title": "隔空貼 PasteFerry：在 Mac、Windows 與 Linux 之間同步剪貼簿與檔案，跨帳號跨網路",
     "description": "隔空貼讓你在一台電腦上複製，到另一台直接貼上，Mac、Windows、Linux 互通。支援文字、圖片、檔案和資料夾，"
                    "不必使用同一個帳號。在同一個網路裡裝好就能用，不需要伺服器；跨網路時可以用自己架設的伺服器或 Tailscale。"
@@ -230,15 +229,15 @@ C = {
         "跨網路同步時，在「設定」裡填入伺服器位址 <code>ws://伺服器位址:8787/signal</code>，按 Enter；在同一個網路裡不用填。",
     ],
     "win_steps": [
-        "執行 CopySync-Setup.exe。它會安裝在目前使用者的目錄下，不需要系統管理員權限。"
+        "執行 PasteFerry-Setup.exe。它會安裝在目前使用者的目錄下，不需要系統管理員權限。"
         "<span class=\"aside\">隔空貼還沒有程式碼簽章，Windows 會提示「Windows 已保護您的電腦」：點「其他資訊」，再點「仍要執行」。"
-        f"不想執行安裝程式的話，可以下載<a href=\"{REPO}/releases/latest/download/CopySync-windows-x64.zip\">免安裝版</a>。</span>",
+        f"不想執行安裝程式的話，可以下載<a href=\"{REPO}/releases/latest/download/PasteFerry-windows-x64.zip\">免安裝版</a>。</span>",
         "打開隔空貼，點「啟用背景同步」。關掉視窗後，它會在右下角的通知區域繼續執行。防火牆詢問時選擇允許。",
         "跨網路同步時，在「設定」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。",
     ],
     "linux_steps": [
-        "Ubuntu、Debian 等發行版下載 .deb，執行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；"
-        "其他發行版下載 tar.gz，解壓縮後執行 <code>./CopySync/install.sh</code>。",
+        "Ubuntu、Debian 等發行版下載 .deb，執行 <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>；"
+        "其他發行版下載 tar.gz，解壓縮後執行 <code>./PasteFerry/install.sh</code>。",
         "從應用程式選單打開隔空貼，點「啟用背景同步」。之後它會在登入時自動啟動。",
         "跨網路同步時，在「設定」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。",
     ],
@@ -303,7 +302,7 @@ C = {
             "先確認兩台是不是真的在同一個網段：公司裡的有線和無線、訪客網路、開了「AP 隔離」的 Wi‑Fi 常常互不相通，區域網路探索過不去。"
             "這時在輸入配對碼的那台點「不在同一網段？」，填上另一台配對碼下方顯示的位址。",
             "在 Windows 上，第一次執行時防火牆會詢問，要選擇允許；如果按過取消，到「設定 → 區域網路」裡點「允許」。"
-            "在 Mac 上，要到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 CopySync Daemon。更多說明見<a href=\"{lan}#faq\">同一網路教學</a>。",
+            "在 Mac 上，要到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟 PasteFerry Daemon。更多說明見<a href=\"{lan}#faq\">同一網路教學</a>。",
         ]),
         ("支援 Windows 和 Linux 嗎？iPhone 呢？", [
             "支援 Windows 10 與 Windows 11（x64），與 Mac 互通。複製的檔案在 Windows 上貼上後就是真正的檔案，能直接貼進檔案總管、WeChat、Office。",
@@ -386,7 +385,7 @@ C = {
         "manage_caption": "之後會用到的",
         "win": {
             "steps": [
-                f'下載 <a href="{REPO}/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a>，'
+                f'下載 <a href="{REPO}/releases/latest/download/pasteferry-server-windows-amd64.zip">pasteferry-server-windows-amd64.zip</a>，'
                 "按右鍵選「解壓縮全部」。",
                 "打開解壓縮後的資料夾，按兩下 <code>install.cmd</code>。"
                 "<span class=\"aside\">出現「Windows 已保護您的電腦」時，點「其他資訊」，再點「仍要執行」；跳出「使用者帳戶控制」時點「是」。"
@@ -395,20 +394,20 @@ C = {
             ],
             "download": "下載 Windows 版伺服器",
             "notes": [
-                "<strong>以 Windows 服務執行：</strong>開機就啟動，不用登入，也沒有視窗。在「服務」裡的名稱是 CopySync Server。",
-                "<strong>防火牆已經開放：</strong>腳本新增了一條只針對 copysync-server.exe 的輸入規則，不用自己開連接埠。",
+                "<strong>以 Windows 服務執行：</strong>開機就啟動，不用登入，也沒有視窗。在「服務」裡的名稱是 PasteFerry Server。",
+                "<strong>防火牆已經開放：</strong>腳本新增了一條只針對 pasteferry-server.exe 的輸入規則，不用自己開連接埠。",
                 "<strong>位址抓錯了</strong>（例如裝了虛擬機或 VPN，有好幾張網路卡）：在解壓縮後資料夾的網址列輸入 <code>cmd</code> 再按 Enter，"
                 "執行 <code>install.cmd 192.168.1.20</code>，換成你的位址。",
                 "支援 Windows 10、11，x64。",
             ],
             "double_click": "按兩下",
-            "explorer_label": "解壓縮後的資料夾裡有 copysync-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd，按兩下其中的 install.cmd",
+            "explorer_label": "解壓縮後的資料夾裡有 pasteferry-server.exe、install.cmd、install.ps1、README.md、uninstall.cmd，按兩下其中的 install.cmd",
             "term_title": "系統管理員: Windows PowerShell",
             "term_label": "install.cmd 執行完的視窗：依序停止舊版本、安裝、註冊服務、開放防火牆、啟動，最後顯示用戶端要填的位址 ws://192.168.1.20:8787/signal",
             "manage": [
-                ("狀態", "在系統管理員 PowerShell 裡執行 <code>Get-Service CopySyncServer</code>，或在「服務」裡找 CopySync Server"),
-                ("記錄檔", "<code>C:\\ProgramData\\CopySync Server\\server.log</code>"),
-                ("重新啟動", "在系統管理員 PowerShell 裡執行 <code>Restart-Service CopySyncServer</code>"),
+                ("狀態", "在系統管理員 PowerShell 裡執行 <code>Get-Service PasteFerryServer</code>，或在「服務」裡找 PasteFerry Server"),
+                ("記錄檔", "<code>C:\\ProgramData\\PasteFerry Server\\server.log</code>"),
+                ("重新啟動", "在系統管理員 PowerShell 裡執行 <code>Restart-Service PasteFerryServer</code>"),
                 ("升級", "下載新版本，解壓縮後再按兩下 <code>install.cmd</code>，原本的設定會保留"),
                 ("解除安裝", "按兩下 <code>uninstall.cmd</code>，服務、防火牆規則和檔案會一併刪除"),
             ],
@@ -421,13 +420,13 @@ C = {
             "notes": [
                 "<strong>不需要管理者權限。</strong>登入這台 Mac 後會自動在背景執行，意外結束時會被系統重新啟動。",
                 "<strong>這台 Mac 不能進入睡眠：</strong>在「系統設定 → 能源」（筆電在「電池 → 選項」）裡開啟防止自動進入睡眠的選項。",
-                "<strong>開著系統防火牆的話，</strong>腳本最後會給出開放 copysync-server 的指令。",
+                "<strong>開著系統防火牆的話，</strong>腳本最後會給出開放 pasteferry-server 的指令。",
                 "Intel 與 Apple 晶片通用，macOS 13 以上。",
             ],
             "term_label": "在終端機裡執行 ./install.sh 的輸出：安裝、寫入 LaunchAgent、啟動，最後顯示用戶端要填的位址 ws://192.168.1.20:8787/signal",
             "manage": [
-                ("記錄檔", "<code>~/Library/Logs/CopySync/server.log</code>"),
-                ("重新啟動", "<code>launchctl kickstart -k gui/$(id -u)/com.copysync.server</code>"),
+                ("記錄檔", "<code>~/Library/Logs/PasteFerry/server.log</code>"),
+                ("重新啟動", "<code>launchctl kickstart -k gui/$(id -u)/com.pasteferry.server</code>"),
                 ("升級", "下載新版本，解壓縮後再執行 <code>./install.sh</code>，原本的設定會保留"),
                 ("解除安裝", "<code>./install.sh uninstall</code>"),
             ],
@@ -445,10 +444,10 @@ C = {
             ],
             "term_label": "執行 sudo ./install.sh 的輸出：安裝、寫入 systemd 單元、產生設定檔、啟動，最後顯示用戶端要填的位址 ws://192.168.1.20:8787/signal",
             "manage": [
-                ("狀態", "<code>systemctl status copysync-server</code>"),
-                ("記錄檔", "<code>journalctl -u copysync-server -f</code>"),
-                ("重新啟動", "<code>sudo systemctl restart copysync-server</code>"),
-                ("設定", "<code>/etc/copysync/server.env</code>，改完要重新啟動服務"),
+                ("狀態", "<code>systemctl status pasteferry-server</code>"),
+                ("記錄檔", "<code>journalctl -u pasteferry-server -f</code>"),
+                ("重新啟動", "<code>sudo systemctl restart pasteferry-server</code>"),
+                ("設定", "<code>/etc/pasteferry/server.env</code>，改完要重新啟動服務"),
                 ("升級", "下載新版本，解壓縮後再執行 <code>sudo ./install.sh</code>，原本的設定會保留"),
                 ("解除安裝", "<code>sudo ./install.sh uninstall</code>"),
             ],
@@ -482,7 +481,7 @@ C = {
             ]),
             ("伺服器的位址變了怎麼辦？", [
                 "帶上新位址再執行一次安裝腳本：Windows 上是 <code>install.cmd 新位址</code>，Mac 上是 <code>./install.sh 新位址</code>；"
-                "Linux 上編輯 <code>/etc/copysync/server.env</code> 裡的 <code>-turn-ip</code>，再重新啟動服務。然後在每台電腦上改掉伺服器位址。",
+                "Linux 上編輯 <code>/etc/pasteferry/server.env</code> 裡的 <code>-turn-ip</code>，再重新啟動服務。然後在每台電腦上改掉伺服器位址。",
                 "在路由器裡幫它固定一個位址，就不會再遇到這種事。",
             ]),
             ("離開區域網路以後還能同步嗎？", [
@@ -562,7 +561,7 @@ C = {
             "最後顯示的 <code>ws://203.0.113.10:8787/signal</code> 就是用戶端要填的位址。",
         ],
         "install_notes": [
-            "<strong>註冊為 systemd 服務，</strong>開機自動執行，設定檔在 <code>/etc/copysync/server.env</code>。",
+            "<strong>註冊為 systemd 服務，</strong>開機自動執行，設定檔在 <code>/etc/pasteferry/server.env</code>。",
             "<strong>升級：</strong>下載新版本，解壓縮後再執行 <code>sudo ./install.sh</code>，原本的設定會保留。",
             "<strong>也可以用 Docker：</strong>見<a href=\"{deploy}\">伺服器架設說明</a>。",
         ],
@@ -625,7 +624,7 @@ C = {
             "點「啟用背景同步」。系統詢問是否允許讀取剪貼簿、是否允許尋找區域網路上的裝置時，都選擇允許。",
         ],
         "win": [
-            "執行 CopySync-Setup.exe，不需要系統管理員權限。<span class=\"aside\">出現「Windows 已保護您的電腦」時，點「其他資訊」，再點「仍要執行」。</span>",
+            "執行 PasteFerry-Setup.exe，不需要系統管理員權限。<span class=\"aside\">出現「Windows 已保護您的電腦」時，點「其他資訊」，再點「仍要執行」。</span>",
             "打開隔空貼，點「啟用背景同步」。防火牆詢問時選擇允許。關掉視窗後，它會在右下角的通知區域繼續執行。",
         ],
         "linux": [
@@ -688,7 +687,7 @@ C = {
                              "公司裡的有線和無線常常不在同一個網段，這時請看下面的<a href=\"#subnet\">不在同一網段</a>。"),
             ("Windows 防火牆", "第一次執行時，Windows 會詢問是否允許隔空貼通過防火牆，請選擇允許。如果按過取消，"
                               "到隔空貼的「設定 → 區域網路」裡點「允許」，會要求一次系統管理員權限。"),
-            ("macOS 的本機網路權限", "從 macOS 15 起，第一次連線區域網路裡的裝置時，系統會詢問是否允許 CopySync Daemon 尋找區域網路上的裝置，請選擇允許。"
+            ("macOS 的本機網路權限", "從 macOS 15 起，第一次連線區域網路裡的裝置時，系統會詢問是否允許 PasteFerry Daemon 尋找區域網路上的裝置，請選擇允許。"
                                     "拒絕過的話，到「系統設定 → 隱私權與安全性 → 本機網路」裡開啟它。"),
             ("不用填伺服器", "「設定」裡的伺服器位址留空就行。以後要跨網路同步，再填上伺服器或改用 Tailscale，已經配對的裝置不用重新配對。"),
         ],
@@ -726,7 +725,7 @@ C = {
                 "先確認兩台連著同一個網路、都已啟用背景同步。再試試在輸入配對碼的那台填上對方的位址："
                 "這樣能找到的話，代表兩台不在同一個網段，或網路擋住了 mDNS。",
                 "還是找不到，就檢查對方的防火牆：對方是 Windows 的話，在它的「設定 → 區域網路」裡點「允許」；"
-                "是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 CopySync Daemon，系統防火牆也沒有擋住它。",
+                "是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 PasteFerry Daemon，系統防火牆也沒有擋住它。",
             ]),
             ("離開這個網路後還能同步嗎？", [
                 "不能，回到這個網路後會自動恢復，這段期間複製的內容會補送到對方的複製記錄裡。"
@@ -833,7 +832,7 @@ C = {
             ("配對時找不到對方？", [
                 "先確認兩台的 Tailscale 都已連線：在終端機裡執行 <code>tailscale ping 對方的位址</code>，能 ping 通再試。",
                 "能 ping 通卻還是找不到，多半是對方的防火牆擋住了：對方是 Windows 的話，在它的隔空貼「設定 → 區域網路」裡點「允許」；"
-                "是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 CopySync Daemon。",
+                "是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 PasteFerry Daemon。",
             ]),
             ("一定要每台電腦都裝 Tailscale 嗎？", [
                 "是的，沒裝的電腦連不到 100 開頭的位址。兩台在同一個網路裡時，不裝也能用，見<a href=\"{lan}\">同一網路教學</a>。",
@@ -871,7 +870,7 @@ C = {
             "setup": "下載安裝程式",
             "portable": "不想執行安裝程式的話，可以下載<a href=\"{portable}\">免安裝版</a>，解壓縮後直接執行。",
             "steps": [
-                "執行 CopySync-Setup.exe，它會安裝在目前使用者的目錄下，不需要系統管理員權限。"
+                "執行 PasteFerry-Setup.exe，它會安裝在目前使用者的目錄下，不需要系統管理員權限。"
                 "<span class=\"aside\">出現「Windows 已保護您的電腦」時，點「其他資訊」，再點「仍要執行」。</span>",
                 "打開隔空貼，點「啟用背景同步」。防火牆詢問時選擇允許。",
             ],
@@ -906,7 +905,7 @@ C = {
             "notes": [
                 "需要圖形桌面：X11，或附有 XWayland 的 Wayland 桌面，GNOME、KDE 等主流桌面預設都有。",
                 "不確定是 x64 還是 ARM64：在終端機執行 <code>uname -m</code>，顯示 <code>x86_64</code> 是 x64，<code>aarch64</code> 是 ARM64。",
-                ".deb 會裝在 /opt/CopySync，並出現在應用程式選單裡。tar.gz 解壓縮到哪裡都能執行，<code>install.sh</code> 會把它加進應用程式選單。",
+                ".deb 會裝在 /opt/PasteFerry，並出現在應用程式選單裡。tar.gz 解壓縮到哪裡都能執行，<code>install.sh</code> 會把它加進應用程式選單。",
                 "打開後點「啟用背景同步」，之後登入時會自動啟動。GNOME 預設不顯示系統匣圖示，請從應用程式選單打開視窗。",
                 "需要 GTK 3。已在 Ubuntu 24.04 的 GNOME（Wayland）上實測過。",
             ],

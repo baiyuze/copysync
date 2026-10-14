@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:copysync_ui/app_state.dart';
-import 'package:copysync_ui/gen/copysync/v1/daemon.pb.dart';
-import 'package:copysync_ui/main.dart';
-import 'package:copysync_ui/pages/history_page.dart';
+import 'package:pasteferry_ui/app_state.dart';
+import 'package:pasteferry_ui/gen/pasteferry/v1/daemon.pb.dart';
+import 'package:pasteferry_ui/main.dart';
+import 'package:pasteferry_ui/pages/history_page.dart';
 
 /// 不连后台服务：搜索请求记下来，按测试给的规则回答。
 class _SearchState extends AppState {
@@ -50,7 +50,7 @@ Future<void> _type(WidgetTester tester, String text) async {
 void main() {
   testWidgets('停顿后才向后台服务查询，显示它返回的结果并标出匹配处', (tester) async {
     final state = _seed((q) => ListHistoryResponse(records: [_report], searched: true));
-    await tester.pumpWidget(CopySyncApp(state: state));
+    await tester.pumpWidget(PasteFerryApp(state: state));
 
     await tester.enterText(find.byType(TextField), 'quar');
     await tester.pump(const Duration(milliseconds: 100));
@@ -78,7 +78,7 @@ void main() {
 
   testWidgets('没有结果时说明搜的是什么，清空搜索词后回到完整列表', (tester) async {
     final state = _seed((q) => ListHistoryResponse(searched: true));
-    await tester.pumpWidget(CopySyncApp(state: state));
+    await tester.pumpWidget(PasteFerryApp(state: state));
 
     await _type(tester, 'zebra');
     expect(find.text('No matches for “zebra”'), findsOneWidget);
@@ -93,7 +93,7 @@ void main() {
   testWidgets('旧版后台服务不认识搜索词时，退回到在已加载的记录里找', (tester) async {
     // 旧版照常返回全部记录，没有 searched
     final state = _seed((q) => ListHistoryResponse(records: [_note, _report]));
-    await tester.pumpWidget(CopySyncApp(state: state));
+    await tester.pumpWidget(PasteFerryApp(state: state));
 
     await _type(tester, 'LUNCH');
     expect(find.text('Lunch at noon', findRichText: true), findsOneWidget);
@@ -102,7 +102,7 @@ void main() {
 
   testWidgets('快捷键跳到搜索框，Esc 清空搜索词', (tester) async {
     final state = _seed((q) => ListHistoryResponse(records: [_note], searched: true));
-    await tester.pumpWidget(CopySyncApp(state: state));
+    await tester.pumpWidget(PasteFerryApp(state: state));
     await tester.pump();
 
     final modifier = Platform.isMacOS ? LogicalKeyboardKey.metaLeft : LogicalKeyboardKey.controlLeft;

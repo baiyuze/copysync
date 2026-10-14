@@ -6,9 +6,9 @@
 
 | 功能 | 验证结果 |
 |---|---|
-| 桌面快捷方式 | 升级安装自动生成 CopySync.lnk，目标指向当前用户安装目录；实际双击入口可启动界面 |
+| 桌面快捷方式 | 升级安装自动生成 PasteFerry.lnk，目标指向当前用户安装目录；实际双击入口可启动界面 |
 | 托盘图标 | 后台服务持有图标；关闭界面后保留，点击可重开界面 |
-| 托盘菜单 | 实际显示“打开 CopySync”“退出 CopySync”；退出后界面、daemon、守护进程均结束，等待 12 秒不重启，图标清理正常；恢复启动后原配对正常 |
+| 托盘菜单 | 实际显示“打开隔空贴”“退出隔空贴”；退出后界面、daemon、守护进程均结束，等待 12 秒不重启，图标清理正常；恢复启动后原配对正常 |
 | Explorer 重建通知 | 发送 TaskbarCreated 后图标仍可用；未强制重启用户的 Explorer |
 | 配对弹窗 | Windows 实际生成配对码，临时 Mac 端兑换，Windows 核对指纹并确认后返回设备页；显示配对成功且没有残留弹窗 |
 | 输入配对码的竞态 | Mac 和 Windows 上的回归测试覆盖 RPC/事件先后顺序、重复事件、接受/拒绝、过期和处理旧会话时新请求到达，均只显示一个确认框 |
@@ -30,9 +30,9 @@
 
 Windows 本地测试包已安装：新的 Dart AOT/资源和同版本 Flutter 引擎，配合原 CI 的未修改原生 runner、新编译 daemon 及当前 Inno Setup 安装脚本。版本仍为 1.1.2，属于本地验证产物，发布应使用正式发布流程重建。
 
-- 安装包：`~/Library/Caches/copysync-tray-20261009/artifacts/CopySync-Setup.exe`
+- 安装包：`~/Library/Caches/pasteferry-tray-20261009/artifacts/PasteFerry-Setup.exe`
 - SHA-256：`0b8fb27c7449b252df392bb21b914c16bcd0d4d03b42bf834655474c80a6f68a`
 - 便携包 SHA-256：`206a38abdc37e94418c8b3ebd63cf9a801816c3ec63bfc0be30f06808c42b722`
-- 日志与截图：`~/Library/Caches/copysync-tray-20261009/` 和 `~/Library/Caches/copysync-validation-20261009/`。
+- 日志与截图：`~/Library/Caches/pasteferry-tray-20261009/` 和 `~/Library/Caches/pasteferry-validation-20261009/`。
 
 临时测试设备已从 Windows 解除配对，临时 Mac daemon 已停止，临时编译器已卸载；Windows 与用户原 Mac 恢复直连。Mac 正在使用的生产 App/daemon 未替换，Mac 新界面修复需安装新构建后生效。Windows 桌面由 Parallels 共享，快捷方式位于其映射的桌面目录。托盘图标可能由 Windows 收纳在右下角“^”内。

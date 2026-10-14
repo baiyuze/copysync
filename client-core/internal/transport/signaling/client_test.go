@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/identity"
-	"github.com/baiyuze/copysync/client-core/internal/transport/signaling"
-	pb "github.com/baiyuze/copysync/proto/gen/copysync/v1"
-	"github.com/baiyuze/copysync/server/signal"
+	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/transport/signaling"
+	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
+	"github.com/baiyuze/pasteferry/server/signal"
 )
 
 // peer 把一个设备身份、它的信令客户端、以及它观察到的事件打包在一起，

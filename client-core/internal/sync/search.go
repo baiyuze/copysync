@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/baiyuze/copysync/client-core/internal/store"
+	"github.com/baiyuze/pasteferry/client-core/internal/store"
 )
 
 // SearchHistory 搜索复制记录：文字内容或文件名包含 query 的，不分大小写，按时间倒序，最多 limit 条。

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/baiyuze/copysync/client-core/internal/clipfilter"
+	"github.com/baiyuze/pasteferry/client-core/internal/clipfilter"
 
 	_ "modernc.org/sqlite"
 )
@@ -99,7 +99,7 @@ func Open(path string) (*Store, error) {
 
 // Only remove records whose every file item is a known transport placeholder.
 // Mixed selections and real empty files remain intact. Never remove source
-// files belonging to UU Remote; orphaned CopySync caches are handled by GC.
+// files belonging to UU Remote; orphaned PasteFerry caches are handled by GC.
 func (s *Store) removeRemotePlaceholders() error {
 	rows, err := s.db.Query(`SELECT i.clip_id, i.name FROM clip_items i
 		JOIN clips c ON c.id=i.clip_id WHERE c.kind=?`, KindFile)

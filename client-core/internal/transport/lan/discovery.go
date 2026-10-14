@@ -6,10 +6,10 @@ import (
 	"sync"
 )
 
-// ServiceType 是 CopySync 在 mDNS（DNS-SD）里用的服务类型。
-const ServiceType = "_copysync._udp"
+// ServiceType 是 PasteFerry 在 mDNS（DNS-SD）里用的服务类型。
+const ServiceType = "_pasteferry._udp"
 
-// Instance 是在局域网里发现的一个 CopySync 实例。
+// Instance 是在局域网里发现的一个 PasteFerry 实例。
 type Instance struct {
 	Name string
 	Addr netip.AddrPort
