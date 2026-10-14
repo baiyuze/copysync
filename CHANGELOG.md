@@ -1,5 +1,20 @@
 # 更新记录 / Changelog
 
+## 2.0.0 — 2026-10-14
+
+CopySync is now PasteFerry (隔空贴 in Chinese). Everything carries the new name, and your pairings, history and settings come along.
+
+### Changes
+
+- **New name**: the app, the installers, the background service (`pasteferryd`), the command-line tool (`pasteferry-cli`), the server (`pasteferry-server`) and the data folders are now called PasteFerry, and 隔空贴 in Chinese. The project moved to github.com/baiyuze/pasteferry and the website to baiyuze.github.io/pasteferry; old links redirect.
+- **Moving over from CopySync**: the first time PasteFerry opens, it stops and removes the old CopySync background service, and turns background sync on for PasteFerry if it was on before. PasteFerry's background service then moves the old data folder into place, so you don't need to pair again. The Windows installer removes the old installation, and the Linux package replaces the `copysync` package. On a Mac, drag the old CopySync app to the Trash.
+
+### Upgrade notes
+
+- **Mac, Windows and Linux apps**: upgrade every computer. On the same network, PasteFerry 2.0.0 and CopySync 1.x no longer find each other.
+- **Server**: optional. The server protocol is unchanged, so a CopySync 1.x server keeps working. To rename it too, run the new install script: it removes the old `copysync-server` service and keeps its settings. With Docker, remove the old container first (`docker rm -f copysync-server`).
+- The device-to-device protocol changed on the local network: discovery and LAN packets use new identifiers, so devices on 1.x and 2.0.0 don't see each other there. Connections through a server are unchanged.
+
 ## 1.7.0 — 2026-10-13
 
 Search your history, use CopySync in Traditional Chinese, and report problems with a diagnostics report you can read before posting.

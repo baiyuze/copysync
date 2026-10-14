@@ -23,8 +23,8 @@ REPO = "https://github.com/baiyuze/pasteferry"
 # 旧路径由 baiyuze.github.io 仓库里的跳转页接住
 BASE = "/pasteferry/"
 DL = REPO + "/releases/latest/download/"
-VERSION = "1.7.0"
-DATE = "2026-10-13"
+VERSION = "2.0.0"
+DATE = "2026-10-14"
 
 # 语言代码 → (页面目录, html 的 lang, og:locale, 语言名)。顶栏的语言菜单按这个顺序列出。
 # 繁体的两份文案由 zh.py 转换后逐条校订，改了 zh.py 要一起改
