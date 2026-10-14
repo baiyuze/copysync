@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>用 Tailscale 跨網路使用 CopySync：不用伺服器，在家和公司之間同步</title>
+  <title>用 Tailscale 跨網路使用隔空貼：不用伺服器，在家和公司之間同步</title>
   <meta name="description" content="每台電腦裝上 Tailscale、登入同一個帳號，配對時輸入對方的 Tailscale 位址：不需要公用 IP，不需要伺服器，也不需要一直開著的電腦，在公司、在外面都能同步剪貼簿。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/zh-tw/tailscale/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/tailscale/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/tailscale/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/zh-tw/tailscale/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/tailscale/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/tailscale/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/tailscale/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/tailscale/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/tailscale/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="用 Tailscale 跨網路使用 CopySync：不用伺服器，在家和公司之間同步">
+  <meta property="og:site_name" content="隔空貼">
+  <meta property="og:title" content="用 Tailscale 跨網路使用隔空貼：不用伺服器，在家和公司之間同步">
   <meta property="og:description" content="每台電腦裝上 Tailscale、登入同一個帳號，配對時輸入對方的 Tailscale 位址：不需要公用 IP，不需要伺服器，也不需要一直開著的電腦，在公司、在外面都能同步剪貼簿。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/zh-tw/tailscale/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-zh-hant.png">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/zh-tw/tailscale/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og-zh-hant.png">
   <meta property="og:locale" content="zh_TW">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
@@ -30,14 +30,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../../zh-tw/" aria-label="CopySync 首頁"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../../zh-tw/" aria-label="隔空貼首頁"><img src="../../assets/icon.svg" alt="" width="26" height="26">隔空貼</a>
       <nav aria-label="頁面導覽">
         <a href="../../zh-tw/start/">快速入門</a>
         <a class="wide" href="../../zh-tw/#how">運作原理</a>
         <a class="wide" href="../../zh-tw/#faq">常見問題</a>
         <a class="mid" href="../../zh-tw/start/#server" aria-current="true">連線方式</a>
         <a href="../../zh-tw/download/">下載</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="語言：繁體中文（台灣）"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>繁體中文（台灣）</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -51,11 +51,12 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">隔空貼原名 CopySync。App 和安裝檔裡暫時還叫 CopySync，下個版本會改過來。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../zh-tw/">CopySync</a> / <a href="../../zh-tw/start/#server">連線方式</a></p>
+        <p class="crumb"><a href="../../zh-tw/">隔空貼</a> / <a href="../../zh-tw/start/#server">連線方式</a></p>
         <h1 class="display">用 Tailscale 跨網路使用</h1>
         <p class="lede">沒有公用 IP，也不想架伺服器？每台電腦裝上 Tailscale，配對時輸入對方的 Tailscale 位址，在家、在公司都能同步。</p>
         <ol class="guide-toc">
@@ -70,10 +71,10 @@
     <section class="section" id="overview" aria-labelledby="overview-title">
       <div class="wrap">
         <h2 id="overview-title">就像在同一個區域網路裡</h2>
-        <p class="intro">Tailscale 是一套虛擬網路工具：裝了它、登入同一個帳號的裝置，各自會分到一個固定的 100 開頭的位址，不管實際在哪個網路裡，都能用這個位址互相連線。CopySync 配對時記住對方的這個位址，之後就像在同一個網路裡一樣直接連線。</p>
+        <p class="intro">Tailscale 是一套虛擬網路工具：裝了它、登入同一個帳號的裝置，各自會分到一個固定的 100 開頭的位址，不管實際在哪個網路裡，都能用這個位址互相連線。隔空貼配對時記住對方的這個位址，之後就像在同一個網路裡一樣直接連線。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 330" role="img" aria-labelledby="ts-title ts-desc">
-            <title id="ts-title">透過 Tailscale 使用 CopySync</title>
+            <title id="ts-title">透過 Tailscale 使用隔空貼</title>
             <desc id="ts-desc">Mac 在公司，Windows 在家裡，兩台都裝了 Tailscale，在同一個虛擬區域網路裡各有一個 100 開頭的位址。複製的內容在兩台電腦之間直接傳輸，沒有伺服器。</desc>
             <rect class="d-ts" x="8" y="8" width="944" height="314" rx="22"/>
             <text class="d-ts-label" x="32" y="42">Tailscale 虛擬區域網路：每台裝置一個 100 開頭的位址</text>
@@ -93,7 +94,7 @@
         <ul class="points ports">
           <li><strong>不需要伺服器，</strong>也不需要一直開著的電腦：兩台電腦都開著、連著 Tailscale，就能同步。</li>
           <li><strong>位址只要輸入一次。</strong>Tailscale 位址不會變，配對時輸入一次，之後兩台會自動找到彼此。</li>
-          <li><strong>兩層加密。</strong>Tailscale 的 WireGuard 通道裡，跑的是 CopySync 自己端對端加密的連線，Tailscale 看不到內容。</li>
+          <li><strong>兩層加密。</strong>Tailscale 的 WireGuard 通道裡，跑的是隔空貼自己端對端加密的連線，Tailscale 看不到內容。</li>
         </ul>
       </div>
     </section>
@@ -103,8 +104,8 @@
         <h2 id="prepare-title">開始之前</h2>
         <dl class="fallbacks">
           <div><dt>一個 Tailscale 帳號</dt><dd>個人使用免費，用 Google、Microsoft、GitHub 或 Apple 帳號就能登入。所有裝置都登入同一個帳號。</dd></div>
-          <div><dt>每台電腦都裝 Tailscale</dt><dd>Windows、macOS、Linux 都有用戶端。使用 CopySync 的電腦都要裝，並保持連線。</dd></div>
-          <div><dt>已經裝好 CopySync</dt><dd>每台電腦都裝好 App、啟用了背景同步，見<a href="../../zh-tw/start/#app">快速入門</a>。伺服器位址留空就行。</dd></div>
+          <div><dt>每台電腦都裝 Tailscale</dt><dd>Windows、macOS、Linux 都有用戶端。使用隔空貼的電腦都要裝，並保持連線。</dd></div>
+          <div><dt>已經裝好隔空貼</dt><dd>每台電腦都裝好 App、啟用了背景同步，見<a href="../../zh-tw/start/#app">快速入門</a>。伺服器位址留空就行。</dd></div>
           <div><dt>用 ZeroTier 也行</dt><dd>其他能幫每台裝置分配固定虛擬位址的虛擬網路工具，做法都相同：配對時輸入它分配的位址。下面以 Tailscale 為例。</dd></div>
         </dl>
       </div>
@@ -181,7 +182,7 @@
             <img src="../../assets/screenshots/zh-tw/pairing-join-ts-dark.png" width="2112" height="1472" loading="lazy" alt="輸入配對碼：填好配對碼 K7MP2X，位址欄裡填著 Tailscale 位址 100.92.41.17">
           </figure>
         </div>
-        <p class="note">兩台都在家裡時，CopySync 也會在區域網路裡直接找到對方，資料不會繞遠路。</p>
+        <p class="note">兩台都在家裡時，隔空貼也會在區域網路裡直接找到對方，資料不會繞遠路。</p>
       </div>
     </section>
 
@@ -191,11 +192,11 @@
         <div class="faq">
           <details>
             <summary>裝置之間顯示「直連」，速度卻很慢？</summary>
-            <div class="answer"><p>CopySync 顯示的「直連」，是指兩台電腦在 Tailscale 的虛擬網路裡直接相連。Tailscale 自己打不通兩台電腦時，會經過它在海外的中繼伺服器（DERP）轉送，在中國大陸使用就會比較慢。</p><p>在終端機裡執行 <code>tailscale ping 對方的位址</code>：顯示 via DERP，代表 Tailscale 正在走中繼；顯示 via 一個 IP 和連接埠，就是點對點。公司網路、校園網路比較容易遇到中繼，可以自建 DERP 中繼伺服器，或換一套虛擬網路工具。</p></div>
+            <div class="answer"><p>隔空貼顯示的「直連」，是指兩台電腦在 Tailscale 的虛擬網路裡直接相連。Tailscale 自己打不通兩台電腦時，會經過它在海外的中繼伺服器（DERP）轉送，在中國大陸使用就會比較慢。</p><p>在終端機裡執行 <code>tailscale ping 對方的位址</code>：顯示 via DERP，代表 Tailscale 正在走中繼；顯示 via 一個 IP 和連接埠，就是點對點。公司網路、校園網路比較容易遇到中繼，可以自建 DERP 中繼伺服器，或換一套虛擬網路工具。</p></div>
           </details>
           <details>
             <summary>配對時找不到對方？</summary>
-            <div class="answer"><p>先確認兩台的 Tailscale 都已連線：在終端機裡執行 <code>tailscale ping 對方的位址</code>，能 ping 通再試。</p><p>能 ping 通卻還是找不到，多半是對方的防火牆擋住了：對方是 Windows 的話，在它的 CopySync「設定 → 區域網路」裡點「允許」；是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 CopySync Daemon。</p></div>
+            <div class="answer"><p>先確認兩台的 Tailscale 都已連線：在終端機裡執行 <code>tailscale ping 對方的位址</code>，能 ping 通再試。</p><p>能 ping 通卻還是找不到，多半是對方的防火牆擋住了：對方是 Windows 的話，在它的隔空貼「設定 → 區域網路」裡點「允許」；是 Mac 的話，確認「系統設定 → 隱私權與安全性 → 本機網路」裡已開啟 CopySync Daemon。</p></div>
           </details>
           <details>
             <summary>一定要每台電腦都裝 Tailscale 嗎？</summary>
@@ -207,7 +208,7 @@
           </details>
           <details>
             <summary>Tailscale 能看到我複製的內容嗎？</summary>
-            <div class="answer"><p>不能。Tailscale 的連線用 WireGuard 端對端加密，裡面跑的又是 CopySync 自己的 DTLS 加密連線，兩層都只有兩台電腦能解開。Tailscale 的伺服器只交換裝置的公鑰和位址，中繼伺服器也只轉送加密後的封包。</p></div>
+            <div class="answer"><p>不能。Tailscale 的連線用 WireGuard 端對端加密，裡面跑的又是隔空貼自己的 DTLS 加密連線，兩層都只有兩台電腦能解開。Tailscale 的伺服器只交換裝置的公鑰和位址，中繼伺服器也只轉送加密後的封包。</p></div>
           </details>
           <details>
             <summary>Tailscale 位址會變嗎？</summary>
@@ -225,7 +226,7 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">不用伺服器，<br>複製跟著你走。</h2>
         <div class="cta">
-          <a class="button" href="../../zh-tw/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 CopySync</a>
+          <a class="button" href="../../zh-tw/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載隔空貼</a>
         </div>
         <p class="note">版本 1.7.0，免費開源。macOS 13 以上；Windows 10、11；Linux（x64 與 ARM64）。</p>
         <a class="source" href="../../zh-tw/lan/">回到同一網路教學</a>
@@ -235,13 +236,13 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 授權開源。</p>
+      <p>隔空貼以 GNU AGPL-3.0 授權開源。</p>
       <nav aria-label="頁尾連結">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新記錄</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術說明</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">授權說明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">回報問題</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新記錄</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技術說明</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">授權說明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">回報問題</a>
       </nav>
       <nav aria-label="語言">
         <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>

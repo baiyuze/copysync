@@ -12,7 +12,7 @@ let ink = NSColor(srgbRed: 0x1D / 255.0, green: 0x1D / 255.0, blue: 0x1F / 255.0
 let dim = NSColor(srgbRed: 0x6E / 255.0, green: 0x6E / 255.0, blue: 0x73 / 255.0, alpha: 1)
 
 // lang 交给 Core Text 选中文字体：繁体用苹方的繁体版，标点的位置也随之不同
-func render(title: String, note: String, lang: String = "",
+func render(name: String, title: String, note: String, lang: String = "",
             shot: String = "docs/assets/screenshots/history.png", to path: String) throws {
     let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(W), pixelsHigh: Int(H),
                                bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
@@ -36,10 +36,10 @@ func render(title: String, note: String, lang: String = "",
     NSImage(contentsOfFile: "assets/brand/icon-1024.png")?
         .draw(in: NSRect(x: 64, y: y(72, 112), width: 112, height: 112))
 
-    let name = NSAttributedString(string: "CopySync", attributes: [
+    let brand = NSAttributedString(string: name, attributes: [
         .font: NSFont.systemFont(ofSize: 34, weight: .semibold), .foregroundColor: ink,
     ])
-    name.draw(at: NSPoint(x: 80, y: y(200, 42)))
+    brand.draw(at: NSPoint(x: 80, y: y(200, 42)))
 
     let para = NSMutableParagraphStyle()
     para.lineSpacing = 6
@@ -58,11 +58,15 @@ func render(title: String, note: String, lang: String = "",
     try rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: path))
 }
 
-try render(title: "在这台 Mac 复制，\n到那台 Mac 粘贴。", note: "免费开源，macOS 13 及以上",
+try render(name: "隔空贴 PasteFerry", title: "在这台电脑复制，\n到那台电脑粘贴。",
+           note: "剪贴板同步 · Mac、Windows、Linux · 免费开源",
            to: "docs/assets/og.png")
-try render(title: "在這台 Mac 複製，\n到那台 Mac 貼上。", note: "免費開源，macOS 13 以上", lang: "zh-Hant",
+try render(name: "隔空貼 PasteFerry", title: "在這台電腦複製，\n到那台電腦貼上。",
+           note: "剪貼簿同步 · Mac、Windows、Linux · 免費開源", lang: "zh-Hant",
            shot: "docs/assets/screenshots/zh-tw/history.png",
            to: "docs/assets/og-zh-hant.png")
-try render(title: "Copy on this Mac.\nPaste on that one.", note: "Free and open source, macOS 13+",
+try render(name: "PasteFerry", title: "Copy on one.\nPaste on the other.",
+           note: "Clipboard sync · Mac, Windows, Linux · Free",
+           shot: "docs/assets/screenshots/en/history.png",
            to: "docs/assets/og-en.png")
 print("✓ docs/assets/og.png, og-zh-hant.png, og-en.png")

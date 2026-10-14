@@ -1,8 +1,10 @@
-# CopySync
+# PasteFerry (隔空贴, formerly CopySync)
 
-> CopySync is a free, open-source (GNU AGPL-3.0) app for macOS, Windows and Linux that syncs the clipboard and files between computers: copy on one, paste on another, in any combination of Mac, Windows and Linux. It works across different accounts and different networks. On the same network no server is needed: devices find each other over mDNS and pair with a code. Across networks, a server the user hosts (or Tailscale) introduces them. Devices connect peer-to-peer over WebRTC with end-to-end DTLS encryption; when a direct connection fails, traffic is relayed through the user's TURN server. The server stores no accounts and cannot read clipboard content.
+> PasteFerry is a free, open-source (GNU AGPL-3.0) app for macOS, Windows and Linux that syncs the clipboard and files between computers: copy on one, paste on another, in any combination of Mac, Windows and Linux. It works across different accounts and different networks. On the same network no server is needed: devices find each other over mDNS and pair with a code. Across networks, a server the user hosts (or Tailscale) introduces them. Devices connect peer-to-peer over WebRTC with end-to-end DTLS encryption; when a direct connection fails, traffic is relayed through the user's TURN server. The server stores no accounts and cannot read clipboard content.
 >
-> CopySync 是一款免费开源（GNU AGPL-3.0）的 macOS、Windows 与 Linux 工具，在两台电脑之间同步剪贴板与文件：一台复制，另一台直接粘贴，Mac、Windows、Linux 互通。不要求同一个账号，跨网络可用。同一网络里不需要服务器，设备靠 mDNS 互相发现、用配对码配对；跨网络时由用户自建的服务器或 Tailscale 牵线。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户服务器的 TURN 中转；服务器不存账号，看不到复制内容。
+> 隔空贴是一款免费开源（GNU AGPL-3.0）的 macOS、Windows 与 Linux 工具，在两台电脑之间同步剪贴板与文件：一台复制，另一台直接粘贴，Mac、Windows、Linux 互通。不要求同一个账号，跨网络可用。同一网络里不需要服务器，设备靠 mDNS 互相发现、用配对码配对；跨网络时由用户自建的服务器或 Tailscale 牵线。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户服务器的 TURN 中转；服务器不存账号，看不到复制内容。
+
+Name: PasteFerry in English, 隔空贴 in Chinese. Until October 2026 it was called CopySync; the app, installers (CopySync-*.dmg, CopySync-Setup.exe, …) and internal identifiers still use the old name until the next version.
 
 Key facts:
 
@@ -22,25 +24,25 @@ Key facts:
 
 ## Docs
 
-- [Website (English)](https://baiyuze.github.io/copysync/en/), [简体中文](https://baiyuze.github.io/copysync/), [繁體中文（台灣）](https://baiyuze.github.io/copysync/zh-tw/), [繁體中文（香港）](https://baiyuze.github.io/copysync/zh-hk/), [日本語](https://baiyuze.github.io/copysync/ja/)
-- [Quick start](https://baiyuze.github.io/copysync/en/start/): install the apps, pick a way to connect, and pair ([中文](https://baiyuze.github.io/copysync/start/), [日本語](https://baiyuze.github.io/copysync/ja/start/))
-- [On the same network](https://baiyuze.github.io/copysync/en/lan/): no server; pairing across subnets, firewall and macOS permission notes ([中文](https://baiyuze.github.io/copysync/lan/), [日本語](https://baiyuze.github.io/copysync/ja/lan/))
-- [Run the server on a public server](https://baiyuze.github.io/copysync/en/cloud/): security group, install script, checks ([中文](https://baiyuze.github.io/copysync/cloud/), [日本語](https://baiyuze.github.io/copysync/ja/cloud/))
-- [Run the server on your LAN](https://baiyuze.github.io/copysync/en/server/): for subnets that can't reach each other; step-by-step guide for Windows, macOS and Linux ([中文](https://baiyuze.github.io/copysync/server/), [日本語](https://baiyuze.github.io/copysync/ja/server/))
-- [Use it across networks with Tailscale](https://baiyuze.github.io/copysync/en/tailscale/): sync across networks with no server, pairing by Tailscale address ([中文](https://baiyuze.github.io/copysync/tailscale/), [日本語](https://baiyuze.github.io/copysync/ja/tailscale/))
-- [Download](https://baiyuze.github.io/copysync/en/download/): every client package, with Mac builds for Apple silicon and Intel ([中文](https://baiyuze.github.io/copysync/download/), [日本語](https://baiyuze.github.io/copysync/ja/download/))
-- [README (English)](https://github.com/baiyuze/copysync/blob/main/README.md): features and getting started ([中文](https://github.com/baiyuze/copysync/blob/main/README.zh-CN.md))
-- [How it works](https://github.com/baiyuze/copysync/blob/main/guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned
-- [Troubleshooting](https://github.com/baiyuze/copysync/blob/main/guide/troubleshooting.md) and known limitations
-- [Server deployment](https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md): Windows, macOS, Linux (systemd), Docker and manual setup
-- [Licensing](https://github.com/baiyuze/copysync/blob/main/LICENSING.md): AGPL-3.0 terms; versions 1.2.0 and earlier remain MIT
-- [Windows client design (中文)](https://baiyuze.github.io/copysync/design/windows-client.html): clipboard formats, file-name compatibility, background process, installer
-- [NAT traversal design (中文)](https://baiyuze.github.io/copysync/design/nat-traversal.html): multi-uplink probing, relay-to-direct upgrade, measurements and the NAT lab
-- [Local network mode design (中文)](https://baiyuze.github.io/copysync/design/lan-mode.html): mDNS discovery, UDP signaling, pairing across subnets, Windows Firewall and macOS Local Network findings, NAT lab scenarios
-- [Linux client design (中文)](https://baiyuze.github.io/copysync/design/linux-client.html): X11 clipboard over XWayland, INCR transfers, XDG autostart, packaging
-- [Changelog](https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md)
+- [Website (English)](https://baiyuze.github.io/pasteferry/en/), [简体中文](https://baiyuze.github.io/pasteferry/), [繁體中文（台灣）](https://baiyuze.github.io/pasteferry/zh-tw/), [繁體中文（香港）](https://baiyuze.github.io/pasteferry/zh-hk/), [日本語](https://baiyuze.github.io/pasteferry/ja/)
+- [Quick start](https://baiyuze.github.io/pasteferry/en/start/): install the apps, pick a way to connect, and pair ([中文](https://baiyuze.github.io/pasteferry/start/), [日本語](https://baiyuze.github.io/pasteferry/ja/start/))
+- [On the same network](https://baiyuze.github.io/pasteferry/en/lan/): no server; pairing across subnets, firewall and macOS permission notes ([中文](https://baiyuze.github.io/pasteferry/lan/), [日本語](https://baiyuze.github.io/pasteferry/ja/lan/))
+- [Run the server on a public server](https://baiyuze.github.io/pasteferry/en/cloud/): security group, install script, checks ([中文](https://baiyuze.github.io/pasteferry/cloud/), [日本語](https://baiyuze.github.io/pasteferry/ja/cloud/))
+- [Run the server on your LAN](https://baiyuze.github.io/pasteferry/en/server/): for subnets that can't reach each other; step-by-step guide for Windows, macOS and Linux ([中文](https://baiyuze.github.io/pasteferry/server/), [日本語](https://baiyuze.github.io/pasteferry/ja/server/))
+- [Use it across networks with Tailscale](https://baiyuze.github.io/pasteferry/en/tailscale/): sync across networks with no server, pairing by Tailscale address ([中文](https://baiyuze.github.io/pasteferry/tailscale/), [日本語](https://baiyuze.github.io/pasteferry/ja/tailscale/))
+- [Download](https://baiyuze.github.io/pasteferry/en/download/): every client package, with Mac builds for Apple silicon and Intel ([中文](https://baiyuze.github.io/pasteferry/download/), [日本語](https://baiyuze.github.io/pasteferry/ja/download/))
+- [README (English)](https://github.com/baiyuze/pasteferry/blob/main/README.md): features and getting started ([中文](https://github.com/baiyuze/pasteferry/blob/main/README.zh-CN.md))
+- [How it works](https://github.com/baiyuze/pasteferry/blob/main/guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned
+- [Troubleshooting](https://github.com/baiyuze/pasteferry/blob/main/guide/troubleshooting.md) and known limitations
+- [Server deployment](https://github.com/baiyuze/pasteferry/blob/main/server/deploy/README.md): Windows, macOS, Linux (systemd), Docker and manual setup
+- [Licensing](https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md): AGPL-3.0 terms; versions 1.2.0 and earlier remain MIT
+- [Windows client design (中文)](https://baiyuze.github.io/pasteferry/design/windows-client.html): clipboard formats, file-name compatibility, background process, installer
+- [NAT traversal design (中文)](https://baiyuze.github.io/pasteferry/design/nat-traversal.html): multi-uplink probing, relay-to-direct upgrade, measurements and the NAT lab
+- [Local network mode design (中文)](https://baiyuze.github.io/pasteferry/design/lan-mode.html): mDNS discovery, UDP signaling, pairing across subnets, Windows Firewall and macOS Local Network findings, NAT lab scenarios
+- [Linux client design (中文)](https://baiyuze.github.io/pasteferry/design/linux-client.html): X11 clipboard over XWayland, INCR transfers, XDG autostart, packaging
+- [Changelog](https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md)
 
 ## Download
 
-- [Latest release](https://github.com/baiyuze/copysync/releases/latest): DMGs for macOS (Apple silicon, Intel, universal), CopySync-Setup.exe and a portable zip for Windows, .deb and tar.gz packages for Linux (x64, ARM64), and server packages for Linux, macOS and Windows
-- [Source code](https://github.com/baiyuze/copysync)
+- [Latest release](https://github.com/baiyuze/pasteferry/releases/latest): DMGs for macOS (Apple silicon, Intel, universal), CopySync-Setup.exe and a portable zip for Windows, .deb and tar.gz packages for Linux (x64, ARM64), and server packages for Linux, macOS and Windows
+- [Source code](https://github.com/baiyuze/pasteferry)

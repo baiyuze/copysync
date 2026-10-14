@@ -10,10 +10,10 @@ CopySync 的服务器只做两件事：让你的设备找到彼此（信令）�
 
 Step-by-step guides with screenshots / 带截图的图文教程：
 
-- Same network, no server / 同一网络，不需要服务器：<https://baiyuze.github.io/copysync/lan/>
-- On a public server / 公网服务器：<https://baiyuze.github.io/copysync/cloud/>
-- Tailscale, no server / Tailscale，不需要服务器：<https://baiyuze.github.io/copysync/tailscale/>
-- On your LAN, for subnets that can't reach each other / 在局域网里部署，网段之间互相访问不到时：<https://baiyuze.github.io/copysync/server/>
+- Same network, no server / 同一网络，不需要服务器：<https://baiyuze.github.io/pasteferry/lan/>
+- On a public server / 公网服务器：<https://baiyuze.github.io/pasteferry/cloud/>
+- Tailscale, no server / Tailscale，不需要服务器：<https://baiyuze.github.io/pasteferry/tailscale/>
+- On your LAN, for subnets that can't reach each other / 在局域网里部署，网段之间互相访问不到时：<https://baiyuze.github.io/pasteferry/server/>
 
 ## Where to run it / 放在哪里
 
@@ -106,9 +106,9 @@ docker compose up -d
 
 ## Tailscale
 
-Since 1.4.0 you don't need a server for this: join every computer to the same [Tailscale](https://tailscale.com) network and enter the other computer's Tailscale address when pairing ([guide](https://baiyuze.github.io/copysync/en/tailscale/)). The setup below still works if you prefer a server, for example so that the TURN relay is available.
+Since 1.4.0 you don't need a server for this: join every computer to the same [Tailscale](https://tailscale.com) network and enter the other computer's Tailscale address when pairing ([guide](https://baiyuze.github.io/pasteferry/en/tailscale/)). The setup below still works if you prefer a server, for example so that the TURN relay is available.
 
-从 1.4.0 起这种情况不需要服务器：每台电脑加入同一个 Tailscale 网络，配对时输入对方的 Tailscale 地址即可（[教程](https://baiyuze.github.io/copysync/tailscale/)）。下面的做法仍然可用，比如你希望有 TURN 中转兜底。
+从 1.4.0 起这种情况不需要服务器：每台电脑加入同一个 Tailscale 网络，配对时输入对方的 Tailscale 地址即可（[教程](https://baiyuze.github.io/pasteferry/tailscale/)）。下面的做法仍然可用，比如你希望有 TURN 中转兜底。
 
 Without a public server you can still sync across networks: keep the server at home and join every computer, the server's included, to the same [Tailscale](https://tailscale.com) network. Each device gets a fixed `100.x.y.z` address that the others can reach from anywhere. Install the server on that address, so the TURN relay is reachable through Tailscale too, and enter it in every app.
 

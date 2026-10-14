@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://baiyuze.github.io/copysync/sitemap.xml
+Sitemap: https://baiyuze.github.io/pasteferry/sitemap.xml

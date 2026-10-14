@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync：在 Mac、Windows 與 Linux 之間同步剪貼簿與檔案，跨帳號跨網路</title>
-  <meta name="description" content="CopySync 讓你在一台電腦上複製，到另一台直接貼上，Mac、Windows、Linux 互通。支援文字、圖片、檔案和資料夾，不必使用同一個帳號。在同一個網路裡裝好就能用，不需要伺服器；跨網路時可以用自己架設的伺服器或 Tailscale。裝置之間 P2P 直連、端對端加密。免費開源。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/zh-tw/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/">
-  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/">
+  <title>隔空貼 PasteFerry：在 Mac、Windows 與 Linux 之間同步剪貼簿與檔案，跨帳號跨網路</title>
+  <meta name="description" content="隔空貼讓你在一台電腦上複製，到另一台直接貼上，Mac、Windows、Linux 互通。支援文字、圖片、檔案和資料夾，不必使用同一個帳號。在同一個網路裡裝好就能用，不需要伺服器；跨網路時可以用自己架設的伺服器或 Tailscale。裝置之間 P2P 直連、端對端加密。免費開源。">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/zh-tw/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/pasteferry/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="CopySync：在這台電腦複製，到那台電腦貼上">
+  <meta property="og:site_name" content="隔空貼">
+  <meta property="og:title" content="隔空貼：在這台電腦複製，到那台電腦貼上">
   <meta property="og:description" content="Mac、Windows、Linux 互通。文字、圖片、檔案、資料夾，跨帳號、跨網路，P2P 直連、端對端加密，同一個網路裡不需要伺服器。免費開源。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/zh-tw/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-zh-hant.png">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/zh-tw/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og-zh-hant.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="zh_TW">
@@ -37,8 +37,12 @@
     "@graph": [
       {
         "@type": "SoftwareApplication",
-        "@id": "https://baiyuze.github.io/copysync/#app",
-        "name": "CopySync",
+        "@id": "https://baiyuze.github.io/pasteferry/#app",
+        "name": "隔空貼",
+        "alternateName": [
+          "PasteFerry",
+          "CopySync"
+        ],
         "description": "在 Mac、Windows 與 Linux 電腦之間同步剪貼簿與檔案的開源工具。複製文字、圖片、檔案或資料夾後，另一台電腦可直接貼上。同一個網路裡不需要伺服器；裝置之間 WebRTC 直連、DTLS 端對端加密，跨網路打不通時，經使用者自行架設的伺服器以 TURN 中繼。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 以上（Intel 與 Apple 晶片）；Windows 10、Windows 11（x64）；Linux（x64、ARM64）",
@@ -52,10 +56,10 @@
           "price": "0",
           "priceCurrency": "TWD"
         },
-        "downloadUrl": "https://baiyuze.github.io/copysync/zh-tw/download/",
-        "codeRepository": "https://github.com/baiyuze/copysync",
-        "image": "https://baiyuze.github.io/copysync/assets/icon.png",
-        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/zh-tw/history-dark.png",
+        "downloadUrl": "https://baiyuze.github.io/pasteferry/zh-tw/download/",
+        "codeRepository": "https://github.com/baiyuze/pasteferry",
+        "image": "https://baiyuze.github.io/pasteferry/assets/icon.png",
+        "screenshot": "https://baiyuze.github.io/pasteferry/assets/screenshots/zh-tw/history-dark.png",
         "featureList": [
           "同步純文字、帶格式的文字、圖片、檔案與資料夾",
           "Mac、Windows、Linux 互通，不必使用同一個帳號，跨網路也能用",
@@ -80,7 +84,7 @@
             "name": "開著 UU 遠端時，為什麼一直出現 .uuremote_ 檔案？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "UU 遠端會在系統剪貼簿裡寫入暫時的佔位檔案，舊版 CopySync 把它們當成一般檔案，反覆記錄和轉送。1.3.2 在傳送和接收時會過濾已確認的佔位檔名，啟動時清除只含佔位檔案的記錄。正常的空檔案、隱藏檔案和大檔案不受這條規則影響。50 MB 只決定是否自動傳輸，與 UU 的 UDP P2P 設定無關。建議兩端都更新；其他軟體如果也會同步剪貼簿，仍可能產生一般內容的重複記錄。"
+              "text": "UU 遠端會在系統剪貼簿裡寫入暫時的佔位檔案，舊版隔空貼把它們當成一般檔案，反覆記錄和轉送。1.3.2 在傳送和接收時會過濾已確認的佔位檔名，啟動時清除只含佔位檔案的記錄。正常的空檔案、隱藏檔案和大檔案不受這條規則影響。50 MB 只決定是否自動傳輸，與 UU 的 UDP P2P 設定無關。建議兩端都更新；其他軟體如果也會同步剪貼簿，仍可能產生一般內容的重複記錄。"
             }
           },
           {
@@ -88,7 +92,7 @@
             "name": "和 macOS 內建的「通用剪貼板」有什麼不同？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "通用剪貼板要求兩台裝置登入同一個 Apple ID、開著藍牙和 Wi‑Fi，而且距離要近，也只能在 Apple 裝置之間使用。CopySync 在同一個網路裡裝好就能用；跨網路時，只要兩台電腦都能連上你架設的伺服器，或都裝了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有複製記錄，大檔案也可以依需要再拉取。 如果你的兩台 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能就夠用了。"
+              "text": "通用剪貼板要求兩台裝置登入同一個 Apple ID、開著藍牙和 Wi‑Fi，而且距離要近，也只能在 Apple 裝置之間使用。隔空貼在同一個網路裡裝好就能用；跨網路時，只要兩台電腦都能連上你架設的伺服器，或都裝了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有複製記錄，大檔案也可以依需要再拉取。 如果你的兩台 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能就夠用了。"
             }
           },
           {
@@ -104,7 +108,7 @@
             "name": "公司網路（雙線路、多出口）能直連嗎？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "可以。這類網路依目的位址選擇出口，CopySync 會在同一個連接埠上向多台伺服器偵測，拿到每個出口的位址後一起傳給對方，由對方逐一嘗試。實測公司的 4 個出口與家用寬頻之間可以直連。對方是連接埠隨機分配的 NAT 時，仍會走中繼。"
+              "text": "可以。這類網路依目的位址選擇出口，隔空貼會在同一個連接埠上向多台伺服器偵測，拿到每個出口的位址後一起傳給對方，由對方逐一嘗試。實測公司的 4 個出口與家用寬頻之間可以直連。對方是連接埠隨機分配的 NAT 時，仍會走中繼。"
             }
           },
           {
@@ -112,7 +116,7 @@
             "name": "一定要自己準備伺服器嗎？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "不一定。兩台電腦在同一個網路裡時，裝好 App 直接配對就行，不需要伺服器。 跨網路時有兩種做法：雲端伺服器，最低規格的雲端主機就夠，在哪裡都能同步；Tailscale，每台電腦裝上它，配對時輸入對方的 Tailscale 位址，不需要伺服器。CopySync 不提供公共伺服器，所以任何人的資料都不會經過別人的機器。"
+              "text": "不一定。兩台電腦在同一個網路裡時，裝好 App 直接配對就行，不需要伺服器。 跨網路時有兩種做法：雲端伺服器，最低規格的雲端主機就夠，在哪裡都能同步；Tailscale，每台電腦裝上它，配對時輸入對方的 Tailscale 位址，不需要伺服器。隔空貼不提供公共伺服器，所以任何人的資料都不會經過別人的機器。"
             }
           },
           {
@@ -144,7 +148,7 @@
             "name": "為什麼第一次打開時系統會擋一下？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "CopySync 還沒有經過 Apple 公證，Windows 版也還沒有程式碼簽章，兩者都需要每年付費購買的憑證。 在 Mac 上，到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」；在 Windows 上，在「Windows 已保護您的電腦」提示裡點「其他資訊」，再點「仍要執行」。都只需要這一次。"
+              "text": "隔空貼還沒有經過 Apple 公證，Windows 版也還沒有程式碼簽章，兩者都需要每年付費購買的憑證。 在 Mac 上，到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」；在 Windows 上，在「Windows 已保護您的電腦」提示裡點「其他資訊」，再點「仍要執行」。都只需要這一次。"
             }
           },
           {
@@ -160,7 +164,7 @@
             "name": "免費嗎？公司能用嗎？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "免費。CopySync 以 GNU AGPL-3.0 授權開源，個人和公司都可以免費使用和修改。散布它，或透過網路提供修改過的版本時，需要以同樣的授權公開原始碼。"
+              "text": "免費。隔空貼以 GNU AGPL-3.0 授權開源，個人和公司都可以免費使用和修改。散布它，或透過網路提供修改過的版本時，需要以同樣的授權公開原始碼。"
             }
           }
         ]
@@ -174,14 +178,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="./" aria-label="CopySync 首頁"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="./" aria-label="隔空貼首頁"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空貼</a>
       <nav aria-label="頁面導覽">
         <a href="start/">快速入門</a>
         <a class="wide" href="#how">運作原理</a>
         <a class="wide" href="#faq">常見問題</a>
         <a class="mid" href="start/#server">連線方式</a>
         <a href="download/">下載</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="語言：繁體中文（台灣）"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>繁體中文（台灣）</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -195,6 +199,7 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">隔空貼原名 CopySync。App 和安裝檔裡暫時還叫 CopySync，下個版本會改過來。</span></p>
 
   <main id="main">
     <section class="hero">
@@ -202,7 +207,7 @@
         <h1 class="display">在這台電腦複製，<br>到那台電腦貼上。</h1>
         <p class="lede">Mac、Windows、Linux 互通。文字、圖片、檔案、整個資料夾都可以，不必使用同一個帳號。在同一個網路裡裝好就能用，不需要伺服器；跨網路也可以。資料在你的裝置之間直接傳輸，端對端加密。</p>
         <div class="cta">
-          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 CopySync</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載隔空貼</a>
         </div>
         <p class="note">版本 1.7.0，免費開源。macOS 13 以上；Windows 10、11；Linux（x64 與 ARM64）。</p>
         <a class="start-link" href="start/">第一次用？看快速入門，三個步驟就設定好 →</a>
@@ -269,7 +274,7 @@
         <h2 id="history-title">所有裝置上複製過的，都在這裡</h2>
         <p class="intro">複製記錄保留最近 3 天的內容，隨時可以放回剪貼簿，圖片點一下就能預覽。50 MB 以內的檔案在你複製的時候就已經傳好了，更大的檔案等需要時再點一下拉取。想找以前複製過的，用文字內容或檔名搜尋一下就有。</p>
         <figure class="shot">
-          <img src="../assets/screenshots/zh-tw/history-dark.png" width="2112" height="1472" alt="CopySync 的複製記錄：來自 MacBook Air 和 Mac mini 的檔案、圖片、文字，大檔案顯示「拉取到本機」按鈕">
+          <img src="../assets/screenshots/zh-tw/history-dark.png" width="2112" height="1472" alt="隔空貼的複製記錄：來自 MacBook Air 和 Mac mini 的檔案、圖片、文字，大檔案顯示「拉取到本機」按鈕">
         </figure>
       </div>
     </section>
@@ -292,8 +297,8 @@
         <p class="intro">通用剪貼板要同一個 Apple ID、距離夠近；AirDrop 每次都要點接受；傳給自己要手動下載，檔案還留在別人的伺服器上。一台 Mac 加一台 Windows 時，系統內建的方法一個都用不了。</p>
         <div class="block table-scroll">
           <table class="compare">
-            <caption class="skip">CopySync 與其他方式的比較</caption>
-            <thead><tr><td></td><th scope="col" class="ours">CopySync</th><th scope="col">通用剪貼板</th><th scope="col">AirDrop</th><th scope="col">聊天軟體</th></tr></thead>
+            <caption class="skip">隔空貼與其他方式的比較</caption>
+            <thead><tr><td></td><th scope="col" class="ours">隔空貼</th><th scope="col">通用剪貼板</th><th scope="col">AirDrop</th><th scope="col">聊天軟體</th></tr></thead>
             <tbody>
               <tr><th scope="row">不同 Apple ID 之間</th><td class="yes ours">可以</td><td class="no">不行</td><td class="partial">要對方接受</td><td class="yes">可以</td></tr>
               <tr><th scope="row">Mac 與 Windows 之間</th><td class="yes ours">可以</td><td class="no">不行</td><td class="no">不行</td><td class="yes">可以</td></tr>
@@ -314,7 +319,7 @@
         <p class="intro">兩台電腦之間直接建立加密連線。在同一個網路裡，它們自己就能找到彼此；跨網路時，由你的伺服器負責牽線，直連打不通時再幫忙轉送。下圖是跨網路的情況。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
-            <title id="diagram-title">CopySync 的連線方式</title>
+            <title id="diagram-title">隔空貼的連線方式</title>
             <desc id="diagram-desc">電腦 A 與電腦 B（Mac 或 Windows）之間是 WebRTC 直連；兩台電腦都透過信令連線到你的伺服器；直連失敗時，資料經伺服器的 TURN 中繼。</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
             <text class="d-title" x="480" y="64" text-anchor="middle">你的伺服器</text>
@@ -352,7 +357,7 @@
     <section class="section" id="multi-uplink" aria-labelledby="multi-title">
       <div class="wrap">
         <h2 id="multi-title">公司網路也能直連</h2>
-        <p class="intro">公司雙線路、電信業者位址池這類網路有多個出口，會依目的位址決定走哪一個。只偵測一次，只會知道其中一個出口，結果只能經伺服器中繼。CopySync 會偵測每個出口，把位址全部告訴對方。</p>
+        <p class="intro">公司雙線路、電信業者位址池這類網路有多個出口，會依目的位址決定走哪一個。只偵測一次，只會知道其中一個出口，結果只能經伺服器中繼。隔空貼會偵測每個出口，把位址全部告訴對方。</p>
         <div class="cols">
           <div>
             <h3>做了什麼</h3>
@@ -367,7 +372,7 @@
           </div>
           <div>
             <h3>用真實的網路拓撲驗證</h3>
-            <p class="small">NAT 打洞實驗室用 Linux 網路命名空間與 iptables 搭出這些拓撲，用 CopySync 真正的連線程式碼各跑一遍，每次提交程式碼都會自動執行。</p>
+            <p class="small">NAT 打洞實驗室用 Linux 網路命名空間與 iptables 搭出這些拓撲，用隔空貼真正的連線程式碼各跑一遍，每次提交程式碼都會自動執行。</p>
             <div class="table-scroll">
               <table>
                 <thead><tr><th scope="col">情境</th><th scope="col">結果</th></tr></thead>
@@ -431,9 +436,9 @@
           <div><dt>檔案太大</dt><dd>超過上限的只同步一筆記錄，需要時再拉取。拉取時如果原始檔案已經被刪除，會明確告訴你，而不是莫名其妙地失敗。</dd></div>
           <div><dt>貼到只接受純文字的地方</dt><dd>從網頁複製的帶格式文字，會同時寫入 HTML 和純文字兩份，貼到哪裡都不會冒出標籤。</dd></div>
           <div><dt>檔名在 Windows 上不合法</dt><dd>Mac 上可以用的冒號、問號等字元，收到時會換成對應的全形字元，檔名照樣看得懂；只差在大小寫的兩個檔案也不會互相覆蓋。</dd></div>
-          <div><dt>複製的是密碼</dt><dd>在 Windows 上，密碼管理工具複製的內容會帶一個「不要記錄」的標記，CopySync 看到就跳過：不同步，也不會進入複製記錄。</dd></div>
+          <div><dt>複製的是密碼</dt><dd>在 Windows 上，密碼管理工具複製的內容會帶一個「不要記錄」的標記，隔空貼看到就跳過：不同步，也不會進入複製記錄。</dd></div>
           <div><dt>還沒授權讀取剪貼簿</dt><dd>不去讀取內容，否則背景程序會卡在一個看不見的系統對話框上。App 裡會提示你去授權，並提供直達設定的按鈕。</dd></div>
-          <div><dt>背景服務當掉</dt><dd>Mac 上由系統的 launchd、Windows 上由 CopySync 內建的守護程式自動重新啟動，每次至少間隔 10 秒，不會無限重啟。</dd></div>
+          <div><dt>背景服務當掉</dt><dd>Mac 上由系統的 launchd、Windows 上由隔空貼內建的守護程式自動重新啟動，每次至少間隔 10 秒，不會無限重啟。</dd></div>
           <div><dt>更新了 App，或把它搬到別的位置</dt><dd>打開 App 時會自動修正登入項目，並把背景服務重新啟動到新版本。</dd></div>
         </dl>
       </div>
@@ -447,8 +452,8 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
-              <li>下載 DMG，打開後把 CopySync 拖進「應用程式」。<span class="aside">Apple 晶片與 Intel 晶片各有一個版本，下載頁會告訴你怎麼查自己的 Mac 是哪一種。</span></li>
-              <li>從「應用程式」裡打開。<span class="aside">第一次會提示「無法驗證開發者」：CopySync 還沒有經過 Apple 公證。到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」，只需要這一次。</span></li>
+              <li>下載 DMG，打開後把隔空貼拖進「應用程式」。<span class="aside">Apple 晶片與 Intel 晶片各有一個版本，下載頁會告訴你怎麼查自己的 Mac 是哪一種。</span></li>
+              <li>從「應用程式」裡打開。<span class="aside">第一次會提示「無法驗證開發者」：隔空貼還沒有經過 Apple 公證。到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」，只需要這一次。</span></li>
               <li>點「啟用背景同步」。系統詢問是否允許讀取剪貼簿、是否允許尋找區域網路上的裝置時，都選擇允許。</li>
               <li>跨網路同步時，在「設定」裡填入伺服器位址 <code>ws://伺服器位址:8787/signal</code>，按 Enter；在同一個網路裡不用填。</li>
             </ol>
@@ -457,8 +462,8 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
-              <li>執行 CopySync-Setup.exe。它會安裝在目前使用者的目錄下，不需要系統管理員權限。<span class="aside">CopySync 還沒有程式碼簽章，Windows 會提示「Windows 已保護您的電腦」：點「其他資訊」，再點「仍要執行」。不想執行安裝程式的話，可以下載<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">免安裝版</a>。</span></li>
-              <li>打開 CopySync，點「啟用背景同步」。關掉視窗後，它會在右下角的通知區域繼續執行。防火牆詢問時選擇允許。</li>
+              <li>執行 CopySync-Setup.exe。它會安裝在目前使用者的目錄下，不需要系統管理員權限。<span class="aside">隔空貼還沒有程式碼簽章，Windows 會提示「Windows 已保護您的電腦」：點「其他資訊」，再點「仍要執行」。不想執行安裝程式的話，可以下載<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip">免安裝版</a>。</span></li>
+              <li>打開隔空貼，點「啟用背景同步」。關掉視窗後，它會在右下角的通知區域繼續執行。防火牆詢問時選擇允許。</li>
               <li>跨網路同步時，在「設定」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Windows 版</a>
@@ -467,7 +472,7 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
             <ol>
               <li>Ubuntu、Debian 等發行版下載 .deb，執行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；其他發行版下載 tar.gz，解壓縮後執行 <code>./CopySync/install.sh</code>。</li>
-              <li>從應用程式選單打開 CopySync，點「啟用背景同步」。之後它會在登入時自動啟動。</li>
+              <li>從應用程式選單打開隔空貼，點「啟用背景同步」。之後它會在登入時自動啟動。</li>
               <li>跨網路同步時，在「設定」裡填入伺服器位址，按 Enter；在同一個網路裡不用填。</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Linux 版</a>
@@ -507,7 +512,7 @@
             <tr><th scope="row">記錄保留</th><td>預設 3 天，可在 1 小時到 30 天之間調整，到期自動清除</td></tr>
             <tr><th scope="row">實測速度</th><td>區域網路直連傳輸 20 MB 檔案約 330 毫秒，檢查碼一致</td></tr>
             <tr><th scope="row">技術堆疊</th><td>背景服務與伺服器用 Go（Windows 上以純 Go 呼叫 Win32，Linux 上以純 Go 走 X11 協定），介面用 Flutter（三個系統共用一套程式碼），訊息定義用 Protocol Buffers</td></tr>
-            <tr><th scope="row">授權</th><td><a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
+            <tr><th scope="row">授權</th><td><a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
             </tbody>
           </table>
         </div>
@@ -520,11 +525,11 @@
         <div class="faq">
           <details>
             <summary>開著 UU 遠端時，為什麼一直出現 .uuremote_ 檔案？</summary>
-            <div class="answer"><p>UU 遠端會在系統剪貼簿裡寫入暫時的佔位檔案，舊版 CopySync 把它們當成一般檔案，反覆記錄和轉送。1.3.2 在傳送和接收時會過濾已確認的佔位檔名，啟動時清除只含佔位檔案的記錄。正常的空檔案、隱藏檔案和大檔案不受這條規則影響。50 MB 只決定是否自動傳輸，與 UU 的 UDP P2P 設定無關。建議兩端都更新；其他軟體如果也會同步剪貼簿，仍可能產生一般內容的重複記錄。</p></div>
+            <div class="answer"><p>UU 遠端會在系統剪貼簿裡寫入暫時的佔位檔案，舊版隔空貼把它們當成一般檔案，反覆記錄和轉送。1.3.2 在傳送和接收時會過濾已確認的佔位檔名，啟動時清除只含佔位檔案的記錄。正常的空檔案、隱藏檔案和大檔案不受這條規則影響。50 MB 只決定是否自動傳輸，與 UU 的 UDP P2P 設定無關。建議兩端都更新；其他軟體如果也會同步剪貼簿，仍可能產生一般內容的重複記錄。</p></div>
           </details>
           <details>
             <summary>和 macOS 內建的「通用剪貼板」有什麼不同？</summary>
-            <div class="answer"><p>通用剪貼板要求兩台裝置登入同一個 Apple ID、開著藍牙和 Wi‑Fi，而且距離要近，也只能在 Apple 裝置之間使用。CopySync 在同一個網路裡裝好就能用；跨網路時，只要兩台電腦都能連上你架設的伺服器，或都裝了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有複製記錄，大檔案也可以依需要再拉取。</p><p>如果你的兩台 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能就夠用了。</p></div>
+            <div class="answer"><p>通用剪貼板要求兩台裝置登入同一個 Apple ID、開著藍牙和 Wi‑Fi，而且距離要近，也只能在 Apple 裝置之間使用。隔空貼在同一個網路裡裝好就能用；跨網路時，只要兩台電腦都能連上你架設的伺服器，或都裝了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有複製記錄，大檔案也可以依需要再拉取。</p><p>如果你的兩台 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能就夠用了。</p></div>
           </details>
           <details>
             <summary>伺服器會看到我複製的內容嗎？</summary>
@@ -532,11 +537,11 @@
           </details>
           <details>
             <summary>公司網路（雙線路、多出口）能直連嗎？</summary>
-            <div class="answer"><p>可以。這類網路依目的位址選擇出口，CopySync 會在同一個連接埠上向多台伺服器偵測，拿到每個出口的位址後一起傳給對方，由對方逐一嘗試。實測公司的 4 個出口與家用寬頻之間可以直連。對方是連接埠隨機分配的 NAT 時，仍會走中繼。</p></div>
+            <div class="answer"><p>可以。這類網路依目的位址選擇出口，隔空貼會在同一個連接埠上向多台伺服器偵測，拿到每個出口的位址後一起傳給對方，由對方逐一嘗試。實測公司的 4 個出口與家用寬頻之間可以直連。對方是連接埠隨機分配的 NAT 時，仍會走中繼。</p></div>
           </details>
           <details>
             <summary>一定要自己準備伺服器嗎？</summary>
-            <div class="answer"><p>不一定。兩台電腦在<a href="lan/">同一個網路</a>裡時，裝好 App 直接配對就行，不需要伺服器。</p><p>跨網路時有兩種做法：<a href="cloud/">雲端伺服器</a>，最低規格的雲端主機就夠，在哪裡都能同步；<a href="tailscale/">Tailscale</a>，每台電腦裝上它，配對時輸入對方的 Tailscale 位址，不需要伺服器。CopySync 不提供公共伺服器，所以任何人的資料都不會經過別人的機器。</p></div>
+            <div class="answer"><p>不一定。兩台電腦在<a href="lan/">同一個網路</a>裡時，裝好 App 直接配對就行，不需要伺服器。</p><p>跨網路時有兩種做法：<a href="cloud/">雲端伺服器</a>，最低規格的雲端主機就夠，在哪裡都能同步；<a href="tailscale/">Tailscale</a>，每台電腦裝上它，配對時輸入對方的 Tailscale 位址，不需要伺服器。隔空貼不提供公共伺服器，所以任何人的資料都不會經過別人的機器。</p></div>
           </details>
           <details>
             <summary>家裡沒有公用 IP，能在家和公司之間同步嗎？</summary>
@@ -552,7 +557,7 @@
           </details>
           <details>
             <summary>為什麼第一次打開時系統會擋一下？</summary>
-            <div class="answer"><p>CopySync 還沒有經過 Apple 公證，Windows 版也還沒有程式碼簽章，兩者都需要每年付費購買的憑證。</p><p>在 Mac 上，到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」；在 Windows 上，在「Windows 已保護您的電腦」提示裡點「其他資訊」，再點「仍要執行」。都只需要這一次。</p></div>
+            <div class="answer"><p>隔空貼還沒有經過 Apple 公證，Windows 版也還沒有程式碼簽章，兩者都需要每年付費購買的憑證。</p><p>在 Mac 上，到「系統設定 → 隱私權與安全性」，點頁面下方的「強制打開」；在 Windows 上，在「Windows 已保護您的電腦」提示裡點「其他資訊」，再點「仍要執行」。都只需要這一次。</p></div>
           </details>
           <details>
             <summary>大檔案怎麼處理？</summary>
@@ -560,7 +565,7 @@
           </details>
           <details>
             <summary>免費嗎？公司能用嗎？</summary>
-            <div class="answer"><p>免費。CopySync 以 GNU AGPL-3.0 授權開源，個人和公司都可以免費使用和修改。散布它，或透過網路提供修改過的版本時，需要以同樣的授權公開原始碼。</p></div>
+            <div class="answer"><p>免費。隔空貼以 GNU AGPL-3.0 授權開源，個人和公司都可以免費使用和修改。散布它，或透過網路提供修改過的版本時，需要以同樣的授權公開原始碼。</p></div>
           </details>
         </div>
       </div>
@@ -570,24 +575,24 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">兩台電腦，一個剪貼簿。</h2>
         <div class="cta">
-          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 CopySync</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載隔空貼</a>
         </div>
         <p class="note">版本 1.7.0，免費開源。macOS 13 以上；Windows 10、11；Linux（x64 與 ARM64）。</p>
         <a class="start-link" href="start/">第一次用？看快速入門，三個步驟就設定好 →</a>
-        <a class="source" href="https://github.com/baiyuze/copysync">在 GitHub 上檢視原始碼</a>
+        <a class="source" href="https://github.com/baiyuze/pasteferry">在 GitHub 上檢視原始碼</a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 授權開源。</p>
+      <p>隔空貼以 GNU AGPL-3.0 授權開源。</p>
       <nav aria-label="頁尾連結">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新記錄</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術說明</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">授權說明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">回報問題</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新記錄</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技術說明</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">授權說明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">回報問題</a>
       </nav>
       <nav aria-label="語言">
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>

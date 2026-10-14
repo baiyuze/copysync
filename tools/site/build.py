@@ -17,8 +17,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
-SITE = "https://baiyuze.github.io/copysync/"
-REPO = "https://github.com/baiyuze/copysync"
+SITE = "https://baiyuze.github.io/pasteferry/"
+REPO = "https://github.com/baiyuze/pasteferry"
+# 网站所在的路径，404 页面用绝对路径引用资源。2026-10 从 /copysync/ 改名而来，
+# 旧路径由 baiyuze.github.io 仓库里的跳转页接住
+BASE = "/pasteferry/"
 DL = REPO + "/releases/latest/download/"
 VERSION = "1.7.0"
 DATE = "2026-10-13"
@@ -194,7 +197,7 @@ def header(c: dict, code: str, up: str, sub: str = "") -> str:
 
     return f"""  <header class="bar">
     <div class="wrap">
-      <a class="brand" href="{home or "./"}" aria-label="{c["home_label"]}"><img src="{up}assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="{home or "./"}" aria-label="{c["home_label"]}"><img src="{up}assets/icon.svg" alt="" width="26" height="26">{c["brand"]}</a>
       <nav aria-label="{c["nav_label"]}">
         {start}{c["nav_start"]}</a>
         <a class="wide" href="{home}#how">{c["nav_how"]}</a>
@@ -205,7 +208,8 @@ def header(c: dict, code: str, up: str, sub: str = "") -> str:
         {lang_menu(c, code, up, sub)}
       </nav>
     </div>
-  </header>"""
+  </header>
+  <p class="renamed"><span class="wrap">{c["rename_note"]}</span></p>"""
 
 
 # 三种连接方式的小插图：设备是笔记本与服务器的轮廓，虚线框是一个网络，蓝线是复制的内容走的路
@@ -300,7 +304,8 @@ def jsonld(c: dict, code: str, path: str, shots: str) -> str:
             {
                 "@type": "SoftwareApplication",
                 "@id": SITE + "#app",
-                "name": "CopySync",
+                "name": c["brand"],
+                "alternateName": c["brand_alt"],
                 "description": c["ld_description"],
                 "applicationCategory": "UtilitiesApplication",
                 "operatingSystem": c["ld_os"],
@@ -376,7 +381,7 @@ def home(code: str) -> str:
   <link rel="alternate" hreflang="x-default" href="{SITE}">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="CopySync">
+  <meta property="og:site_name" content="{c["brand"]}">
   <meta property="og:title" content="{esc(c["og_title"])}">
   <meta property="og:description" content="{esc(c["og_description"])}">
   <meta property="og:url" content="{SITE}{path}">
@@ -827,8 +832,8 @@ def toc_list(toc: list[tuple[str, str]]) -> str:
 
 
 def crumb(c: dict, home: str, base: str) -> str:
-    """教程顶部的面包屑：CopySync / 连接方式，后者回到快速开始里三种方式的选择。"""
-    return f'<p class="crumb"><a href="{home}">CopySync</a> / <a href="{base}{START}#server">{c["nav_server"]}</a></p>'
+    """教程顶部的面包屑：产品名 / 连接方式，后者回到快速开始里三种方式的选择。"""
+    return f'<p class="crumb"><a href="{home}">{c["brand"]}</a> / <a href="{base}{START}#server">{c["nav_server"]}</a></p>'
 
 
 def page_top(c: dict, code: str, sub: str, title: str, description: str) -> str:
@@ -849,7 +854,7 @@ def page_top(c: dict, code: str, sub: str, title: str, description: str) -> str:
 {alternates}
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
+  <meta property="og:site_name" content="{c["brand"]}">
   <meta property="og:title" content="{esc(title)}">
   <meta property="og:description" content="{esc(description)}">
   <meta property="og:url" content="{SITE}{path}{sub}">
@@ -1310,7 +1315,7 @@ def start_page(code: str) -> str:
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="{home_href}">CopySync</a> / {c["nav_start"]}</p>
+        <p class="crumb"><a href="{home_href}">{c["brand"]}</a> / {c["nav_start"]}</p>
         <h1 class="display">{s["h1"]}</h1>
         <p class="lede">{s["lede"]}</p>
         <ol class="guide-toc">
@@ -1567,7 +1572,7 @@ def download_page(code: str) -> str:
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="{home_href}">CopySync</a> / {c["nav_download"]}</p>
+        <p class="crumb"><a href="{home_href}">{c["brand"]}</a> / {c["nav_download"]}</p>
         <h1 class="display">{d["h1"]}</h1>
         <p class="lede">{fill(d["lede"], {"version": VERSION})}</p>
       </div>
@@ -2000,7 +2005,7 @@ def design_page(md_name: str, page: str) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{esc(text_of(inline(title)))}：CopySync 技术方案</title>
+  <title>{esc(text_of(inline(title)))}：隔空贴技术方案</title>
   <meta name="description" content="{esc(description)}">
   <link rel="canonical" href="{SITE}design/{page}.html">
   <meta name="theme-color" content="#141416">
@@ -2011,7 +2016,7 @@ def design_page(md_name: str, page: str) -> str:
   <a class="skip" href="#main">跳到正文</a>
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
       <nav aria-label="页面导航">
         <a href="../{START}">{zh["nav_start"]}</a>
         <a href="../{START}#server">{zh["nav_server"]}</a>
@@ -2022,7 +2027,7 @@ def design_page(md_name: str, page: str) -> str:
   </header>
   <main id="main">
     <article class="article">
-      <p class="crumb"><a href="../">CopySync</a> 的技术方案</p>
+      <p class="crumb"><a href="../">隔空贴</a>的技术方案</p>
       <h1>{inline(title)}</h1>
 {body}
     </article>
@@ -2044,10 +2049,10 @@ def not_found() -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>页面不存在 / Page not found：CopySync</title>
+  <title>页面不存在 / Page not found：隔空贴 PasteFerry</title>
   <meta name="theme-color" content="#141416">
-  <link rel="icon" href="/copysync/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/copysync/assets/site.css">
+  <link rel="icon" href="{BASE}assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{BASE}assets/site.css">
 </head>
 <body>
   <main class="lost">
@@ -2055,9 +2060,9 @@ def not_found() -> str:
       <h1 class="display">404</h1>
       <p class="lede">这个页面不存在。<br><span lang="en">This page doesn't exist.</span><br><span lang="ja">このページは存在しません。</span></p>
       <div class="cta">
-        <a class="button" href="/copysync/">回到首页</a>
-        <a class="button quiet" href="/copysync/en/" lang="en">English home</a>
-        <a class="button quiet" href="/copysync/ja/" lang="ja">日本語のホーム</a>
+        <a class="button" href="{BASE}">回到首页</a>
+        <a class="button quiet" href="{BASE}en/" lang="en">English home</a>
+        <a class="button quiet" href="{BASE}ja/" lang="ja">日本語のホーム</a>
       </div>
     </div>
   </main>

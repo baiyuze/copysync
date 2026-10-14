@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="docs/assets/icon.png" width="112" height="112" alt="CopySync icon">
+  <img src="docs/assets/icon.png" width="112" height="112" alt="PasteFerry icon">
 </p>
 
-<h1 align="center">CopySync</h1>
+<h1 align="center">PasteFerry</h1>
+
+<p align="center"><sub>隔空贴 · formerly CopySync. The app and the downloads keep the old name until the next version.</sub></p>
 
 <p align="center">
   Copy on one computer, paste on the other. Mac, Windows and Linux.<br>
@@ -10,15 +12,15 @@
 </p>
 
 <p align="center">
-  <a href="https://baiyuze.github.io/copysync/en/download/"><strong>Download</strong></a>
+  <a href="https://baiyuze.github.io/pasteferry/en/download/"><strong>Download</strong></a>
   ·
-  <a href="https://baiyuze.github.io/copysync/en/">Website</a>
+  <a href="https://baiyuze.github.io/pasteferry/en/">Website</a>
   ·
   <a href="README.zh-CN.md">简体中文</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/baiyuze/copysync?color=0A66D8" alt="Release">
+  <img src="https://img.shields.io/github/v/release/baiyuze/pasteferry?color=0A66D8" alt="Release">
   <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1D1D1F" alt="Windows 10 / 11">
   <img src="https://img.shields.io/badge/Linux-x64%20%2F%20ARM64-1D1D1F" alt="Linux x64 / ARM64">
@@ -26,16 +28,16 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/screenshots/en/history.png" alt="CopySync's history view: files, images and text arriving from other Macs">
+  <img src="docs/assets/screenshots/en/history.png" alt="PasteFerry's history view: files, images and text arriving from other Macs">
 </p>
 
 ## Why
 
 Universal Clipboard needs the same Apple ID and both Macs close by. AirDrop makes you accept every time and doesn't touch the clipboard. Messaging yourself means manual downloads and your files on someone else's server. With one Mac and one Windows PC, none of the built-in options work.
 
-With CopySync you pair two computers once. After that, copy on one and paste on the other — Mac to Mac, Mac to Windows, or Windows to Windows. On the same network it works with no server at all; across networks, a server you run yourself or Tailscale lets the two find each other. Data goes directly between the devices, end-to-end encrypted; when a direct connection can't be made, it is relayed through your server, which still can't read it.
+With PasteFerry you pair two computers once. After that, copy on one and paste on the other — Mac to Mac, Mac to Windows, or Windows to Windows. On the same network it works with no server at all; across networks, a server you run yourself or Tailscale lets the two find each other. Data goes directly between the devices, end-to-end encrypted; when a direct connection can't be made, it is relayed through your server, which still can't read it.
 
-| | CopySync | Universal Clipboard | AirDrop | Chat apps |
+| | PasteFerry | Universal Clipboard | AirDrop | Chat apps |
 |---|:-:|:-:|:-:|:-:|
 | Different Apple IDs | ✓ | — | Needs accepting | ✓ |
 | Different networks (home ↔ office) | ✓ | — | — | ✓ |
@@ -64,15 +66,15 @@ With CopySync you pair two computers once. After that, copy on one and paste on 
 
 ## Get started
 
-New here? The **[quick start](https://baiyuze.github.io/copysync/en/start/)** walks through it with screenshots. You need **the app on each computer**. On the same network that's all; across networks, add a server or Tailscale.
+New here? The **[quick start](https://baiyuze.github.io/pasteferry/en/start/)** walks through it with screenshots. You need **the app on each computer**. On the same network that's all; across networks, add a server or Tailscale.
 
-**1. Install the app** on each computer from the **[download page](https://baiyuze.github.io/copysync/en/download/)**:
+**1. Install the app** on each computer from the **[download page](https://baiyuze.github.io/pasteferry/en/download/)**:
 
-- **Mac** (macOS 13+): [Apple silicon](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-mac-apple-silicon.dmg) or [Intel](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-mac-intel.dmg); a [universal](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg) build runs on both.
-- **Windows** 10/11: [installer](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe) or [portable zip](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip).
-- **Linux** (X11, or Wayland with XWayland): `.deb` for Ubuntu and Debian ([x64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-amd64.deb), [ARM64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-arm64.deb)), or `tar.gz` for other distributions ([x64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-amd64.tar.gz), [ARM64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-arm64.tar.gz)) — extract it and run `./CopySync/install.sh` to add it to the app menu.
+- **Mac** (macOS 13+): [Apple silicon](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-mac-apple-silicon.dmg) or [Intel](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-mac-intel.dmg); a [universal](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync.dmg) build runs on both.
+- **Windows** 10/11: [installer](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-Setup.exe) or [portable zip](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip).
+- **Linux** (X11, or Wayland with XWayland): `.deb` for Ubuntu and Debian ([x64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-amd64.deb), [ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-arm64.deb)), or `tar.gz` for other distributions ([x64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-amd64.tar.gz), [ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-arm64.tar.gz)) — extract it and run `./CopySync/install.sh` to add it to the app menu.
 
-The builds aren't notarized or code-signed yet: on Mac, allow it once under **System Settings → Privacy & Security → Open Anyway**; on Windows, click **More info → Run anyway**. Then click **Turn on background sync**, and allow CopySync when Windows Firewall asks, or when macOS asks to find devices on your local network.
+The builds aren't notarized or code-signed yet: on Mac, allow it once under **System Settings → Privacy & Security → Open Anyway**; on Windows, click **More info → Run anyway**. Then click **Turn on background sync**, and allow PasteFerry when Windows Firewall asks, or when macOS asks to find devices on your local network.
 
 **2. Pair.** On one computer, **Devices → Add device → Show a code**; on the other, **Enter a code**. On a different subnet, click **On a different subnet?** and also enter the address shown under the code. Confirm only if both screens show the same two fingerprint lines. From then on, copy on either one and paste on the other.
 
@@ -80,14 +82,14 @@ The builds aren't notarized or code-signed yet: on Mac, allow it once under **Sy
 
 | Way | Best for | You need |
 |---|---|---|
-| **[Same network](https://baiyuze.github.io/copysync/en/lan/)** | Computers behind one router, at home or in the office | Nothing |
-| **[Public server](https://baiyuze.github.io/copysync/en/cloud/)** | Computers on different networks that should sync from anywhere | A Linux VM with a public IP; the smallest is enough |
-| **[Tailscale](https://baiyuze.github.io/copysync/en/tailscale/)** | Across networks without a server | [Tailscale](https://tailscale.com) on every computer; enter the other's Tailscale address when pairing |
+| **[Same network](https://baiyuze.github.io/pasteferry/en/lan/)** | Computers behind one router, at home or in the office | Nothing |
+| **[Public server](https://baiyuze.github.io/pasteferry/en/cloud/)** | Computers on different networks that should sync from anywhere | A Linux VM with a public IP; the smallest is enough |
+| **[Tailscale](https://baiyuze.github.io/pasteferry/en/tailscale/)** | Across networks without a server | [Tailscale](https://tailscale.com) on every computer; enter the other's Tailscale address when pairing |
 
 On a public server:
 
 ```bash
-curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
 tar xzf copysync-server-linux-amd64.tar.gz && cd copysync-server-linux-amd64
 sudo ./install.sh <public IP of the server>
 ```
@@ -106,7 +108,7 @@ Open TCP 8787, UDP 3478 and UDP 32768–60999, then enter `ws://<server address>
 
 - [How it works](guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned
 - [Troubleshooting](guide/troubleshooting.md) and known limitations
-- [Quick start](https://baiyuze.github.io/copysync/en/start/) · [Same network](https://baiyuze.github.io/copysync/en/lan/) · [Public server](https://baiyuze.github.io/copysync/en/cloud/) · [Tailscale](https://baiyuze.github.io/copysync/en/tailscale/) · [Run a server on your LAN](https://baiyuze.github.io/copysync/en/server/), all with screenshots
+- [Quick start](https://baiyuze.github.io/pasteferry/en/start/) · [Same network](https://baiyuze.github.io/pasteferry/en/lan/) · [Public server](https://baiyuze.github.io/pasteferry/en/cloud/) · [Tailscale](https://baiyuze.github.io/pasteferry/en/tailscale/) · [Run a server on your LAN](https://baiyuze.github.io/pasteferry/en/server/), all with screenshots
 - [Server deployment](server/deploy/README.md): Windows, macOS, Linux, Docker, Tailscale
 - [Building from source](guide/building.md)
 - Design notes (Chinese): [Local network mode](design/lan-mode.md), [NAT traversal on multi-uplink networks](design/nat-traversal.md), [Windows client](design/windows-client.md)
@@ -114,4 +116,4 @@ Open TCP 8787, UDP 3478 and UDP 32768–60999, then enter `ws://<server address>
 
 ## License
 
-CopySync is free and open source under the [GNU AGPL-3.0](LICENSE): anyone, companies included, can use and modify it, but distributing it or offering a modified version over a network means publishing your source under the same license. See [LICENSING.md](LICENSING.md) for details. Versions 1.2.0 and earlier remain under the MIT License.
+PasteFerry is free and open source under the [GNU AGPL-3.0](LICENSE): anyone, companies included, can use and modify it, but distributing it or offering a modified version over a network means publishing your source under the same license. See [LICENSING.md](LICENSING.md) for details. Versions 1.2.0 and earlier remain under the MIT License.

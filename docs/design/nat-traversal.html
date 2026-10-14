@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>多出口网络的 NAT 打洞：CopySync 技术方案</title>
+  <title>多出口网络的 NAT 打洞：隔空贴技术方案</title>
   <meta name="description" content="状态：已实现。多出口探测随 1.1.0 发布（2026-10-08）；中转后换直连、连接失效检测与补发随 1.1.1 发布（2026-10-09）；谁先发包随 1.1.2 发布（2026-10-09）">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/design/nat-traversal.html">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">
   <meta name="theme-color" content="#141416">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/site.css">
@@ -14,18 +14,18 @@
   <a class="skip" href="#main">跳到正文</a>
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
       <nav aria-label="页面导航">
         <a href="../start/">快速开始</a>
         <a href="../start/#server">连接方式</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync/blob/main/design/nat-traversal.md">在 GitHub 上查看</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry/blob/main/design/nat-traversal.md">在 GitHub 上查看</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
       </nav>
     </div>
   </header>
   <main id="main">
     <article class="article">
-      <p class="crumb"><a href="../">CopySync</a> 的技术方案</p>
+      <p class="crumb"><a href="../">隔空贴</a>的技术方案</p>
       <h1>多出口网络的 NAT 打洞</h1>
 <blockquote><p>状态：已实现。多出口探测随 1.1.0 发布（2026-10-08）；中转后换直连、连接失效检测与补发随 1.1.1 发布（2026-10-09）；谁先发包随 1.1.2 发布（2026-10-09）</p><p>代码：<code>client-core/internal/transport/p2p/egress*.go</code>、<code>manager.go</code>、<code>peer.go</code>；补发在 <code>client-core/internal/sync/backlog.go</code></p><p>验证：<code>tools/natlab/</code>（NAT 打洞实验室，CI 中运行）</p></blockquote>
 <nav class="toc" aria-label="目录"><strong>目录</strong><ul><li><a href="#一-问题">一、问题</a></li><li><a href="#二-测量">二、测量</a></li><li><a href="#三-方案">三、方案</a></li><li><a href="#四-能覆盖哪些场景">四、能覆盖哪些场景</a></li><li><a href="#五-验证">五、验证</a></li><li><a href="#六-踩过的坑">六、踩过的坑</a></li><li><a href="#七-局限与后续">七、局限与后续</a></li></ul></nav>
@@ -134,13 +134,13 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 开源。</p>
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
       <nav aria-label="页脚链接">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">许可说明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
       </nav>
       <nav aria-label="语言">
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>

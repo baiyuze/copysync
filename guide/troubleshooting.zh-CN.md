@@ -3,16 +3,16 @@
 [English](troubleshooting.md) · [回到 README](../README.zh-CN.md)
 
 **同一网络里找不到另一台电脑**
-先确认两台都启用了后台同步、连着同一个网络。公司里有线和无线、访客网络、开了「AP 隔离」的 Wi‑Fi 常常不互通：在输入配对码的那台点「不在同一网段？」，填上对方配对码下面显示的地址。还是找不到就看对方的防火墙：Windows 上在「设置 → 局域网」里点「放行」（会请求一次管理员权限）；Mac 上到「系统设置 → 隐私与安全性 → 本地网络」打开 CopySync Daemon。`copysync-cli nat` 的「局域网」一节能看到本机的端口、发现了几台 CopySync、每台设备能否找到、记住了哪些地址。见[同一网络教程](https://baiyuze.github.io/copysync/lan/)。
+先确认两台都启用了后台同步、连着同一个网络。公司里有线和无线、访客网络、开了「AP 隔离」的 Wi‑Fi 常常不互通：在输入配对码的那台点「不在同一网段？」，填上对方配对码下面显示的地址。还是找不到就看对方的防火墙：Windows 上在「设置 → 局域网」里点「放行」（会请求一次管理员权限）；Mac 上到「系统设置 → 隐私与安全性 → 本地网络」打开 CopySync Daemon。`copysync-cli nat` 的「局域网」一节能看到本机的端口、发现了几台 CopySync、每台设备能否找到、记住了哪些地址。见[同一网络教程](https://baiyuze.github.io/pasteferry/lan/)。
 
 **「设置 → 连接状态」一直是「未连接」**
-只在填了服务器地址时才有这个问题；同一网络里不需要服务器，地址留空即可。先核对地址：以 `ws://` 开头、端口 8787、以 `/signal` 结尾；再在这台电脑的浏览器里打开 `http://<服务器地址>:8787/healthz`。打不开说明到服务器的网络不通：服务器没在运行、那台电脑睡眠了、被防火墙拦住了，或者它的地址变了。Windows 与 Linux 的安装脚本会给出需要的防火墙命令，见[服务器部署说明](../server/deploy/README.md)与[局域网部署教程](https://baiyuze.github.io/copysync/server/)。
+只在填了服务器地址时才有这个问题；同一网络里不需要服务器，地址留空即可。先核对地址：以 `ws://` 开头、端口 8787、以 `/signal` 结尾；再在这台电脑的浏览器里打开 `http://<服务器地址>:8787/healthz`。打不开说明到服务器的网络不通：服务器没在运行、那台电脑睡眠了、被防火墙拦住了，或者它的地址变了。Windows 与 Linux 的安装脚本会给出需要的防火墙命令，见[服务器部署说明](../server/deploy/README.md)与[局域网部署教程](https://baiyuze.github.io/pasteferry/server/)。
 
 **国内云服务器：填域名连不上，填 IP 能连**
-域名没有备案时，国内云厂商会拦截访问它的明文 HTTP 请求，任何端口都一样，返回一个跳转到拦截页的响应。WebSocket 握手就是明文 HTTP 请求，所以同样被拦。地址里直接填 IP（`ws://<服务器IP>:8787/signal`），或者给域名备案。见[公网服务器部署教程](https://baiyuze.github.io/copysync/cloud/)。
+域名没有备案时，国内云厂商会拦截访问它的明文 HTTP 请求，任何端口都一样，返回一个跳转到拦截页的响应。WebSocket 握手就是明文 HTTP 请求，所以同样被拦。地址里直接填 IP（`ws://<服务器IP>:8787/signal`），或者给域名备案。见[公网服务器部署教程](https://baiyuze.github.io/pasteferry/cloud/)。
 
 **用 Tailscale 时显示「直连」，传输却很慢**
-「直连」指两台电脑在 Tailscale 的虚拟网里直接相连。Tailscale 自己打不通两台电脑时，会经它在境外的中转服务器（DERP）转发，在国内用就会慢。运行 `tailscale ping <对方>`：显示 via DERP 说明 Tailscale 在中转，显示 via <IP>:<端口> 才是点对点。见 [Tailscale 教程](https://baiyuze.github.io/copysync/tailscale/)。
+「直连」指两台电脑在 Tailscale 的虚拟网里直接相连。Tailscale 自己打不通两台电脑时，会经它在境外的中转服务器（DERP）转发，在国内用就会慢。运行 `tailscale ping <对方>`：显示 via DERP 说明 Tailscale 在中转，显示 via <IP>:<端口> 才是点对点。见 [Tailscale 教程](https://baiyuze.github.io/pasteferry/tailscale/)。
 
 **UU 远程开启时不断新增 `.uuremote_…` 文件记录**
 升级两端客户端到 1.3.2 或更新的版本。UU 远程会把临时占位文件写入系统剪贴板，旧版 CopySync 会把它们当成普通文件再次转发。新版在扫描、入库和发送之前过滤已确认的 `.uuremote_aeawv` 加数字命名；混合选择保留正常文件，接收端忽略纯占位记录，启动时清理历史里的纯占位记录（不删除 UU 的源文件）。普通空文件、隐藏文件和大文件不受这条规则影响。50 MB 是自动传输阈值，不是故障原因；无需关闭 UU 的 UDP P2P。其他剪贴板同步工具仍可能造成普通内容重复，可只保留一个工具负责剪贴板同步。技术与验证记录见 [UU 远程兼容修复](../design/uu-remote-clipboard.md)。

@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Linux 客户端：CopySync 技术方案</title>
+  <title>Linux 客户端：隔空贴技术方案</title>
   <meta name="description" content="状态：已实现，随 1.6.0 发布">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/design/linux-client.html">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/design/linux-client.html">
   <meta name="theme-color" content="#141416">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/site.css">
@@ -14,18 +14,18 @@
   <a class="skip" href="#main">跳到正文</a>
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
       <nav aria-label="页面导航">
         <a href="../start/">快速开始</a>
         <a href="../start/#server">连接方式</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync/blob/main/design/linux-client.md">在 GitHub 上查看</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry/blob/main/design/linux-client.md">在 GitHub 上查看</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
       </nav>
     </div>
   </header>
   <main id="main">
     <article class="article">
-      <p class="crumb"><a href="../">CopySync</a> 的技术方案</p>
+      <p class="crumb"><a href="../">隔空贴</a>的技术方案</p>
       <h1>Linux 客户端</h1>
 <blockquote><p>状态：已实现，随 1.6.0 发布</p><p>代码：<code>client-core/internal/clipboard/linux.go</code>（剪贴板）、<code>client-core/cmd/copysyncd/platform_linux.go</code> 与 <code>supervisor.go</code>（后台服务）、<code>ui/linux/</code>（GTK 外壳）、<code>ui/lib/background_service_linux.dart</code>（开机自启）、<code>scripts/package-linux.sh</code> 与 <code>tools/linux/</code>（打包）</p><p>验证：<code>internal/clipboard/linux_test.go</code>（Xvfb + xclip、Wayland + wl-clipboard）、CI 的 Linux 任务（x64 与 ARM64）、Ubuntu 24.04 GNOME（Wayland）虚拟机实测</p><p>相关：<a href="windows-client.html">Windows 客户端</a>、<a href="lan-mode.html">局域网直连</a></p></blockquote>
 <nav class="toc" aria-label="目录"><strong>目录</strong><ul><li><a href="#一-目标">一、目标</a></li><li><a href="#二-剪贴板">二、剪贴板</a></li><li><a href="#三-后台服务">三、后台服务</a></li><li><a href="#四-界面">四、界面</a></li><li><a href="#五-打包与发布">五、打包与发布</a></li><li><a href="#六-验证">六、验证</a></li><li><a href="#七-局限">七、局限</a></li></ul></nav>
@@ -72,13 +72,13 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 开源。</p>
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
       <nav aria-label="页脚链接">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">许可说明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
       </nav>
       <nav aria-label="语言">
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>

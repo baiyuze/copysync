@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>在同一网络里使用 CopySync：不用服务器，配对就能同步</title>
-  <meta name="description" content="两台电脑在同一个 Wi‑Fi 或有线网络里时，CopySync 不需要服务器：装好 App，输入 6 位配对码，就能在 Mac 与 Windows 之间同步剪贴板和文件。不在同一网段时，配对时多输入一个地址。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/lan/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/lan/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/lan/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/lan/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/lan/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/lan/">
+  <title>在同一网络里使用隔空贴：不用服务器，配对就能同步</title>
+  <meta name="description" content="两台电脑在同一个 Wi‑Fi 或有线网络里时，隔空贴不需要服务器：装好 App，输入 6 位配对码，就能在 Mac 与 Windows 之间同步剪贴板和文件。不在同一网段时，配对时多输入一个地址。">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/lan/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/lan/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/lan/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/lan/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/lan/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/lan/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="在同一网络里使用 CopySync：不用服务器，配对就能同步">
-  <meta property="og:description" content="两台电脑在同一个 Wi‑Fi 或有线网络里时，CopySync 不需要服务器：装好 App，输入 6 位配对码，就能在 Mac 与 Windows 之间同步剪贴板和文件。不在同一网段时，配对时多输入一个地址。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/lan/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
+  <meta property="og:site_name" content="隔空贴">
+  <meta property="og:title" content="在同一网络里使用隔空贴：不用服务器，配对就能同步">
+  <meta property="og:description" content="两台电脑在同一个 Wi‑Fi 或有线网络里时，隔空贴不需要服务器：装好 App，输入 6 位配对码，就能在 Mac 与 Windows 之间同步剪贴板和文件。不在同一网段时，配对时多输入一个地址。">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/lan/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og.png">
   <meta property="og:locale" content="zh_CN">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
@@ -30,14 +30,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href=".././" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href=".././" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
       <nav aria-label="页面导航">
         <a href="../start/">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
         <a class="mid" href="../start/#server" aria-current="true">连接方式</a>
         <a href="../download/">下载</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="语言：简体中文"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>简体中文</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -51,11 +51,12 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">隔空贴原名 CopySync。应用和安装包里暂时还叫 CopySync，下个版本会改过来。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">连接方式</a></p>
+        <p class="crumb"><a href=".././">隔空贴</a> / <a href="../start/#server">连接方式</a></p>
         <h1 class="display">在同一网络里直接用</h1>
         <p class="lede">两台电脑连着同一个路由器，就不需要服务器。装好 App，输入配对码，之后复制就会同步。</p>
         <ol class="guide-toc">
@@ -73,17 +74,17 @@
         <p class="intro">同一个网络里的两台电脑，靠 mDNS 互相发现、直接交换连接信息，然后建立加密的直连。没有服务器，也不需要一台一直开着的电脑。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 330" role="img" aria-labelledby="lan-title lan-desc">
-            <title id="lan-title">同一网络里的 CopySync</title>
+            <title id="lan-title">同一网络里的隔空贴</title>
             <desc id="lan-desc">同一个局域网里，Mac（192.168.1.20）与 Windows（192.168.1.35）通过 mDNS 互相发现，经 UDP 8788 交换连接信息，复制的内容在两台电脑之间直连传输，没有服务器。</desc>
             <rect class="d-lan" x="8" y="8" width="944" height="314" rx="22"/>
             <text class="d-lan-label" x="32" y="42">局域网：同一个 Wi‑Fi 或有线网络</text>
             <rect class="d-box" x="40" y="120" width="240" height="140" rx="14"/>
             <text class="d-title" x="160" y="170" text-anchor="middle">Mac</text>
-            <text class="d-sub" x="160" y="198" text-anchor="middle">装着 CopySync</text>
+            <text class="d-sub" x="160" y="198" text-anchor="middle">装着隔空贴</text>
             <text class="d-ip" x="160" y="234" text-anchor="middle">192.168.1.20</text>
             <rect class="d-box" x="680" y="120" width="240" height="140" rx="14"/>
             <text class="d-title" x="800" y="170" text-anchor="middle">Windows</text>
-            <text class="d-sub" x="800" y="198" text-anchor="middle">装着 CopySync</text>
+            <text class="d-sub" x="800" y="198" text-anchor="middle">装着隔空贴</text>
             <text class="d-ip" x="800" y="234" text-anchor="middle">192.168.1.35</text>
             <path class="d-sig" d="M280 150H680"/>
             <text class="d-note" x="480" y="138" text-anchor="middle">mDNS 互相发现，UDP 8788 交换连接信息</text>
@@ -105,7 +106,7 @@
         <h2 id="prepare-title">开始之前</h2>
         <dl class="fallbacks">
           <div><dt>在同一个网络里</dt><dd>两台电脑连着同一个路由器就行，Wi‑Fi 与有线混用也可以。访客网络、开了「AP 隔离」的 Wi‑Fi 不让设备互相访问；公司里有线和无线常常不在一个网段，这时看下面的<a href="#subnet">不在同一网段</a>。</dd></div>
-          <div><dt>Windows 防火墙</dt><dd>第一次运行时，Windows 会问是否允许 CopySync 通过防火墙，选允许。点过取消的话，在 CopySync 的「设置 → 局域网」里点「放行」，会请求一次管理员权限。</dd></div>
+          <div><dt>Windows 防火墙</dt><dd>第一次运行时，Windows 会问是否允许隔空贴通过防火墙，选允许。点过取消的话，在隔空贴的「设置 → 局域网」里点「放行」，会请求一次管理员权限。</dd></div>
           <div><dt>macOS 的本地网络权限</dt><dd>macOS 15 起，第一次连接局域网里的设备时，系统会问是否允许 CopySync Daemon 查找本地网络上的设备，选允许。拒绝过的话，到「系统设置 → 隐私与安全性 → 本地网络」里打开它。</dd></div>
           <div><dt>不用填服务器</dt><dd>「设置」里的服务器地址留空就行。以后要跨网络同步，再填上服务器或者改用 Tailscale，已经配对的设备不用重新配对。</dd></div>
         </dl>
@@ -187,7 +188,7 @@
           </details>
           <details>
             <summary>同一网络里的其他人会看到我的电脑吗？</summary>
-            <div class="answer"><p>能看到网络里有一台 CopySync，但看不出是谁的：广播里只有一个每天都变的匿名标识，没有设备名，也没有设备 ID。只有你打开「搜索附近设备」的那段时间，广播里才带上设备名，关掉窗口就撤下。没有和你配对过的设备，发来的消息一律丢弃；配对还要两边核对安全指纹。</p></div>
+            <div class="answer"><p>能看到网络里有一台隔空贴，但看不出是谁的：广播里只有一个每天都变的匿名标识，没有设备名，也没有设备 ID。只有你打开「搜索附近设备」的那段时间，广播里才带上设备名，关掉窗口就撤下。没有和你配对过的设备，发来的消息一律丢弃；配对还要两边核对安全指纹。</p></div>
           </details>
           <details>
             <summary>用了哪些端口？</summary>
@@ -201,7 +202,7 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">同一个网络，<br>装好就能用。</h2>
         <div class="cta">
-          <a class="button" href="../download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 CopySync</a>
+          <a class="button" href="../download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载隔空贴</a>
         </div>
         <p class="note">版本 1.7.0，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。</p>
         <a class="source" href="../design/lan-mode.html">局域网直连的技术方案</a>
@@ -211,13 +212,13 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 开源。</p>
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
       <nav aria-label="页脚链接">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">许可说明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
       </nav>
       <nav aria-label="语言">
         <a href="../lan/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>

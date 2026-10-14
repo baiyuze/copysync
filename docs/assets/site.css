@@ -162,6 +162,21 @@ caption.skip {
   gap: 1rem;
 }
 
+/* 顶栏下的改名说明：2026-10 从 CopySync 改名，应用改名发版后去掉 */
+.renamed {
+  margin: 0;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--dim);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.renamed .wrap {
+  display: block;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;

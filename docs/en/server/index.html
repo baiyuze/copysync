@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Run a CopySync server on your LAN: Windows, Mac and Linux</title>
-  <meta name="description" content="When your computers share a network you don&#x27;t need a cloud server. Run CopySync&#x27;s signaling and TURN server on any always-on Windows, Mac or Linux machine with one script; it starts on boot. Includes app setup and troubleshooting.">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/en/server/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/server/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/server/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/server/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/server/">
+  <title>Run a PasteFerry server on your LAN: Windows, Mac and Linux</title>
+  <meta name="description" content="When your computers share a network you don&#x27;t need a cloud server. Run PasteFerry&#x27;s signaling and TURN server on any always-on Windows, Mac or Linux machine with one script; it starts on boot. Includes app setup and troubleshooting.">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/en/server/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/server/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/server/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/server/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/server/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/server/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="Run a CopySync server on your LAN: Windows, Mac and Linux">
-  <meta property="og:description" content="When your computers share a network you don&#x27;t need a cloud server. Run CopySync&#x27;s signaling and TURN server on any always-on Windows, Mac or Linux machine with one script; it starts on boot. Includes app setup and troubleshooting.">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/en/server/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="Run a PasteFerry server on your LAN: Windows, Mac and Linux">
+  <meta property="og:description" content="When your computers share a network you don&#x27;t need a cloud server. Run PasteFerry&#x27;s signaling and TURN server on any always-on Windows, Mac or Linux machine with one script; it starts on boot. Includes app setup and troubleshooting.">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/en/server/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og-en.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
@@ -30,14 +30,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../../en/" aria-label="CopySync home"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../../en/" aria-label="PasteFerry home"><img src="../../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
       <nav aria-label="Page">
         <a href="../../en/start/">Quick start</a>
         <a class="wide" href="../../en/#how">How it works</a>
         <a class="wide" href="../../en/#faq">FAQ</a>
         <a class="mid" href="../../en/start/#server" aria-current="true">Ways to connect</a>
         <a href="../../en/download/">Download</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="Language：English"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>English</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -51,13 +51,14 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">PasteFerry used to be called CopySync. The app and the downloads keep the old name until the next version.</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/start/#server">Ways to connect</a></p>
+        <p class="crumb"><a href="../../en/">PasteFerry</a> / <a href="../../en/start/#server">Ways to connect</a></p>
         <h1 class="display">Run the server on your LAN</h1>
-        <p class="lede">If your computers are on the same home or office network, you don't need a cloud server. Pick a computer that stays on, download and run one script, then enter the address it prints into CopySync on each computer.</p>
+        <p class="lede">If your computers are on the same home or office network, you don't need a cloud server. Pick a computer that stays on, download and run one script, then enter the address it prints into PasteFerry on each computer.</p>
         <p class="notice"><strong>On the same network you no longer need a server:</strong> install the app and pair; see the <a href="../../en/lan/">same network guide</a>. This guide still helps when two subnets can't reach each other and traffic has to go through a computer both can reach.</p>
         <ol class="guide-toc">
           <li><a href="#prepare">Before you start</a></li>
@@ -75,7 +76,7 @@
         <p class="intro">Each computer stays connected to the server, which is how they find each other and exchange connection details. Once connected, what you copy goes straight between the two computers. Only when that fails does it pass through the server, still encrypted.</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 440" role="img" aria-labelledby="lan-title lan-desc">
-            <title id="lan-title">CopySync on a LAN</title>
+            <title id="lan-title">PasteFerry on a LAN</title>
             <desc id="lan-desc">On one LAN, a Mac and a Windows PC connect to the server at 192.168.1.20 for signaling. Copied content travels directly between the two computers, and through the server's TURN relay only if a direct connection fails.</desc>
             <rect class="d-lan" x="8" y="8" width="944" height="384" rx="22"/>
             <text class="d-lan-label" x="32" y="42">Your LAN: the same Wi‑Fi or wired network</text>
@@ -90,10 +91,10 @@
             <text class="d-note" x="220" y="200">Relay, UDP 3478, if direct fails</text>
             <rect class="d-box" x="40" y="250" width="240" height="112" rx="14"/>
             <text class="d-title" x="160" y="300" text-anchor="middle">Mac</text>
-            <text class="d-sub" x="160" y="328" text-anchor="middle">Running CopySync</text>
+            <text class="d-sub" x="160" y="328" text-anchor="middle">Running PasteFerry</text>
             <rect class="d-box" x="680" y="250" width="240" height="112" rx="14"/>
             <text class="d-title" x="800" y="300" text-anchor="middle">Windows</text>
-            <text class="d-sub" x="800" y="328" text-anchor="middle">Running CopySync</text>
+            <text class="d-sub" x="800" y="328" text-anchor="middle">Running PasteFerry</text>
             <path class="d-direct" d="M280 306H680"/>
             <text class="d-label" x="480" y="292" text-anchor="middle">Direct, end-to-end encrypted</text>
             <text class="d-note" x="480" y="336" text-anchor="middle">Content stays between the two computers</text>
@@ -140,11 +141,11 @@
             <div class="os-grid">
               <div class="os-steps">
                 <ol class="steps">
-                <li>Download <a href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> and choose Extract All.</li>
+                <li>Download <a href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> and choose Extract All.</li>
                 <li>Open the extracted folder and double-click <code>install.cmd</code>.<span class="aside">If you see "Windows protected your PC", click More info, then Run anyway; when User Account Control asks, click Yes. The server isn't code-signed yet, which is why Windows asks once.</span></li>
                 <li>Installation continues in a new window. The <code>ws://…/signal</code> address at the end is what you enter in the apps.</li>
                 </ol>
-                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download the Windows server</a>
+                <a class="button" href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download the Windows server</a>
                 <ul class="points">
                 <li><strong>Runs as a Windows service:</strong> starts with Windows, no sign-in needed, no window. It appears as CopySync Server in Services.</li>
                 <li><strong>Firewall already allowed:</strong> the script adds an inbound rule for copysync-server.exe only, so there are no ports to open.</li>
@@ -206,7 +207,7 @@ In CopySync on each computer, set Settings &gt; Signaling server to:
                   <li>Open Terminal and run these lines:
                 <div class="code">
                   <button class="copy" type="button" data-done="Copied">Copy</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-macos.tar.gz
 tar xzf copysync-server-macos.tar.gz
 cd copysync-server-macos
 ./install.sh</code></pre>
@@ -262,7 +263,7 @@ In CopySync on each computer, set Settings → Signaling server to:
                   <li>On the machine itself, or over ssh, run these lines:<span class="aside">On ARM, such as a Raspberry Pi with a 64-bit OS, replace <code>amd64</code> with <code>arm64</code>.</span>
                 <div class="code">
                   <button class="copy" type="button" data-done="Copied">Copy</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
 tar xzf copysync-server-linux-amd64.tar.gz
 cd copysync-server-linux-amd64
 sudo ./install.sh</code></pre>
@@ -333,12 +334,12 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
       <div class="wrap">
         <h2 id="clients-title">Enter the address on each computer</h2>
         <ol class="flow">
-          <li><h3>Open Settings</h3><p>Open CopySync on each computer, including the one running the server, and go to Settings.</p></li>
+          <li><h3>Open Settings</h3><p>Open PasteFerry on each computer, including the one running the server, and go to Settings.</p></li>
           <li><h3>Enter the address</h3><p>Under Signaling server, enter <code>ws://192.168.1.20:8787/signal</code> with your address and press Return or Enter.</p></li>
           <li><h3>Check the status</h3><p>When Connection shows a green Connected, you're set. Pair your devices under Devices and copying starts syncing.</p></li>
         </ol>
         <figure class="shot">
-          <img src="../../assets/screenshots/en/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync Settings: the signaling server is ws://192.168.1.20:8787/signal and the connection status shows Connected">
+          <img src="../../assets/screenshots/en/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="PasteFerry Settings: the signaling server is ws://192.168.1.20:8787/signal and the connection status shows Connected">
         </figure>
         <p class="note">Haven't installed the app yet? See the <a href="../../en/start/">quick start</a>.</p>
       </div>
@@ -365,7 +366,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
             <div class="answer"><p>No, the server is only reachable on your LAN. To sync from other networks, use a <a href="../../en/cloud/">public server</a> or <a href="../../en/tailscale/">Tailscale</a>.</p></div>
           </details>
           <details>
-            <summary>The server computer also runs CopySync. Which address?</summary>
+            <summary>The server computer also runs PasteFerry. Which address?</summary>
             <div class="answer"><p>The same LAN address works, and so does <code>ws://127.0.0.1:8787/signal</code>. The server and the app don't interfere.</p></div>
           </details>
         </div>
@@ -376,23 +377,23 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
       <div class="wrap">
         <h2 class="display" id="closing-title">One computer that stays on is enough.</h2>
         <div class="cta">
-          <a class="button" href="../../en/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download CopySync</a>
+          <a class="button" href="../../en/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download PasteFerry</a>
         </div>
         <p class="note">Version 1.7.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).</p>
-        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">Full server guide, including public servers and Docker</a>
+        <a class="source" href="https://github.com/baiyuze/pasteferry/blob/main/server/deploy/README.md">Full server guide, including public servers and Docker</a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync is open source under the GNU AGPL-3.0.</p>
+      <p>PasteFerry is open source under the GNU AGPL-3.0.</p>
       <nav aria-label="Footer">
-        <a href="https://github.com/baiyuze/copysync/releases">All releases</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">Changelog</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">Design notes (Chinese)</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">License</a>
-        <a href="https://github.com/baiyuze/copysync/issues">Report an issue</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">All releases</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">License</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">Report an issue</a>
       </nav>
       <nav aria-label="Language">
         <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>

@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tailscale で CopySync をネットワークをまたいで使う：サーバーなしで自宅と会社を同期</title>
+  <title>Tailscale で PasteFerry をネットワークをまたいで使う：サーバーなしで自宅と会社を同期</title>
   <meta name="description" content="各コンピューターに Tailscale を入れて同じアカウントでサインインし、ペアリング時に相手の Tailscale アドレスを入力するだけ。グローバル IP もサーバーも、電源を入れたままのコンピューターも要らず、会社や外出先からもクリップボードを同期できます。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/tailscale/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/tailscale/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/tailscale/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/ja/tailscale/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/tailscale/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/tailscale/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/tailscale/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/tailscale/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/tailscale/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="Tailscale で CopySync をネットワークをまたいで使う：サーバーなしで自宅と会社を同期">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="Tailscale で PasteFerry をネットワークをまたいで使う：サーバーなしで自宅と会社を同期">
   <meta property="og:description" content="各コンピューターに Tailscale を入れて同じアカウントでサインインし、ペアリング時に相手の Tailscale アドレスを入力するだけ。グローバル IP もサーバーも、電源を入れたままのコンピューターも要らず、会社や外出先からもクリップボードを同期できます。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/tailscale/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/ja/tailscale/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og-en.png">
   <meta property="og:locale" content="ja_JP">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
@@ -30,14 +30,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../../ja/" aria-label="CopySync ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../../ja/" aria-label="PasteFerry ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
       <nav aria-label="ページ内の移動">
         <a href="../../ja/start/">はじめかた</a>
         <a class="wide" href="../../ja/#how">しくみ</a>
         <a class="wide" href="../../ja/#faq">よくある質問</a>
         <a class="mid" href="../../ja/start/#server" aria-current="true">接続方法</a>
         <a href="../../ja/download/">ダウンロード</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="言語：日本語"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>日本語</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -51,11 +51,12 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">PasteFerry の旧名は CopySync です。次のバージョンまで、アプリとインストーラーには CopySync と表示されます。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/start/#server">接続方法</a></p>
+        <p class="crumb"><a href="../../ja/">PasteFerry</a> / <a href="../../ja/start/#server">接続方法</a></p>
         <h1 class="display">Tailscale でネットワークをまたぐ</h1>
         <p class="lede">グローバル IP がなく、サーバーも置きたくない？各コンピューターに Tailscale を入れ、ペアリング時に相手の Tailscale アドレスを入力すれば、自宅でも会社でも同期できます。</p>
         <ol class="guide-toc">
@@ -70,10 +71,10 @@
     <section class="section" id="overview" aria-labelledby="overview-title">
       <div class="wrap">
         <h2 id="overview-title">同じ LAN にあるように</h2>
-        <p class="intro">Tailscale はデバイスをひとつのプライベートネットワークにまとめるツールです。同じアカウントでサインインしたデバイスには、100 で始まる固定のアドレスが割り当てられ、実際にどのネットワークにいてもそのアドレスで互いに届きます。CopySync はペアリング時に相手のこのアドレスを覚え、あとは同じネットワークにいるのと同じように直接つながります。</p>
+        <p class="intro">Tailscale はデバイスをひとつのプライベートネットワークにまとめるツールです。同じアカウントでサインインしたデバイスには、100 で始まる固定のアドレスが割り当てられ、実際にどのネットワークにいてもそのアドレスで互いに届きます。PasteFerry はペアリング時に相手のこのアドレスを覚え、あとは同じネットワークにいるのと同じように直接つながります。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 330" role="img" aria-labelledby="ts-title ts-desc">
-            <title id="ts-title">Tailscale で使う CopySync</title>
+            <title id="ts-title">Tailscale で使う PasteFerry</title>
             <desc id="ts-desc">Mac は会社、Windows は自宅にあり、どちらも Tailscale を入れて、同じプライベートネットワークの中にそれぞれ 100 で始まるアドレスを持っています。コピーした内容は 2 台のあいだを直接流れ、サーバーはありません。</desc>
             <rect class="d-ts" x="8" y="8" width="944" height="314" rx="22"/>
             <text class="d-ts-label" x="32" y="42">Tailscale のネットワーク：各デバイスに 100 で始まるアドレス</text>
@@ -93,7 +94,7 @@
         <ul class="points ports">
           <li><strong>サーバーは要らない。</strong>電源を入れたままのコンピューターも要りません。2 台が起動していて Tailscale につながっていれば同期します。</li>
           <li><strong>アドレスの入力は一度だけ。</strong>Tailscale のアドレスは変わらないので、ペアリング時に一度入力すれば、あとは 2 台が自動でお互いを見つけます。</li>
-          <li><strong>二重の暗号化。</strong>Tailscale の WireGuard トンネルの中を、CopySync 自身のエンドツーエンド暗号化接続が通ります。Tailscale にも内容は見えません。</li>
+          <li><strong>二重の暗号化。</strong>Tailscale の WireGuard トンネルの中を、PasteFerry 自身のエンドツーエンド暗号化接続が通ります。Tailscale にも内容は見えません。</li>
         </ul>
       </div>
     </section>
@@ -103,8 +104,8 @@
         <h2 id="prepare-title">始める前に</h2>
         <dl class="fallbacks">
           <div><dt>Tailscale のアカウント</dt><dd>個人利用は無料で、Google、Microsoft、GitHub、Apple のアカウントでサインインできます。すべてのデバイスで同じアカウントを使います。</dd></div>
-          <div><dt>すべてのコンピューターに Tailscale</dt><dd>Windows、macOS、Linux 用のクライアントがあります。CopySync を使うコンピューターすべてに入れ、接続したままにします。</dd></div>
-          <div><dt>CopySync を入れておく</dt><dd>各コンピューターにアプリを入れ、バックグラウンド同期を有効にしておきます（<a href="../../ja/start/#app">はじめかた</a>）。サーバーのアドレスは空欄のままで大丈夫です。</dd></div>
+          <div><dt>すべてのコンピューターに Tailscale</dt><dd>Windows、macOS、Linux 用のクライアントがあります。PasteFerry を使うコンピューターすべてに入れ、接続したままにします。</dd></div>
+          <div><dt>PasteFerry を入れておく</dt><dd>各コンピューターにアプリを入れ、バックグラウンド同期を有効にしておきます（<a href="../../ja/start/#app">はじめかた</a>）。サーバーのアドレスは空欄のままで大丈夫です。</dd></div>
           <div><dt>ZeroTier でも可</dt><dd>各デバイスに固定の仮想アドレスを割り当てるツールなら同じ手順で使えます。ペアリング時にそのアドレスを入力します。ここでは Tailscale を例にします。</dd></div>
         </dl>
       </div>
@@ -181,7 +182,7 @@
             <img src="../../assets/screenshots/ja/pairing-join-ts-dark.png" width="2112" height="1472" loading="lazy" alt="コードを入力：コード K7MP2X を入力し、アドレス欄に Tailscale のアドレス 100.92.41.17 が入っている">
           </figure>
         </div>
-        <p class="note">2 台とも自宅にいるときは、CopySync が LAN の中で直接相手を見つけるので、データが遠回りすることはありません。</p>
+        <p class="note">2 台とも自宅にいるときは、PasteFerry が LAN の中で直接相手を見つけるので、データが遠回りすることはありません。</p>
       </div>
     </section>
 
@@ -191,11 +192,11 @@
         <div class="faq">
           <details>
             <summary>「直接接続」と表示されるのに遅い</summary>
-            <div class="answer"><p>CopySync の「直接接続」は、2 台が Tailscale のネットワーク上で直接つながっていることを指します。Tailscale 自身が 2 台を P2P でつなげないときは、遠くにあることもある DERP サーバーで中継します。</p><p>ターミナルで <code>tailscale ping 相手のアドレス</code> を実行し、via DERP なら Tailscale が中継中、via IP とポートなら P2P です。会社や学校のネットワークでは中継になりやすく、DERP サーバーを自分で立てるか、別のツールを試す方法があります。</p></div>
+            <div class="answer"><p>PasteFerry の「直接接続」は、2 台が Tailscale のネットワーク上で直接つながっていることを指します。Tailscale 自身が 2 台を P2P でつなげないときは、遠くにあることもある DERP サーバーで中継します。</p><p>ターミナルで <code>tailscale ping 相手のアドレス</code> を実行し、via DERP なら Tailscale が中継中、via IP とポートなら P2P です。会社や学校のネットワークでは中継になりやすく、DERP サーバーを自分で立てるか、別のツールを試す方法があります。</p></div>
           </details>
           <details>
             <summary>ペアリングで相手が見つからない</summary>
-            <div class="answer"><p>まず両方で Tailscale がつながっているか確かめます。ターミナルで <code>tailscale ping 相手のアドレス</code> を実行し、応答があれば再度試してください。</p><p>ping は通るのに見つからないなら、相手のファイアウォールが止めている可能性が高いです。相手が Windows なら CopySync の「設定 → ローカルネットワーク」で「許可」をクリック、Mac なら「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。</p></div>
+            <div class="answer"><p>まず両方で Tailscale がつながっているか確かめます。ターミナルで <code>tailscale ping 相手のアドレス</code> を実行し、応答があれば再度試してください。</p><p>ping は通るのに見つからないなら、相手のファイアウォールが止めている可能性が高いです。相手が Windows なら PasteFerry の「設定 → ローカルネットワーク」で「許可」をクリック、Mac なら「システム設定 → プライバシーとセキュリティ → ローカルネットワーク」で CopySync Daemon をオンにします。</p></div>
           </details>
           <details>
             <summary>すべてのコンピューターに Tailscale が必要ですか？</summary>
@@ -207,7 +208,7 @@
           </details>
           <details>
             <summary>Tailscale にコピーした内容は見えますか？</summary>
-            <div class="answer"><p>見えません。Tailscale の接続は WireGuard でエンドツーエンド暗号化され、その中を CopySync 自身の DTLS 暗号化接続が通ります。どちらの層も開けるのは 2 台のコンピューターだけです。Tailscale のサーバーが扱うのはデバイスの公開鍵とアドレスだけで、中継サーバーも暗号化されたパケットを転送するだけです。</p></div>
+            <div class="answer"><p>見えません。Tailscale の接続は WireGuard でエンドツーエンド暗号化され、その中を PasteFerry 自身の DTLS 暗号化接続が通ります。どちらの層も開けるのは 2 台のコンピューターだけです。Tailscale のサーバーが扱うのはデバイスの公開鍵とアドレスだけで、中継サーバーも暗号化されたパケットを転送するだけです。</p></div>
           </details>
           <details>
             <summary>Tailscale のアドレスは変わりますか？</summary>
@@ -225,7 +226,7 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">サーバーなしで、<br>クリップボードはあなたと一緒に。</h2>
         <div class="cta">
-          <a class="button" href="../../ja/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>CopySync をダウンロード</a>
+          <a class="button" href="../../ja/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>PasteFerry をダウンロード</a>
         </div>
         <p class="note">バージョン 1.7.0、無料・オープンソース。macOS 13 以降、Windows 10・11、Linux（x64 と ARM64）。</p>
         <a class="source" href="../../ja/lan/">同じネットワークでの手順に戻る</a>
@@ -235,13 +236,13 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync は GNU AGPL-3.0 のオープンソースです。</p>
+      <p>PasteFerry は GNU AGPL-3.0 のオープンソースです。</p>
       <nav aria-label="フッターのリンク">
-        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">ライセンス</a>
-        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">ライセンス</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">問題を報告</a>
       </nav>
       <nav aria-label="言語">
         <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>

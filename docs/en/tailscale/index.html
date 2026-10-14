@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Use CopySync across networks with Tailscale: no server, home and office in sync</title>
+  <title>Use PasteFerry across networks with Tailscale: no server, home and office in sync</title>
   <meta name="description" content="Install Tailscale on each computer under one account and enter the other computer&#x27;s Tailscale address when pairing: no public IP, no server and no computer that has to stay on. The clipboard syncs from the office or anywhere else.">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/en/tailscale/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/tailscale/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/tailscale/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/tailscale/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/tailscale/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/tailscale/">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/en/tailscale/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/tailscale/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/tailscale/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/tailscale/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/tailscale/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/tailscale/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="Use CopySync across networks with Tailscale: no server, home and office in sync">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="Use PasteFerry across networks with Tailscale: no server, home and office in sync">
   <meta property="og:description" content="Install Tailscale on each computer under one account and enter the other computer&#x27;s Tailscale address when pairing: no public IP, no server and no computer that has to stay on. The clipboard syncs from the office or anywhere else.">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/en/tailscale/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/en/tailscale/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og-en.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
@@ -30,14 +30,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../../en/" aria-label="CopySync home"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../../en/" aria-label="PasteFerry home"><img src="../../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
       <nav aria-label="Page">
         <a href="../../en/start/">Quick start</a>
         <a class="wide" href="../../en/#how">How it works</a>
         <a class="wide" href="../../en/#faq">FAQ</a>
         <a class="mid" href="../../en/start/#server" aria-current="true">Ways to connect</a>
         <a href="../../en/download/">Download</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="Language：English"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>English</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -51,11 +51,12 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">PasteFerry used to be called CopySync. The app and the downloads keep the old name until the next version.</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../en/">CopySync</a> / <a href="../../en/start/#server">Ways to connect</a></p>
+        <p class="crumb"><a href="../../en/">PasteFerry</a> / <a href="../../en/start/#server">Ways to connect</a></p>
         <h1 class="display">Across networks with Tailscale</h1>
         <p class="lede">No public IP, and no wish to run a server? Install Tailscale on each computer and enter the other computer's Tailscale address when pairing. Syncs at home and at the office.</p>
         <ol class="guide-toc">
@@ -70,10 +71,10 @@
     <section class="section" id="overview" aria-labelledby="overview-title">
       <div class="wrap">
         <h2 id="overview-title">As if on one LAN</h2>
-        <p class="intro">Tailscale connects your devices into a private network: every device signed in to the same account gets a fixed address starting with 100, reachable from the others wherever they are. CopySync remembers the other computer's address when you pair, and connects as if both were on one network.</p>
+        <p class="intro">Tailscale connects your devices into a private network: every device signed in to the same account gets a fixed address starting with 100, reachable from the others wherever they are. PasteFerry remembers the other computer's address when you pair, and connects as if both were on one network.</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 330" role="img" aria-labelledby="ts-title ts-desc">
-            <title id="ts-title">CopySync over Tailscale</title>
+            <title id="ts-title">PasteFerry over Tailscale</title>
             <desc id="ts-desc">A Mac at the office and a Windows PC at home both run Tailscale and each has an address starting with 100 on the same private network. Copied content goes directly between them; there is no server.</desc>
             <rect class="d-ts" x="8" y="8" width="944" height="314" rx="22"/>
             <text class="d-ts-label" x="32" y="42">Tailscale network: every device has a 100.x address</text>
@@ -93,7 +94,7 @@
         <ul class="points ports">
           <li><strong>No server,</strong> and no computer that has to stay on: two computers that are on and connected to Tailscale sync.</li>
           <li><strong>Enter the address once.</strong> A Tailscale address doesn't change; you enter it when pairing and the two computers find each other from then on.</li>
-          <li><strong>Encrypted twice.</strong> Inside Tailscale's WireGuard tunnel runs CopySync's own end-to-end encrypted connection. Tailscale can't see the content.</li>
+          <li><strong>Encrypted twice.</strong> Inside Tailscale's WireGuard tunnel runs PasteFerry's own end-to-end encrypted connection. Tailscale can't see the content.</li>
         </ul>
       </div>
     </section>
@@ -103,8 +104,8 @@
         <h2 id="prepare-title">Before you start</h2>
         <dl class="fallbacks">
           <div><dt>A Tailscale account</dt><dd>Free for personal use; sign in with Google, Microsoft, GitHub or Apple. Use the same account on every device.</dd></div>
-          <div><dt>Tailscale on every computer</dt><dd>There are clients for Windows, macOS and Linux. Every computer that runs CopySync needs it, connected.</dd></div>
-          <div><dt>CopySync installed</dt><dd>The app on each computer with background sync on; see the <a href="../../en/start/#app">quick start</a>. Leave the server address empty.</dd></div>
+          <div><dt>Tailscale on every computer</dt><dd>There are clients for Windows, macOS and Linux. Every computer that runs PasteFerry needs it, connected.</dd></div>
+          <div><dt>PasteFerry installed</dt><dd>The app on each computer with background sync on; see the <a href="../../en/start/#app">quick start</a>. Leave the server address empty.</dd></div>
           <div><dt>ZeroTier works too</dt><dd>So does any tool that gives each device a fixed virtual address: enter that address when pairing. This guide uses Tailscale.</dd></div>
         </dl>
       </div>
@@ -181,7 +182,7 @@
             <img src="../../assets/screenshots/en/pairing-join-ts-dark.png" width="2112" height="1472" loading="lazy" alt="Enter a code: the code K7MP2X, with the Tailscale address 100.92.41.17 in the address field">
           </figure>
         </div>
-        <p class="note">When both computers are at home, CopySync also finds the other one on the LAN directly, so data takes no detour.</p>
+        <p class="note">When both computers are at home, PasteFerry also finds the other one on the LAN directly, so data takes no detour.</p>
       </div>
     </section>
 
@@ -191,11 +192,11 @@
         <div class="faq">
           <details>
             <summary>Devices show Direct, but it's slow</summary>
-            <div class="answer"><p>Direct in CopySync means the two computers connect directly on the Tailscale network. When Tailscale can't connect them peer to peer, it relays through its DERP servers, which can be far away.</p><p>Run <code>tailscale ping other-address</code> in a terminal: via DERP means Tailscale is relaying; via an IP and port means it's peer to peer. Office and campus networks relay more often; you can run your own DERP server or try another mesh VPN.</p></div>
+            <div class="answer"><p>Direct in PasteFerry means the two computers connect directly on the Tailscale network. When Tailscale can't connect them peer to peer, it relays through its DERP servers, which can be far away.</p><p>Run <code>tailscale ping other-address</code> in a terminal: via DERP means Tailscale is relaying; via an IP and port means it's peer to peer. Office and campus networks relay more often; you can run your own DERP server or try another mesh VPN.</p></div>
           </details>
           <details>
             <summary>Pairing can't find the other computer</summary>
-            <div class="answer"><p>First make sure Tailscale is connected on both: run <code>tailscale ping other-address</code> and try again once it answers.</p><p>If ping works but pairing doesn't, the other computer's firewall is likely blocking it. On Windows, click Allow under Settings → Local network in CopySync; on a Mac, turn on CopySync Daemon under System Settings → Privacy &amp; Security → Local Network.</p></div>
+            <div class="answer"><p>First make sure Tailscale is connected on both: run <code>tailscale ping other-address</code> and try again once it answers.</p><p>If ping works but pairing doesn't, the other computer's firewall is likely blocking it. On Windows, click Allow under Settings → Local network in PasteFerry; on a Mac, turn on CopySync Daemon under System Settings → Privacy &amp; Security → Local Network.</p></div>
           </details>
           <details>
             <summary>Does every computer need Tailscale?</summary>
@@ -207,7 +208,7 @@
           </details>
           <details>
             <summary>Can Tailscale see what I copy?</summary>
-            <div class="answer"><p>No. Tailscale connections are end-to-end encrypted with WireGuard, and inside runs CopySync's own DTLS-encrypted connection; only your two computers can open either layer. Tailscale's servers only exchange device keys and addresses, and its relays forward encrypted packets.</p></div>
+            <div class="answer"><p>No. Tailscale connections are end-to-end encrypted with WireGuard, and inside runs PasteFerry's own DTLS-encrypted connection; only your two computers can open either layer. Tailscale's servers only exchange device keys and addresses, and its relays forward encrypted packets.</p></div>
           </details>
           <details>
             <summary>Will a Tailscale address change?</summary>
@@ -225,7 +226,7 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">No server.<br>Your clipboard comes with you.</h2>
         <div class="cta">
-          <a class="button" href="../../en/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download CopySync</a>
+          <a class="button" href="../../en/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download PasteFerry</a>
         </div>
         <p class="note">Version 1.7.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).</p>
         <a class="source" href="../../en/lan/">Back to the same network guide</a>
@@ -235,13 +236,13 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync is open source under the GNU AGPL-3.0.</p>
+      <p>PasteFerry is open source under the GNU AGPL-3.0.</p>
       <nav aria-label="Footer">
-        <a href="https://github.com/baiyuze/copysync/releases">All releases</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">Changelog</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">Design notes (Chinese)</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">License</a>
-        <a href="https://github.com/baiyuze/copysync/issues">Report an issue</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">All releases</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">License</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">Report an issue</a>
       </nav>
       <nav aria-label="Language">
         <a href="../../tailscale/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>

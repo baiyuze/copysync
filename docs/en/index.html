@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync: sync the clipboard and files between Mac, Windows and Linux, across accounts and networks</title>
-  <meta name="description" content="CopySync lets you copy on one computer and paste on another, Mac, Windows or Linux: text, images, files and folders. No shared account required. On the same network it works with no server at all; across networks, use a server you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/en/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/">
-  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/">
+  <title>PasteFerry: sync the clipboard and files between Mac, Windows and Linux, across accounts and networks</title>
+  <meta name="description" content="PasteFerry lets you copy on one computer and paste on another, Mac, Windows or Linux: text, images, files and folders. No shared account required. On the same network it works with no server at all; across networks, use a server you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/en/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/pasteferry/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="CopySync: copy on this computer, paste on that one">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="PasteFerry: copy on this computer, paste on that one">
   <meta property="og:description" content="Mac, Windows and Linux. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end encrypted, no server needed on the same network. Free and open source.">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/en/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/en/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og-en.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="en_US">
@@ -37,8 +37,12 @@
     "@graph": [
       {
         "@type": "SoftwareApplication",
-        "@id": "https://baiyuze.github.io/copysync/#app",
-        "name": "CopySync",
+        "@id": "https://baiyuze.github.io/pasteferry/#app",
+        "name": "PasteFerry",
+        "alternateName": [
+          "隔空贴",
+          "CopySync"
+        ],
         "description": "Open-source app that syncs the clipboard and files between Mac, Windows and Linux computers. Copy text, images, files or folders on one computer and paste on the other. No server is needed on the same network. Devices connect directly over WebRTC with end-to-end DTLS encryption; across networks, a server the user hosts introduces them and relays over TURN when needed.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 or later (Intel and Apple silicon); Windows 10, Windows 11 (x64); Linux (x64, ARM64)",
@@ -52,10 +56,10 @@
           "price": "0",
           "priceCurrency": "USD"
         },
-        "downloadUrl": "https://baiyuze.github.io/copysync/en/download/",
-        "codeRepository": "https://github.com/baiyuze/copysync",
-        "image": "https://baiyuze.github.io/copysync/assets/icon.png",
-        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/en/history-dark.png",
+        "downloadUrl": "https://baiyuze.github.io/pasteferry/en/download/",
+        "codeRepository": "https://github.com/baiyuze/pasteferry",
+        "image": "https://baiyuze.github.io/pasteferry/assets/icon.png",
+        "screenshot": "https://baiyuze.github.io/pasteferry/assets/screenshots/en/history-dark.png",
         "featureList": [
           "Syncs plain text, rich text, images, files and folders",
           "Works between Mac, Windows and Linux, across accounts and networks",
@@ -80,7 +84,7 @@
             "name": "Why do .uuremote_ files keep appearing while UU Remote is running?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "UU Remote writes temporary placeholder files to the system clipboard. Older CopySync clients recorded and forwarded them as ordinary files. Version 1.3.2 filters the confirmed placeholder naming pattern on send and receive, and removes placeholder-only history on startup. Ordinary empty, hidden and large files are unaffected. The 50 MB threshold only controls automatic transfer; UU’s UDP P2P setting is unrelated. Upgrade both clients. Other clipboard sync tools may still duplicate ordinary content."
+              "text": "UU Remote writes temporary placeholder files to the system clipboard. Older PasteFerry clients recorded and forwarded them as ordinary files. Version 1.3.2 filters the confirmed placeholder naming pattern on send and receive, and removes placeholder-only history on startup. Ordinary empty, hidden and large files are unaffected. The 50 MB threshold only controls automatic transfer; UU’s UDP P2P setting is unrelated. Upgrade both clients. Other clipboard sync tools may still duplicate ordinary content."
             }
           },
           {
@@ -88,7 +92,7 @@
             "name": "How is this different from Universal Clipboard?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. CopySync works on the same network as soon as it's installed; across networks, both computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand. If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough."
+              "text": "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. PasteFerry works on the same network as soon as it's installed; across networks, both computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand. If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough."
             }
           },
           {
@@ -104,7 +108,7 @@
             "name": "Does it connect directly on office networks with several uplinks?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. These networks pick an uplink per destination. CopySync probes several servers from one port to learn its address on every uplink and sends them all to the peer, which tries each one. A Mac behind a 4-uplink office network connects directly to a home connection in our tests. Peers behind NATs that randomize ports still fall back to the relay."
+              "text": "Yes. These networks pick an uplink per destination. PasteFerry probes several servers from one port to learn its address on every uplink and sends them all to the peer, which tries each one. A Mac behind a 4-uplink office network connects directly to a home connection in our tests. Peers behind NATs that randomize ports still fall back to the relay."
             }
           },
           {
@@ -112,7 +116,7 @@
             "name": "Do I need my own server?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Not necessarily. When your computers are on the same network, install the app and pair; there's no server. Across networks there are two ways: a public server, where the smallest VM is enough and sync works from anywhere; or Tailscale on each computer, entering the other computer's Tailscale address when pairing, with no server at all. There's no public CopySync server, so nobody's data passes through anyone else's machine."
+              "text": "Not necessarily. When your computers are on the same network, install the app and pair; there's no server. Across networks there are two ways: a public server, where the smallest VM is enough and sync works from anywhere; or Tailscale on each computer, entering the other computer's Tailscale address when pairing, with no server at all. There's no public PasteFerry server, so nobody's data passes through anyone else's machine."
             }
           },
           {
@@ -120,7 +124,7 @@
             "name": "No public IP at home. Can I sync between home and the office?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, in two ways. With a public server, run CopySync's server there and connect both computers to it; see the public server guide. Without one, install Tailscale on every computer under the same account and enter the other computer's Tailscale address when pairing; see the Tailscale guide."
+              "text": "Yes, in two ways. With a public server, run PasteFerry's server there and connect both computers to it; see the public server guide. Without one, install Tailscale on every computer under the same account and enter the other computer's Tailscale address when pairing; see the Tailscale guide."
             }
           },
           {
@@ -128,7 +132,7 @@
             "name": "Both computers are on the same network. Why can't they find each other?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code. On Windows, allow CopySync when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. More in the same network guide."
+              "text": "Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code. On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy & Security → Local Network. More in the same network guide."
             }
           },
           {
@@ -144,7 +148,7 @@
             "name": "Why does the system warn me the first time?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "CopySync isn't notarized by Apple yet, and the Windows build isn't code-signed yet; both require paid certificates. On Mac, open System Settings → Privacy & Security and click Open Anyway near the bottom. On Windows, click More info and then Run anyway in the \"Windows protected your PC\" prompt. You only do this once."
+              "text": "PasteFerry isn't notarized by Apple yet, and the Windows build isn't code-signed yet; both require paid certificates. On Mac, open System Settings → Privacy & Security and click Open Anyway near the bottom. On Windows, click More info and then Run anyway in the \"Windows protected your PC\" prompt. You only do this once."
             }
           },
           {
@@ -160,7 +164,7 @@
             "name": "Is it free? Can my company use it?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. CopySync is open source under the GNU AGPL-3.0, so individuals and companies can use and modify it for free. If you distribute it, or offer a modified version over a network, you publish your source under the same license."
+              "text": "Yes. PasteFerry is open source under the GNU AGPL-3.0, so individuals and companies can use and modify it for free. If you distribute it, or offer a modified version over a network, you publish your source under the same license."
             }
           }
         ]
@@ -174,14 +178,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="./" aria-label="CopySync home"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="./" aria-label="PasteFerry home"><img src="../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
       <nav aria-label="Page">
         <a href="start/">Quick start</a>
         <a class="wide" href="#how">How it works</a>
         <a class="wide" href="#faq">FAQ</a>
         <a class="mid" href="start/#server">Ways to connect</a>
         <a href="download/">Download</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="Language：English"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>English</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -195,6 +199,7 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">PasteFerry used to be called CopySync. The app and the downloads keep the old name until the next version.</span></p>
 
   <main id="main">
     <section class="hero">
@@ -202,7 +207,7 @@
         <h1 class="display">Copy on this computer.<br>Paste on that one.</h1>
         <p class="lede">Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. On the same network it works with no server at all, and it works across networks too. Data moves directly between your devices, end-to-end encrypted.</p>
         <div class="cta">
-          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download CopySync</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download PasteFerry</a>
         </div>
         <p class="note">Version 1.7.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).</p>
         <a class="start-link" href="start/">New here? Set it up in three steps →</a>
@@ -269,7 +274,7 @@
         <h2 id="history-title">Everything you copied, on every computer</h2>
         <p class="intro">History keeps the last 3 days, ready to go back on the clipboard; click an image to preview it. Files under 50 MB have already arrived by the time you switch computers, and larger ones are a click away. To find something you copied earlier, search by its text or file name.</p>
         <figure class="shot">
-          <img src="../assets/screenshots/en/history-dark.png" width="2112" height="1472" alt="CopySync history: files, images and text from a MacBook Air and a Mac mini; a large file shows a button to pull it to this device">
+          <img src="../assets/screenshots/en/history-dark.png" width="2112" height="1472" alt="PasteFerry history: files, images and text from a MacBook Air and a Mac mini; a large file shows a button to pull it to this device">
         </figure>
       </div>
     </section>
@@ -292,8 +297,8 @@
         <p class="intro">Universal Clipboard needs the same Apple ID and both Macs close together. AirDrop asks you to accept every time. Messaging yourself means manual downloads and files left on someone else's server. With one Mac and one Windows PC, none of the built-in options work at all.</p>
         <div class="block table-scroll">
           <table class="compare">
-            <caption class="skip">CopySync compared with other options</caption>
-            <thead><tr><td></td><th scope="col" class="ours">CopySync</th><th scope="col">Universal Clipboard</th><th scope="col">AirDrop</th><th scope="col">Chat apps</th></tr></thead>
+            <caption class="skip">PasteFerry compared with other options</caption>
+            <thead><tr><td></td><th scope="col" class="ours">PasteFerry</th><th scope="col">Universal Clipboard</th><th scope="col">AirDrop</th><th scope="col">Chat apps</th></tr></thead>
             <tbody>
               <tr><th scope="row">Different Apple IDs</th><td class="yes ours">Yes</td><td class="no">No</td><td class="partial">Needs accepting</td><td class="yes">Yes</td></tr>
               <tr><th scope="row">Between Mac and Windows</th><td class="yes ours">Yes</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
@@ -314,7 +319,7 @@
         <p class="intro">Your two computers open an encrypted connection to each other. On the same network they find each other on their own; across networks your server introduces them, and relays traffic when a direct path can't be made. The diagram shows the cross-network case.</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
-            <title id="diagram-title">How CopySync connects</title>
+            <title id="diagram-title">How PasteFerry connects</title>
             <desc id="diagram-desc">Computer A and computer B (Mac or Windows) connect directly over WebRTC. Both connect to your server for signaling. If the direct connection fails, data is relayed through the server's TURN service.</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
             <text class="d-title" x="480" y="64" text-anchor="middle">Your server</text>
@@ -352,7 +357,7 @@
     <section class="section" id="multi-uplink" aria-labelledby="multi-title">
       <div class="wrap">
         <h2 id="multi-title">Direct on office networks too</h2>
-        <p class="intro">Office networks with two ISPs, or carriers with a pool of NAT addresses, have several uplinks and pick one per destination. A single probe only reveals one of them, so connections end up on the relay. CopySync probes every uplink and tells the peer about all of them.</p>
+        <p class="intro">Office networks with two ISPs, or carriers with a pool of NAT addresses, have several uplinks and pick one per destination. A single probe only reveals one of them, so connections end up on the relay. PasteFerry probes every uplink and tells the peer about all of them.</p>
         <div class="cols">
           <div>
             <h3>What it does</h3>
@@ -362,12 +367,12 @@
               <li><strong>All of them sent to the peer.</strong> The peer tries each address; the one matching the real uplink gets through.</li>
               <li><strong>Uplinks remembered.</strong> If a round misses an uplink that keeps ports unchanged, its address is filled in as uplink IP plus local port.</li>
               <li><strong>A rule for who sends first.</strong> Some routers lock a port when the other side's packet arrives first. One side announces its addresses first; the other sends to them before announcing its own. Retries alternate the order.</li>
-              <li><strong>Relay first, direct later.</strong> If the first handshake lands on the relay, CopySync punches again while idle and switches to direct when that works.</li>
+              <li><strong>Relay first, direct later.</strong> If the first handshake lands on the relay, PasteFerry punches again while idle and switches to direct when that works.</li>
             </ul>
           </div>
           <div>
             <h3>Checked against real network topologies</h3>
-            <p class="small">The NAT lab builds these topologies with Linux network namespaces and iptables and runs CopySync's actual connection code through each. It runs on every commit.</p>
+            <p class="small">The NAT lab builds these topologies with Linux network namespaces and iptables and runs PasteFerry's actual connection code through each. It runs on every commit.</p>
             <div class="table-scroll">
               <table>
                 <thead><tr><th scope="col">Scenario</th><th scope="col">Result</th></tr></thead>
@@ -431,9 +436,9 @@
           <div><dt>File too large</dt><dd>Above the limit only a record is synced, pulled when you need it. If the source file is gone by then, you get a clear message instead of a vague failure.</dd></div>
           <div><dt>Pasting into plain-text fields</dt><dd>Rich text copied from the web is written as both HTML and plain text, so no markup leaks into what you paste.</dd></div>
           <div><dt>A file name Windows doesn't allow</dt><dd>Colons, question marks and a few other characters that are fine on a Mac arrive as the matching full-width characters, so the name still reads the same. Two names that differ only in case never overwrite each other.</dd></div>
-          <div><dt>Copying a password</dt><dd>On Windows, password managers mark what they copy as "don't record". CopySync skips it: not synced, not kept in the history.</dd></div>
+          <div><dt>Copying a password</dt><dd>On Windows, password managers mark what they copy as "don't record". PasteFerry skips it: not synced, not kept in the history.</dd></div>
           <div><dt>Clipboard access not granted yet</dt><dd>Content isn't read, which would block on a prompt a background process can't show. The app asks you to grant access and links straight to the setting.</dd></div>
-          <div><dt>Background service crashes</dt><dd>launchd on Mac, and CopySync's own supervisor on Windows, restart it, throttled to once every 10 seconds.</dd></div>
+          <div><dt>Background service crashes</dt><dd>launchd on Mac, and PasteFerry's own supervisor on Windows, restart it, throttled to once every 10 seconds.</dd></div>
           <div><dt>App updated or moved</dt><dd>On launch the app re-points its login item and restarts the service on the new version.</dd></div>
         </dl>
       </div>
@@ -447,9 +452,9 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
-              <li>Download the DMG, open it and drag CopySync into Applications.<span class="aside">There's one for Apple silicon and one for Intel; the download page shows how to tell which your Mac has.</span></li>
-              <li>Open it from Applications.<span class="aside">The first time, macOS says it can't verify the developer: CopySync isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once.</span></li>
-              <li>Click Turn on background sync. When macOS asks whether CopySync may read the clipboard or find devices on your local network, allow both.</li>
+              <li>Download the DMG, open it and drag PasteFerry into Applications.<span class="aside">There's one for Apple silicon and one for Intel; the download page shows how to tell which your Mac has.</span></li>
+              <li>Open it from Applications.<span class="aside">The first time, macOS says it can't verify the developer: PasteFerry isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once.</span></li>
+              <li>Click Turn on background sync. When macOS asks whether PasteFerry may read the clipboard or find devices on your local network, allow both.</li>
               <li>To sync across networks, enter your server in Settings as <code>ws://server-address:8787/signal</code> and press Return. On the same network, leave it empty.</li>
             </ol>
             <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
@@ -457,8 +462,8 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
-              <li>Run CopySync-Setup.exe. It installs for the current user, no administrator rights needed.<span class="aside">CopySync isn't code-signed yet, so Windows says "Windows protected your PC": click More info, then Run anyway. To skip the installer, get the <a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">portable zip</a>.</span></li>
-              <li>Open CopySync and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it keeps running in the notification area.</li>
+              <li>Run CopySync-Setup.exe. It installs for the current user, no administrator rights needed.<span class="aside">PasteFerry isn't code-signed yet, so Windows says "Windows protected your PC": click More info, then Run anyway. To skip the installer, get the <a href="https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip">portable zip</a>.</span></li>
+              <li>Open PasteFerry and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it keeps running in the notification area.</li>
               <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
@@ -467,7 +472,7 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
             <ol>
               <li>On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./CopySync-linux-amd64.deb</code>; on other distributions, download the tar.gz, extract it and run <code>./CopySync/install.sh</code>.</li>
-              <li>Open CopySync from the app menu and click Turn on background sync. From then on it starts when you log in.</li>
+              <li>Open PasteFerry from the app menu and click Turn on background sync. From then on it starts when you log in.</li>
               <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Linux</a>
@@ -507,7 +512,7 @@
             <tr><th scope="row">History</th><td>3 days by default, adjustable from 1 hour to 30 days; expired items removed automatically</td></tr>
             <tr><th scope="row">Measured speed</th><td>A 20 MB file transfers in about 330 ms over a direct LAN connection, checksums matching</td></tr>
             <tr><th scope="row">Built with</th><td>Go for the background service and server (pure Go calling Win32 on Windows and speaking the X11 protocol on Linux), Flutter for the app (one codebase for all three systems), Protocol Buffers for messages</td></tr>
-            <tr><th scope="row">License</th><td><a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
+            <tr><th scope="row">License</th><td><a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
             </tbody>
           </table>
         </div>
@@ -520,11 +525,11 @@
         <div class="faq">
           <details>
             <summary>Why do .uuremote_ files keep appearing while UU Remote is running?</summary>
-            <div class="answer"><p>UU Remote writes temporary placeholder files to the system clipboard. Older CopySync clients recorded and forwarded them as ordinary files. Version 1.3.2 filters the confirmed placeholder naming pattern on send and receive, and removes placeholder-only history on startup. Ordinary empty, hidden and large files are unaffected. The 50 MB threshold only controls automatic transfer; UU’s UDP P2P setting is unrelated. Upgrade both clients. Other clipboard sync tools may still duplicate ordinary content.</p></div>
+            <div class="answer"><p>UU Remote writes temporary placeholder files to the system clipboard. Older PasteFerry clients recorded and forwarded them as ordinary files. Version 1.3.2 filters the confirmed placeholder naming pattern on send and receive, and removes placeholder-only history on startup. Ordinary empty, hidden and large files are unaffected. The 50 MB threshold only controls automatic transfer; UU’s UDP P2P setting is unrelated. Upgrade both clients. Other clipboard sync tools may still duplicate ordinary content.</p></div>
           </details>
           <details>
             <summary>How is this different from Universal Clipboard?</summary>
-            <div class="answer"><p>Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. CopySync works on the same network as soon as it's installed; across networks, both computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand.</p><p>If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.</p></div>
+            <div class="answer"><p>Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. PasteFerry works on the same network as soon as it's installed; across networks, both computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand.</p><p>If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.</p></div>
           </details>
           <details>
             <summary>Can the server see what I copy?</summary>
@@ -532,19 +537,19 @@
           </details>
           <details>
             <summary>Does it connect directly on office networks with several uplinks?</summary>
-            <div class="answer"><p>Yes. These networks pick an uplink per destination. CopySync probes several servers from one port to learn its address on every uplink and sends them all to the peer, which tries each one. A Mac behind a 4-uplink office network connects directly to a home connection in our tests. Peers behind NATs that randomize ports still fall back to the relay.</p></div>
+            <div class="answer"><p>Yes. These networks pick an uplink per destination. PasteFerry probes several servers from one port to learn its address on every uplink and sends them all to the peer, which tries each one. A Mac behind a 4-uplink office network connects directly to a home connection in our tests. Peers behind NATs that randomize ports still fall back to the relay.</p></div>
           </details>
           <details>
             <summary>Do I need my own server?</summary>
-            <div class="answer"><p>Not necessarily. When your computers are on the <a href="lan/">same network</a>, install the app and pair; there's no server.</p><p>Across networks there are two ways: a <a href="cloud/">public server</a>, where the smallest VM is enough and sync works from anywhere; or <a href="tailscale/">Tailscale</a> on each computer, entering the other computer's Tailscale address when pairing, with no server at all. There's no public CopySync server, so nobody's data passes through anyone else's machine.</p></div>
+            <div class="answer"><p>Not necessarily. When your computers are on the <a href="lan/">same network</a>, install the app and pair; there's no server.</p><p>Across networks there are two ways: a <a href="cloud/">public server</a>, where the smallest VM is enough and sync works from anywhere; or <a href="tailscale/">Tailscale</a> on each computer, entering the other computer's Tailscale address when pairing, with no server at all. There's no public PasteFerry server, so nobody's data passes through anyone else's machine.</p></div>
           </details>
           <details>
             <summary>No public IP at home. Can I sync between home and the office?</summary>
-            <div class="answer"><p>Yes, in two ways. With a public server, run CopySync's server there and connect both computers to it; see the <a href="cloud/">public server guide</a>. Without one, install Tailscale on every computer under the same account and enter the other computer's Tailscale address when pairing; see the <a href="tailscale/">Tailscale guide</a>.</p></div>
+            <div class="answer"><p>Yes, in two ways. With a public server, run PasteFerry's server there and connect both computers to it; see the <a href="cloud/">public server guide</a>. Without one, install Tailscale on every computer under the same account and enter the other computer's Tailscale address when pairing; see the <a href="tailscale/">Tailscale guide</a>.</p></div>
           </details>
           <details>
             <summary>Both computers are on the same network. Why can't they find each other?</summary>
-            <div class="answer"><p>Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code.</p><p>On Windows, allow CopySync when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy &amp; Security → Local Network. More in the <a href="lan/#faq">same network guide</a>.</p></div>
+            <div class="answer"><p>Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client isolation don't let devices see each other. In that case, on the computer entering the code, click On a different subnet? and enter the address shown under the other computer's code.</p><p>On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → Local network. On a Mac, turn on CopySync Daemon in System Settings → Privacy &amp; Security → Local Network. More in the <a href="lan/#faq">same network guide</a>.</p></div>
           </details>
           <details>
             <summary>Windows? Linux? iPhone?</summary>
@@ -552,7 +557,7 @@
           </details>
           <details>
             <summary>Why does the system warn me the first time?</summary>
-            <div class="answer"><p>CopySync isn't notarized by Apple yet, and the Windows build isn't code-signed yet; both require paid certificates.</p><p>On Mac, open System Settings → Privacy &amp; Security and click Open Anyway near the bottom. On Windows, click More info and then Run anyway in the "Windows protected your PC" prompt. You only do this once.</p></div>
+            <div class="answer"><p>PasteFerry isn't notarized by Apple yet, and the Windows build isn't code-signed yet; both require paid certificates.</p><p>On Mac, open System Settings → Privacy &amp; Security and click Open Anyway near the bottom. On Windows, click More info and then Run anyway in the "Windows protected your PC" prompt. You only do this once.</p></div>
           </details>
           <details>
             <summary>What about large files?</summary>
@@ -560,7 +565,7 @@
           </details>
           <details>
             <summary>Is it free? Can my company use it?</summary>
-            <div class="answer"><p>Yes. CopySync is open source under the GNU AGPL-3.0, so individuals and companies can use and modify it for free. If you distribute it, or offer a modified version over a network, you publish your source under the same license.</p></div>
+            <div class="answer"><p>Yes. PasteFerry is open source under the GNU AGPL-3.0, so individuals and companies can use and modify it for free. If you distribute it, or offer a modified version over a network, you publish your source under the same license.</p></div>
           </details>
         </div>
       </div>
@@ -570,24 +575,24 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">Two computers, one clipboard.</h2>
         <div class="cta">
-          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download CopySync</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download PasteFerry</a>
         </div>
         <p class="note">Version 1.7.0, free and open source. macOS 13 or later; Windows 10 and 11; Linux (x64 and ARM64).</p>
         <a class="start-link" href="start/">New here? Set it up in three steps →</a>
-        <a class="source" href="https://github.com/baiyuze/copysync">View the source on GitHub</a>
+        <a class="source" href="https://github.com/baiyuze/pasteferry">View the source on GitHub</a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync is open source under the GNU AGPL-3.0.</p>
+      <p>PasteFerry is open source under the GNU AGPL-3.0.</p>
       <nav aria-label="Footer">
-        <a href="https://github.com/baiyuze/copysync/releases">All releases</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">Changelog</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">Design notes (Chinese)</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">License</a>
-        <a href="https://github.com/baiyuze/copysync/issues">Report an issue</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">All releases</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">License</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">Report an issue</a>
       </nav>
       <nav aria-label="Language">
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>

@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Windows 客户端技术方案：CopySync 技术方案</title>
+  <title>Windows 客户端技术方案：隔空贴技术方案</title>
   <meta name="description" content="状态：已实现，随 1.2.0 发布（2026-10-09）。实机验证记录见 windows-validation-2026-10-09.md（安装、同步、生命周期）与 windows-features-validation-2026-10-09.md（托盘、配对弹窗、图片预览）">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/design/windows-client.html">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/design/windows-client.html">
   <meta name="theme-color" content="#141416">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/site.css">
@@ -14,20 +14,20 @@
   <a class="skip" href="#main">跳到正文</a>
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
       <nav aria-label="页面导航">
         <a href="../start/">快速开始</a>
         <a href="../start/#server">连接方式</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync/blob/main/design/windows-client.md">在 GitHub 上查看</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry/blob/main/design/windows-client.md">在 GitHub 上查看</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
       </nav>
     </div>
   </header>
   <main id="main">
     <article class="article">
-      <p class="crumb"><a href="../">CopySync</a> 的技术方案</p>
+      <p class="crumb"><a href="../">隔空贴</a>的技术方案</p>
       <h1>Windows 客户端技术方案</h1>
-<blockquote><p>状态：已实现，随 1.2.0 发布（2026-10-09）。实机验证记录见 <a href="https://github.com/baiyuze/copysync/blob/main/design/windows-validation-2026-10-09.md">windows-validation-2026-10-09.md</a>（安装、同步、生命周期）与 <a href="https://github.com/baiyuze/copysync/blob/main/design/windows-features-validation-2026-10-09.md">windows-features-validation-2026-10-09.md</a>（托盘、配对弹窗、图片预览）</p><p>目标版本：1.2.0（Mac 与 Windows 同时发布）</p><p>相关：<a href="nat-traversal.html">多出口网络的 NAT 打洞</a></p></blockquote>
+<blockquote><p>状态：已实现，随 1.2.0 发布（2026-10-09）。实机验证记录见 <a href="https://github.com/baiyuze/pasteferry/blob/main/design/windows-validation-2026-10-09.md">windows-validation-2026-10-09.md</a>（安装、同步、生命周期）与 <a href="https://github.com/baiyuze/pasteferry/blob/main/design/windows-features-validation-2026-10-09.md">windows-features-validation-2026-10-09.md</a>（托盘、配对弹窗、图片预览）</p><p>目标版本：1.2.0（Mac 与 Windows 同时发布）</p><p>相关：<a href="nat-traversal.html">多出口网络的 NAT 打洞</a></p></blockquote>
 <nav class="toc" aria-label="目录"><strong>目录</strong><ul><li><a href="#一-目标">一、目标</a></li><li><a href="#二-现状-哪些能直接用">二、现状：哪些能直接用</a></li><li><a href="#三-总体架构">三、总体架构</a></li><li><a href="#四-剪贴板">四、剪贴板</a></li><li><a href="#五-跨平台内容兼容">五、跨平台内容兼容</a></li><li><a href="#六-后台服务的生命周期">六、后台服务的生命周期</a></li><li><a href="#七-网络">七、网络</a></li><li><a href="#八-界面">八、界面</a></li><li><a href="#九-安全">九、安全</a></li><li><a href="#十-安装-签名与发布">十、安装、签名与发布</a></li><li><a href="#十一-测试与验证">十一、测试与验证</a></li><li><a href="#十二-里程碑">十二、里程碑</a></li><li><a href="#十三-需要拍板的事">十三、需要拍板的事</a></li><li><a href="#附-要改动的代码">附：要改动的代码</a></li></ul></nav>
 <h2 id="一-目标">一、目标</h2>
 <p>让 Windows 电脑加入 CopySync：与 Mac、与其他 Windows 电脑互相同步文本、带格式文本、图片和文件，体验与 Mac 版一致。</p>
@@ -118,13 +118,13 @@ copysync-cli.exe（命令行，排障用）</code></pre>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 开源。</p>
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
       <nav aria-label="页脚链接">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">许可说明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
       </nav>
       <nav aria-label="语言">
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>

@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="docs/assets/icon.png" width="112" height="112" alt="CopySync 图标">
+  <img src="docs/assets/icon.png" width="112" height="112" alt="隔空贴图标">
 </p>
 
-<h1 align="center">CopySync</h1>
+<h1 align="center">隔空贴 PasteFerry</h1>
+
+<p align="center"><sub>原名 CopySync。应用和安装包里暂时还叫 CopySync，下个版本会改过来。</sub></p>
 
 <p align="center">
   在这台电脑复制，到那台电脑粘贴。Mac、Windows、Linux 互通。<br>
@@ -10,15 +12,15 @@
 </p>
 
 <p align="center">
-  <a href="https://baiyuze.github.io/copysync/download/"><strong>下载</strong></a>
+  <a href="https://baiyuze.github.io/pasteferry/download/"><strong>下载</strong></a>
   ·
-  <a href="https://baiyuze.github.io/copysync/">项目主页</a>
+  <a href="https://baiyuze.github.io/pasteferry/">项目主页</a>
   ·
   <a href="README.md">English</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/baiyuze/copysync?label=%E7%89%88%E6%9C%AC&color=0A66D8" alt="版本">
+  <img src="https://img.shields.io/github/v/release/baiyuze/pasteferry?label=%E7%89%88%E6%9C%AC&color=0A66D8" alt="版本">
   <img src="https://img.shields.io/badge/macOS-13%2B-1D1D1F" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1D1D1F" alt="Windows 10 / 11">
   <img src="https://img.shields.io/badge/Linux-x64%20%2F%20ARM64-1D1D1F" alt="Linux x64 / ARM64">
@@ -26,16 +28,16 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/screenshots/history.png" alt="CopySync 的复制记录界面：来自其他 Mac 的文件、图片和文字">
+  <img src="docs/assets/screenshots/history.png" alt="隔空贴的复制记录界面：来自其他 Mac 的文件、图片和文字">
 </p>
 
 ## 它解决什么问题
 
 通用剪贴板要同一个 Apple ID、两台离得近；隔空投送每次都要点接收，也不管剪贴板；发给自己要手动下载，文件还留在别人的服务器上。一台 Mac、一台 Windows 时，系统自带的办法一个都用不了。
 
-CopySync 的做法是：两台电脑配对一次，之后在一台上复制，另一台上直接粘贴。Mac 与 Mac、Mac 与 Windows、Windows 与 Windows 都可以。同一个网络里装好就能用，不需要服务器；跨网络时，由你自己部署的服务器或 Tailscale 让两台电脑找到彼此。数据在两台设备之间直接传输，全程端到端加密，打不通直连时经你的服务器中转，服务器也看不到内容。
+隔空贴的做法是：两台电脑配对一次，之后在一台上复制，另一台上直接粘贴。Mac 与 Mac、Mac 与 Windows、Windows 与 Windows 都可以。同一个网络里装好就能用，不需要服务器；跨网络时，由你自己部署的服务器或 Tailscale 让两台电脑找到彼此。数据在两台设备之间直接传输，全程端到端加密，打不通直连时经你的服务器中转，服务器也看不到内容。
 
-| | CopySync | 通用剪贴板 | 隔空投送 | 聊天软件 |
+| | 隔空贴 | 通用剪贴板 | 隔空投送 | 聊天软件 |
 |---|:-:|:-:|:-:|:-:|
 | 不同 Apple ID 之间 | ✓ | — | 需对方接收 | ✓ |
 | 不在同一个网络（家里 ↔ 公司） | ✓ | — | — | ✓ |
@@ -64,13 +66,13 @@ CopySync 的做法是：两台电脑配对一次，之后在一台上复制，�
 
 ## 开始使用
 
-第一次用？跟着**[快速开始](https://baiyuze.github.io/copysync/start/)**一步步来，有截图。需要**每台电脑装一个 App**；同一个网络里这就够了，跨网络时再加一台服务器或 Tailscale。
+第一次用？跟着**[快速开始](https://baiyuze.github.io/pasteferry/start/)**一步步来，有截图。需要**每台电脑装一个 App**；同一个网络里这就够了，跨网络时再加一台服务器或 Tailscale。
 
-**1. 在每台电脑上安装 App**，到 **[下载页](https://baiyuze.github.io/copysync/download/)** 选：
+**1. 在每台电脑上安装 App**，到 **[下载页](https://baiyuze.github.io/pasteferry/download/)** 选：
 
-- **Mac**（macOS 13 以上）：[Apple 芯片版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-mac-apple-silicon.dmg)或 [Intel 版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-mac-intel.dmg)；也有两种芯片都能用的[通用版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync.dmg)。
-- **Windows** 10/11：[安装程序](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-Setup.exe)或[便携版](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip)。
-- **Linux**（X11，或带 XWayland 的 Wayland 桌面）：Ubuntu、Debian 用 `.deb`（[x64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-amd64.deb)、[ARM64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-arm64.deb)），其他发行版用 `tar.gz`（[x64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-amd64.tar.gz)、[ARM64](https://github.com/baiyuze/copysync/releases/latest/download/CopySync-linux-arm64.tar.gz)），解压后运行 `./CopySync/install.sh` 加进应用菜单。
+- **Mac**（macOS 13 以上）：[Apple 芯片版](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-mac-apple-silicon.dmg)或 [Intel 版](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-mac-intel.dmg)；也有两种芯片都能用的[通用版](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync.dmg)。
+- **Windows** 10/11：[安装程序](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-Setup.exe)或[便携版](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip)。
+- **Linux**（X11，或带 XWayland 的 Wayland 桌面）：Ubuntu、Debian 用 `.deb`（[x64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-amd64.deb)、[ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-arm64.deb)），其他发行版用 `tar.gz`（[x64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-amd64.tar.gz)、[ARM64](https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-linux-arm64.tar.gz)），解压后运行 `./CopySync/install.sh` 加进应用菜单。
 
 还没有公证和代码签名：Mac 上第一次打开时到 **系统设置 → 隐私与安全性** 点 **仍要打开**；Windows 上点 **更多信息 → 仍要运行**。然后点 **启用后台同步**。Windows 防火墙询问、macOS 询问能否查找本地网络上的设备时，都选择允许。
 
@@ -80,14 +82,14 @@ CopySync 的做法是：两台电脑配对一次，之后在一台上复制，�
 
 | 方式 | 适合 | 要准备 |
 |---|---|---|
-| **[同一网络](https://baiyuze.github.io/copysync/lan/)** | 电脑都连着同一个路由器（家里或办公室） | 什么都不用 |
-| **[公网服务器](https://baiyuze.github.io/copysync/cloud/)** | 电脑分散在不同网络里，想在哪儿都能同步 | 一台有公网 IP 的 Linux 云主机，最低配置就够 |
-| **[Tailscale](https://baiyuze.github.io/copysync/tailscale/)** | 要跨网络，但没有公网服务器 | 每台电脑都装 [Tailscale](https://tailscale.com)，配对时输入对方的 Tailscale 地址 |
+| **[同一网络](https://baiyuze.github.io/pasteferry/lan/)** | 电脑都连着同一个路由器（家里或办公室） | 什么都不用 |
+| **[公网服务器](https://baiyuze.github.io/pasteferry/cloud/)** | 电脑分散在不同网络里，想在哪儿都能同步 | 一台有公网 IP 的 Linux 云主机，最低配置就够 |
+| **[Tailscale](https://baiyuze.github.io/pasteferry/tailscale/)** | 要跨网络，但没有公网服务器 | 每台电脑都装 [Tailscale](https://tailscale.com)，配对时输入对方的 Tailscale 地址 |
 
 公网服务器上的安装命令：
 
 ```bash
-curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
 tar xzf copysync-server-linux-amd64.tar.gz && cd copysync-server-linux-amd64
 sudo ./install.sh <服务器公网IP>
 ```
@@ -106,7 +108,7 @@ sudo ./install.sh <服务器公网IP>
 
 - [工作原理](guide/how-it-works.zh-CN.md)：架构、NAT 打洞、安全模型、兜底、踩过的坑
 - [排障](guide/troubleshooting.zh-CN.md)与已知限制
-- [快速开始](https://baiyuze.github.io/copysync/start/) · [同一网络](https://baiyuze.github.io/copysync/lan/) · [公网服务器](https://baiyuze.github.io/copysync/cloud/) · [Tailscale](https://baiyuze.github.io/copysync/tailscale/) · [在局域网里部署服务器](https://baiyuze.github.io/copysync/server/)，都是图文教程
+- [快速开始](https://baiyuze.github.io/pasteferry/start/) · [同一网络](https://baiyuze.github.io/pasteferry/lan/) · [公网服务器](https://baiyuze.github.io/pasteferry/cloud/) · [Tailscale](https://baiyuze.github.io/pasteferry/tailscale/) · [在局域网里部署服务器](https://baiyuze.github.io/pasteferry/server/)，都是图文教程
 - [服务器部署说明](server/deploy/README.md)：Windows、macOS、Linux、Docker、Tailscale
 - [从源码构建](guide/building.zh-CN.md)
 - 技术方案：[局域网直连](design/lan-mode.md)、[多出口网络的 NAT 打洞](design/nat-traversal.md)、[Windows 客户端](design/windows-client.md)
@@ -114,4 +116,4 @@ sudo ./install.sh <服务器公网IP>
 
 ## 许可
 
-CopySync 以 [GNU AGPL-3.0](LICENSE) 免费开源：任何人（包括公司）都可以使用和修改，但分发它、或通过网络提供修改过的版本时，必须以同样的许可公开你的源码。详见 [LICENSING.md](LICENSING.md)。1.2.0 及更早的版本仍适用 MIT 许可。
+隔空贴以 [GNU AGPL-3.0](LICENSE) 免费开源：任何人（包括公司）都可以使用和修改，但分发它、或通过网络提供修改过的版本时，必须以同样的许可公开你的源码。详见 [LICENSING.md](LICENSING.md)。1.2.0 及更早的版本仍适用 MIT 许可。

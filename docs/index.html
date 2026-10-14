@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync：在 Mac、Windows 与 Linux 之间同步剪贴板与文件，跨账号跨网络</title>
-  <meta name="description" content="CopySync 让你在一台电脑上复制，另一台上直接粘贴，Mac、Windows、Linux 互通。支持文本、图片、文件和文件夹，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。设备间 P2P 直连、端到端加密。免费开源。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/">
-  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/">
+  <title>隔空贴 PasteFerry：在 Mac、Windows 与 Linux 之间同步剪贴板与文件，跨账号跨网络</title>
+  <meta name="description" content="隔空贴让你在一台电脑上复制，另一台上直接粘贴，Mac、Windows、Linux 互通。支持文本、图片、文件和文件夹，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。设备间 P2P 直连、端到端加密。免费开源。">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/pasteferry/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="CopySync：在这台电脑复制，到那台电脑粘贴">
+  <meta property="og:site_name" content="隔空贴">
+  <meta property="og:title" content="隔空贴：在这台电脑复制，到那台电脑粘贴">
   <meta property="og:description" content="Mac、Windows、Linux 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，同一网络里不需要服务器。免费开源。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="zh_CN">
@@ -61,8 +61,12 @@
     "@graph": [
       {
         "@type": "SoftwareApplication",
-        "@id": "https://baiyuze.github.io/copysync/#app",
-        "name": "CopySync",
+        "@id": "https://baiyuze.github.io/pasteferry/#app",
+        "name": "隔空贴",
+        "alternateName": [
+          "PasteFerry",
+          "CopySync"
+        ],
         "description": "在 Mac、Windows 与 Linux 电脑之间同步剪贴板与文件的开源工具。复制文本、图片、文件或文件夹后，另一台电脑可直接粘贴。同一网络里不需要服务器；设备间 WebRTC 直连、DTLS 端到端加密，跨网络打不通时经用户自建服务器的 TURN 中转。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 及以上（Intel 与 Apple 芯片）；Windows 10、Windows 11（x64）；Linux（x64、ARM64）",
@@ -76,10 +80,10 @@
           "price": "0",
           "priceCurrency": "CNY"
         },
-        "downloadUrl": "https://baiyuze.github.io/copysync/download/",
-        "codeRepository": "https://github.com/baiyuze/copysync",
-        "image": "https://baiyuze.github.io/copysync/assets/icon.png",
-        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/history-dark.png",
+        "downloadUrl": "https://baiyuze.github.io/pasteferry/download/",
+        "codeRepository": "https://github.com/baiyuze/pasteferry",
+        "image": "https://baiyuze.github.io/pasteferry/assets/icon.png",
+        "screenshot": "https://baiyuze.github.io/pasteferry/assets/screenshots/history-dark.png",
         "featureList": [
           "同步纯文本、带格式的文本、图片、文件与文件夹",
           "Mac、Windows、Linux 互通，不要求同一个账号，跨网络可用",
@@ -104,7 +108,7 @@
             "name": "UU 远程开启时，为什么不断出现 .uuremote_ 文件？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "UU 远程会在系统剪贴板里写入临时占位文件，旧版 CopySync 把它们当成普通文件反复记录和转发。1.3.2 在发送和接收时过滤已确认的占位命名，启动时清理纯占位记录。正常空文件、隐藏文件和大文件不受此规则影响。50 MB 只决定是否自动传输，与 UU 的 UDP P2P 设置无关。建议两端都升级；其他软件如果也同步剪贴板，仍可能产生普通内容的重复记录。"
+              "text": "UU 远程会在系统剪贴板里写入临时占位文件，旧版隔空贴把它们当成普通文件反复记录和转发。1.3.2 在发送和接收时过滤已确认的占位命名，启动时清理纯占位记录。正常空文件、隐藏文件和大文件不受此规则影响。50 MB 只决定是否自动传输，与 UU 的 UDP P2P 设置无关。建议两端都升级；其他软件如果也同步剪贴板，仍可能产生普通内容的重复记录。"
             }
           },
           {
@@ -112,7 +116,7 @@
             "name": "和 macOS 自带的「通用剪贴板」有什么区别？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。CopySync 在同一个网络里装好就能用；跨网络时，两台电脑能连上你部署的服务器、或者都装了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。 如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。"
+              "text": "通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。隔空贴在同一个网络里装好就能用；跨网络时，两台电脑能连上你部署的服务器、或者都装了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。 如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。"
             }
           },
           {
@@ -128,7 +132,7 @@
             "name": "公司网络（双线、多出口）能直连吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "能。这类网络按目标地址选出口，CopySync 会在同一个端口上向多台服务器探测，拿到每个出口的地址一并发给对端，对端逐个尝试。实测公司 4 个出口与家用宽带之间可以直连。对端是端口随机分配的 NAT 时仍会走中转。"
+              "text": "能。这类网络按目标地址选出口，隔空贴会在同一个端口上向多台服务器探测，拿到每个出口的地址一并发给对端，对端逐个尝试。实测公司 4 个出口与家用宽带之间可以直连。对端是端口随机分配的 NAT 时仍会走中转。"
             }
           },
           {
@@ -136,7 +140,7 @@
             "name": "必须自己准备服务器吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "不一定。两台电脑在同一个网络里时，装好 App 直接配对就行，不需要服务器。 跨网络时有两种做法：公网服务器，最低配置的云主机就够，在哪儿都能同步；Tailscale，每台电脑装上它，配对时输入对方的 Tailscale 地址，不需要服务器。CopySync 不提供公共服务器，所以不会有任何人的数据经过别人的机器。"
+              "text": "不一定。两台电脑在同一个网络里时，装好 App 直接配对就行，不需要服务器。 跨网络时有两种做法：公网服务器，最低配置的云主机就够，在哪儿都能同步；Tailscale，每台电脑装上它，配对时输入对方的 Tailscale 地址，不需要服务器。隔空贴不提供公共服务器，所以不会有任何人的数据经过别人的机器。"
             }
           },
           {
@@ -168,7 +172,7 @@
             "name": "为什么第一次打开时系统会拦一下？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "CopySync 还没有经过 Apple 公证，Windows 版也还没有代码签名，两者都需要每年付费的证书。 Mac 上到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」；Windows 上在「Windows 已保护你的电脑」提示里点「更多信息」，再点「仍要运行」。都只需要这一次。"
+              "text": "隔空贴还没有经过 Apple 公证，Windows 版也还没有代码签名，两者都需要每年付费的证书。 Mac 上到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」；Windows 上在「Windows 已保护你的电脑」提示里点「更多信息」，再点「仍要运行」。都只需要这一次。"
             }
           },
           {
@@ -184,7 +188,7 @@
             "name": "免费吗？公司能用吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "免费。CopySync 以 GNU AGPL-3.0 开源，个人和公司都可以免费使用和修改。分发它、或通过网络提供修改过的版本时，需要以同样的许可公开源码。"
+              "text": "免费。隔空贴以 GNU AGPL-3.0 开源，个人和公司都可以免费使用和修改。分发它、或通过网络提供修改过的版本时，需要以同样的许可公开源码。"
             }
           }
         ]
@@ -198,14 +202,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="./" aria-label="CopySync 首页"><img src="assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="./" aria-label="隔空贴首页"><img src="assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
       <nav aria-label="页面导航">
         <a href="start/">快速开始</a>
         <a class="wide" href="#how">工作原理</a>
         <a class="wide" href="#faq">常见问题</a>
         <a class="mid" href="start/#server">连接方式</a>
         <a href="download/">下载</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="语言：简体中文"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>简体中文</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -219,6 +223,7 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">隔空贴原名 CopySync。应用和安装包里暂时还叫 CopySync，下个版本会改过来。</span></p>
 
   <main id="main">
     <section class="hero">
@@ -226,7 +231,7 @@
         <h1 class="display">在这台电脑复制，<br>到那台电脑粘贴。</h1>
         <p class="lede">Mac、Windows、Linux 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络也可以。数据在你的设备之间直接传输，端到端加密。</p>
         <div class="cta">
-          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 CopySync</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载隔空贴</a>
         </div>
         <p class="note">版本 1.7.0，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。</p>
         <a class="start-link" href="start/">第一次用？看快速开始，三步配好 →</a>
@@ -293,7 +298,7 @@
         <h2 id="history-title">所有设备上复制过的，都在这里</h2>
         <p class="intro">复制记录保留最近 3 天的内容，随时可以放回剪贴板，图片点开就能预览。50 MB 以内的文件在你复制的时候就已经传好了，更大的文件需要时点一下再拉取。想找以前复制过的，按文字内容或文件名搜一下就有。</p>
         <figure class="shot">
-          <img src="assets/screenshots/history-dark.png" width="2112" height="1472" alt="CopySync 的复制记录：来自 MacBook Air 和 Mac mini 的文件、图片、文字，大文件显示「拉取到本机」按钮">
+          <img src="assets/screenshots/history-dark.png" width="2112" height="1472" alt="隔空贴的复制记录：来自 MacBook Air 和 Mac mini 的文件、图片、文字，大文件显示「拉取到本机」按钮">
         </figure>
       </div>
     </section>
@@ -316,8 +321,8 @@
         <p class="intro">通用剪贴板要同一个 Apple ID、离得够近；隔空投送每次都要点接收；发给自己要手动下载，文件还留在别人的服务器上。一台 Mac 一台 Windows 时，系统自带的办法一个都用不了。</p>
         <div class="block table-scroll">
           <table class="compare">
-            <caption class="skip">CopySync 与其他方式的对比</caption>
-            <thead><tr><td></td><th scope="col" class="ours">CopySync</th><th scope="col">通用剪贴板</th><th scope="col">隔空投送</th><th scope="col">聊天软件</th></tr></thead>
+            <caption class="skip">隔空贴与其他方式的对比</caption>
+            <thead><tr><td></td><th scope="col" class="ours">隔空贴</th><th scope="col">通用剪贴板</th><th scope="col">隔空投送</th><th scope="col">聊天软件</th></tr></thead>
             <tbody>
               <tr><th scope="row">不同 Apple ID 之间</th><td class="yes ours">可以</td><td class="no">不行</td><td class="partial">要对方接收</td><td class="yes">可以</td></tr>
               <tr><th scope="row">Mac 与 Windows 之间</th><td class="yes ours">可以</td><td class="no">不行</td><td class="no">不行</td><td class="yes">可以</td></tr>
@@ -338,7 +343,7 @@
         <p class="intro">两台电脑之间直接建立加密连接。同一个网络里，它们自己就能找到彼此；跨网络时，你的服务器负责牵线，打不通直连的时候再帮忙转发。下图是跨网络的情形。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
-            <title id="diagram-title">CopySync 的连接方式</title>
+            <title id="diagram-title">隔空贴的连接方式</title>
             <desc id="diagram-desc">电脑 A 与电脑 B（Mac 或 Windows）之间是 WebRTC 直连；两台电脑都通过信令连接到你的服务器；直连失败时，数据经服务器的 TURN 中转。</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
             <text class="d-title" x="480" y="64" text-anchor="middle">你的服务器</text>
@@ -376,7 +381,7 @@
     <section class="section" id="multi-uplink" aria-labelledby="multi-title">
       <div class="wrap">
         <h2 id="multi-title">公司网络也能直连</h2>
-        <p class="intro">公司双线、运营商地址池这类网络有多个出口，按目标地址选走哪一个。只探测一次只会知道其中一个出口，只能经服务器中转。CopySync 会探测每个出口，把地址都告诉对端。</p>
+        <p class="intro">公司双线、运营商地址池这类网络有多个出口，按目标地址选走哪一个。只探测一次只会知道其中一个出口，只能经服务器中转。隔空贴会探测每个出口，把地址都告诉对端。</p>
         <div class="cols">
           <div>
             <h3>做了什么</h3>
@@ -391,7 +396,7 @@
           </div>
           <div>
             <h3>用真实的网络拓扑验证</h3>
-            <p class="small">NAT 打洞实验室用 Linux 网络命名空间与 iptables 搭出这些拓扑，用 CopySync 真实的连接代码各跑一遍，每次提交代码都自动运行。</p>
+            <p class="small">NAT 打洞实验室用 Linux 网络命名空间与 iptables 搭出这些拓扑，用隔空贴真实的连接代码各跑一遍，每次提交代码都自动运行。</p>
             <div class="table-scroll">
               <table>
                 <thead><tr><th scope="col">场景</th><th scope="col">结果</th></tr></thead>
@@ -455,9 +460,9 @@
           <div><dt>文件太大</dt><dd>超过上限的只同步一条记录，需要时再拉取。拉取时源文件已经被删，会明确告诉你，而不是不明不白地失败。</dd></div>
           <div><dt>粘贴到只认纯文本的地方</dt><dd>从网页复制的带格式文字会同时写入 HTML 和纯文本两份，粘贴到哪里都不会冒出标签。</dd></div>
           <div><dt>文件名在 Windows 上不合法</dt><dd>Mac 上可以用的冒号、问号等字符，收到时换成对应的全角字符，名字照样看得懂；只差大小写的两个文件也不会互相覆盖。</dd></div>
-          <div><dt>复制的是密码</dt><dd>Windows 上，密码管理器复制的内容会带一个「不要记录」的标记，CopySync 看到就跳过：不同步，也不进复制记录。</dd></div>
+          <div><dt>复制的是密码</dt><dd>Windows 上，密码管理器复制的内容会带一个「不要记录」的标记，隔空贴看到就跳过：不同步，也不进复制记录。</dd></div>
           <div><dt>还没授权读取剪贴板</dt><dd>不去读内容，否则后台进程会卡在一个看不见的系统弹窗上。App 里会提示你去授权，并给出直达按钮。</dd></div>
-          <div><dt>后台服务崩溃</dt><dd>Mac 上由系统的 launchd、Windows 上由 CopySync 自带的守护进程自动拉起，10 秒节流，不会疯狂重启。</dd></div>
+          <div><dt>后台服务崩溃</dt><dd>Mac 上由系统的 launchd、Windows 上由隔空贴自带的守护进程自动拉起，10 秒节流，不会疯狂重启。</dd></div>
           <div><dt>更新了 App，或者把它挪了位置</dt><dd>打开 App 时会自动校正登录项，并把后台服务重启到新版本。</dd></div>
         </dl>
       </div>
@@ -471,8 +476,8 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
-              <li>下载 DMG，打开后把 CopySync 拖进「应用程序」。<span class="aside">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么看自己的 Mac 是哪种。</span></li>
-              <li>从「应用程序」里打开。<span class="aside">第一次会提示「无法验证开发者」：CopySync 还没有经过 Apple 公证。到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」，只需要这一次。</span></li>
+              <li>下载 DMG，打开后把隔空贴拖进「应用程序」。<span class="aside">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么看自己的 Mac 是哪种。</span></li>
+              <li>从「应用程序」里打开。<span class="aside">第一次会提示「无法验证开发者」：隔空贴还没有经过 Apple 公证。到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」，只需要这一次。</span></li>
               <li>点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。</li>
               <li>跨网络同步时，在「设置」里填入服务器地址 <code>ws://服务器地址:8787/signal</code>，按回车；同一个网络里不用填。</li>
             </ol>
@@ -481,8 +486,8 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
-              <li>运行 CopySync-Setup.exe。装在当前用户目录下，不需要管理员权限。<span class="aside">CopySync 还没有代码签名，Windows 会提示「Windows 已保护你的电脑」：点「更多信息」，再点「仍要运行」。不想运行安装程序的话，可以下载<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">便携版</a>。</span></li>
-              <li>打开 CopySync，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。防火墙询问时选择允许。</li>
+              <li>运行 CopySync-Setup.exe。装在当前用户目录下，不需要管理员权限。<span class="aside">隔空贴还没有代码签名，Windows 会提示「Windows 已保护你的电脑」：点「更多信息」，再点「仍要运行」。不想运行安装程序的话，可以下载<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip">便携版</a>。</span></li>
+              <li>打开隔空贴，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。防火墙询问时选择允许。</li>
               <li>跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
@@ -491,7 +496,7 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
             <ol>
               <li>Ubuntu、Debian 等下载 .deb，运行 <code>sudo apt install ./CopySync-linux-amd64.deb</code>；其他发行版下载 tar.gz，解压后运行 <code>./CopySync/install.sh</code>。</li>
-              <li>从应用菜单里打开 CopySync，点「启用后台同步」。之后它随登录自动启动。</li>
+              <li>从应用菜单里打开隔空贴，点「启用后台同步」。之后它随登录自动启动。</li>
               <li>跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Linux 版</a>
@@ -531,7 +536,7 @@
             <tr><th scope="row">记录保留</th><td>默认 3 天，可在 1 小时到 30 天之间调整，到期自动清理</td></tr>
             <tr><th scope="row">实测速度</th><td>局域网直连传输 20 MB 文件约 330 毫秒，校验和一致</td></tr>
             <tr><th scope="row">技术栈</th><td>后台服务与服务器用 Go（Windows 上纯 Go 调用 Win32，Linux 上纯 Go 走 X11 协议），界面用 Flutter（三个系统共用一套代码），消息定义用 Protocol Buffers</td></tr>
-            <tr><th scope="row">许可</th><td><a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
+            <tr><th scope="row">许可</th><td><a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
             </tbody>
           </table>
         </div>
@@ -544,11 +549,11 @@
         <div class="faq">
           <details>
             <summary>UU 远程开启时，为什么不断出现 .uuremote_ 文件？</summary>
-            <div class="answer"><p>UU 远程会在系统剪贴板里写入临时占位文件，旧版 CopySync 把它们当成普通文件反复记录和转发。1.3.2 在发送和接收时过滤已确认的占位命名，启动时清理纯占位记录。正常空文件、隐藏文件和大文件不受此规则影响。50 MB 只决定是否自动传输，与 UU 的 UDP P2P 设置无关。建议两端都升级；其他软件如果也同步剪贴板，仍可能产生普通内容的重复记录。</p></div>
+            <div class="answer"><p>UU 远程会在系统剪贴板里写入临时占位文件，旧版隔空贴把它们当成普通文件反复记录和转发。1.3.2 在发送和接收时过滤已确认的占位命名，启动时清理纯占位记录。正常空文件、隐藏文件和大文件不受此规则影响。50 MB 只决定是否自动传输，与 UU 的 UDP P2P 设置无关。建议两端都升级；其他软件如果也同步剪贴板，仍可能产生普通内容的重复记录。</p></div>
           </details>
           <details>
             <summary>和 macOS 自带的「通用剪贴板」有什么区别？</summary>
-            <div class="answer"><p>通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。CopySync 在同一个网络里装好就能用；跨网络时，两台电脑能连上你部署的服务器、或者都装了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。</p><p>如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。</p></div>
+            <div class="answer"><p>通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。隔空贴在同一个网络里装好就能用；跨网络时，两台电脑能连上你部署的服务器、或者都装了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。</p><p>如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。</p></div>
           </details>
           <details>
             <summary>服务器会看到我复制的内容吗？</summary>
@@ -556,11 +561,11 @@
           </details>
           <details>
             <summary>公司网络（双线、多出口）能直连吗？</summary>
-            <div class="answer"><p>能。这类网络按目标地址选出口，CopySync 会在同一个端口上向多台服务器探测，拿到每个出口的地址一并发给对端，对端逐个尝试。实测公司 4 个出口与家用宽带之间可以直连。对端是端口随机分配的 NAT 时仍会走中转。</p></div>
+            <div class="answer"><p>能。这类网络按目标地址选出口，隔空贴会在同一个端口上向多台服务器探测，拿到每个出口的地址一并发给对端，对端逐个尝试。实测公司 4 个出口与家用宽带之间可以直连。对端是端口随机分配的 NAT 时仍会走中转。</p></div>
           </details>
           <details>
             <summary>必须自己准备服务器吗？</summary>
-            <div class="answer"><p>不一定。两台电脑在<a href="lan/">同一个网络</a>里时，装好 App 直接配对就行，不需要服务器。</p><p>跨网络时有两种做法：<a href="cloud/">公网服务器</a>，最低配置的云主机就够，在哪儿都能同步；<a href="tailscale/">Tailscale</a>，每台电脑装上它，配对时输入对方的 Tailscale 地址，不需要服务器。CopySync 不提供公共服务器，所以不会有任何人的数据经过别人的机器。</p></div>
+            <div class="answer"><p>不一定。两台电脑在<a href="lan/">同一个网络</a>里时，装好 App 直接配对就行，不需要服务器。</p><p>跨网络时有两种做法：<a href="cloud/">公网服务器</a>，最低配置的云主机就够，在哪儿都能同步；<a href="tailscale/">Tailscale</a>，每台电脑装上它，配对时输入对方的 Tailscale 地址，不需要服务器。隔空贴不提供公共服务器，所以不会有任何人的数据经过别人的机器。</p></div>
           </details>
           <details>
             <summary>家里没有公网 IP，能在家和公司之间同步吗？</summary>
@@ -576,7 +581,7 @@
           </details>
           <details>
             <summary>为什么第一次打开时系统会拦一下？</summary>
-            <div class="answer"><p>CopySync 还没有经过 Apple 公证，Windows 版也还没有代码签名，两者都需要每年付费的证书。</p><p>Mac 上到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」；Windows 上在「Windows 已保护你的电脑」提示里点「更多信息」，再点「仍要运行」。都只需要这一次。</p></div>
+            <div class="answer"><p>隔空贴还没有经过 Apple 公证，Windows 版也还没有代码签名，两者都需要每年付费的证书。</p><p>Mac 上到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」；Windows 上在「Windows 已保护你的电脑」提示里点「更多信息」，再点「仍要运行」。都只需要这一次。</p></div>
           </details>
           <details>
             <summary>大文件怎么处理？</summary>
@@ -584,7 +589,7 @@
           </details>
           <details>
             <summary>免费吗？公司能用吗？</summary>
-            <div class="answer"><p>免费。CopySync 以 GNU AGPL-3.0 开源，个人和公司都可以免费使用和修改。分发它、或通过网络提供修改过的版本时，需要以同样的许可公开源码。</p></div>
+            <div class="answer"><p>免费。隔空贴以 GNU AGPL-3.0 开源，个人和公司都可以免费使用和修改。分发它、或通过网络提供修改过的版本时，需要以同样的许可公开源码。</p></div>
           </details>
         </div>
       </div>
@@ -594,24 +599,24 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">两台电脑，一个剪贴板。</h2>
         <div class="cta">
-          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 CopySync</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载隔空贴</a>
         </div>
         <p class="note">版本 1.7.0，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。</p>
         <a class="start-link" href="start/">第一次用？看快速开始，三步配好 →</a>
-        <a class="source" href="https://github.com/baiyuze/copysync">在 GitHub 上查看源码</a>
+        <a class="source" href="https://github.com/baiyuze/pasteferry">在 GitHub 上查看源码</a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 开源。</p>
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
       <nav aria-label="页脚链接">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">许可说明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
       </nav>
       <nav aria-label="语言">
         <a href="./" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>

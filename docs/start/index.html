@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>快速开始：三步用上 CopySync</title>
-  <meta name="description" content="第一次用 CopySync？在每台电脑上安装 App；两台在同一个网络里就直接配对，不需要服务器；跨网络时选公网服务器或 Tailscale。之后就能在 Mac 与 Windows 之间复制粘贴。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/start/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/start/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/start/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/start/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/start/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/start/">
+  <title>快速开始：三步用上隔空贴</title>
+  <meta name="description" content="第一次用隔空贴？在每台电脑上安装 App；两台在同一个网络里就直接配对，不需要服务器；跨网络时选公网服务器或 Tailscale。之后就能在 Mac 与 Windows 之间复制粘贴。">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/start/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/start/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/start/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/start/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/start/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/start/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="快速开始：三步用上 CopySync">
-  <meta property="og:description" content="第一次用 CopySync？在每台电脑上安装 App；两台在同一个网络里就直接配对，不需要服务器；跨网络时选公网服务器或 Tailscale。之后就能在 Mac 与 Windows 之间复制粘贴。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/start/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
+  <meta property="og:site_name" content="隔空贴">
+  <meta property="og:title" content="快速开始：三步用上隔空贴">
+  <meta property="og:description" content="第一次用隔空贴？在每台电脑上安装 App；两台在同一个网络里就直接配对，不需要服务器；跨网络时选公网服务器或 Tailscale。之后就能在 Mac 与 Windows 之间复制粘贴。">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/start/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og.png">
   <meta property="og:locale" content="zh_CN">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
@@ -30,14 +30,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href=".././" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href=".././" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
       <nav aria-label="页面导航">
         <a href="./" aria-current="page">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
         <a class="mid" href="#server">连接方式</a>
         <a href="../download/">下载</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="语言：简体中文"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>简体中文</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -51,11 +51,12 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">隔空贴原名 CopySync。应用和安装包里暂时还叫 CopySync，下个版本会改过来。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href=".././">CopySync</a> / 快速开始</p>
+        <p class="crumb"><a href=".././">隔空贴</a> / 快速开始</p>
         <h1 class="display">快速开始</h1>
         <p class="lede">装好 App，选一种连接方式，再把两台电脑配对。同一个网络里几分钟就好，之后复制就会自动同步。</p>
         <ol class="guide-toc">
@@ -76,7 +77,7 @@
             <div class="qs-app">
               <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
               <ol class="steps">
-                <li>下载 DMG，打开后把 CopySync 拖进「应用程序」。<span class="aside">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么选。</span></li>
+                <li>下载 DMG，打开后把隔空贴拖进「应用程序」。<span class="aside">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么选。</span></li>
                 <li>从「应用程序」里打开。<span class="aside">第一次会提示「无法验证开发者」：到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」。</span></li>
                 <li>点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。</li>
               </ol>
@@ -86,7 +87,7 @@
               <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
               <ol class="steps">
                 <li>运行 CopySync-Setup.exe，不需要管理员权限。<span class="aside">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span></li>
-                <li>打开 CopySync，点「启用后台同步」。防火墙询问时选择允许。关掉窗口后它在右下角的托盘里继续运行。</li>
+                <li>打开隔空贴，点「启用后台同步」。防火墙询问时选择允许。关掉窗口后它在右下角的托盘里继续运行。</li>
               </ol>
               <a class="button" href="../download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
             </div>
@@ -94,13 +95,13 @@
               <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
               <ol class="steps">
                 <li>Ubuntu、Debian 等安装 .deb；其他发行版解压 tar.gz，运行里面的 <code>install.sh</code>。</li>
-                <li>从应用菜单里打开 CopySync，点「启用后台同步」。</li>
+                <li>从应用菜单里打开隔空贴，点「启用后台同步」。</li>
               </ol>
               <a class="button" href="../download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Linux 版</a>
             </div>
           </div>
           <figure class="shot">
-            <img src="../assets/screenshots/welcome-dark.png" width="2112" height="1472" alt="第一次打开 CopySync：提示启用后台同步">
+            <img src="../assets/screenshots/welcome-dark.png" width="2112" height="1472" alt="第一次打开隔空贴：提示启用后台同步">
           </figure>
         </div>
       </div>
@@ -181,7 +182,7 @@
                 <dl>
                   <div><dt>适合</dt><dd>电脑在不同的网络里，又没有公网服务器。</dd></div>
                   <div><dt>要准备</dt><dd>每台电脑都装 Tailscale，登录同一个账号。</dd></div>
-                  <div><dt>要注意</dt><dd>所有用 CopySync 的电脑都要装 Tailscale 并保持连接。Tailscale 自己打不通时经境外中转，在国内会慢。</dd></div>
+                  <div><dt>要注意</dt><dd>所有用隔空贴的电脑都要装 Tailscale 并保持连接。Tailscale 自己打不通时经境外中转，在国内会慢。</dd></div>
                 </dl>
               </div>
             </div>
@@ -217,20 +218,20 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">复制试试。</h2>
         <p class="lede">在一台电脑上复制文字、图片或文件，到另一台按 ⌘V 或 Ctrl+V。两边复制过的内容都在「复制记录」里。</p>
-        <p class="note">遇到问题：<a href="../lan/#faq">同一网络的常见问题</a> · <a href="../tailscale/#faq">Tailscale 的常见问题</a> · <a href="../cloud/#faq">公网服务器的常见问题</a> · <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a></p>
+        <p class="note">遇到问题：<a href="../lan/#faq">同一网络的常见问题</a> · <a href="../tailscale/#faq">Tailscale 的常见问题</a> · <a href="../cloud/#faq">公网服务器的常见问题</a> · <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a></p>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 开源。</p>
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
       <nav aria-label="页脚链接">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">许可说明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
       </nav>
       <nav aria-label="语言">
         <a href="../start/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>

@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CopySync：Mac、Windows、Linux のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK</title>
-  <meta name="description" content="CopySync は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac、Windows、Linux に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントは不要。同じネットワークならサーバーなしで使え、ネットワークをまたぐときは自分で用意したサーバーか Tailscale を使います。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。無料・オープンソース。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/">
-  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/copysync/">
+  <title>PasteFerry：Mac、Windows、Linux のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK</title>
+  <meta name="description" content="PasteFerry は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac、Windows、Linux に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントは不要。同じネットワークならサーバーなしで使え、ネットワークをまたぐときは自分で用意したサーバーか Tailscale を使います。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。無料・オープンソース。">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/ja/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://baiyuze.github.io/pasteferry/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="CopySync：このコンピューターでコピーして、あのコンピューターで貼り付け">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="PasteFerry：このコンピューターでコピーして、あのコンピューターで貼り付け">
   <meta property="og:description" content="Mac、Windows、Linux に対応。テキスト、画像、ファイル、フォルダを、アカウントやネットワークをまたいで同期。P2P 直接接続、エンドツーエンド暗号化、同じネットワークならサーバー不要。無料・オープンソース。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/ja/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og-en.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="ja_JP">
@@ -37,8 +37,12 @@
     "@graph": [
       {
         "@type": "SoftwareApplication",
-        "@id": "https://baiyuze.github.io/copysync/#app",
-        "name": "CopySync",
+        "@id": "https://baiyuze.github.io/pasteferry/#app",
+        "name": "PasteFerry",
+        "alternateName": [
+          "隔空贴",
+          "CopySync"
+        ],
         "description": "Mac、Windows、Linux のコンピューター間でクリップボードとファイルを同期するオープンソースのアプリ。テキスト、画像、ファイル、フォルダを一台でコピーし、もう一台で貼り付けられる。同じネットワークならサーバーは不要。デバイス間は WebRTC で直接つながり DTLS でエンドツーエンド暗号化、ネットワークをまたいでつながらないときはユーザーが用意したサーバーの TURN で中継する。",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "macOS 13 以降（Intel と Apple シリコン）、Windows 10、Windows 11（x64）、Linux（x64、ARM64）",
@@ -52,10 +56,10 @@
           "price": "0",
           "priceCurrency": "JPY"
         },
-        "downloadUrl": "https://baiyuze.github.io/copysync/ja/download/",
-        "codeRepository": "https://github.com/baiyuze/copysync",
-        "image": "https://baiyuze.github.io/copysync/assets/icon.png",
-        "screenshot": "https://baiyuze.github.io/copysync/assets/screenshots/ja/history-dark.png",
+        "downloadUrl": "https://baiyuze.github.io/pasteferry/ja/download/",
+        "codeRepository": "https://github.com/baiyuze/pasteferry",
+        "image": "https://baiyuze.github.io/pasteferry/assets/icon.png",
+        "screenshot": "https://baiyuze.github.io/pasteferry/assets/screenshots/ja/history-dark.png",
         "featureList": [
           "プレーンテキスト、書式付きテキスト、画像、ファイル、フォルダを同期",
           "Mac、Windows、Linux のあいだで、アカウントやネットワークをまたいで使える",
@@ -80,7 +84,7 @@
             "name": "UU Remote の使用中に .uuremote_ ファイルが増え続けるのはなぜですか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "UU Remote は一時的なプレースホルダーファイルをシステムのクリップボードに書き込みます。旧版の CopySync はそれを通常のファイルとして記録・転送していました。1.3.2 では確認済みの命名パターンを送受信時に除外し、起動時にプレースホルダーだけの履歴を削除します。通常の空ファイル、隠しファイル、大容量ファイルは対象外です。50 MB は自動転送のしきい値であり、UU の UDP P2P 設定とは関係ありません。両端を更新してください。他のクリップボード同期ツールによる通常コンテンツの重複は起こり得ます。"
+              "text": "UU Remote は一時的なプレースホルダーファイルをシステムのクリップボードに書き込みます。旧版の PasteFerry はそれを通常のファイルとして記録・転送していました。1.3.2 では確認済みの命名パターンを送受信時に除外し、起動時にプレースホルダーだけの履歴を削除します。通常の空ファイル、隠しファイル、大容量ファイルは対象外です。50 MB は自動転送のしきい値であり、UU の UDP P2P 設定とは関係ありません。両端を更新してください。他のクリップボード同期ツールによる通常コンテンツの重複は起こり得ます。"
             }
           },
           {
@@ -88,7 +92,7 @@
             "name": "macOS のユニバーサルクリップボードとの違いは？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync は同じネットワークならインストールしてすぐ使え、ネットワークをまたぐときは両方があなたのサーバーにつながるか、Tailscale を入れていれば使えます。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。 2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。"
+              "text": "ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。PasteFerry は同じネットワークならインストールしてすぐ使え、ネットワークをまたぐときは両方があなたのサーバーにつながるか、Tailscale を入れていれば使えます。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。 2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。"
             }
           },
           {
@@ -104,7 +108,7 @@
             "name": "出口が複数ある会社のネットワークでも直接つながりますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "つながります。こうしたネットワークは宛先ごとに出口を選びます。CopySync はひとつのポートから複数のサーバーに問い合わせて出口ごとのアドレスを集め、すべて相手に送り、相手がひとつずつ試します。テストでは、出口が 4 つある会社の Mac と家庭の回線が直接つながりました。相手がポートをランダムに割り当てる NAT の場合は中継になります。"
+              "text": "つながります。こうしたネットワークは宛先ごとに出口を選びます。PasteFerry はひとつのポートから複数のサーバーに問い合わせて出口ごとのアドレスを集め、すべて相手に送り、相手がひとつずつ試します。テストでは、出口が 4 つある会社の Mac と家庭の回線が直接つながりました。相手がポートをランダムに割り当てる NAT の場合は中継になります。"
             }
           },
           {
@@ -112,7 +116,7 @@
             "name": "サーバーは自分で用意する必要がありますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "場合によります。コンピューターが同じネットワークにあるなら、アプリを入れてペアリングするだけで、サーバーは要りません。 ネットワークをまたぐ方法は 2 つあります。公開サーバーは最小構成のクラウドサーバーで足り、どこからでも同期できます。Tailscale は各コンピューターに入れ、ペアリング時に相手の Tailscale アドレスを入力するだけで、サーバーは要りません。CopySync は公開サーバーを提供しないので、誰のデータも他人のマシンを通りません。"
+              "text": "場合によります。コンピューターが同じネットワークにあるなら、アプリを入れてペアリングするだけで、サーバーは要りません。 ネットワークをまたぐ方法は 2 つあります。公開サーバーは最小構成のクラウドサーバーで足り、どこからでも同期できます。Tailscale は各コンピューターに入れ、ペアリング時に相手の Tailscale アドレスを入力するだけで、サーバーは要りません。PasteFerry は公開サーバーを提供しないので、誰のデータも他人のマシンを通りません。"
             }
           },
           {
@@ -144,7 +148,7 @@
             "name": "初めて開くときにシステムに止められるのはなぜ？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "CopySync はまだ Apple の公証を受けておらず、Windows 版もコード署名していません。どちらも毎年費用のかかる証明書が必要です。 Mac では「システム設定 → プライバシーとセキュリティ」でページ下部の「このまま開く」をクリック、Windows では「Windows によって PC が保護されました」で「詳細情報」から「実行」を押してください。どちらも一度だけで済みます。"
+              "text": "PasteFerry はまだ Apple の公証を受けておらず、Windows 版もコード署名していません。どちらも毎年費用のかかる証明書が必要です。 Mac では「システム設定 → プライバシーとセキュリティ」でページ下部の「このまま開く」をクリック、Windows では「Windows によって PC が保護されました」で「詳細情報」から「実行」を押してください。どちらも一度だけで済みます。"
             }
           },
           {
@@ -160,7 +164,7 @@
             "name": "無料ですか？会社で使えますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "無料です。CopySync は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。"
+              "text": "無料です。PasteFerry は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。"
             }
           }
         ]
@@ -174,14 +178,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="./" aria-label="CopySync ホーム"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="./" aria-label="PasteFerry ホーム"><img src="../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
       <nav aria-label="ページ内の移動">
         <a href="start/">はじめかた</a>
         <a class="wide" href="#how">しくみ</a>
         <a class="wide" href="#faq">よくある質問</a>
         <a class="mid" href="start/#server">接続方法</a>
         <a href="download/">ダウンロード</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="言語：日本語"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>日本語</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -195,6 +199,7 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">PasteFerry の旧名は CopySync です。次のバージョンまで、アプリとインストーラーには CopySync と表示されます。</span></p>
 
   <main id="main">
     <section class="hero">
@@ -202,7 +207,7 @@
         <h1 class="display">こっちでコピーして、<br>あっちで貼り付け。</h1>
         <p class="lede">Mac、Windows、Linux に対応。テキスト、画像、ファイル、フォルダまるごと。同じアカウントは要りません。同じネットワークならサーバーなしで使え、ネットワークをまたいでも使えます。データはデバイス間を直接流れ、エンドツーエンドで暗号化されます。</p>
         <div class="cta">
-          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>CopySync をダウンロード</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>PasteFerry をダウンロード</a>
         </div>
         <p class="note">バージョン 1.7.0、無料・オープンソース。macOS 13 以降、Windows 10・11、Linux（x64 と ARM64）。</p>
         <a class="start-link" href="start/">はじめての方は、3 ステップのはじめかたへ →</a>
@@ -269,7 +274,7 @@
         <h2 id="history-title">どのデバイスでコピーしたものも、ここに</h2>
         <p class="intro">履歴には直近 3 日分が残り、いつでもクリップボードに戻せます。画像はクリックでプレビュー。50 MB までのファイルはコピーした時点で届いていて、それより大きいものは必要なときにワンクリックで取り込めます。前にコピーしたものは、テキストやファイル名で検索できます。</p>
         <figure class="shot">
-          <img src="../assets/screenshots/ja/history-dark.png" width="2112" height="1472" alt="CopySync の履歴画面：MacBook Air と Mac mini から届いたファイル、画像、テキスト。大きなファイルには「このデバイスに取り込む」ボタン">
+          <img src="../assets/screenshots/ja/history-dark.png" width="2112" height="1472" alt="PasteFerry の履歴画面：MacBook Air と Mac mini から届いたファイル、画像、テキスト。大きなファイルには「このデバイスに取り込む」ボタン">
         </figure>
       </div>
     </section>
@@ -292,8 +297,8 @@
         <p class="intro">ユニバーサルクリップボードは同じ Apple ID で、近くにいる必要があります。AirDrop は毎回受け取り操作が要ります。自分宛てにメッセージで送ると手動でダウンロードすることになり、ファイルは他社のサーバーに残ります。Mac と Windows の組み合わせでは、標準の方法はどれも使えません。</p>
         <div class="block table-scroll">
           <table class="compare">
-            <caption class="skip">CopySync とほかの方法の比較</caption>
-            <thead><tr><td></td><th scope="col" class="ours">CopySync</th><th scope="col">ユニバーサル<br>クリップボード</th><th scope="col">AirDrop</th><th scope="col">チャットアプリ</th></tr></thead>
+            <caption class="skip">PasteFerry とほかの方法の比較</caption>
+            <thead><tr><td></td><th scope="col" class="ours">PasteFerry</th><th scope="col">ユニバーサル<br>クリップボード</th><th scope="col">AirDrop</th><th scope="col">チャットアプリ</th></tr></thead>
             <tbody>
               <tr><th scope="row">別々の Apple ID のあいだ</th><td class="yes ours">できる</td><td class="no">できない</td><td class="partial">受け取り操作が必要</td><td class="yes">できる</td></tr>
               <tr><th scope="row">Mac と Windows のあいだ</th><td class="yes ours">できる</td><td class="no">できない</td><td class="no">できない</td><td class="yes">できる</td></tr>
@@ -314,7 +319,7 @@
         <p class="intro">2 台のコンピューターは、暗号化された接続で直接つながります。同じネットワークなら自分たちでお互いを見つけます。ネットワークをまたぐときはサーバーが引き合わせ、直接つながらないときだけ中継します。下の図はネットワークをまたぐ場合です。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
-            <title id="diagram-title">CopySync の接続のしかた</title>
+            <title id="diagram-title">PasteFerry の接続のしかた</title>
             <desc id="diagram-desc">コンピューター A と B（Mac または Windows）は WebRTC で直接つながります。どちらもシグナリングのためにあなたのサーバーへ接続し、直接接続に失敗したときはサーバーの TURN でデータを中継します。</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
             <text class="d-title" x="480" y="64" text-anchor="middle">あなたのサーバー</text>
@@ -352,7 +357,7 @@
     <section class="section" id="multi-uplink" aria-labelledby="multi-title">
       <div class="wrap">
         <h2 id="multi-title">会社のネットワークでも直接つながる</h2>
-        <p class="intro">2 つの回線を持つ会社や、キャリアの NAT アドレスプールのようなネットワークには出口が複数あり、宛先ごとに出口が変わります。一度調べただけでは出口のひとつしか分からず、中継頼みになります。CopySync はすべての出口を調べ、そのアドレスをすべて相手に伝えます。</p>
+        <p class="intro">2 つの回線を持つ会社や、キャリアの NAT アドレスプールのようなネットワークには出口が複数あり、宛先ごとに出口が変わります。一度調べただけでは出口のひとつしか分からず、中継頼みになります。PasteFerry はすべての出口を調べ、そのアドレスをすべて相手に伝えます。</p>
         <div class="cols">
           <div>
             <h3>やっていること</h3>
@@ -367,7 +372,7 @@
           </div>
           <div>
             <h3>実際のネットワーク構成で検証</h3>
-            <p class="small">NAT 穴あけ実験室では、Linux のネットワーク名前空間と iptables でこれらの構成を組み、CopySync の本物の接続コードをそれぞれで動かします。コミットのたびに自動で実行されます。</p>
+            <p class="small">NAT 穴あけ実験室では、Linux のネットワーク名前空間と iptables でこれらの構成を組み、PasteFerry の本物の接続コードをそれぞれで動かします。コミットのたびに自動で実行されます。</p>
             <div class="table-scroll">
               <table>
                 <thead><tr><th scope="col">構成</th><th scope="col">結果</th></tr></thead>
@@ -431,9 +436,9 @@
           <div><dt>ファイルが大きすぎる</dt><dd>上限を超えるものは記録だけを同期し、必要なときに取り込みます。そのとき元のファイルが消えていれば、あいまいな失敗ではなく、はっきりそう伝えます。</dd></div>
           <div><dt>プレーンテキストしか受け付けない場所に貼り付ける</dt><dd>Web からコピーした書式付きテキストは HTML とプレーンテキストの両方で書き込むので、どこに貼り付けてもタグが混ざりません。</dd></div>
           <div><dt>Windows では使えないファイル名</dt><dd>Mac では使えるコロンや疑問符などは、対応する全角文字に置き換えて受け取るので、名前はそのまま読めます。大文字と小文字だけが違う 2 つのファイルが上書きし合うこともありません。</dd></div>
-          <div><dt>パスワードをコピーした</dt><dd>Windows ではパスワードマネージャーがコピーした内容に「記録しない」印が付きます。CopySync はそれを見て飛ばします。同期も履歴への保存もしません。</dd></div>
+          <div><dt>パスワードをコピーした</dt><dd>Windows ではパスワードマネージャーがコピーした内容に「記録しない」印が付きます。PasteFerry はそれを見て飛ばします。同期も履歴への保存もしません。</dd></div>
           <div><dt>クリップボードの読み取りをまだ許可していない</dt><dd>内容は読みに行きません。読みに行くと、バックグラウンドプロセスが見えないダイアログで止まってしまうからです。アプリが許可を促し、設定へ直接飛べるボタンを出します。</dd></div>
-          <div><dt>バックグラウンドサービスが落ちた</dt><dd>Mac ではシステムの launchd が、Windows では CopySync 自身の監視プロセスが再起動します。10 秒に 1 回までに抑え、暴走はしません。</dd></div>
+          <div><dt>バックグラウンドサービスが落ちた</dt><dd>Mac ではシステムの launchd が、Windows では PasteFerry 自身の監視プロセスが再起動します。10 秒に 1 回までに抑え、暴走はしません。</dd></div>
           <div><dt>アプリを更新した、または移動した</dt><dd>アプリを開いたときにログイン項目を正しい場所に向け直し、バックグラウンドサービスを新しいバージョンで再起動します。</dd></div>
         </dl>
       </div>
@@ -447,8 +452,8 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</h3>
             <ol>
-              <li>DMG をダウンロードして開き、CopySync を「アプリケーション」にドラッグします。<span class="aside">Apple シリコン版と Intel 版があります。自分の Mac がどちらかの確かめ方は、ダウンロードページにあります。</span></li>
-              <li>「アプリケーション」から開きます。<span class="aside">初回は「開発元を検証できません」と表示されます。CopySync はまだ Apple の公証を受けていないためです。「システム設定 → プライバシーとセキュリティ」を開き、ページ下部の「このまま開く」をクリックします。必要なのは一度だけです。</span></li>
+              <li>DMG をダウンロードして開き、PasteFerry を「アプリケーション」にドラッグします。<span class="aside">Apple シリコン版と Intel 版があります。自分の Mac がどちらかの確かめ方は、ダウンロードページにあります。</span></li>
+              <li>「アプリケーション」から開きます。<span class="aside">初回は「開発元を検証できません」と表示されます。PasteFerry はまだ Apple の公証を受けていないためです。「システム設定 → プライバシーとセキュリティ」を開き、ページ下部の「このまま開く」をクリックします。必要なのは一度だけです。</span></li>
               <li>「バックグラウンド同期を有効にする」をクリックします。クリップボードの読み取りと、ローカルネットワーク上のデバイスを探すことについて聞かれたら、どちらも許可します。</li>
               <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレス <code>ws://サーバーアドレス:8787/signal</code> を入力して Return を押します。同じネットワークなら空欄のままです。</li>
             </ol>
@@ -457,8 +462,8 @@
           <div>
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Windows</h3>
             <ol>
-              <li>CopySync-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。<span class="aside">CopySync はまだコード署名されていないため、「Windows によって PC が保護されました」と表示されます。「詳細情報」を押してから「実行」を押してください。インストーラーを使いたくない場合は<a href="https://github.com/baiyuze/copysync/releases/latest/download/CopySync-windows-x64.zip">ポータブル版</a>もあります。</span></li>
-              <li>CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても、画面右下の通知領域で動き続けます。</li>
+              <li>CopySync-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。<span class="aside">PasteFerry はまだコード署名されていないため、「Windows によって PC が保護されました」と表示されます。「詳細情報」を押してから「実行」を押してください。インストーラーを使いたくない場合は<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/CopySync-windows-x64.zip">ポータブル版</a>もあります。</span></li>
+              <li>PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても、画面右下の通知領域で動き続けます。</li>
               <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
@@ -467,7 +472,7 @@
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>Linux</h3>
             <ol>
               <li>Ubuntu や Debian などでは .deb をダウンロードし、<code>sudo apt install ./CopySync-linux-amd64.deb</code> を実行します。ほかのディストリビューションでは tar.gz をダウンロードして展開し、<code>./CopySync/install.sh</code> を実行します。</li>
-              <li>アプリケーションメニューから CopySync を開き、「バックグラウンド同期を有効にする」をクリックします。以後はログイン時に自動で起動します。</li>
+              <li>アプリケーションメニューから PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。以後はログイン時に自動で起動します。</li>
               <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Linux 版をダウンロード</a>
@@ -507,7 +512,7 @@
             <tr><th scope="row">履歴の保存期間</th><td>初期値 3 日、1 時間〜30 日で調整可能。期限が来たら自動で削除</td></tr>
             <tr><th scope="row">実測の速度</th><td>LAN の直接接続で 20 MB のファイルを約 330 ミリ秒で転送、チェックサム一致</td></tr>
             <tr><th scope="row">技術スタック</th><td>バックグラウンドサービスとサーバーは Go（Windows では Go から Win32 を直接呼び出し、Linux では Go で X11 プロトコルを直接扱う）、アプリは Flutter（3 つの OS で同じコード）、メッセージ定義は Protocol Buffers</td></tr>
-            <tr><th scope="row">ライセンス</th><td><a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
+            <tr><th scope="row">ライセンス</th><td><a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">GNU AGPL-3.0</a></td></tr>
             </tbody>
           </table>
         </div>
@@ -520,11 +525,11 @@
         <div class="faq">
           <details>
             <summary>UU Remote の使用中に .uuremote_ ファイルが増え続けるのはなぜですか？</summary>
-            <div class="answer"><p>UU Remote は一時的なプレースホルダーファイルをシステムのクリップボードに書き込みます。旧版の CopySync はそれを通常のファイルとして記録・転送していました。1.3.2 では確認済みの命名パターンを送受信時に除外し、起動時にプレースホルダーだけの履歴を削除します。通常の空ファイル、隠しファイル、大容量ファイルは対象外です。50 MB は自動転送のしきい値であり、UU の UDP P2P 設定とは関係ありません。両端を更新してください。他のクリップボード同期ツールによる通常コンテンツの重複は起こり得ます。</p></div>
+            <div class="answer"><p>UU Remote は一時的なプレースホルダーファイルをシステムのクリップボードに書き込みます。旧版の PasteFerry はそれを通常のファイルとして記録・転送していました。1.3.2 では確認済みの命名パターンを送受信時に除外し、起動時にプレースホルダーだけの履歴を削除します。通常の空ファイル、隠しファイル、大容量ファイルは対象外です。50 MB は自動転送のしきい値であり、UU の UDP P2P 設定とは関係ありません。両端を更新してください。他のクリップボード同期ツールによる通常コンテンツの重複は起こり得ます。</p></div>
           </details>
           <details>
             <summary>macOS のユニバーサルクリップボードとの違いは？</summary>
-            <div class="answer"><p>ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。CopySync は同じネットワークならインストールしてすぐ使え、ネットワークをまたぐときは両方があなたのサーバーにつながるか、Tailscale を入れていれば使えます。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。</p><p>2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。</p></div>
+            <div class="answer"><p>ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。PasteFerry は同じネットワークならインストールしてすぐ使え、ネットワークをまたぐときは両方があなたのサーバーにつながるか、Tailscale を入れていれば使えます。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。</p><p>2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。</p></div>
           </details>
           <details>
             <summary>サーバーにコピーした内容は見えますか？</summary>
@@ -532,11 +537,11 @@
           </details>
           <details>
             <summary>出口が複数ある会社のネットワークでも直接つながりますか？</summary>
-            <div class="answer"><p>つながります。こうしたネットワークは宛先ごとに出口を選びます。CopySync はひとつのポートから複数のサーバーに問い合わせて出口ごとのアドレスを集め、すべて相手に送り、相手がひとつずつ試します。テストでは、出口が 4 つある会社の Mac と家庭の回線が直接つながりました。相手がポートをランダムに割り当てる NAT の場合は中継になります。</p></div>
+            <div class="answer"><p>つながります。こうしたネットワークは宛先ごとに出口を選びます。PasteFerry はひとつのポートから複数のサーバーに問い合わせて出口ごとのアドレスを集め、すべて相手に送り、相手がひとつずつ試します。テストでは、出口が 4 つある会社の Mac と家庭の回線が直接つながりました。相手がポートをランダムに割り当てる NAT の場合は中継になります。</p></div>
           </details>
           <details>
             <summary>サーバーは自分で用意する必要がありますか？</summary>
-            <div class="answer"><p>場合によります。コンピューターが<a href="lan/">同じネットワーク</a>にあるなら、アプリを入れてペアリングするだけで、サーバーは要りません。</p><p>ネットワークをまたぐ方法は 2 つあります。<a href="cloud/">公開サーバー</a>は最小構成のクラウドサーバーで足り、どこからでも同期できます。<a href="tailscale/">Tailscale</a> は各コンピューターに入れ、ペアリング時に相手の Tailscale アドレスを入力するだけで、サーバーは要りません。CopySync は公開サーバーを提供しないので、誰のデータも他人のマシンを通りません。</p></div>
+            <div class="answer"><p>場合によります。コンピューターが<a href="lan/">同じネットワーク</a>にあるなら、アプリを入れてペアリングするだけで、サーバーは要りません。</p><p>ネットワークをまたぐ方法は 2 つあります。<a href="cloud/">公開サーバー</a>は最小構成のクラウドサーバーで足り、どこからでも同期できます。<a href="tailscale/">Tailscale</a> は各コンピューターに入れ、ペアリング時に相手の Tailscale アドレスを入力するだけで、サーバーは要りません。PasteFerry は公開サーバーを提供しないので、誰のデータも他人のマシンを通りません。</p></div>
           </details>
           <details>
             <summary>自宅にグローバル IP がありません。自宅と会社のあいだで同期できますか？</summary>
@@ -552,7 +557,7 @@
           </details>
           <details>
             <summary>初めて開くときにシステムに止められるのはなぜ？</summary>
-            <div class="answer"><p>CopySync はまだ Apple の公証を受けておらず、Windows 版もコード署名していません。どちらも毎年費用のかかる証明書が必要です。</p><p>Mac では「システム設定 → プライバシーとセキュリティ」でページ下部の「このまま開く」をクリック、Windows では「Windows によって PC が保護されました」で「詳細情報」から「実行」を押してください。どちらも一度だけで済みます。</p></div>
+            <div class="answer"><p>PasteFerry はまだ Apple の公証を受けておらず、Windows 版もコード署名していません。どちらも毎年費用のかかる証明書が必要です。</p><p>Mac では「システム設定 → プライバシーとセキュリティ」でページ下部の「このまま開く」をクリック、Windows では「Windows によって PC が保護されました」で「詳細情報」から「実行」を押してください。どちらも一度だけで済みます。</p></div>
           </details>
           <details>
             <summary>大きなファイルはどうなりますか？</summary>
@@ -560,7 +565,7 @@
           </details>
           <details>
             <summary>無料ですか？会社で使えますか？</summary>
-            <div class="answer"><p>無料です。CopySync は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。</p></div>
+            <div class="answer"><p>無料です。PasteFerry は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。</p></div>
           </details>
         </div>
       </div>
@@ -570,24 +575,24 @@
       <div class="wrap">
         <h2 class="display" id="closing-title">2 台のコンピューター、<br>ひとつのクリップボード。</h2>
         <div class="cta">
-          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>CopySync をダウンロード</a>
+          <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>PasteFerry をダウンロード</a>
         </div>
         <p class="note">バージョン 1.7.0、無料・オープンソース。macOS 13 以降、Windows 10・11、Linux（x64 と ARM64）。</p>
         <a class="start-link" href="start/">はじめての方は、3 ステップのはじめかたへ →</a>
-        <a class="source" href="https://github.com/baiyuze/copysync">GitHub でソースコードを見る</a>
+        <a class="source" href="https://github.com/baiyuze/pasteferry">GitHub でソースコードを見る</a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync は GNU AGPL-3.0 のオープンソースです。</p>
+      <p>PasteFerry は GNU AGPL-3.0 のオープンソースです。</p>
       <nav aria-label="フッターのリンク">
-        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">ライセンス</a>
-        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">ライセンス</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">問題を報告</a>
       </nav>
       <nav aria-label="言語">
         <a href=".././" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>

@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LAN に CopySync サーバーを置く：Windows・Mac・Linux の手順</title>
-  <meta name="description" content="コンピューターが同じネットワークにあれば、クラウドサーバーは要りません。常に電源が入っている Windows・Mac・Linux のコンピューターで、CopySync のシグナリング兼 TURN サーバーをスクリプトひとつで動かせます。起動時に自動で立ち上がります。アプリの設定とトラブル対処つき。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/ja/server/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/server/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/server/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/server/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/server/">
+  <title>LAN に PasteFerry サーバーを置く：Windows・Mac・Linux の手順</title>
+  <meta name="description" content="コンピューターが同じネットワークにあれば、クラウドサーバーは要りません。常に電源が入っている Windows・Mac・Linux のコンピューターで、PasteFerry のシグナリング兼 TURN サーバーをスクリプトひとつで動かせます。起動時に自動で立ち上がります。アプリの設定とトラブル対処つき。">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/ja/server/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/server/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/server/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/server/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/server/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/server/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="LAN に CopySync サーバーを置く：Windows・Mac・Linux の手順">
-  <meta property="og:description" content="コンピューターが同じネットワークにあれば、クラウドサーバーは要りません。常に電源が入っている Windows・Mac・Linux のコンピューターで、CopySync のシグナリング兼 TURN サーバーをスクリプトひとつで動かせます。起動時に自動で立ち上がります。アプリの設定とトラブル対処つき。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/ja/server/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og-en.png">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="LAN に PasteFerry サーバーを置く：Windows・Mac・Linux の手順">
+  <meta property="og:description" content="コンピューターが同じネットワークにあれば、クラウドサーバーは要りません。常に電源が入っている Windows・Mac・Linux のコンピューターで、PasteFerry のシグナリング兼 TURN サーバーをスクリプトひとつで動かせます。起動時に自動で立ち上がります。アプリの設定とトラブル対処つき。">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/ja/server/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og-en.png">
   <meta property="og:locale" content="ja_JP">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
@@ -30,14 +30,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href="../../ja/" aria-label="CopySync ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href="../../ja/" aria-label="PasteFerry ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
       <nav aria-label="ページ内の移動">
         <a href="../../ja/start/">はじめかた</a>
         <a class="wide" href="../../ja/#how">しくみ</a>
         <a class="wide" href="../../ja/#faq">よくある質問</a>
         <a class="mid" href="../../ja/start/#server" aria-current="true">接続方法</a>
         <a href="../../ja/download/">ダウンロード</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="言語：日本語"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>日本語</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -51,13 +51,14 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">PasteFerry の旧名は CopySync です。次のバージョンまで、アプリとインストーラーには CopySync と表示されます。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href="../../ja/">CopySync</a> / <a href="../../ja/start/#server">接続方法</a></p>
+        <p class="crumb"><a href="../../ja/">PasteFerry</a> / <a href="../../ja/start/#server">接続方法</a></p>
         <h1 class="display">LAN にサーバーを置く</h1>
-        <p class="lede">家や会社のコンピューターが同じネットワークにあるなら、クラウドサーバーは要りません。電源を入れたままのコンピューターを 1 台選び、スクリプトをダウンロードして実行し、表示されたアドレスを各コンピューターの CopySync に入力します。</p>
+        <p class="lede">家や会社のコンピューターが同じネットワークにあるなら、クラウドサーバーは要りません。電源を入れたままのコンピューターを 1 台選び、スクリプトをダウンロードして実行し、表示されたアドレスを各コンピューターの PasteFerry に入力します。</p>
         <p class="notice"><strong>同じネットワークなら、もうサーバーは要りません：</strong>アプリを入れてペアリングするだけです（<a href="../../ja/lan/">同じネットワークでの手順</a>）。このページは、2 つのサブネットがお互いに届かず、両方から届くコンピューターを経由して中継する必要がある場合に役立ちます。</p>
         <ol class="guide-toc">
           <li><a href="#prepare">準備</a></li>
@@ -75,7 +76,7 @@
         <p class="intro">各コンピューターはサーバーにつながったままで、それを通じて相手を見つけ、接続情報を交換します。つながったあと、コピーした内容は 2 台のあいだを直接流れます。直接つながらないときだけサーバーを中継し、その場合も暗号化されたままです。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 440" role="img" aria-labelledby="lan-title lan-desc">
-            <title id="lan-title">LAN での CopySync</title>
+            <title id="lan-title">LAN での PasteFerry</title>
             <desc id="lan-desc">同じ LAN の Mac と Windows PC が、アドレス 192.168.1.20 のサーバーにシグナリングで接続します。コピーした内容は 2 台のあいだを直接流れ、直接つながらないときだけサーバーの TURN 中継を通ります。</desc>
             <rect class="d-lan" x="8" y="8" width="944" height="384" rx="22"/>
             <text class="d-lan-label" x="32" y="42">LAN：同じ Wi‑Fi または有線ネットワーク</text>
@@ -90,10 +91,10 @@
             <text class="d-note" x="220" y="200">中継 UDP 3478（直接不可のとき）</text>
             <rect class="d-box" x="40" y="250" width="240" height="112" rx="14"/>
             <text class="d-title" x="160" y="300" text-anchor="middle">Mac</text>
-            <text class="d-sub" x="160" y="328" text-anchor="middle">CopySync を使用</text>
+            <text class="d-sub" x="160" y="328" text-anchor="middle">PasteFerry を使用</text>
             <rect class="d-box" x="680" y="250" width="240" height="112" rx="14"/>
             <text class="d-title" x="800" y="300" text-anchor="middle">Windows</text>
-            <text class="d-sub" x="800" y="328" text-anchor="middle">CopySync を使用</text>
+            <text class="d-sub" x="800" y="328" text-anchor="middle">PasteFerry を使用</text>
             <path class="d-direct" d="M280 306H680"/>
             <text class="d-label" x="480" y="292" text-anchor="middle">直接接続、エンドツーエンド暗号化</text>
             <text class="d-note" x="480" y="336" text-anchor="middle">内容は 2 台のあいだだけを流れる</text>
@@ -140,11 +141,11 @@
             <div class="os-grid">
               <div class="os-steps">
                 <ol class="steps">
-                <li><a href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> をダウンロードし、右クリックで「すべて展開」します。</li>
+                <li><a href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a> をダウンロードし、右クリックで「すべて展開」します。</li>
                 <li>展開したフォルダーを開き、<code>install.cmd</code> をダブルクリックします。<span class="aside">「Windows によって PC が保護されました」と出たら「詳細情報」から「実行」を、ユーザーアカウント制御が出たら「はい」を押します。サーバーはまだコード署名していないため、一度だけ確認されます。</span></li>
                 <li>インストールは新しく開くウィンドウで進みます。最後に表示される <code>ws://…/signal</code> がアプリに入力するアドレスです。</li>
                 </ol>
-                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版サーバーをダウンロード</a>
+                <a class="button" href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版サーバーをダウンロード</a>
                 <ul class="points">
                 <li><strong>Windows サービスとして動作：</strong>Windows の起動とともに立ち上がり、サインイン不要で、ウィンドウも出ません。「サービス」では CopySync Server と表示されます。</li>
                 <li><strong>ファイアウォールは設定済み：</strong>copysync-server.exe だけを対象にした受信規則をスクリプトが追加するので、ポートを開ける必要はありません。</li>
@@ -206,7 +207,7 @@ In CopySync on each computer, set Settings &gt; Signaling server to:
                   <li>「ターミナル」を開き、次の行を順に実行します：
                 <div class="code">
                   <button class="copy" type="button" data-done="コピーしました">コピー</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-macos.tar.gz
 tar xzf copysync-server-macos.tar.gz
 cd copysync-server-macos
 ./install.sh</code></pre>
@@ -262,7 +263,7 @@ In CopySync on each computer, set Settings → Signaling server to:
                   <li>そのマシン上で（または ssh でログインして）次の行を順に実行します：<span class="aside">ARM（64 ビット OS の Raspberry Pi など）では <code>amd64</code> を <code>arm64</code> に置き換えます。</span>
                 <div class="code">
                   <button class="copy" type="button" data-done="コピーしました">コピー</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
 tar xzf copysync-server-linux-amd64.tar.gz
 cd copysync-server-linux-amd64
 sudo ./install.sh</code></pre>
@@ -333,12 +334,12 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
       <div class="wrap">
         <h2 id="clients-title">各コンピューターにアドレスを入力</h2>
         <ol class="flow">
-          <li><h3>設定を開く</h3><p>各コンピューターで CopySync を開き、「設定」に進みます。サーバーを動かしているコンピューターも同じです。</p></li>
+          <li><h3>設定を開く</h3><p>各コンピューターで PasteFerry を開き、「設定」に進みます。サーバーを動かしているコンピューターも同じです。</p></li>
           <li><h3>アドレスを入力</h3><p>「シグナリングサーバー」に <code>ws://192.168.1.20:8787/signal</code>（あなたのアドレス）を入力し、Return か Enter を押します。</p></li>
           <li><h3>状態を確認</h3><p>「接続状態」が緑の「接続済み」になれば完了です。「デバイス」でペアリングすれば、コピーが同期されるようになります。</p></li>
         </ol>
         <figure class="shot">
-          <img src="../../assets/screenshots/ja/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync の設定画面：シグナリングサーバーは ws://192.168.1.20:8787/signal、接続状態は接続済み">
+          <img src="../../assets/screenshots/ja/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="PasteFerry の設定画面：シグナリングサーバーは ws://192.168.1.20:8787/signal、接続状態は接続済み">
         </figure>
         <p class="note">アプリがまだなら、<a href="../../ja/start/">はじめかた</a>をご覧ください。</p>
       </div>
@@ -365,7 +366,7 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
             <div class="answer"><p>できません。サーバーには LAN の中からしか届かないためです。別のネットワークからも同期したい場合は、<a href="../../ja/cloud/">公開サーバー</a>か <a href="../../ja/tailscale/">Tailscale</a> を使います。</p></div>
           </details>
           <details>
-            <summary>サーバーを動かすコンピューターでも CopySync を使う場合のアドレスは？</summary>
+            <summary>サーバーを動かすコンピューターでも PasteFerry を使う場合のアドレスは？</summary>
             <div class="answer"><p>同じ LAN のアドレスで大丈夫です。<code>ws://127.0.0.1:8787/signal</code> でもかまいません。サーバーとアプリは互いに影響しません。</p></div>
           </details>
         </div>
@@ -376,23 +377,23 @@ Open in your firewall: TCP 8787 (signaling), UDP 3478 (STUN and TURN), UDP 32768
       <div class="wrap">
         <h2 class="display" id="closing-title">電源を入れたままの<br>コンピューターが 1 台あれば十分。</h2>
         <div class="cta">
-          <a class="button" href="../../ja/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>CopySync をダウンロード</a>
+          <a class="button" href="../../ja/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>PasteFerry をダウンロード</a>
         </div>
         <p class="note">バージョン 1.7.0、無料・オープンソース。macOS 13 以降、Windows 10・11、Linux（x64 と ARM64）。</p>
-        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">サーバーの詳しい構築手順（グローバル IP、Docker を含む、英語・中国語）</a>
+        <a class="source" href="https://github.com/baiyuze/pasteferry/blob/main/server/deploy/README.md">サーバーの詳しい構築手順（グローバル IP、Docker を含む、英語・中国語）</a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync は GNU AGPL-3.0 のオープンソースです。</p>
+      <p>PasteFerry は GNU AGPL-3.0 のオープンソースです。</p>
       <nav aria-label="フッターのリンク">
-        <a href="https://github.com/baiyuze/copysync/releases">すべてのリリース</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新履歴</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技術資料（中国語）</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">ライセンス</a>
-        <a href="https://github.com/baiyuze/copysync/issues">問題を報告</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">ライセンス</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">問題を報告</a>
       </nav>
       <nav aria-label="言語">
         <a href="../../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>

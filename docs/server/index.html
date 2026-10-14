@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>在局域网里部署 CopySync 服务器：Windows、Mac、Linux 教程</title>
-  <meta name="description" content="两台电脑在同一个网络里时，不需要云服务器：在一台常开的 Windows、Mac 或 Linux 电脑上运行 CopySync 的信令与 TURN 服务器，下载后运行一个脚本即可，开机自动运行。附客户端设置与排错。">
-  <link rel="canonical" href="https://baiyuze.github.io/copysync/server/">
-  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/copysync/server/">
-  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/copysync/zh-tw/server/">
-  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/copysync/zh-hk/server/">
-  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/copysync/en/server/">
-  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/copysync/ja/server/">
+  <title>在局域网里部署隔空贴服务器：Windows、Mac、Linux 教程</title>
+  <meta name="description" content="两台电脑在同一个网络里时，不需要云服务器：在一台常开的 Windows、Mac 或 Linux 电脑上运行隔空贴的信令与 TURN 服务器，下载后运行一个脚本即可，开机自动运行。附客户端设置与排错。">
+  <link rel="canonical" href="https://baiyuze.github.io/pasteferry/server/">
+  <link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/server/">
+  <link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/server/">
+  <link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/server/">
+  <link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/server/">
+  <link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/server/">
   <meta name="theme-color" content="#141416">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="CopySync">
-  <meta property="og:title" content="在局域网里部署 CopySync 服务器：Windows、Mac、Linux 教程">
-  <meta property="og:description" content="两台电脑在同一个网络里时，不需要云服务器：在一台常开的 Windows、Mac 或 Linux 电脑上运行 CopySync 的信令与 TURN 服务器，下载后运行一个脚本即可，开机自动运行。附客户端设置与排错。">
-  <meta property="og:url" content="https://baiyuze.github.io/copysync/server/">
-  <meta property="og:image" content="https://baiyuze.github.io/copysync/assets/og.png">
+  <meta property="og:site_name" content="隔空贴">
+  <meta property="og:title" content="在局域网里部署隔空贴服务器：Windows、Mac、Linux 教程">
+  <meta property="og:description" content="两台电脑在同一个网络里时，不需要云服务器：在一台常开的 Windows、Mac 或 Linux 电脑上运行隔空贴的信令与 TURN 服务器，下载后运行一个脚本即可，开机自动运行。附客户端设置与排错。">
+  <meta property="og:url" content="https://baiyuze.github.io/pasteferry/server/">
+  <meta property="og:image" content="https://baiyuze.github.io/pasteferry/assets/og.png">
   <meta property="og:locale" content="zh_CN">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
@@ -30,14 +30,14 @@
 
   <header class="bar">
     <div class="wrap">
-      <a class="brand" href=".././" aria-label="CopySync 首页"><img src="../assets/icon.svg" alt="" width="26" height="26">CopySync</a>
+      <a class="brand" href=".././" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
       <nav aria-label="页面导航">
         <a href="../start/">快速开始</a>
         <a class="wide" href=".././#how">工作原理</a>
         <a class="wide" href=".././#faq">常见问题</a>
         <a class="mid" href="../start/#server" aria-current="true">连接方式</a>
         <a href="../download/">下载</a>
-        <a class="wide" href="https://github.com/baiyuze/copysync">GitHub</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
         <details class="lang">
           <summary aria-label="语言：简体中文"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>简体中文</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
           <ul>
@@ -51,13 +51,14 @@
       </nav>
     </div>
   </header>
+  <p class="renamed"><span class="wrap">隔空贴原名 CopySync。应用和安装包里暂时还叫 CopySync，下个版本会改过来。</span></p>
 
   <main id="main">
     <section class="hero guide-hero">
       <div class="wrap">
-        <p class="crumb"><a href=".././">CopySync</a> / <a href="../start/#server">连接方式</a></p>
+        <p class="crumb"><a href=".././">隔空贴</a> / <a href="../start/#server">连接方式</a></p>
         <h1 class="display">在局域网里部署服务器</h1>
-        <p class="lede">家里或办公室的电脑在同一个网络里，就不需要云服务器。找一台常开的电脑，下载、运行一个脚本，再把它显示的地址填进每台电脑的 CopySync 里。</p>
+        <p class="lede">家里或办公室的电脑在同一个网络里，就不需要云服务器。找一台常开的电脑，下载、运行一个脚本，再把它显示的地址填进每台电脑的隔空贴里。</p>
         <p class="notice"><strong>同一个网络里，现在不需要服务器了：</strong>装好 App 直接配对就能用，见<a href="../lan/">同一网络教程</a>。这篇仍然适用于两个网段之间互相访问不到、要经一台两边都能访问的电脑中转的情况。</p>
         <ol class="guide-toc">
           <li><a href="#prepare">准备</a></li>
@@ -75,7 +76,7 @@
         <p class="intro">每台电脑一直连着服务器，靠它找到对方、交换连接信息。连上之后，复制的内容在两台电脑之间直接传输；只有直连打不通时，才经过它中转，内容依然加密。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 440" role="img" aria-labelledby="lan-title lan-desc">
-            <title id="lan-title">局域网里的 CopySync</title>
+            <title id="lan-title">局域网里的隔空贴</title>
             <desc id="lan-desc">同一个局域网里，Mac 与 Windows 电脑通过信令连接到地址为 192.168.1.20 的服务器，复制的内容在两台电脑之间直连传输；直连不通时经服务器的 TURN 中转。</desc>
             <rect class="d-lan" x="8" y="8" width="944" height="384" rx="22"/>
             <text class="d-lan-label" x="32" y="42">局域网：同一个 Wi‑Fi 或有线网络</text>
@@ -90,10 +91,10 @@
             <text class="d-note" x="220" y="200">中转 UDP 3478，直连不通时</text>
             <rect class="d-box" x="40" y="250" width="240" height="112" rx="14"/>
             <text class="d-title" x="160" y="300" text-anchor="middle">Mac</text>
-            <text class="d-sub" x="160" y="328" text-anchor="middle">装着 CopySync</text>
+            <text class="d-sub" x="160" y="328" text-anchor="middle">装着隔空贴</text>
             <rect class="d-box" x="680" y="250" width="240" height="112" rx="14"/>
             <text class="d-title" x="800" y="300" text-anchor="middle">Windows</text>
-            <text class="d-sub" x="800" y="328" text-anchor="middle">装着 CopySync</text>
+            <text class="d-sub" x="800" y="328" text-anchor="middle">装着隔空贴</text>
             <path class="d-direct" d="M280 306H680"/>
             <text class="d-label" x="480" y="292" text-anchor="middle">直连，端到端加密</text>
             <text class="d-note" x="480" y="336" text-anchor="middle">复制的内容只在两台电脑之间传输</text>
@@ -140,11 +141,11 @@
             <div class="os-grid">
               <div class="os-steps">
                 <ol class="steps">
-                <li>下载 <a href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a>，右键选「全部解压缩」。</li>
+                <li>下载 <a href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip">copysync-server-windows-amd64.zip</a>，右键选「全部解压缩」。</li>
                 <li>打开解压出的文件夹，双击 <code>install.cmd</code>。<span class="aside">提示「Windows 已保护你的电脑」时，点「更多信息」，再点「仍要运行」；弹出用户账户控制时点「是」。服务器还没有代码签名，所以会这样问一次。</span></li>
                 <li>安装在新打开的窗口里进行。最后显示的 <code>ws://…/signal</code> 就是客户端要填的地址。</li>
                 </ol>
-                <a class="button" href="https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版服务器</a>
+                <a class="button" href="https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-windows-amd64.zip"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版服务器</a>
                 <ul class="points">
                 <li><strong>作为 Windows 服务运行：</strong>开机就启动，不用登录，也没有窗口。在「服务」里叫 CopySync Server。</li>
                 <li><strong>防火墙已经放行：</strong>脚本添加了一条只针对 copysync-server.exe 的入站规则，不用自己开端口。</li>
@@ -206,7 +207,7 @@
                   <li>打开「终端」，逐行运行：
                 <div class="code">
                   <button class="copy" type="button" data-done="已复制">复制</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-macos.tar.gz
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-macos.tar.gz
 tar xzf copysync-server-macos.tar.gz
 cd copysync-server-macos
 ./install.sh</code></pre>
@@ -262,7 +263,7 @@ cd copysync-server-macos
                   <li>在这台机器上（或者 ssh 登录后）逐行运行：<span class="aside">ARM 设备，比如装了 64 位系统的树莓派，把 <code>amd64</code> 换成 <code>arm64</code>。</span>
                 <div class="code">
                   <button class="copy" type="button" data-done="已复制">复制</button>
-<pre><code>curl -LO https://github.com/baiyuze/copysync/releases/latest/download/copysync-server-linux-amd64.tar.gz
+<pre><code>curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/copysync-server-linux-amd64.tar.gz
 tar xzf copysync-server-linux-amd64.tar.gz
 cd copysync-server-linux-amd64
 sudo ./install.sh</code></pre>
@@ -333,12 +334,12 @@ sudo ./install.sh</code></pre>
       <div class="wrap">
         <h2 id="clients-title">在每台电脑上填地址</h2>
         <ol class="flow">
-          <li><h3>打开设置</h3><p>在每台电脑上打开 CopySync，进入「设置」。服务器所在的那台电脑也一样。</p></li>
+          <li><h3>打开设置</h3><p>在每台电脑上打开隔空贴，进入「设置」。服务器所在的那台电脑也一样。</p></li>
           <li><h3>填入地址</h3><p>在「信令服务器地址」里填 <code>ws://192.168.1.20:8787/signal</code>（换成你的地址），按回车保存。</p></li>
           <li><h3>看连接状态</h3><p>「连接状态」变成绿色的「已连接」就好了。接着在「设备」里配对，之后复制就会同步。</p></li>
         </ol>
         <figure class="shot">
-          <img src="../assets/screenshots/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="CopySync 的设置页：信令服务器地址填着 ws://192.168.1.20:8787/signal，连接状态显示已连接">
+          <img src="../assets/screenshots/settings-lan-dark.png" width="2112" height="1472" loading="lazy" alt="隔空贴的设置页：信令服务器地址填着 ws://192.168.1.20:8787/signal，连接状态显示已连接">
         </figure>
         <p class="note">还没装 App？见<a href="../start/">快速开始</a>。</p>
       </div>
@@ -365,7 +366,7 @@ sudo ./install.sh</code></pre>
             <div class="answer"><p>不能，服务器只在局域网里访问得到。要在别的网络里也能同步，换成<a href="../cloud/">公网服务器</a>，或者<a href="../tailscale/">Tailscale</a>。</p></div>
           </details>
           <details>
-            <summary>服务器所在的那台电脑也要用 CopySync，地址填什么？</summary>
+            <summary>服务器所在的那台电脑也要用隔空贴，地址填什么？</summary>
             <div class="answer"><p>填同样的局域网地址就行，填 <code>ws://127.0.0.1:8787/signal</code> 也可以。服务器和 App 互不影响。</p></div>
           </details>
         </div>
@@ -376,23 +377,23 @@ sudo ./install.sh</code></pre>
       <div class="wrap">
         <h2 class="display" id="closing-title">一台常开的电脑，就够了。</h2>
         <div class="cta">
-          <a class="button" href="../download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 CopySync</a>
+          <a class="button" href="../download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载隔空贴</a>
         </div>
         <p class="note">版本 1.7.0，免费开源。macOS 13 及以上；Windows 10、11；Linux（x64 与 ARM64）。</p>
-        <a class="source" href="https://github.com/baiyuze/copysync/blob/main/server/deploy/README.md">服务器的完整部署说明（含公网与 Docker）</a>
+        <a class="source" href="https://github.com/baiyuze/pasteferry/blob/main/server/deploy/README.md">服务器的完整部署说明（含公网与 Docker）</a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>CopySync 以 GNU AGPL-3.0 开源。</p>
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
       <nav aria-label="页脚链接">
-        <a href="https://github.com/baiyuze/copysync/releases">所有版本</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/CHANGELOG.md">更新记录</a>
-        <a href="https://baiyuze.github.io/copysync/design/nat-traversal.html">技术方案</a>
-        <a href="https://github.com/baiyuze/copysync/blob/main/LICENSING.md">许可说明</a>
-        <a href="https://github.com/baiyuze/copysync/issues">反馈问题</a>
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://baiyuze.github.io/pasteferry/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
       </nav>
       <nav aria-label="语言">
         <a href="../server/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>
