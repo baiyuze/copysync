@@ -1,8 +1,9 @@
 # Website tour
 
 Each language's homepage opens a localized, silent 85-second tour. The same
-tour is available at `tour/` under each language root. The homepage loads the
-artwork and screenshots only after the visitor clicks **Watch the tour**.
+tour is available at `tour/` under each language root. The homepage keeps its
+short copy-and-paste animation and places **Watch the full tour** next to the
+download button. The full tour's artwork and screenshots load only on click.
 
 - `tour.html` holds the shared scene markup with `{{semantic_key}}` placeholders.
 - `content/tour.py` holds five complete translations and the player labels.

@@ -62,7 +62,7 @@ COPY = {
 }
 
 UI = {
-    "watch": ("观看宣传片", "觀看宣傳片", "觀看宣傳片", "Watch the tour", "紹介ムービーを見る"),
+    "watch": ("看完整演示", "看完整示範", "觀看完整示範", "Watch the full tour", "紹介ムービーを見る"),
     "title": ("一分钟多，了解隔空贴", "一分多鐘，認識隔空貼", "一分多鐘，認識隔空貼", "Meet PasteFerry in 85 seconds", "85 秒でわかる PasteFerry"),
     "play": ("播放", "播放", "播放", "Play", "再生"),
     "pause": ("暂停", "暫停", "暫停", "Pause", "一時停止"),

@@ -494,8 +494,7 @@ code {
   overflow: hidden;
 }
 
-.tour-link { display: inline-flex; align-items: center; gap: 0.55rem; margin-top: 1.25rem; font-size: 0.95rem; }
-.tour-link > span:first-child { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; padding-left: 2px; border: 1px solid var(--rule-strong); border-radius: 50%; font-size: 0.65rem; }
+.tour-link > span:first-child { margin-right: 0.15rem; color: var(--blue-hi); font-size: 0.75rem; }
 .tour-duration { color: var(--dim); font: 0.8rem var(--mono); }
 .tour-is-open { overflow: hidden; }
 .tour-dialog { width: min(1200px, calc(100vw - 32px)); height: min(calc(min(1200px, 100vw - 32px) * 9 / 16 + 78px), calc(100dvh - 100px)); max-width: 1200px; max-height: calc(100dvh - 100px); padding: 0; border: 1px solid var(--rule-strong); border-radius: 18px; background: var(--ground); overflow: visible; box-shadow: 0 30px 120px #0009; }

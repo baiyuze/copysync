@@ -169,13 +169,15 @@ def footer(c: dict, code: str, up: str, sub: str = "") -> str:
   </footer>"""
 
 
-def cta(c: dict, base: str, start: str = "") -> str:
+def cta(c: dict, base: str, start: str = "", tour_label: str = "") -> str:
     """下载按钮，指向下载页：在那里按系统和芯片选安装包。base 是语言根目录的相对路径，
     start 是快速开始页面的地址，给了就在下面加一行链接。"""
     link = f'\n        <a class="start-link" href="{start}">{c["start_link"]}</a>' if start else ""
+    tour = (f'\n          <a class="button quiet tour-link" href="{base}{TOUR}" data-tour-open aria-haspopup="dialog">'
+            f'<span aria-hidden="true">▶</span> {esc(tour_label)} <span class="tour-duration">1:25</span></a>') if tour_label else ""
     return f"""
         <div class="cta">
-          <a class="button" href="{base}{DOWNLOAD}">{DOWN}{c["dl_button"]}</a>
+          <a class="button" href="{base}{DOWNLOAD}">{DOWN}{c["dl_button"]}</a>{tour}
         </div>
         <p class="note">{c["dl_note"]}</p>{link}"""
 
@@ -410,8 +412,7 @@ def home(code: str) -> str:
     <section class="hero">
       <div class="wrap">
         <h1 class="display">{c["h1"]}</h1>
-        <p class="lede">{c["lede"]}</p>{cta(c, "", START)}
-        <a class="tour-link" href="{TOUR}" data-tour-open aria-haspopup="dialog"><span aria-hidden="true">▶</span> {tour_ui["watch"]} <span class="tour-duration">1:25</span></a>
+        <p class="lede">{c["lede"]}</p>{cta(c, "", START, tour_ui["watch"])}
         <div class="stage" data-play role="img" aria-label="{esc(c["stage_label"])}">
           <figure class="device mac">
             <div class="screen"><div class="desk">
