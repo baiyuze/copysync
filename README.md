@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://baiyuze.github.io/pasteferry/en/download/"><strong>Download</strong></a>
+  <a href="https://pasteferry.cc/en/download/"><strong>Download</strong></a>
   ·
-  <a href="https://baiyuze.github.io/pasteferry/en/">Website</a>
+  <a href="https://pasteferry.cc/en/">Website</a>
   ·
   <a href="README.zh-CN.md">简体中文</a>
 </p>
@@ -64,9 +64,9 @@ With PasteFerry you pair two computers once. After that, copy on one and paste o
 
 ## Get started
 
-New here? The **[quick start](https://baiyuze.github.io/pasteferry/en/start/)** walks through it with screenshots. You need **the app on each computer**. On the same network that's all; across networks, add a server or Tailscale.
+New here? The **[quick start](https://pasteferry.cc/en/start/)** walks through it with screenshots. You need **the app on each computer**. On the same network that's all; across networks, add a server or Tailscale.
 
-**1. Install the app** on each computer from the **[download page](https://baiyuze.github.io/pasteferry/en/download/)**:
+**1. Install the app** on each computer from the **[download page](https://pasteferry.cc/en/download/)**:
 
 - **Mac** (macOS 13+): [Apple silicon](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-mac-apple-silicon.dmg) or [Intel](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-mac-intel.dmg); a [universal](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry.dmg) build runs on both.
 - **Windows** 10/11: [installer](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-Setup.exe) or [portable zip](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip).
@@ -80,9 +80,9 @@ The builds aren't notarized or code-signed yet: on Mac, allow it once under **Sy
 
 | Way | Best for | You need |
 |---|---|---|
-| **[Same network](https://baiyuze.github.io/pasteferry/en/lan/)** | Computers behind one router, at home or in the office | Nothing |
-| **[Public server](https://baiyuze.github.io/pasteferry/en/cloud/)** | Computers on different networks that should sync from anywhere | A Linux VM with a public IP; the smallest is enough |
-| **[Tailscale](https://baiyuze.github.io/pasteferry/en/tailscale/)** | Across networks without a server | [Tailscale](https://tailscale.com) on every computer; enter the other's Tailscale address when pairing |
+| **[Same network](https://pasteferry.cc/en/lan/)** | Computers behind one router, at home or in the office | Nothing |
+| **[Public server](https://pasteferry.cc/en/cloud/)** | Computers on different networks that should sync from anywhere | A Linux VM with a public IP; the smallest is enough |
+| **[Tailscale](https://pasteferry.cc/en/tailscale/)** | Across networks without a server | [Tailscale](https://tailscale.com) on every computer; enter the other's Tailscale address when pairing |
 
 On a public server:
 
@@ -106,7 +106,7 @@ Open TCP 8787, UDP 3478 and UDP 32768–60999, then enter `ws://<server address>
 
 - [How it works](guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned
 - [Troubleshooting](guide/troubleshooting.md) and known limitations
-- [Quick start](https://baiyuze.github.io/pasteferry/en/start/) · [Same network](https://baiyuze.github.io/pasteferry/en/lan/) · [Public server](https://baiyuze.github.io/pasteferry/en/cloud/) · [Tailscale](https://baiyuze.github.io/pasteferry/en/tailscale/) · [Run a server on your LAN](https://baiyuze.github.io/pasteferry/en/server/), all with screenshots
+- [Quick start](https://pasteferry.cc/en/start/) · [Same network](https://pasteferry.cc/en/lan/) · [Public server](https://pasteferry.cc/en/cloud/) · [Tailscale](https://pasteferry.cc/en/tailscale/) · [Run a server on your LAN](https://pasteferry.cc/en/server/), all with screenshots
 - [Server deployment](server/deploy/README.md): Windows, macOS, Linux, Docker, Tailscale
 - [Building from source](guide/building.md)
 - Design notes (Chinese): [Local network mode](design/lan-mode.md), [NAT traversal on multi-uplink networks](design/nat-traversal.md), [Windows client](design/windows-client.md)

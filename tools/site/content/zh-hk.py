@@ -1,7 +1,7 @@
 """官网文案：繁体中文（香港）。由 zh.py 用 OpenCC 转换后逐条校订，结构见 tools/site/build.py，各语言的键必须一致。"""
 
 REPO = "https://github.com/baiyuze/pasteferry"
-SITE = "https://baiyuze.github.io/pasteferry/"
+SITE = "https://pasteferry.cc/"
 
 C = {
     "brand": "隔空貼",

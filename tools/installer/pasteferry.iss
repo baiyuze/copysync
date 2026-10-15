@@ -22,7 +22,7 @@ AppName=PasteFerry
 AppVersion={#AppVersion}
 AppVerName=PasteFerry {#AppVersion}
 AppPublisher=baiyuze
-AppPublisherURL=https://baiyuze.github.io/pasteferry/
+AppPublisherURL=https://pasteferry.cc/
 AppSupportURL=https://github.com/baiyuze/pasteferry/issues
 DefaultDirName={localappdata}\Programs\PasteFerry
 ; 2.0.0 之前叫 CopySync，装在 Programs\CopySync：不沿用旧目录，旧目录在安装时删掉

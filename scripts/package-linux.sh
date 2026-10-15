@@ -76,7 +76,7 @@ Conflicts: copysync
 Replaces: copysync
 Section: utils
 Priority: optional
-Homepage: https://baiyuze.github.io/pasteferry/
+Homepage: https://pasteferry.cc/
 Description: Sync what you copy between your computers
  PasteFerry keeps the clipboard in sync across Mac, Windows and Linux:
  text, images and files, directly over the local network or through

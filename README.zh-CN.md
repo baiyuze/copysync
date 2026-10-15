@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://baiyuze.github.io/pasteferry/download/"><strong>下载</strong></a>
+  <a href="https://pasteferry.cc/download/"><strong>下载</strong></a>
   ·
-  <a href="https://baiyuze.github.io/pasteferry/">项目主页</a>
+  <a href="https://pasteferry.cc/">项目主页</a>
   ·
   <a href="README.md">English</a>
 </p>
@@ -64,9 +64,9 @@
 
 ## 开始使用
 
-第一次用？跟着**[快速开始](https://baiyuze.github.io/pasteferry/start/)**一步步来，有截图。需要**每台电脑装一个 App**；同一个网络里这就够了，跨网络时再加一台服务器或 Tailscale。
+第一次用？跟着**[快速开始](https://pasteferry.cc/start/)**一步步来，有截图。需要**每台电脑装一个 App**；同一个网络里这就够了，跨网络时再加一台服务器或 Tailscale。
 
-**1. 在每台电脑上安装 App**，到 **[下载页](https://baiyuze.github.io/pasteferry/download/)** 选：
+**1. 在每台电脑上安装 App**，到 **[下载页](https://pasteferry.cc/download/)** 选：
 
 - **Mac**（macOS 13 以上）：[Apple 芯片版](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-mac-apple-silicon.dmg)或 [Intel 版](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-mac-intel.dmg)；也有两种芯片都能用的[通用版](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry.dmg)。
 - **Windows** 10/11：[安装程序](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-Setup.exe)或[便携版](https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip)。
@@ -80,9 +80,9 @@
 
 | 方式 | 适合 | 要准备 |
 |---|---|---|
-| **[同一网络](https://baiyuze.github.io/pasteferry/lan/)** | 电脑都连着同一个路由器（家里或办公室） | 什么都不用 |
-| **[公网服务器](https://baiyuze.github.io/pasteferry/cloud/)** | 电脑分散在不同网络里，想在哪儿都能同步 | 一台有公网 IP 的 Linux 云主机，最低配置就够 |
-| **[Tailscale](https://baiyuze.github.io/pasteferry/tailscale/)** | 要跨网络，但没有公网服务器 | 每台电脑都装 [Tailscale](https://tailscale.com)，配对时输入对方的 Tailscale 地址 |
+| **[同一网络](https://pasteferry.cc/lan/)** | 电脑都连着同一个路由器（家里或办公室） | 什么都不用 |
+| **[公网服务器](https://pasteferry.cc/cloud/)** | 电脑分散在不同网络里，想在哪儿都能同步 | 一台有公网 IP 的 Linux 云主机，最低配置就够 |
+| **[Tailscale](https://pasteferry.cc/tailscale/)** | 要跨网络，但没有公网服务器 | 每台电脑都装 [Tailscale](https://tailscale.com)，配对时输入对方的 Tailscale 地址 |
 
 公网服务器上的安装命令：
 
@@ -106,7 +106,7 @@ sudo ./install.sh <服务器公网IP>
 
 - [工作原理](guide/how-it-works.zh-CN.md)：架构、NAT 打洞、安全模型、兜底、踩过的坑
 - [排障](guide/troubleshooting.zh-CN.md)与已知限制
-- [快速开始](https://baiyuze.github.io/pasteferry/start/) · [同一网络](https://baiyuze.github.io/pasteferry/lan/) · [公网服务器](https://baiyuze.github.io/pasteferry/cloud/) · [Tailscale](https://baiyuze.github.io/pasteferry/tailscale/) · [在局域网里部署服务器](https://baiyuze.github.io/pasteferry/server/)，都是图文教程
+- [快速开始](https://pasteferry.cc/start/) · [同一网络](https://pasteferry.cc/lan/) · [公网服务器](https://pasteferry.cc/cloud/) · [Tailscale](https://pasteferry.cc/tailscale/) · [在局域网里部署服务器](https://pasteferry.cc/server/)，都是图文教程
 - [服务器部署说明](server/deploy/README.md)：Windows、macOS、Linux、Docker、Tailscale
 - [从源码构建](guide/building.zh-CN.md)
 - 技术方案：[局域网直连](design/lan-mode.md)、[多出口网络的 NAT 打洞](design/nat-traversal.md)、[Windows 客户端](design/windows-client.md)

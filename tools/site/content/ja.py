@@ -1,7 +1,7 @@
 """サイトの文言：日本語。キーは zh.py と同じ。構造は tools/site/build.py を参照。"""
 
 REPO = "https://github.com/baiyuze/pasteferry"
-SITE = "https://baiyuze.github.io/pasteferry/"
+SITE = "https://pasteferry.cc/"
 
 C = {
     "brand": "PasteFerry",

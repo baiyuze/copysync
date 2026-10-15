@@ -1,7 +1,7 @@
 """Site copy: English. Same keys as zh.py; see tools/site/build.py for the structure."""
 
 REPO = "https://github.com/baiyuze/pasteferry"
-SITE = "https://baiyuze.github.io/pasteferry/"
+SITE = "https://pasteferry.cc/"
 
 C = {
     "brand": "PasteFerry",

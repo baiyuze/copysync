@@ -19,11 +19,10 @@ from content.tour import localized as tour_copy
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
-SITE = "https://baiyuze.github.io/pasteferry/"
+SITE = "https://pasteferry.cc/"
 REPO = "https://github.com/baiyuze/pasteferry"
-# 网站所在的路径，404 页面用绝对路径引用资源。2.0.0 改名前在 /copysync/，
-# 旧路径由 baiyuze.github.io 仓库里的跳转页接住
-BASE = "/pasteferry/"
+# 网站部署在独立域名的根目录，404 页面用绝对路径引用资源。
+BASE = "/"
 DL = REPO + "/releases/latest/download/"
 VERSION = "2.0.0"
 DATE = "2026-10-14"
@@ -45,7 +44,7 @@ def shots_dir(code: str) -> str:
 
 # Cloudflare Web Analytics：不用 Cookie，只统计浏览量、来源、国家与设备。
 # token 会出现在每个页面的源码里，本来就是公开的，只能用来上报，看不到统计数据。
-# 统计只认 baiyuze.github.io 这个主机名，本地预览时的访问不会计入。
+# 统计原先绑定 GitHub Pages，新域名的统计需在 Cloudflare 后台配置。
 ANALYTICS = ("  <script type=\"module\" src=\"https://static.cloudflareinsights.com/beacon.min.js\" "
              "data-cf-beacon='{\"token\": \"7ee226baf4a949a397c4bfd69a9e7461\"}'></script>\n")
 
@@ -2104,7 +2103,7 @@ def tour_page(code: str) -> str:
     path, hl, _, _ = LANGS[code]
     up = "../" * (path.count("/") + 1)
     assets = up + "assets/"
-    copy.update(shots=up + shots_dir(code), site_url="baiyuze.github.io/pasteferry/" + path)
+    copy.update(shots=up + shots_dir(code), site_url=SITE.split("://", 1)[-1] + path)
     template = (Path(__file__).parent / "tour.html").read_text(encoding="utf-8")
     art = re.sub(r"\{\{(\w+)\}\}", lambda m: esc(copy[m[1]]), template)
     options = "\n".join(f'<option value="{i}">{i + 1:02d} · {esc(label)}</option>' for i, label in enumerate(chapters))

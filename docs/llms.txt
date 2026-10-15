@@ -24,22 +24,22 @@ Key facts:
 
 ## Docs
 
-- [Website (English)](https://baiyuze.github.io/pasteferry/en/), [简体中文](https://baiyuze.github.io/pasteferry/), [繁體中文（台灣）](https://baiyuze.github.io/pasteferry/zh-tw/), [繁體中文（香港）](https://baiyuze.github.io/pasteferry/zh-hk/), [日本語](https://baiyuze.github.io/pasteferry/ja/)
-- [Quick start](https://baiyuze.github.io/pasteferry/en/start/): install the apps, pick a way to connect, and pair ([中文](https://baiyuze.github.io/pasteferry/start/), [日本語](https://baiyuze.github.io/pasteferry/ja/start/))
-- [On the same network](https://baiyuze.github.io/pasteferry/en/lan/): no server; pairing across subnets, firewall and macOS permission notes ([中文](https://baiyuze.github.io/pasteferry/lan/), [日本語](https://baiyuze.github.io/pasteferry/ja/lan/))
-- [Run the server on a public server](https://baiyuze.github.io/pasteferry/en/cloud/): security group, install script, checks ([中文](https://baiyuze.github.io/pasteferry/cloud/), [日本語](https://baiyuze.github.io/pasteferry/ja/cloud/))
-- [Run the server on your LAN](https://baiyuze.github.io/pasteferry/en/server/): for subnets that can't reach each other; step-by-step guide for Windows, macOS and Linux ([中文](https://baiyuze.github.io/pasteferry/server/), [日本語](https://baiyuze.github.io/pasteferry/ja/server/))
-- [Use it across networks with Tailscale](https://baiyuze.github.io/pasteferry/en/tailscale/): sync across networks with no server, pairing by Tailscale address ([中文](https://baiyuze.github.io/pasteferry/tailscale/), [日本語](https://baiyuze.github.io/pasteferry/ja/tailscale/))
-- [Download](https://baiyuze.github.io/pasteferry/en/download/): every client package, with Mac builds for Apple silicon and Intel ([中文](https://baiyuze.github.io/pasteferry/download/), [日本語](https://baiyuze.github.io/pasteferry/ja/download/))
+- [Website (English)](https://pasteferry.cc/en/), [简体中文](https://pasteferry.cc/), [繁體中文（台灣）](https://pasteferry.cc/zh-tw/), [繁體中文（香港）](https://pasteferry.cc/zh-hk/), [日本語](https://pasteferry.cc/ja/)
+- [Quick start](https://pasteferry.cc/en/start/): install the apps, pick a way to connect, and pair ([中文](https://pasteferry.cc/start/), [日本語](https://pasteferry.cc/ja/start/))
+- [On the same network](https://pasteferry.cc/en/lan/): no server; pairing across subnets, firewall and macOS permission notes ([中文](https://pasteferry.cc/lan/), [日本語](https://pasteferry.cc/ja/lan/))
+- [Run the server on a public server](https://pasteferry.cc/en/cloud/): security group, install script, checks ([中文](https://pasteferry.cc/cloud/), [日本語](https://pasteferry.cc/ja/cloud/))
+- [Run the server on your LAN](https://pasteferry.cc/en/server/): for subnets that can't reach each other; step-by-step guide for Windows, macOS and Linux ([中文](https://pasteferry.cc/server/), [日本語](https://pasteferry.cc/ja/server/))
+- [Use it across networks with Tailscale](https://pasteferry.cc/en/tailscale/): sync across networks with no server, pairing by Tailscale address ([中文](https://pasteferry.cc/tailscale/), [日本語](https://pasteferry.cc/ja/tailscale/))
+- [Download](https://pasteferry.cc/en/download/): every client package, with Mac builds for Apple silicon and Intel ([中文](https://pasteferry.cc/download/), [日本語](https://pasteferry.cc/ja/download/))
 - [README (English)](https://github.com/baiyuze/pasteferry/blob/main/README.md): features and getting started ([中文](https://github.com/baiyuze/pasteferry/blob/main/README.zh-CN.md))
 - [How it works](https://github.com/baiyuze/pasteferry/blob/main/guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned
 - [Troubleshooting](https://github.com/baiyuze/pasteferry/blob/main/guide/troubleshooting.md) and known limitations
 - [Server deployment](https://github.com/baiyuze/pasteferry/blob/main/server/deploy/README.md): Windows, macOS, Linux (systemd), Docker and manual setup
 - [Licensing](https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md): AGPL-3.0 terms; versions 1.2.0 and earlier remain MIT
-- [Windows client design (中文)](https://baiyuze.github.io/pasteferry/design/windows-client.html): clipboard formats, file-name compatibility, background process, installer
-- [NAT traversal design (中文)](https://baiyuze.github.io/pasteferry/design/nat-traversal.html): multi-uplink probing, relay-to-direct upgrade, measurements and the NAT lab
-- [Local network mode design (中文)](https://baiyuze.github.io/pasteferry/design/lan-mode.html): mDNS discovery, UDP signaling, pairing across subnets, Windows Firewall and macOS Local Network findings, NAT lab scenarios
-- [Linux client design (中文)](https://baiyuze.github.io/pasteferry/design/linux-client.html): X11 clipboard over XWayland, INCR transfers, XDG autostart, packaging
+- [Windows client design (中文)](https://pasteferry.cc/design/windows-client.html): clipboard formats, file-name compatibility, background process, installer
+- [NAT traversal design (中文)](https://pasteferry.cc/design/nat-traversal.html): multi-uplink probing, relay-to-direct upgrade, measurements and the NAT lab
+- [Local network mode design (中文)](https://pasteferry.cc/design/lan-mode.html): mDNS discovery, UDP signaling, pairing across subnets, Windows Firewall and macOS Local Network findings, NAT lab scenarios
+- [Linux client design (中文)](https://pasteferry.cc/design/linux-client.html): X11 clipboard over XWayland, INCR transfers, XDG autostart, packaging
 - [Changelog](https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md)
 
 ## Download
