@@ -15,6 +15,8 @@ import json
 import re
 from pathlib import Path
 
+from content.tour import localized as tour_copy
+
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
 SITE = "https://baiyuze.github.io/pasteferry/"
@@ -57,7 +59,8 @@ GUIDE = "server/"
 TAILSCALE = "tailscale/"
 # 下载页：所有「下载」按钮都指向它，按系统、芯片选具体的安装包
 DOWNLOAD = "download/"
-SUBPAGES = [START, LAN, CLOUD, GUIDE, TAILSCALE, DOWNLOAD]
+TOUR = "tour/"
+SUBPAGES = [START, LAN, CLOUD, GUIDE, TAILSCALE, DOWNLOAD, TOUR]
 DEPLOY_PAGES = [LAN, CLOUD, GUIDE, TAILSCALE]
 
 # 放到网站上的技术方案：文件名 → 网页名。其他 design/*.md 链接到 GitHub
@@ -337,6 +340,7 @@ def jsonld(c: dict, code: str, path: str, shots: str) -> str:
 
 def home(code: str) -> str:
     c = load(code)
+    _, tour_ui, _ = tour_copy(code, c)
     path, hl, locale, _ = LANGS[code]
     up = "../" * path.count("/")
     a = up + "assets/"
@@ -407,6 +411,7 @@ def home(code: str) -> str:
       <div class="wrap">
         <h1 class="display">{c["h1"]}</h1>
         <p class="lede">{c["lede"]}</p>{cta(c, "", START)}
+        <a class="tour-link" href="{TOUR}" data-tour-open aria-haspopup="dialog"><span aria-hidden="true">▶</span> {tour_ui["watch"]} <span class="tour-duration">1:25</span></a>
         <div class="stage" data-play role="img" aria-label="{esc(c["stage_label"])}">
           <figure class="device mac">
             <div class="screen"><div class="desk">
@@ -644,6 +649,10 @@ def home(code: str) -> str:
 
 {footer(c, code, up)}
 
+  <dialog class="tour-dialog" aria-label="{esc(tour_ui["title"])}">
+    <form method="dialog"><button class="tour-close" aria-label="{esc(tour_ui["close"])}">×</button></form>
+    <iframe title="{esc(tour_ui["title"])}" data-src="{TOUR}?embed" allow="fullscreen" allowfullscreen></iframe>
+  </dialog>
   <script src="{a}site.js" defer></script>
 {ANALYTICS}</body>
 </html>
@@ -2088,6 +2097,66 @@ def sitemap() -> str:
             '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(urls) + "\n</urlset>\n")
 
 
+def tour_page(code: str) -> str:
+    c = load(code)
+    copy, ui, chapters = tour_copy(code, c)
+    path, hl, _, _ = LANGS[code]
+    up = "../" * (path.count("/") + 1)
+    assets = up + "assets/"
+    copy.update(shots=up + shots_dir(code), site_url="baiyuze.github.io/pasteferry/" + path)
+    template = (Path(__file__).parent / "tour.html").read_text(encoding="utf-8")
+    art = re.sub(r"\{\{(\w+)\}\}", lambda m: esc(copy[m[1]]), template)
+    options = "\n".join(f'<option value="{i}">{i + 1:02d} · {esc(label)}</option>' for i, label in enumerate(chapters))
+    alternates = "\n".join(f'<link rel="alternate" hreflang="{h}" href="{SITE}{p}{TOUR}">' for p, h, _, _ in LANGS.values())
+    highlights = "\n".join(f'<li>{esc(copy[key])}</li>' for key in ("demo_file", "demo_text", "types", "retention", "pairing", "encrypted", "relay"))
+    labels = esc(json.dumps(ui, ensure_ascii=False))
+    return f"""<!doctype html>
+<html lang="{hl}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{esc(ui["title"])} — {esc(c["brand"])}</title>
+  <meta name="description" content="{esc(c["og_description"])}">
+  <meta name="theme-color" content="#141416">
+  <link rel="canonical" href="{SITE}{path}{TOUR}">
+  {alternates}
+  <link rel="icon" href="{assets}favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{assets}tour.css">
+  <script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embedded");</script>
+</head>
+<body>
+  <header class="tour-header">
+    <a class="tour-brand" href="../"><img src="{assets}icon.svg" width="26" height="26" alt="">{esc(c["brand"])}</a>
+    <nav><a href="../">{esc(ui["back"])}</a>{lang_menu(c, code, up, TOUR)}</nav>
+  </header>
+  <main>
+    <div class="tour-player" data-labels="{labels}">
+      <div class="tour-viewport">{art}</div>
+      <div class="tour-controls" hidden>
+        <button class="tour-toggle" type="button">{esc(ui["play"])}</button>
+        <output class="tour-time">0:00 / 1:25</output>
+        <input class="tour-progress" type="range" min="0" max="84.5" step="0.1" value="0" aria-label="{esc(ui["progress"])}">
+        <select class="tour-chapters" aria-label="{esc(ui["chapters"])}">{options}</select>
+        <button class="tour-fullscreen" type="button" aria-label="{esc(ui["fullscreen"])}" title="{esc(ui["fullscreen"])}">⛶</button>
+      </div>
+      <p class="tour-status" role="status"></p>
+    </div>
+    <section class="tour-summary">
+      <h1>{esc(ui["title"])}</h1>
+      <p class="tour-silent">{esc(ui["silent"])} · macOS / Windows / Linux</p>
+      <details><summary>{esc(ui["summary"])}</summary><ul>{highlights}</ul></details>
+      <a class="tour-download" href="../{DOWNLOAD}">{esc(c["dl_button"])} →</a>
+    </section>
+  </main>
+  <noscript><style>.tour-player {{ display:none; }}</style></noscript>
+  <script src="{assets}tour-scenes.js" defer></script>
+  <script src="{assets}tour.js" defer></script>
+  <script src="{assets}site.js" defer></script>
+{ANALYTICS}</body>
+</html>
+"""
+
+
 def write(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
@@ -2097,6 +2166,7 @@ def write(path: Path, text: str) -> None:
 def main() -> None:
     for code, (path, _, _, _) in LANGS.items():
         write(DOCS / path / "index.html", home(code))
+        write(DOCS / path / TOUR / "index.html", tour_page(code))
         write(DOCS / path / GUIDE / "index.html", server_page(code))
         write(DOCS / path / START / "index.html", start_page(code))
         write(DOCS / path / LAN / "index.html", lan_page(code))

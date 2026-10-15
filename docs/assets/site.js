@@ -1,6 +1,35 @@
 // 首屏动画、代码块的「复制」按钮、分页（部署教程按系统分页、快速开始按部署方式分页）、语言菜单、记住选过的语言。
 // 没有脚本时页面照样完整：动画停在复制完成的样子，分页的内容依次排开。
 (function () {
+  // Load the localized tour only when requested. The href remains a normal
+  // standalone page for browsers without dialog support or JavaScript.
+  var tourLink = document.querySelector('[data-tour-open]');
+  var tourDialog = document.querySelector('.tour-dialog');
+  if (tourLink && tourDialog && typeof tourDialog.showModal === 'function') {
+    var tourFrame = tourDialog.querySelector('iframe');
+    tourLink.addEventListener('click', function (event) {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      tourDialog.showModal();
+      document.documentElement.classList.add('tour-is-open');
+      if (!tourFrame.hasAttribute('src')) tourFrame.src = tourFrame.dataset.src;
+      else tourFrame.contentWindow.postMessage('tour:play', location.origin);
+    });
+    tourDialog.addEventListener('click', function (event) {
+      if (event.target === tourDialog) tourDialog.close();
+    });
+    tourDialog.addEventListener('close', function () {
+      tourFrame.contentWindow.postMessage('tour:pause', location.origin);
+      document.documentElement.classList.remove('tour-is-open');
+      tourLink.focus();
+    });
+    window.addEventListener('message', function (event) {
+      if (event.origin !== location.origin || event.source !== tourFrame.contentWindow) return;
+      if (event.data === 'tour:close') tourDialog.close();
+      if (event.data === 'tour:ready') tourFrame.contentWindow.postMessage(tourDialog.open ? 'tour:play' : 'tour:pause', location.origin);
+    });
+  }
+
   var stage = document.querySelector("[data-play]");
 
   // 按两台设备实际的位置算出纸飞行的起点、终点与弧线

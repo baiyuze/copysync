@@ -1,0 +1,197 @@
+<!-- Shared tour artwork. Localized by build.py; animation lives in tour-scenes.js. -->
+
+<div id="film" aria-hidden="true">
+
+  <!-- 1 痛点 -->
+  <section class="scene" id="s1">
+    <div class="cx" id="s1-head">
+      <h1 class="display" id="s1-l1">{{opening_1}}</h1>
+      <h1 class="display" id="s1-l2">{{opening_2}}</h1>
+    </div>
+    <div class="pains">
+      <div class="pain"><span class="pain-t">{{pain_chat}}<i></i></span><p>{{pain_chat_detail}}</p></div>
+      <div class="pain"><span class="pain-t">{{airdrop}}<i></i></span><p>{{pain_airdrop_detail}}</p></div>
+      <div class="pain"><span class="pain-t">{{universal}}<i></i></span><p>{{pain_universal_detail}}</p></div>
+      <div class="pain"><span class="pain-t">{{pain_cross_platform}}<i></i></span><p>{{pain_cross_platform_detail}}</p></div>
+    </div>
+    <h1 class="cx display" id="s1-l3" style="top:486px;font-size:84px">{{simpler}}</h1>
+  </section>
+
+  <!-- 2 品牌 -->
+  <section class="scene" id="s2">
+    <svg class="logo" id="s2-logo" viewBox="0 0 1024 1024" width="250" height="250" style="left:835px;top:190px"></svg>
+    <h1 class="cx display" id="s2-name" style="top:470px;font-size:112px">{{brand}}</h1>
+    <p class="cx" id="s2-tag" style="top:635px;font-size:48px;color:var(--ink-2)">{{tagline}}</p>
+    <p class="cx" id="s2-os" style="top:735px;font-size:32px;color:var(--dim);letter-spacing:0.06em">macOS · Windows · Linux</p>
+  </section>
+
+  <!-- 3 演示 -->
+  <section class="scene" id="s3">
+    <div class="abs" id="stage" style="inset:0">
+      <figure class="device mac" style="left:150px;top:240px">
+        <div class="screen"><div class="desk">
+          <div class="grp" id="m1">
+            <div class="file" id="a-src"><span class="doc"><span class="lines"><i></i><i></i><i></i></span></span><span class="name" id="a-name">{{file}}</span></div>
+            <div class="keys"><kbd>⌘</kbd><kbd>C</kbd></div>
+          </div>
+          <div class="grp" id="m2">
+            <div class="appwin">
+              <div class="bar">{{notes}}</div>
+              <div class="body" id="b-dst"><div id="b-paste">{{decision_1}}<br>{{decision_2}}</div><span class="caret" id="b-caret"></span></div>
+            </div>
+            <div class="keys"><kbd>⌘</kbd><kbd>V</kbd></div>
+          </div>
+          <div class="grp" id="m3">
+            <div class="appwin" style="width:66%;height:62%">
+              <div class="bar">{{screenshot}}</div>
+              <div style="position:absolute;inset:34px 0 0;display:grid;place-items:center">
+                <div class="photo" id="c-src" style="width:300px;height:186px"><i></i><b></b><span class="pic-ring" id="c-ring"></span></div>
+              </div>
+            </div>
+            <div class="keys"><kbd>⌘</kbd><kbd>C</kbd></div>
+          </div>
+        </div></div>
+        <div class="base"></div>
+        <figcaption>MacBook</figcaption>
+      </figure>
+
+      <figure class="device win" style="left:1070px;top:240px">
+        <div class="screen"><div class="desk">
+          <div class="grp" id="w1">
+            <div class="file" id="a-dst"><span class="doc"><span class="lines"><i></i><i></i><i></i></span></span><span class="name">{{file}}</span></div>
+            <div class="keys"><kbd>Ctrl</kbd><kbd>V</kbd></div>
+          </div>
+          <div class="grp" id="w2">
+            <div class="appwin">
+              <div class="bar">{{notepad}}</div>
+              <div class="body" id="b-src"><span class="sel" id="b-sel1">{{decision_1}}</span><br><span class="sel" id="b-sel2">{{decision_2}}</span></div>
+            </div>
+            <div class="keys"><kbd>Ctrl</kbd><kbd>C</kbd></div>
+          </div>
+          <div class="grp" id="w3">
+            <div class="appwin" style="width:66%;height:66%">
+              <div class="bar">{{word}}</div>
+              <div style="padding:16px 30px">
+                <div class="docline" style="width:56%"></div>
+                <div class="docline" style="width:92%"></div>
+                <div class="photo" id="c-dst" style="width:190px;height:118px;margin-top:14px"><i></i><b></b></div>
+              </div>
+            </div>
+            <div class="keys"><kbd>Ctrl</kbd><kbd>V</kbd></div>
+          </div>
+          <div class="taskbar"><i></i><i></i><i></i><i></i><i></i></div>
+        </div></div>
+        <div class="base"></div>
+        <figcaption>{{windows}}</figcaption>
+      </figure>
+
+      <svg class="abs trail" id="trail" width="1920" height="1080" style="left:0;top:0;overflow:visible"></svg>
+      <div id="arc-label">{{direct}}</div>
+      <div id="fly"><span class="lines"><i></i><i></i><i></i></span></div>
+    </div>
+    <p class="cx cap" id="cap-a">{{demo_file}}</p>
+    <p class="cx cap" id="cap-b">{{demo_text}}</p>
+    <p class="cx cap" id="cap-c">{{demo_image}}</p>
+  </section>
+
+  <!-- 4 能同步什么 -->
+  <section class="scene" id="s4">
+    <h2 class="cx display h2" id="s4-h" style="top:220px">{{types}}</h2>
+    <div class="tiles">
+      <div class="tile"><svg viewBox="0 0 64 64"><path d="M12 18h40M12 28h40M12 38h40M12 48h24"/></svg>{{text}}</div>
+      <div class="tile"><svg viewBox="0 0 64 64"><text x="6" y="44" font-size="34" font-weight="700" font-family="Georgia, serif">A</text><text x="31" y="44" font-size="30" font-style="italic" font-family="Georgia, serif">a</text><path d="M8 54h48"/></svg>{{rich_text}}</div>
+      <div class="tile"><svg viewBox="0 0 64 64"><rect x="8" y="12" width="48" height="40" rx="6"/><circle cx="23" cy="26" r="5"/><path d="M10 48l14-14 10 10 8-8 12 12"/></svg>{{images}}</div>
+      <div class="tile"><svg viewBox="0 0 64 64"><path d="M18 8h19l13 13v33a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2zM37 8v13h13"/></svg>{{files}}</div>
+      <div class="tile"><svg viewBox="0 0 64 64"><path d="M8 18a4 4 0 0 1 4-4h12l6 6h22a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4z"/></svg>{{folders}}</div>
+    </div>
+    <p class="cx sub" id="s4-sub" style="top:720px">{{small_files}}<br>{{large_files}}</p>
+  </section>
+
+  <!-- 5 复制记录 -->
+  <section class="scene" id="s5">
+    <div class="abs" id="s5-text" style="left:140px;top:300px;width:620px">
+      <h2 class="display" style="font-size:62px;line-height:1.3">{{history_1}}<br>{{history_2}}</h2>
+      <ul class="points" style="margin-top:56px">
+        <li>{{retention}}</li>
+        <li>{{restore}}</li>
+        <li>{{preview}}</li>
+        <li>{{pull}}</li>
+      </ul>
+    </div>
+    <div class="shot" id="s5-shot" style="left:760px;top:155px;width:1100px">
+      <img src="{{shots}}history-dark.png" alt="">
+      <span class="mark" id="s5-mark" style="left:902px;top:325px;width:117px;height:48px"></span>
+    </div>
+  </section>
+
+  <!-- 6 配对 -->
+  <section class="scene" id="s6">
+    <h2 class="cx display h2" id="s6-h" style="top:80px">{{pairing}}</h2>
+    <p class="cx sub" id="s6-sub1" style="top:172px">{{nearby}}</p>
+    <p class="cx sub" id="s6-sub2" style="top:172px">{{fingerprints}}</p>
+    <div class="shot" id="s6-shot" style="left:460px;top:262px;width:1000px">
+      <img src="{{shots}}nearby-dark.png" alt="">
+      <svg class="abs" width="1000" height="697" style="left:0;top:0;overflow:visible">
+        <circle class="pulse" cx="500" cy="300" r="0"/><circle class="pulse" cx="500" cy="300" r="0"/><circle class="pulse" cx="500" cy="300" r="0"/>
+      </svg>
+    </div>
+    <div class="shot" id="s6-card" style="left:512px;top:318px;width:896px">
+      <img src="{{shots}}card-verify-dark.png" alt="">
+    </div>
+  </section>
+
+  <!-- 7 连接方式 -->
+  <section class="scene" id="s7">
+    <h2 class="cx display h2" id="s7-h" style="top:140px">{{networks}}</h2>
+    <div class="ways">
+      <div class="way">
+        <svg viewBox="0 0 240 112"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/><circle class="p-dot" r="3.2" data-x1="82" data-x2="158" data-y="52"/></svg>
+        <h3>{{lan}}</h3>
+        <p>{{home}}<br>{{lan_detail}}</p>
+      </div>
+      <div class="way">
+        <svg viewBox="0 0 240 112"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/><circle class="p-dot" r="3.2" data-x1="80" data-x2="160" data-y="80"/></svg>
+        <h3>{{cloud}}</h3>
+        <p>{{cloud_detail}}<br>{{anywhere}}</p>
+      </div>
+      <div class="way">
+        <svg viewBox="0 0 240 112"><rect class="p-ts" x="2" y="2" width="236" height="108" rx="16"/><rect class="p-net" x="12" y="12" width="98" height="88" rx="10"/><rect class="p-net" x="130" y="12" width="98" height="88" rx="10"/><path class="p-data" d="M85 52h71"/><rect class="p-dev" x="42" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M37 69h48"/><rect class="p-dev" x="161" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M156 69h48"/><circle class="p-dot" r="3.2" data-x1="85" data-x2="156" data-y="52"/></svg>
+        <h3>Tailscale</h3>
+        <p>{{across}}<br>{{tailscale_detail}}</p>
+      </div>
+    </div>
+    <p class="cx" id="s7-foot" style="top:850px;font-size:32px;color:var(--ink-2);line-height:1.6">{{encrypted}}<br><span style="color:var(--dim)">{{relay}}</span></p>
+  </section>
+
+  <!-- 8 对比 -->
+  <section class="scene" id="s8">
+    <h2 class="cx display h2" id="s8-h" style="top:110px">{{comparison}}</h2>
+    <div class="cmp">
+      <span class="cmp-col" id="s8-col"></span>
+      <div class="row head"><span></span><span>{{brand}}</span><span>{{universal}}</span><span>{{airdrop}}</span><span>{{chat}}</span></div>
+      <div class="row"><span>{{apple_ids}}</span><span class="yes">✓</span><span class="no">—</span><span class="meh">{{accept}}</span><span class="yes">✓</span></div>
+      <div class="row"><span>{{different_networks}}</span><span class="yes">✓</span><span class="no">—</span><span class="no">—</span><span class="yes">✓</span></div>
+      <div class="row"><span>{{instant}}</span><span class="yes">✓</span><span class="yes">✓</span><span class="no">—</span><span class="no">—</span></div>
+      <div class="row"><span>{{cross_platform}}</span><span class="yes">✓</span><span class="no">—</span><span class="no">—</span><span class="yes">✓</span></div>
+      <div class="row"><span>{{files_folders}}</span><span class="yes">✓</span><span class="meh">{{unreliable}}</span><span class="yes">✓</span><span class="meh">{{zipped}}</span></div>
+      <div class="row"><span>{{history}}</span><span class="yes">✓</span><span class="no">—</span><span class="no">—</span><span class="meh">{{scroll}}</span></div>
+      <div class="row"><span>{{privacy}}</span><span class="yes">✓</span><span class="yes">✓</span><span class="yes">✓</span><span class="no">—</span></div>
+    </div>
+  </section>
+
+  <!-- 9 结尾 -->
+  <section class="scene" id="s9">
+    <svg class="logo" id="s9-logo" viewBox="0 0 1024 1024" width="190" height="190" style="left:865px;top:112px"></svg>
+    <h1 class="cx display" id="s9-name" style="top:322px;font-size:100px">{{brand}}</h1>
+    <p class="cx" id="s9-tag" style="top:470px;font-size:42px;color:var(--ink-2)">{{tagline}}</p>
+    <div class="cx chips" id="s9-chips" style="top:565px">
+      <span class="chip">{{free}}</span><span class="chip">macOS 13+</span><span class="chip">Windows 10 / 11</span><span class="chip">Linux x64 / ARM64</span>
+    </div>
+    <dl class="cx links" id="s9-links" style="top:690px;margin:0">
+      <dt>{{download}}</dt><dd>{{site_url}}</dd>
+      <dt>{{source}}</dt><dd>github.com/baiyuze/pasteferry</dd>
+    </dl>
+    <p class="cx" id="s9-ask" style="top:905px;font-size:30px;color:var(--dim)">{{closing}}</p>
+  </section>
+
+</div>

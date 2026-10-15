@@ -322,6 +322,51 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/download/"/>
   </url>
   <url>
+    <loc>https://baiyuze.github.io/pasteferry/tour/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/tour/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/tour/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/tour/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/pasteferry/zh-tw/tour/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/tour/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/tour/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/tour/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/pasteferry/zh-hk/tour/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/tour/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/tour/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/tour/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/pasteferry/en/tour/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/tour/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/tour/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/tour/"/>
+  </url>
+  <url>
+    <loc>https://baiyuze.github.io/pasteferry/ja/tour/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://baiyuze.github.io/pasteferry/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://baiyuze.github.io/pasteferry/zh-tw/tour/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://baiyuze.github.io/pasteferry/zh-hk/tour/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baiyuze.github.io/pasteferry/en/tour/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://baiyuze.github.io/pasteferry/ja/tour/"/>
+  </url>
+  <url>
     <loc>https://baiyuze.github.io/pasteferry/design/nat-traversal.html</loc>
     <lastmod>2026-10-14</lastmod>
   </url>
