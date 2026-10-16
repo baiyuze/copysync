@@ -13,7 +13,7 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PasteFerry: sync the clipboard and files between Mac, Windows and Linux, across accounts and networks</title>
-  <meta name="description" content="PasteFerry lets you copy on one computer and paste on another, Mac, Windows or Linux: text, images, files and folders. No shared account required. On the same network it works with no server at all; across networks, use a server you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.">
+  <meta name="description" content="PasteFerry syncs clipboard text, images, files and folders across Mac, Windows and Linux. Enable optional official access to connect across networks without hosting a server: direct first, encrypted relay when needed. Free and open source.">
   <link rel="canonical" href="https://pasteferry.cc/en/">
   <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/">
   <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/">
@@ -25,7 +25,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PasteFerry">
   <meta property="og:title" content="PasteFerry: copy on this computer, paste on that one">
-  <meta property="og:description" content="Mac, Windows and Linux. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end encrypted, no server needed on the same network. Free and open source.">
+  <meta property="og:description" content="PasteFerry syncs clipboard text, images, files and folders across Mac, Windows and Linux. Enable optional official access to connect across networks without hosting a server: direct first, encrypted relay when needed. Free and open source.">
   <meta property="og:url" content="https://pasteferry.cc/en/">
   <meta property="og:image" content="https://pasteferry.cc/assets/og-en.png">
   <meta property="og:image:width" content="1200">
@@ -101,7 +101,7 @@
             "name": "How is this different from Universal Clipboard?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. PasteFerry works on the same network as soon as it's installed; across networks, both computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand. If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough."
+              "text": "Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. Now connect across networks by enabling official access, with no server to host. Direct connections first, end-to-end encryption throughout. If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough."
             }
           },
           {
@@ -109,7 +109,7 @@
             "name": "Can the server see what I copy?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. With a direct connection the data never touches the server. When it relays, it forwards DTLS-encrypted packets. It keeps no accounts and stores no clipboard content. The code is open, so you can check."
+              "text": "It cannot decrypt copied content: direct traffic stays between your devices, and relay forwards end-to-end encrypted packets. Official access retains essential device and quota statistics, described in the privacy notice. The public client and server source does not by itself prove how private production storage is operated."
             }
           },
           {
@@ -125,7 +125,7 @@
             "name": "Do I need my own server?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Not necessarily. When your computers are on the same network, install the app and pair; there's no server. Across networks there are two ways: a public server, where the smallest VM is enough and sync works from anywhere; or Tailscale on each computer, entering the other computer's Tailscale address when pairing, with no server at all. There's no public PasteFerry server, so nobody's data passes through anyone else's machine."
+              "text": "No. For different networks, enable official access on both computers. No cloud VM or address to configure. It is off by default and currently includes 100 MB/day of relay traffic; direct connections do not use that allowance. LAN, self-hosting and Tailscale remain available."
             }
           },
           {
@@ -133,7 +133,7 @@
             "name": "No public IP at home. Can I sync between home and the office?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, in two ways. With a public server, run PasteFerry's server there and connect both computers to it; see the public server guide. Without one, install Tailscale on every computer under the same account and enter the other computer's Tailscale address when pairing; see the Tailscale guide."
+              "text": "No. For different networks, enable official access on both computers. No cloud VM or address to configure. It is off by default and currently includes 100 MB/day of relay traffic; direct connections do not use that allowance. LAN, self-hosting and Tailscale remain available."
             }
           },
           {
@@ -175,6 +175,14 @@
               "@type": "Answer",
               "text": "Yes. PasteFerry is open source under the GNU AGPL-3.0, so individuals and companies can use and modify it for free. If you distribute it, or offer a modified version over a network, you publish your source under the same license."
             }
+          },
+          {
+            "@type": "Question",
+            "name": "Is official relay unlimited?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The current default is 100 MB per machine quota group per day, upload plus download, resetting at midnight Beijing time. Reinstalling does not guarantee a fresh allowance. The usage page shows the actual limit, remaining amount and update time. Direct connections still work when relay allowance runs out. Allowances and availability may change; check the app."
+            }
           }
         ]
       }
@@ -212,8 +220,9 @@
   <main id="main">
     <section class="hero">
       <div class="wrap">
+        <a class="release-note" href="official/">New in 2.1: sync across networks without hosting a server →</a>
         <h1 class="display">Copy on this computer.<br>Paste on that one.</h1>
-        <p class="lede">Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. On the same network it works with no server at all, and it works across networks too. Data moves directly between your devices, end-to-end encrypted.</p>
+        <p class="lede">Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. Now connect across networks by enabling official access, with no server to host. Direct connections first, end-to-end encryption throughout.</p>
         <div class="cta">
           <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download PasteFerry</a>
           <a class="button quiet tour-link" href="tour/" data-tour-open aria-haspopup="dialog"><span aria-hidden="true">▶</span> Watch the full tour <span class="tour-duration">1:25</span></a>
@@ -250,8 +259,15 @@
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
         <h2 id="deploy-title">How your computers connect</h2>
-        <p class="intro">On the same network, install the app and pair; no server needed. Across networks, your computers find each other through a server or Tailscale, and nothing you copy is stored there. Pick the way that fits.</p>
+        <p class="intro">Same network? Install and pair. Different networks? Enable official access without hosting a server. Custom servers and Tailscale remain available when you prefer to manage the connection yourself.</p>
         <div class="paths">
+          <a class="path" href="official/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-when">Across networks, no hosting</span>
+            <h3>Official service</h3>
+            <p>One switch helps your home and office computers find each other. Direct connections first, automatic encrypted relay if needed. No cloud VM or server address to configure.</p>
+            <span class="path-go">Enable official access →</span>
+          </a>
           <a class="path" href="lan/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
             <span class="path-when">Nothing to set up</span>
@@ -261,8 +277,8 @@
           </a>
           <a class="path" href="cloud/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
-            <span class="path-when">Syncs from anywhere</span>
-            <h3>Public server</h3>
+            <span class="path-when">Control your own capacity</span>
+            <h3>Self-hosted server</h3>
             <p>A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly, at home, at the office or anywhere else, with nothing extra to install.</p>
             <span class="path-go">Public server guide →</span>
           </a>
@@ -274,7 +290,7 @@
             <span class="path-go">Tailscale guide →</span>
           </a>
         </div>
-        <p class="note">Not sure? The <a href="start/#server">quick start</a> compares all three.</p>
+        <p class="note">New here? Follow the <a href="start/#server">quick start</a>. Official access is optional; its current relay default is 100 MB/day, and direct traffic does not consume it.</p>
       </div>
     </section>
 
@@ -315,7 +331,7 @@
               <tr><th scope="row">Paste right away, nothing to accept</th><td class="yes ours">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
               <tr><th scope="row">Files and whole folders</th><td class="yes ours">Yes</td><td class="partial">Unreliable</td><td class="yes">Yes</td><td class="partial">Zip first</td></tr>
               <tr><th scope="row">Find something you copied earlier</th><td class="yes ours">Yes</td><td class="no">No</td><td class="no">No</td><td class="partial">Scroll back</td></tr>
-              <tr><th scope="row">Content stays off third-party servers</th><td class="yes ours">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td></tr>
+              <tr><th scope="row">Only your devices can decrypt content</th><td class="yes ours">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td></tr>
             </tbody>
           </table>
         </div>
@@ -464,7 +480,7 @@
               <li>Download the DMG, open it and drag PasteFerry into Applications.<span class="aside">There's one for Apple silicon and one for Intel; the download page shows how to tell which your Mac has.</span></li>
               <li>Open it from Applications.<span class="aside">The first time, macOS says it can't verify the developer: PasteFerry isn't notarized by Apple yet. Go to System Settings → Privacy &amp; Security and click Open Anyway near the bottom. You only do this once.</span></li>
               <li>Click Turn on background sync. When macOS asks whether PasteFerry may read the clipboard or find devices on your local network, allow both.</li>
-              <li>To sync across networks, enter your server in Settings as <code>ws://server-address:8787/signal</code> and press Return. On the same network, leave it empty.</li>
+              <li>For different networks, enable Settings → Use official service on each computer. No server address is needed. Custom hosting remains optional.</li>
             </ol>
             <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Mac</a>
           </div>
@@ -473,7 +489,7 @@
             <ol>
               <li>Run PasteFerry-Setup.exe. It installs for the current user, no administrator rights needed.<span class="aside">PasteFerry isn't code-signed yet, so Windows says "Windows protected your PC": click More info, then Run anyway. To skip the installer, get the <a href="https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip">portable zip</a>.</span></li>
               <li>Open PasteFerry and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it keeps running in the notification area.</li>
-              <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
+              <li>For different networks, enable Settings → Use official service on each computer. No server address is needed. Custom hosting remains optional.</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Windows</a>
           </div>
@@ -482,17 +498,18 @@
             <ol>
               <li>On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>; on other distributions, download the tar.gz, extract it and run <code>./PasteFerry/install.sh</code>.</li>
               <li>Open PasteFerry from the app menu and click Turn on background sync. From then on it starts when you log in.</li>
-              <li>To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.</li>
+              <li>For different networks, enable Settings → Use official service on each computer. No server address is needed. Custom hosting remains optional.</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download for Linux</a>
           </div>
         </div>
         <div class="install-more">
           <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>Ways to connect</h3>
-          <p class="small">No server on the same network. Pick the way that fits; each has a step-by-step guide:</p>
+          <p class="small">Same network? Install and pair. Different networks? Enable official access without hosting a server. Custom servers and Tailscale remain available when you prefer to manage the connection yourself.</p>
           <ul class="opts">
+              <li><a href="official/">Official service</a><span>Across networks, no hosting</span></li>
               <li><a href="lan/">Same network</a><span>Nothing to set up</span></li>
-              <li><a href="cloud/">Public server</a><span>Syncs from anywhere</span></li>
+              <li><a href="cloud/">Self-hosted server</a><span>Control your own capacity</span></li>
               <li><a href="tailscale/">Tailscale</a><span>Across networks, no server</span></li>
           </ul>
           <a class="button quiet" href="start/#server">Compare the three</a>
@@ -538,11 +555,11 @@
           </details>
           <details>
             <summary>How is this different from Universal Clipboard?</summary>
-            <div class="answer"><p>Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and works only between Apple devices. PasteFerry works on the same network as soon as it's installed; across networks, both computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so does one at home and one at the office. It also keeps a history and lets you pull large files on demand.</p><p>If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.</p></div>
+            <div class="answer"><p>Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. Now connect across networks by enabling official access, with no server to host. Direct connections first, end-to-end encryption throughout.</p><p>If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.</p></div>
           </details>
           <details>
             <summary>Can the server see what I copy?</summary>
-            <div class="answer"><p>No. With a direct connection the data never touches the server. When it relays, it forwards DTLS-encrypted packets. It keeps no accounts and stores no clipboard content. The code is open, so you can check.</p></div>
+            <div class="answer"><p>It cannot decrypt copied content: direct traffic stays between your devices, and relay forwards end-to-end encrypted packets. Official access retains essential device and quota statistics, described in the privacy notice. The public client and server source does not by itself prove how private production storage is operated.</p></div>
           </details>
           <details>
             <summary>Does it connect directly on office networks with several uplinks?</summary>
@@ -550,11 +567,11 @@
           </details>
           <details>
             <summary>Do I need my own server?</summary>
-            <div class="answer"><p>Not necessarily. When your computers are on the <a href="lan/">same network</a>, install the app and pair; there's no server.</p><p>Across networks there are two ways: a <a href="cloud/">public server</a>, where the smallest VM is enough and sync works from anywhere; or <a href="tailscale/">Tailscale</a> on each computer, entering the other computer's Tailscale address when pairing, with no server at all. There's no public PasteFerry server, so nobody's data passes through anyone else's machine.</p></div>
+            <div class="answer"><p>No. For different networks, enable <a href="official/">official access</a> on both computers. No cloud VM or address to configure. It is off by default and currently includes 100 MB/day of relay traffic; direct connections do not use that allowance. LAN, <a href="cloud/">self-hosting</a> and <a href="tailscale/">Tailscale</a> remain available.</p></div>
           </details>
           <details>
             <summary>No public IP at home. Can I sync between home and the office?</summary>
-            <div class="answer"><p>Yes, in two ways. With a public server, run PasteFerry's server there and connect both computers to it; see the <a href="cloud/">public server guide</a>. Without one, install Tailscale on every computer under the same account and enter the other computer's Tailscale address when pairing; see the <a href="tailscale/">Tailscale guide</a>.</p></div>
+            <div class="answer"><p>No. For different networks, enable <a href="official/">official access</a> on both computers. No cloud VM or address to configure. It is off by default and currently includes 100 MB/day of relay traffic; direct connections do not use that allowance. LAN, <a href="cloud/">self-hosting</a> and <a href="tailscale/">Tailscale</a> remain available.</p></div>
           </details>
           <details>
             <summary>Both computers are on the same network. Why can't they find each other?</summary>
@@ -575,6 +592,10 @@
           <details>
             <summary>Is it free? Can my company use it?</summary>
             <div class="answer"><p>Yes. PasteFerry is open source under the GNU AGPL-3.0, so individuals and companies can use and modify it for free. If you distribute it, or offer a modified version over a network, you publish your source under the same license.</p></div>
+          </details>
+          <details>
+            <summary>Is official relay unlimited?</summary>
+            <div class="answer"><p>The current default is 100 MB per machine quota group per day, upload plus download, resetting at midnight Beijing time. Reinstalling does not guarantee a fresh allowance. The usage page shows the actual limit, remaining amount and update time. Direct connections still work when relay allowance runs out. Allowances and availability may change; check the app.</p></div>
           </details>
         </div>
       </div>

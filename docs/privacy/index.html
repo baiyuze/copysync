@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>隐私与必要数据 — PasteFerry</title>
   <meta name="description" content="新安装默认只使用局域网。开启官方公网后才连接官方信令并记录必要接入统计；自建服务器模式不向官方上报。先尝试直连，失败后才申请中转授权和读取机器额度摘要。">

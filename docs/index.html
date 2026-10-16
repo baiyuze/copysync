@@ -13,7 +13,7 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>隔空贴 PasteFerry：在 Mac、Windows 与 Linux 之间同步剪贴板与文件，跨账号跨网络</title>
-  <meta name="description" content="隔空贴让你在一台电脑上复制，另一台上直接粘贴，Mac、Windows、Linux 互通。支持文本、图片、文件和文件夹，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。设备间 P2P 直连、端到端加密。免费开源。">
+  <meta name="description" content="隔空贴让 Mac、Windows、Linux 之间复制粘贴文字、图片、文件和文件夹。开启官方服务即可跨网络同步，无需自建服务器；优先打洞直连，失败自动加密中转。免费开源。">
   <link rel="canonical" href="https://pasteferry.cc/">
   <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/">
   <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/">
@@ -25,7 +25,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="隔空贴">
   <meta property="og:title" content="隔空贴：在这台电脑复制，到那台电脑粘贴">
-  <meta property="og:description" content="Mac、Windows、Linux 互通。文本、图片、文件、文件夹，跨账号、跨网络，P2P 直连、端到端加密，同一网络里不需要服务器。免费开源。">
+  <meta property="og:description" content="隔空贴让 Mac、Windows、Linux 之间复制粘贴文字、图片、文件和文件夹。开启官方服务即可跨网络同步，无需自建服务器；优先打洞直连，失败自动加密中转。免费开源。">
   <meta property="og:url" content="https://pasteferry.cc/">
   <meta property="og:image" content="https://pasteferry.cc/assets/og.png">
   <meta property="og:image:width" content="1200">
@@ -126,7 +126,7 @@
             "name": "和 macOS 自带的「通用剪贴板」有什么区别？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。隔空贴在同一个网络里装好就能用；跨网络时，两台电脑能连上你部署的服务器、或者都装了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。 如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。"
+              "text": "Mac、Windows、Linux 互通，文字、图片、文件、整个文件夹都可以，不要求同一个账号。现在开启官方服务就能跨网络同步，无需自己搭服务器。优先直连，始终端到端加密。 如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。"
             }
           },
           {
@@ -134,7 +134,7 @@
             "name": "服务器会看到我复制的内容吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "不会。直连时数据根本不经过服务器；需要中转时，服务器转发的是 DTLS 加密后的数据包。服务器不存账号，也不存任何复制内容。代码是开源的，可以自己核对。"
+              "text": "服务器无法解密复制内容：直连时内容不经过中转服务器；中转时转发的是端到端加密数据包。官方服务保留必要设备与用量统计，详见隐私说明。客户端和服务器源码公开，但源码可审计不等于对私有生产存储行为的证明。"
             }
           },
           {
@@ -150,7 +150,7 @@
             "name": "必须自己准备服务器吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "不一定。两台电脑在同一个网络里时，装好 App 直接配对就行，不需要服务器。 跨网络时有两种做法：公网服务器，最低配置的云主机就够，在哪儿都能同步；Tailscale，每台电脑装上它，配对时输入对方的 Tailscale 地址，不需要服务器。隔空贴不提供公共服务器，所以不会有任何人的数据经过别人的机器。"
+              "text": "不需要。不同网络时，在两台电脑上开启官方服务即可，不用购买云主机或填写地址。默认关闭，当前提供每日 100 MB 中转额度，直连不消耗此额度。局域网、自建服务器与 Tailscale 继续可用。"
             }
           },
           {
@@ -158,7 +158,7 @@
             "name": "家里没有公网 IP，能在家和公司之间同步吗？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "能，有两种做法。有一台公网服务器的话，把服务器部署在上面，家里和公司的电脑都直接连它，见公网服务器部署。没有的话，每台电脑装上 Tailscale、登录同一个账号，配对时输入对方的 Tailscale 地址，见Tailscale 教程。"
+              "text": "不需要。不同网络时，在两台电脑上开启官方服务即可，不用购买云主机或填写地址。默认关闭，当前提供每日 100 MB 中转额度，直连不消耗此额度。局域网、自建服务器与 Tailscale 继续可用。"
             }
           },
           {
@@ -200,6 +200,14 @@
               "@type": "Answer",
               "text": "免费。隔空贴以 GNU AGPL-3.0 开源，个人和公司都可以免费使用和修改。分发它、或通过网络提供修改过的版本时，需要以同样的许可公开源码。"
             }
+          },
+          {
+            "@type": "Question",
+            "name": "官方中转无限量吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "当前默认每机器额度组每日 100 MB 中转流量，上传与下载合计，北京时间零点重置。重新安装不会保证获得新额度。用量页显示实际额度、剩余量与更新时间；额度用尽仍可直连。额度与服务可用性可能调整，以客户端显示为准。"
+            }
           }
         ]
       }
@@ -237,8 +245,9 @@
   <main id="main">
     <section class="hero">
       <div class="wrap">
+        <a class="release-note" href="official/">2.1 新增：跨网络同步，无需自建服务器 →</a>
         <h1 class="display">在这台电脑复制，<br>到那台电脑粘贴。</h1>
-        <p class="lede">Mac、Windows、Linux 互通。文本、图片、文件、整个文件夹都可以，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络也可以。数据在你的设备之间直接传输，端到端加密。</p>
+        <p class="lede">Mac、Windows、Linux 互通，文字、图片、文件、整个文件夹都可以，不要求同一个账号。现在开启官方服务就能跨网络同步，无需自己搭服务器。优先直连，始终端到端加密。</p>
         <div class="cta">
           <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载隔空贴</a>
           <a class="button quiet tour-link" href="tour/" data-tour-open aria-haspopup="dialog"><span aria-hidden="true">▶</span> 看完整演示 <span class="tour-duration">1:25</span></a>
@@ -275,8 +284,15 @@
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
         <h2 id="deploy-title">两台电脑怎么连起来</h2>
-        <p class="intro">在同一个网络里，装好 App 就能直接配对，不需要服务器。跨网络时，两台电脑要靠服务器或 Tailscale 找到彼此，复制的内容不会存在上面。按你的情况选一种。</p>
+        <p class="intro">同一网络里装好就能配对；不同网络里，开启官方服务即可，无需自建。也保留自建服务器与 Tailscale，按你的需要选择。</p>
         <div class="paths">
+          <a class="path" href="official/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-when">跨网络，无需自建</span>
+            <h3>官方服务</h3>
+            <p>打开一个开关，让家里与公司的电脑找到彼此。优先打洞直连，失败后自动中转，无需购买云主机或填写地址。</p>
+            <span class="path-go">开启官方服务 →</span>
+          </a>
           <a class="path" href="lan/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
             <span class="path-when">什么都不用部署</span>
@@ -286,8 +302,8 @@
           </a>
           <a class="path" href="cloud/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
-            <span class="path-when">在哪儿都能同步</span>
-            <h3>公网服务器</h3>
+            <span class="path-when">自己管理容量与部署</span>
+            <h3>自建公网服务器</h3>
             <p>一台有公网 IP 的 Linux 云主机，最低配置就够。每台电脑直接连它，在家、在公司、在外面都能用，不用另装软件。</p>
             <span class="path-go">公网服务器部署教程 →</span>
           </a>
@@ -299,7 +315,7 @@
             <span class="path-go">Tailscale 教程 →</span>
           </a>
         </div>
-        <p class="note">拿不准？<a href="start/#server">快速开始</a>里有三种方式的对比。</p>
+        <p class="note">第一次用？跟着<a href="start/#server">快速开始</a>。官方服务可选，当前默认每日 100 MB 中转额度，直连不扣此额度。</p>
       </div>
     </section>
 
@@ -340,7 +356,7 @@
               <tr><th scope="row">复制后直接粘贴，不用点接收</th><td class="yes ours">可以</td><td class="yes">可以</td><td class="no">不行</td><td class="no">不行</td></tr>
               <tr><th scope="row">文件与整个文件夹</th><td class="yes ours">可以</td><td class="partial">不稳定</td><td class="yes">可以</td><td class="partial">要先打包</td></tr>
               <tr><th scope="row">找回之前复制过的内容</th><td class="yes ours">可以</td><td class="no">不行</td><td class="no">不行</td><td class="partial">翻聊天记录</td></tr>
-              <tr><th scope="row">内容不经过第三方服务器</th><td class="yes ours">不经过</td><td class="yes">不经过</td><td class="yes">不经过</td><td class="no">经过</td></tr>
+              <tr><th scope="row">仅自己的设备可解密内容</th><td class="yes ours">不经过</td><td class="yes">不经过</td><td class="yes">不经过</td><td class="no">经过</td></tr>
             </tbody>
           </table>
         </div>
@@ -489,7 +505,7 @@
               <li>下载 DMG，打开后把隔空贴拖进「应用程序」。<span class="aside">Apple 芯片与 Intel 芯片各有一版，下载页会告诉你怎么看自己的 Mac 是哪种。</span></li>
               <li>从「应用程序」里打开。<span class="aside">第一次会提示「无法验证开发者」：隔空贴还没有经过 Apple 公证。到「系统设置 → 隐私与安全性」，点页面下方的「仍要打开」，只需要这一次。</span></li>
               <li>点「启用后台同步」。系统询问是否允许读取剪贴板、能否查找本地网络上的设备时，都选择允许。</li>
-              <li>跨网络同步时，在「设置」里填入服务器地址 <code>ws://服务器地址:8787/signal</code>，按回车；同一个网络里不用填。</li>
+              <li>跨网络时，在每台电脑的「设置」中开启「使用官方服务」，无需填写服务器地址；也可以继续自建。</li>
             </ol>
             <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Mac 版</a>
           </div>
@@ -498,7 +514,7 @@
             <ol>
               <li>运行 PasteFerry-Setup.exe。装在当前用户目录下，不需要管理员权限。<span class="aside">隔空贴还没有代码签名，Windows 会提示「Windows 已保护你的电脑」：点「更多信息」，再点「仍要运行」。不想运行安装程序的话，可以下载<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip">便携版</a>。</span></li>
               <li>打开隔空贴，点「启用后台同步」。关掉窗口后它在右下角的托盘里继续运行。防火墙询问时选择允许。</li>
-              <li>跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。</li>
+              <li>跨网络时，在每台电脑的「设置」中开启「使用官方服务」，无需填写服务器地址；也可以继续自建。</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Windows 版</a>
           </div>
@@ -507,17 +523,18 @@
             <ol>
               <li>Ubuntu、Debian 等下载 .deb，运行 <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>；其他发行版下载 tar.gz，解压后运行 <code>./PasteFerry/install.sh</code>。</li>
               <li>从应用菜单里打开隔空贴，点「启用后台同步」。之后它随登录自动启动。</li>
-              <li>跨网络同步时，在「设置」里填入服务器地址，按回车；同一个网络里不用填。</li>
+              <li>跨网络时，在每台电脑的「设置」中开启「使用官方服务」，无需填写服务器地址；也可以继续自建。</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载 Linux 版</a>
           </div>
         </div>
         <div class="install-more">
           <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>连接方式</h3>
-          <p class="small">同一个网络里不需要服务器。三种方式按你的情况选一种，每种都有图文教程：</p>
+          <p class="small">同一网络里装好就能配对；不同网络里，开启官方服务即可，无需自建。也保留自建服务器与 Tailscale，按你的需要选择。</p>
           <ul class="opts">
+              <li><a href="official/">官方服务</a><span>跨网络，无需自建</span></li>
               <li><a href="lan/">同一网络</a><span>什么都不用部署</span></li>
-              <li><a href="cloud/">公网服务器</a><span>在哪儿都能同步</span></li>
+              <li><a href="cloud/">自建公网服务器</a><span>自己管理容量与部署</span></li>
               <li><a href="tailscale/">Tailscale</a><span>跨网络，不用服务器</span></li>
           </ul>
           <a class="button quiet" href="start/#server">对比三种方式</a>
@@ -563,11 +580,11 @@
           </details>
           <details>
             <summary>和 macOS 自带的「通用剪贴板」有什么区别？</summary>
-            <div class="answer"><p>通用剪贴板要求两台设备登录同一个 Apple ID、开着蓝牙和 Wi‑Fi，并且离得近，也只能在苹果设备之间用。隔空贴在同一个网络里装好就能用；跨网络时，两台电脑能连上你部署的服务器、或者都装了 Tailscale 就行：不同 Apple ID、一台在家一台在公司、一台 Mac 一台 Windows，都可以。另外它有复制记录，大文件也可以按需拉取。</p><p>如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。</p></div>
+            <div class="answer"><p>Mac、Windows、Linux 互通，文字、图片、文件、整个文件夹都可以，不要求同一个账号。现在开启官方服务就能跨网络同步，无需自己搭服务器。优先直连，始终端到端加密。</p><p>如果你的两台 Mac 是同一个 Apple ID、总在一起、主要复制文字，系统自带的已经够用了。</p></div>
           </details>
           <details>
             <summary>服务器会看到我复制的内容吗？</summary>
-            <div class="answer"><p>不会。直连时数据根本不经过服务器；需要中转时，服务器转发的是 DTLS 加密后的数据包。服务器不存账号，也不存任何复制内容。代码是开源的，可以自己核对。</p></div>
+            <div class="answer"><p>服务器无法解密复制内容：直连时内容不经过中转服务器；中转时转发的是端到端加密数据包。官方服务保留必要设备与用量统计，详见隐私说明。客户端和服务器源码公开，但源码可审计不等于对私有生产存储行为的证明。</p></div>
           </details>
           <details>
             <summary>公司网络（双线、多出口）能直连吗？</summary>
@@ -575,11 +592,11 @@
           </details>
           <details>
             <summary>必须自己准备服务器吗？</summary>
-            <div class="answer"><p>不一定。两台电脑在<a href="lan/">同一个网络</a>里时，装好 App 直接配对就行，不需要服务器。</p><p>跨网络时有两种做法：<a href="cloud/">公网服务器</a>，最低配置的云主机就够，在哪儿都能同步；<a href="tailscale/">Tailscale</a>，每台电脑装上它，配对时输入对方的 Tailscale 地址，不需要服务器。隔空贴不提供公共服务器，所以不会有任何人的数据经过别人的机器。</p></div>
+            <div class="answer"><p>不需要。不同网络时，在两台电脑上开启<a href="official/">官方服务</a>即可，不用购买云主机或填写地址。默认关闭，当前提供每日 100 MB 中转额度，直连不消耗此额度。局域网、<a href="cloud/">自建服务器</a>与 <a href="tailscale/">Tailscale</a> 继续可用。</p></div>
           </details>
           <details>
             <summary>家里没有公网 IP，能在家和公司之间同步吗？</summary>
-            <div class="answer"><p>能，有两种做法。有一台公网服务器的话，把服务器部署在上面，家里和公司的电脑都直接连它，见<a href="cloud/">公网服务器部署</a>。没有的话，每台电脑装上 Tailscale、登录同一个账号，配对时输入对方的 Tailscale 地址，见<a href="tailscale/">Tailscale 教程</a>。</p></div>
+            <div class="answer"><p>不需要。不同网络时，在两台电脑上开启<a href="official/">官方服务</a>即可，不用购买云主机或填写地址。默认关闭，当前提供每日 100 MB 中转额度，直连不消耗此额度。局域网、<a href="cloud/">自建服务器</a>与 <a href="tailscale/">Tailscale</a> 继续可用。</p></div>
           </details>
           <details>
             <summary>在同一个网络里，为什么找不到另一台？</summary>
@@ -600,6 +617,10 @@
           <details>
             <summary>免费吗？公司能用吗？</summary>
             <div class="answer"><p>免费。隔空贴以 GNU AGPL-3.0 开源，个人和公司都可以免费使用和修改。分发它、或通过网络提供修改过的版本时，需要以同样的许可公开源码。</p></div>
+          </details>
+          <details>
+            <summary>官方中转无限量吗？</summary>
+            <div class="answer"><p>当前默认每机器额度组每日 100 MB 中转流量，上传与下载合计，北京时间零点重置。重新安装不会保证获得新额度。用量页显示实际额度、剩余量与更新时间；额度用尽仍可直连。额度与服务可用性可能调整，以客户端显示为准。</p></div>
           </details>
         </div>
       </div>

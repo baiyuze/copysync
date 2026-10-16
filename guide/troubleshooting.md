@@ -2,6 +2,9 @@
 
 [简体中文](troubleshooting.zh-CN.md) · [Back to README](../README.md)
 
+**Official relay is unavailable or allowance is exhausted**
+Both peers need 2.1.0 or later and must enable official access. Check the Official service page for current data, the reset time and the reason. Relay allowance resets at midnight Beijing time; direct traffic does not consume it. If you change the quota in the service policy, the running client refreshes its usage without restarting. Self-hosting is configured separately with Save and connect.
+
 **The other computer can't be found on the same network**
 Make sure both have background sync on and are on the same network. Wired and Wi‑Fi in many offices, guest networks and Wi‑Fi with client isolation don't let devices see each other: on the computer entering the code, click **On a different subnet?** and enter the address shown under the other computer's code. Still nothing? Check the other computer's firewall: on Windows, click **Allow** under Settings → Local network (one administrator prompt); on a Mac, turn on PasteFerry Daemon in System Settings → Privacy & Security → Local Network. The Local network part of `pasteferry-cli nat` shows this computer's port, how many PasteFerry devices it found, whether each paired device is reachable and which addresses it remembers. See the [same network guide](https://pasteferry.cc/en/lan/).
 

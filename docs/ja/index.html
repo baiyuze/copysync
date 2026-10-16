@@ -13,7 +13,7 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PasteFerry：Mac、Windows、Linux のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK</title>
-  <meta name="description" content="PasteFerry は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac、Windows、Linux に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントは不要。同じネットワークならサーバーなしで使え、ネットワークをまたぐときは自分で用意したサーバーか Tailscale を使います。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。無料・オープンソース。">
+  <meta name="description" content="PasteFerry は Mac・Windows・Linux 間でテキスト、画像、ファイル、フォルダを同期します。公式サービスを有効にすればサーバー構築なしで別ネットワーク間も接続。直接接続を優先し、必要時のみ暗号化中継。無料・オープンソース。">
   <link rel="canonical" href="https://pasteferry.cc/ja/">
   <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/">
   <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/">
@@ -25,7 +25,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PasteFerry">
   <meta property="og:title" content="PasteFerry：このコンピューターでコピーして、あのコンピューターで貼り付け">
-  <meta property="og:description" content="Mac、Windows、Linux に対応。テキスト、画像、ファイル、フォルダを、アカウントやネットワークをまたいで同期。P2P 直接接続、エンドツーエンド暗号化、同じネットワークならサーバー不要。無料・オープンソース。">
+  <meta property="og:description" content="PasteFerry は Mac・Windows・Linux 間でテキスト、画像、ファイル、フォルダを同期します。公式サービスを有効にすればサーバー構築なしで別ネットワーク間も接続。直接接続を優先し、必要時のみ暗号化中継。無料・オープンソース。">
   <meta property="og:url" content="https://pasteferry.cc/ja/">
   <meta property="og:image" content="https://pasteferry.cc/assets/og-en.png">
   <meta property="og:image:width" content="1200">
@@ -101,7 +101,7 @@
             "name": "macOS のユニバーサルクリップボードとの違いは？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。PasteFerry は同じネットワークならインストールしてすぐ使え、ネットワークをまたぐときは両方があなたのサーバーにつながるか、Tailscale を入れていれば使えます。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。 2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。"
+              "text": "Mac・Windows・Linux でテキスト、画像、ファイル、フォルダを同期。同じアカウントは不要。公式サービスをオンにすれば、サーバーを構築せずに別ネットワーク間でも使えます。直接接続を優先し、常にエンドツーエンド暗号化。 2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。"
             }
           },
           {
@@ -109,7 +109,7 @@
             "name": "サーバーにコピーした内容は見えますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "見えません。直接接続のときデータはサーバーを通りません。中継が必要なときも、サーバーが転送するのは DTLS で暗号化されたパケットです。サーバーはアカウントもコピーした内容も保存しません。コードは公開されているので、ご自身で確かめられます。"
+              "text": "コピー内容は復号できません。直接通信は端末間で行い、中継はエンドツーエンド暗号化されたパケットを転送します。公式サービスは必要な端末・使用量統計を保持します。公開ソースだけで非公開の本番保存動作まで証明できるわけではありません。"
             }
           },
           {
@@ -125,7 +125,7 @@
             "name": "サーバーは自分で用意する必要がありますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "場合によります。コンピューターが同じネットワークにあるなら、アプリを入れてペアリングするだけで、サーバーは要りません。 ネットワークをまたぐ方法は 2 つあります。公開サーバーは最小構成のクラウドサーバーで足り、どこからでも同期できます。Tailscale は各コンピューターに入れ、ペアリング時に相手の Tailscale アドレスを入力するだけで、サーバーは要りません。PasteFerry は公開サーバーを提供しないので、誰のデータも他人のマシンを通りません。"
+              "text": "不要です。別ネットワークなら両方で公式サービスを有効にします。クラウド契約やアドレス入力は不要。初期状態はオフで、現在の中継上限は 100 MB/日、直接通信は消費しません。LAN、独自サーバー、Tailscale も使えます。"
             }
           },
           {
@@ -133,7 +133,7 @@
             "name": "自宅にグローバル IP がありません。自宅と会社のあいだで同期できますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "できます。方法は 2 つあります。公開サーバーがあれば、そこにサーバーを置いて両方のコンピューターから直接つなぎます（公開サーバーでの手順）。なければ、すべてのコンピューターに Tailscale を入れて同じアカウントでサインインし、ペアリング時に相手の Tailscale アドレスを入力します（Tailscale での手順）。"
+              "text": "不要です。別ネットワークなら両方で公式サービスを有効にします。クラウド契約やアドレス入力は不要。初期状態はオフで、現在の中継上限は 100 MB/日、直接通信は消費しません。LAN、独自サーバー、Tailscale も使えます。"
             }
           },
           {
@@ -175,6 +175,14 @@
               "@type": "Answer",
               "text": "無料です。PasteFerry は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。"
             }
+          },
+          {
+            "@type": "Question",
+            "name": "公式中継は無制限ですか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "現在の標準中継上限は端末の上限グループごとに送受信合計 100 MB/日で、北京時間午前 0 時にリセットします。再インストールで新たな残量が得られる保証はありません。使用量画面に実際の上限、残量、更新時刻を表示します。上限に達しても直接接続は利用できます。上限と提供状況は変更される場合があるため、アプリでご確認ください。"
+            }
           }
         ]
       }
@@ -212,8 +220,9 @@
   <main id="main">
     <section class="hero">
       <div class="wrap">
+        <a class="release-note" href="official/">2.1 新機能：サーバー不要で別ネットワーク間を同期 →</a>
         <h1 class="display">こっちでコピーして、<br>あっちで貼り付け。</h1>
-        <p class="lede">Mac、Windows、Linux に対応。テキスト、画像、ファイル、フォルダまるごと。同じアカウントは要りません。同じネットワークならサーバーなしで使え、ネットワークをまたいでも使えます。データはデバイス間を直接流れ、エンドツーエンドで暗号化されます。</p>
+        <p class="lede">Mac・Windows・Linux でテキスト、画像、ファイル、フォルダを同期。同じアカウントは不要。公式サービスをオンにすれば、サーバーを構築せずに別ネットワーク間でも使えます。直接接続を優先し、常にエンドツーエンド暗号化。</p>
         <div class="cta">
           <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>PasteFerry をダウンロード</a>
           <a class="button quiet tour-link" href="tour/" data-tour-open aria-haspopup="dialog"><span aria-hidden="true">▶</span> 紹介ムービーを見る <span class="tour-duration">1:25</span></a>
@@ -250,8 +259,15 @@
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
         <h2 id="deploy-title">2 台をどうつなぐか</h2>
-        <p class="intro">同じネットワークなら、アプリを入れてペアリングするだけで、サーバーは要りません。ネットワークをまたぐときは、サーバーか Tailscale を通じてお互いを見つけます。コピーした内容がそこに保存されることはありません。状況に合うものを選んでください。</p>
+        <p class="intro">同じネットワークならインストールしてペアリング。別ネットワークなら公式サービスをオンにするだけで、サーバーの準備は不要です。独自サーバーと Tailscale も選べます。</p>
         <div class="paths">
+          <a class="path" href="official/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-when">別ネットワーク間、構築不要</span>
+            <h3>公式サービス</h3>
+            <p>スイッチひとつで自宅と会社のパソコンを接続。直接接続を優先し、失敗時のみ暗号化中継を使います。クラウド契約やアドレス入力は不要です。</p>
+            <span class="path-go">公式サービスを有効にする →</span>
+          </a>
           <a class="path" href="lan/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
             <span class="path-when">準備は何も要らない</span>
@@ -261,8 +277,8 @@
           </a>
           <a class="path" href="cloud/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
-            <span class="path-when">どこからでも同期</span>
-            <h3>公開サーバー</h3>
+            <span class="path-when">容量と運用を自分で管理</span>
+            <h3>独自の公開サーバー</h3>
             <p>グローバル IP を持つ Linux のクラウドサーバー。最小構成で足ります。各コンピューターが直接つながり、自宅でも会社でも外出先でも、ほかに入れるものはありません。</p>
             <span class="path-go">公開サーバーでの手順 →</span>
           </a>
@@ -274,7 +290,7 @@
             <span class="path-go">Tailscale での手順 →</span>
           </a>
         </div>
-        <p class="note">迷ったら<a href="start/#server">はじめかた</a>で 3 通りを比べられます。</p>
+        <p class="note">初めての方は<a href="start/#server">クイックスタート</a>へ。公式サービスは任意です。現在の標準中継上限は 100 MB/日で、直接通信では消費しません。</p>
       </div>
     </section>
 
@@ -315,7 +331,7 @@
               <tr><th scope="row">コピーしてすぐ貼り付け、受け取り操作なし</th><td class="yes ours">できる</td><td class="yes">できる</td><td class="no">できない</td><td class="no">できない</td></tr>
               <tr><th scope="row">ファイルとフォルダまるごと</th><td class="yes ours">できる</td><td class="partial">不安定</td><td class="yes">できる</td><td class="partial">先に圧縮</td></tr>
               <tr><th scope="row">前にコピーしたものを探す</th><td class="yes ours">できる</td><td class="no">できない</td><td class="no">できない</td><td class="partial">履歴をさかのぼる</td></tr>
-              <tr><th scope="row">内容が第三者のサーバーを通らない</th><td class="yes ours">通らない</td><td class="yes">通らない</td><td class="yes">通らない</td><td class="no">通る</td></tr>
+              <tr><th scope="row">内容を復号できるのは自分の端末のみ</th><td class="yes ours">通らない</td><td class="yes">通らない</td><td class="yes">通らない</td><td class="no">通る</td></tr>
             </tbody>
           </table>
         </div>
@@ -464,7 +480,7 @@
               <li>DMG をダウンロードして開き、PasteFerry を「アプリケーション」にドラッグします。<span class="aside">Apple シリコン版と Intel 版があります。自分の Mac がどちらかの確かめ方は、ダウンロードページにあります。</span></li>
               <li>「アプリケーション」から開きます。<span class="aside">初回は「開発元を検証できません」と表示されます。PasteFerry はまだ Apple の公証を受けていないためです。「システム設定 → プライバシーとセキュリティ」を開き、ページ下部の「このまま開く」をクリックします。必要なのは一度だけです。</span></li>
               <li>「バックグラウンド同期を有効にする」をクリックします。クリップボードの読み取りと、ローカルネットワーク上のデバイスを探すことについて聞かれたら、どちらも許可します。</li>
-              <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレス <code>ws://サーバーアドレス:8787/signal</code> を入力して Return を押します。同じネットワークなら空欄のままです。</li>
+              <li>別ネットワークで使う場合は各パソコンの「設定 → 公式サービスを使う」をオンにします。アドレス入力は不要。独自サーバーも利用できます。</li>
             </ol>
             <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Mac 版をダウンロード</a>
           </div>
@@ -473,7 +489,7 @@
             <ol>
               <li>PasteFerry-Setup.exe を実行します。現在のユーザーのフォルダにインストールされ、管理者権限は要りません。<span class="aside">PasteFerry はまだコード署名されていないため、「Windows によって PC が保護されました」と表示されます。「詳細情報」を押してから「実行」を押してください。インストーラーを使いたくない場合は<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip">ポータブル版</a>もあります。</span></li>
               <li>PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。ファイアウォールに聞かれたら許可します。ウィンドウを閉じても、画面右下の通知領域で動き続けます。</li>
-              <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
+              <li>別ネットワークで使う場合は各パソコンの「設定 → 公式サービスを使う」をオンにします。アドレス入力は不要。独自サーバーも利用できます。</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Windows 版をダウンロード</a>
           </div>
@@ -482,17 +498,18 @@
             <ol>
               <li>Ubuntu や Debian などでは .deb をダウンロードし、<code>sudo apt install ./PasteFerry-linux-amd64.deb</code> を実行します。ほかのディストリビューションでは tar.gz をダウンロードして展開し、<code>./PasteFerry/install.sh</code> を実行します。</li>
               <li>アプリケーションメニューから PasteFerry を開き、「バックグラウンド同期を有効にする」をクリックします。以後はログイン時に自動で起動します。</li>
-              <li>ネットワークをまたいで同期するときは、「設定」でサーバーのアドレスを入力して Enter を押します。同じネットワークなら空欄のままです。</li>
+              <li>別ネットワークで使う場合は各パソコンの「設定 → 公式サービスを使う」をオンにします。アドレス入力は不要。独自サーバーも利用できます。</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Linux 版をダウンロード</a>
           </div>
         </div>
         <div class="install-more">
           <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>接続方法</h3>
-          <p class="small">同じネットワークならサーバーは要りません。状況に合うものを選んでください。どれにも手順のページがあります：</p>
+          <p class="small">同じネットワークならインストールしてペアリング。別ネットワークなら公式サービスをオンにするだけで、サーバーの準備は不要です。独自サーバーと Tailscale も選べます。</p>
           <ul class="opts">
+              <li><a href="official/">公式サービス</a><span>別ネットワーク間、構築不要</span></li>
               <li><a href="lan/">同じネットワーク</a><span>準備は何も要らない</span></li>
-              <li><a href="cloud/">公開サーバー</a><span>どこからでも同期</span></li>
+              <li><a href="cloud/">独自の公開サーバー</a><span>容量と運用を自分で管理</span></li>
               <li><a href="tailscale/">Tailscale</a><span>ネットワークをまたぐ、サーバーなし</span></li>
           </ul>
           <a class="button quiet" href="start/#server">3 通りを比べる</a>
@@ -538,11 +555,11 @@
           </details>
           <details>
             <summary>macOS のユニバーサルクリップボードとの違いは？</summary>
-            <div class="answer"><p>ユニバーサルクリップボードは、両方のデバイスが同じ Apple ID でサインインし、Bluetooth と Wi‑Fi をオンにして近くにある必要があり、Apple 製品どうしでしか使えません。PasteFerry は同じネットワークならインストールしてすぐ使え、ネットワークをまたぐときは両方があなたのサーバーにつながるか、Tailscale を入れていれば使えます。Apple ID が別でも、自宅と会社に離れていても、Mac と Windows の組み合わせでも使えます。さらに履歴があり、大きなファイルは必要なときに取り込めます。</p><p>2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。</p></div>
+            <div class="answer"><p>Mac・Windows・Linux でテキスト、画像、ファイル、フォルダを同期。同じアカウントは不要。公式サービスをオンにすれば、サーバーを構築せずに別ネットワーク間でも使えます。直接接続を優先し、常にエンドツーエンド暗号化。</p><p>2 台の Mac が同じ Apple ID でいつも並んでいて、主にテキストをコピーするだけなら、標準機能で十分です。</p></div>
           </details>
           <details>
             <summary>サーバーにコピーした内容は見えますか？</summary>
-            <div class="answer"><p>見えません。直接接続のときデータはサーバーを通りません。中継が必要なときも、サーバーが転送するのは DTLS で暗号化されたパケットです。サーバーはアカウントもコピーした内容も保存しません。コードは公開されているので、ご自身で確かめられます。</p></div>
+            <div class="answer"><p>コピー内容は復号できません。直接通信は端末間で行い、中継はエンドツーエンド暗号化されたパケットを転送します。公式サービスは必要な端末・使用量統計を保持します。公開ソースだけで非公開の本番保存動作まで証明できるわけではありません。</p></div>
           </details>
           <details>
             <summary>出口が複数ある会社のネットワークでも直接つながりますか？</summary>
@@ -550,11 +567,11 @@
           </details>
           <details>
             <summary>サーバーは自分で用意する必要がありますか？</summary>
-            <div class="answer"><p>場合によります。コンピューターが<a href="lan/">同じネットワーク</a>にあるなら、アプリを入れてペアリングするだけで、サーバーは要りません。</p><p>ネットワークをまたぐ方法は 2 つあります。<a href="cloud/">公開サーバー</a>は最小構成のクラウドサーバーで足り、どこからでも同期できます。<a href="tailscale/">Tailscale</a> は各コンピューターに入れ、ペアリング時に相手の Tailscale アドレスを入力するだけで、サーバーは要りません。PasteFerry は公開サーバーを提供しないので、誰のデータも他人のマシンを通りません。</p></div>
+            <div class="answer"><p>不要です。別ネットワークなら両方で<a href="official/">公式サービス</a>を有効にします。クラウド契約やアドレス入力は不要。初期状態はオフで、現在の中継上限は 100 MB/日、直接通信は消費しません。LAN、<a href="cloud/">独自サーバー</a>、<a href="tailscale/">Tailscale</a> も使えます。</p></div>
           </details>
           <details>
             <summary>自宅にグローバル IP がありません。自宅と会社のあいだで同期できますか？</summary>
-            <div class="answer"><p>できます。方法は 2 つあります。公開サーバーがあれば、そこにサーバーを置いて両方のコンピューターから直接つなぎます（<a href="cloud/">公開サーバーでの手順</a>）。なければ、すべてのコンピューターに Tailscale を入れて同じアカウントでサインインし、ペアリング時に相手の Tailscale アドレスを入力します（<a href="tailscale/">Tailscale での手順</a>）。</p></div>
+            <div class="answer"><p>不要です。別ネットワークなら両方で<a href="official/">公式サービス</a>を有効にします。クラウド契約やアドレス入力は不要。初期状態はオフで、現在の中継上限は 100 MB/日、直接通信は消費しません。LAN、<a href="cloud/">独自サーバー</a>、<a href="tailscale/">Tailscale</a> も使えます。</p></div>
           </details>
           <details>
             <summary>同じネットワークなのに、もう一台が見つからないのはなぜ？</summary>
@@ -575,6 +592,10 @@
           <details>
             <summary>無料ですか？会社で使えますか？</summary>
             <div class="answer"><p>無料です。PasteFerry は GNU AGPL-3.0 のオープンソースで、個人も会社も無料で使い、改変できます。配布する場合や、改変したものをネットワーク越しに提供する場合は、同じライセンスでソースコードを公開する必要があります。</p></div>
+          </details>
+          <details>
+            <summary>公式中継は無制限ですか？</summary>
+            <div class="answer"><p>現在の標準中継上限は端末の上限グループごとに送受信合計 100 MB/日で、北京時間午前 0 時にリセットします。再インストールで新たな残量が得られる保証はありません。使用量画面に実際の上限、残量、更新時刻を表示します。上限に達しても直接接続は利用できます。上限と提供状況は変更される場合があるため、アプリでご確認ください。</p></div>
           </details>
         </div>
       </div>

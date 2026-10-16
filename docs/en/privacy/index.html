@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Privacy and essential data — PasteFerry</title>
   <meta name="description" content="Fresh installs use LAN mode. Official access and essential connection statistics begin only when enabled. Custom servers do not report to the official service. Direct connections are attempted first; machine quota identification and relay authorization happen only after direct failure.">

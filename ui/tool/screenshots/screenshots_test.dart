@@ -122,7 +122,7 @@ AppState _demo({LinkState link = LinkState.online,
     serviceState: service,
     pendingPairing: pending,
     status: Status(
-      version: '2.0.0',
+      version: '2.1.0',
       deviceName: 'MacBook Pro',
       signalingConnected: link == LinkState.online && server.isNotEmpty,
       serverConfigured: server.isNotEmpty,
@@ -360,6 +360,42 @@ void main() {
 
   testWidgets('settings', (tester) async {
     await _shoot(tester, 'settings', state: _demo(), section: Section.settings);
+  });
+
+  AppState officialDemo() {
+    final state = _demo();
+    final bjt = _now.toUtc().add(const Duration(hours: 8));
+    final reset = DateTime.utc(bjt.year, bjt.month, bjt.day + 1).subtract(const Duration(hours: 8));
+    state.debugSeed(
+      status: state.status!.deepCopy()
+        ..deviceId = 'demo-device-7k2m9q4v'
+        ..officialUsage = OfficialUsage(
+          available: true,
+          uploadBytes: Int64(12340000),
+          downloadBytes: Int64(7660000),
+          limitBytes: Int64(100000000),
+          remainingBytes: Int64(80000000),
+          updatedAtUnix: Int64(_now.millisecondsSinceEpoch ~/ 1000),
+          resetAtUnix: Int64(reset.millisecondsSinceEpoch ~/ 1000),
+        ),
+      config: state.config!.deepCopy()
+        ..serviceMode = ServiceMode.SERVICE_MODE_OFFICIAL
+        ..signalingUrl = '',
+      self: state.self!,
+      peers: state.peers,
+      records: state.records,
+    );
+    return state;
+  }
+
+  testWidgets('official-settings-dark', (tester) async {
+    await _shoot(tester, 'official-settings-dark', state: officialDemo(),
+        section: Section.settings, brightness: Brightness.dark);
+  });
+
+  testWidgets('official-usage-dark', (tester) async {
+    await _shoot(tester, 'official-usage-dark', state: officialDemo(),
+        section: Section.official, brightness: Brightness.dark);
   });
 
   // 网站「在局域网里部署服务器」：服务器地址填局域网 IP，已连接

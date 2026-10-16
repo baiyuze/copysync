@@ -97,6 +97,51 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/start/"/>
   </url>
   <url>
+    <loc>https://pasteferry.cc/official/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/official/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/official/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/official/"/>
+  </url>
+  <url>
+    <loc>https://pasteferry.cc/zh-tw/official/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/official/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/official/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/official/"/>
+  </url>
+  <url>
+    <loc>https://pasteferry.cc/zh-hk/official/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/official/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/official/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/official/"/>
+  </url>
+  <url>
+    <loc>https://pasteferry.cc/en/official/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/official/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/official/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/official/"/>
+  </url>
+  <url>
+    <loc>https://pasteferry.cc/ja/official/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/official/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/official/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/official/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/official/"/>
+  </url>
+  <url>
     <loc>https://pasteferry.cc/lan/</loc>
     <lastmod>2026-10-16</lastmod>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/lan/"/>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>官方公网服务：无需自建服务器 — 隔空贴 PasteFerry</title>
+  <meta name="description" content="打开一个开关，让家里与公司的电脑找到彼此。优先打洞直连，失败后自动中转，无需购买云主机或填写地址。">
+  <link rel="canonical" href="https://pasteferry.cc/official/">
+  <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/official/">
+  <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/official/">
+  <link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/official/">
+  <link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/official/">
+  <link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/official/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="隔空贴">
+  <meta property="og:title" content="官方公网服务：无需自建服务器 — 隔空贴 PasteFerry">
+  <meta property="og:description" content="打开一个开关，让家里与公司的电脑找到彼此。优先打洞直连，失败后自动中转，无需购买云主机或填写地址。">
+  <meta property="og:url" content="https://pasteferry.cc/official/">
+  <meta property="og:image" content="https://pasteferry.cc/assets/og.png">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href=".././" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
+      <nav aria-label="页面导航">
+        <a href="../start/">快速开始</a>
+        <a class="wide" href=".././#how">工作原理</a>
+        <a class="wide" href=".././#faq">常见问题</a>
+        <a class="mid" href="../start/#server">连接方式</a>
+        <a href="../download/">下载</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
+        <details class="lang">
+          <summary aria-label="语言：简体中文"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>简体中文</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../official/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a></li>
+            <li><a href="../zh-tw/official/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a></li>
+            <li><a href="../zh-hk/official/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../en/official/" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../ja/official/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero"><div class="wrap">
+      <p class="crumb"><a href="../">隔空贴</a> / 官方服务</p>
+      <h1 class="display">跨网络，无需自建</h1>
+      <p class="lede">每台电脑安装 2.1.0 或更新版本，在设置中开启官方服务，再配对。信令帮助设备找到彼此，内容优先直接传输，打洞失败才走加密中转。</p>
+      <a class="button" href="../download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下载最新版本</a>
+    </div></section>
+    <section class="section"><div class="wrap">
+      <h2>三个步骤，开始跨网络同步</h2>
+      <div class="os-grid"><ol class="steps">                <li>在需要同步的每台电脑上安装最新版本，启用后台同步。</li>
+                <li>在每台电脑的「设置」中开启「使用官方服务」，阅读并确认必要统计说明。不用填写官方域名或端口。</li>
+                <li>一台生成配对码，另一台输入；核对两边的安全指纹后确认。已有配对关系可以继续使用。</li></ol>
+        <figure class="shot"><img src="../assets/screenshots/official-settings-dark.png" width="2112" height="1472" alt="设置中的使用官方服务开关，无需填写官方地址"></figure>
+      </div>
+    </div></section>
+    <section class="section"><div class="wrap official-copy"><h2>先直连，再中转</h2><p class="intro">官方信令只帮助在线设备交换连接信息。客户端先用 STUN 探测和打洞；本轮直连失败后，才申请官方中转。传输内容始终端到端加密。</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>直连不消耗中转额度</h2><p class="intro">当前默认每机器额度组每日 100 MB 中转流量，上传与下载合计，北京时间零点重置。重新安装不会保证获得新额度。用量页显示实际额度、剩余量与更新时间；额度用尽仍可直连。额度与服务可用性可能调整，以客户端显示为准。</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>由你决定是否开启</h2><p class="intro">新安装默认关闭。开启后记录必要接入统计；仅申请中转时派生项目专用机器摘要。真实设备名、原始系统标识和复制内容不会作为统计上传。完整字段与保留期限见隐私说明。</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>仍可独立自建</h2><p class="intro">局域网、自定义服务器和 Tailscale 继续可用，不依赖官方网关。需要自行管理容量时，可选择自建公网服务器；在自定义地址旁点击「保存并连接」。</p></div></section>
+    <section class="section"><div class="wrap official-copy">
+      <figure class="shot"><img src="../assets/screenshots/official-usage-dark.png" width="2112" height="1472" loading="lazy" alt="官方服务用量页的演示数据：每日 100.00 MB、剩余 80.00 MB"></figure>
+      <p class="note"><a href="../privacy/">隐私与必要数据</a> · <a href="../cloud/">自建服务器教程</a> · <a href="https://pasteferry.cc/">pasteferry.cc</a></p>
+    </div></section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
+      <nav aria-label="页脚链接">
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://pasteferry.cc/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
+        <a href="../privacy/">隐私与必要数据</a>
+      </nav>
+      <nav aria-label="语言">
+        <a href="../official/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>
+        <a href="../zh-tw/official/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a>
+        <a href="../zh-hk/official/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../en/official/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/official/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

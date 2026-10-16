@@ -1,14 +1,14 @@
 # PasteFerry (隔空贴)
 
-> PasteFerry is a free, open-source (GNU AGPL-3.0) app for macOS, Windows and Linux that syncs the clipboard and files between computers: copy on one, paste on another, in any combination of Mac, Windows and Linux. It works across different accounts and different networks. On the same network no server is needed: devices find each other over mDNS and pair with a code. Across networks, a server the user hosts (or Tailscale) introduces them. Devices connect peer-to-peer over WebRTC with end-to-end DTLS encryption; when a direct connection fails, traffic is relayed through the user's TURN server. The server stores no accounts and cannot read clipboard content.
+> PasteFerry is a free, open-source (GNU AGPL-3.0) app for macOS, Windows and Linux that syncs the clipboard and files between computers: copy on one, paste on another, in any combination of Mac, Windows and Linux. It works across different accounts and different networks. On the same network no server is needed: devices find each other over mDNS and pair with a code. Across networks, opt-in official access introduces them without requiring users to host a server; custom servers and Tailscale also remain available. Devices connect peer-to-peer over WebRTC with end-to-end DTLS encryption; when a direct connection fails, official traffic is relayed over an authorized WSS tunnel to TURN, with a current default allowance of 100 MB per machine quota group per day (upload plus download, Beijing midnight reset); direct traffic is not charged. The server stores no accounts and cannot read clipboard content.
 >
-> 隔空贴是一款免费开源（GNU AGPL-3.0）的 macOS、Windows 与 Linux 工具，在两台电脑之间同步剪贴板与文件：一台复制，另一台直接粘贴，Mac、Windows、Linux 互通。不要求同一个账号，跨网络可用。同一网络里不需要服务器，设备靠 mDNS 互相发现、用配对码配对；跨网络时由用户自建的服务器或 Tailscale 牵线。设备间 WebRTC 直连、DTLS 端到端加密，打不通时经用户服务器的 TURN 中转；服务器不存账号，看不到复制内容。
+> 隔空贴是一款免费开源（GNU AGPL-3.0）的 macOS、Windows 与 Linux 工具，在两台电脑之间同步剪贴板与文件：一台复制，另一台直接粘贴，Mac、Windows、Linux 互通。不要求同一个账号，跨网络可用。同一网络里不需要服务器，设备靠 mDNS 互相发现、用配对码配对；跨网络时主动开启官方服务即可，无需自建；也可继续使用自建服务器或 Tailscale。设备间 WebRTC 直连、DTLS 端到端加密，打不通时才申请加密中转，当前默认每机器额度组每日 100 MB 上下行合计，直连不扣额度；服务器不存账号，看不到复制内容。
 
 Name: PasteFerry in English, 隔空贴 in Chinese. Versions before 2.0.0 (October 2026) were called CopySync.
 
 Key facts:
 
-- Current version: 2.1.0, prepared 2026-10-16. Adds optional official public access, direct-first connection with authorized relay fallback, and a daily relay usage page. Official access is off for new installations. Custom servers and LAN work without the private gateway. Both peers need 2.1.0 for official relay; existing direct and self-hosted protocols remain compatible. See https://pasteferry.cc/privacy/ and the public gateway protocol in design/official-gateway.md.
+- Current version: 2.1.0, released 2026-10-16. Adds optional official public access, direct-first connection with authorized relay fallback, and a daily relay usage page. Official access is off for new installations. Custom servers and LAN work without the private gateway. Both peers need 2.1.0 for official relay; existing direct and self-hosted protocols remain compatible. See https://pasteferry.cc/privacy/ and the public gateway protocol in design/official-gateway.md.
 - Mac client: macOS 13 Ventura or later. Distributed as a DMG for Apple silicon (PasteFerry-mac-apple-silicon.dmg), one for Intel (PasteFerry-mac-intel.dmg), and a universal one (PasteFerry.dmg); not notarized by Apple, so the first launch needs "Open Anyway" in System Settings → Privacy & Security.
 - Windows client: Windows 10 and Windows 11, x64. Per-user installer (PasteFerry-Setup.exe, no admin rights) or portable zip; not code-signed, so SmartScreen needs "More info → Run anyway" once. Runs in the notification area; pasted files are real files usable in Explorer, WeChat and Office. Skips content that password managers mark as sensitive.
 - Linux client: x64 and ARM64, GTK 3; X11 desktops, or Wayland desktops with XWayland (GNOME and KDE include it by default). Tested on Ubuntu 24.04 GNOME. A .deb for Debian, Ubuntu and derivatives (installs to /opt/PasteFerry and adds a menu entry), or a tar.gz for other distributions (run install.sh to add a menu entry). The background service starts at login through an XDG autostart entry; data lives in ~/.local/share/pasteferry. No tray icon; reopen the window from the app menu. Skips content that password managers mark as sensitive.
@@ -41,6 +41,8 @@ Key facts:
 - [Local network mode design (中文)](https://pasteferry.cc/design/lan-mode.html): mDNS discovery, UDP signaling, pairing across subnets, Windows Firewall and macOS Local Network findings, NAT lab scenarios
 - [Linux client design (中文)](https://pasteferry.cc/design/linux-client.html): X11 clipboard over XWayland, INCR transfers, XDG autostart, packaging
 - [Changelog](https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md)
+
+- [Official service](https://pasteferry.cc/en/official/): optional cross-network access without self-hosting, direct-first relay and quota ([中文](https://pasteferry.cc/official/))
 
 ## Download
 

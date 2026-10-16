@@ -33,7 +33,7 @@
 
 通用剪贴板要同一个 Apple ID、两台离得近；隔空投送每次都要点接收，也不管剪贴板；发给自己要手动下载，文件还留在别人的服务器上。一台 Mac、一台 Windows 时，系统自带的办法一个都用不了。
 
-隔空贴的做法是：两台电脑配对一次，之后在一台上复制，另一台上直接粘贴。Mac 与 Mac、Mac 与 Windows、Windows 与 Windows 都可以。同一个网络里装好就能用，不需要服务器；跨网络时，由你自己部署的服务器或 Tailscale 让两台电脑找到彼此。数据在两台设备之间直接传输，全程端到端加密，打不通直连时经你的服务器中转，服务器也看不到内容。
+隔空贴的做法是：两台电脑配对一次，之后在一台上复制，另一台上直接粘贴。Mac 与 Mac、Mac 与 Windows、Windows 与 Windows 都可以。同一个网络里装好就能用，不需要服务器；跨网络时，在两台电脑的「设置」中开启「使用官方服务」即可，无需自建或填写地址。优先打洞直连，失败后自动加密中转，服务器无法解密内容。自建服务器与 Tailscale 继续可用。
 
 | | 隔空贴 | 通用剪贴板 | 隔空投送 | 聊天软件 |
 |---|:-:|:-:|:-:|:-:|
@@ -43,7 +43,7 @@
 | Mac 与 Windows 之间 | ✓ | — | — | ✓ |
 | 文件与整个文件夹 | ✓ | 不稳定 | ✓ | 打包后可以 |
 | 复制历史，可以找回之前的内容 | ✓ | — | — | 翻聊天记录 |
-| 内容不经过第三方服务器 | ✓ | ✓ | ✓ | — |
+| 仅自己的设备可解密内容 | ✓ | ✓ | ✓ | — |
 
 ## 功能
 
@@ -64,7 +64,7 @@
 
 ## 开始使用
 
-第一次用？跟着**[快速开始](https://pasteferry.cc/start/)**一步步来，有截图。需要**每台电脑装一个 App**；同一个网络里这就够了，跨网络时再加一台服务器或 Tailscale。
+第一次用？跟着**[快速开始](https://pasteferry.cc/start/)**一步步来，有截图。需要**每台电脑装一个 App**；同一个网络里这就够了，跨网络时开启官方服务，也可自建服务器或使用 Tailscale。
 
 **1. 在每台电脑上安装 App**，到 **[下载页](https://pasteferry.cc/download/)** 选：
 
@@ -76,15 +76,16 @@
 
 **2. 配对。**一台点 **设备 → 添加设备 → 生成配对码**，另一台点 **输入配对码**；不在同一网段时，再点 **不在同一网段？** 输入配对码下面显示的地址。两边显示的两行安全指纹完全一致后再确认。之后在任意一台上复制，另一台就能直接粘贴。
 
-**3. 跨网络时（可选）。**三种连接方式，每种都有图文教程：
+**3. 跨网络时（可选）。**两台电脑均开启「使用官方服务」后再配对，已有配对关系可以继续使用。新安装默认关闭，由你主动开启。详见[官方服务教程](https://pasteferry.cc/official/)。其他连接方式仍然可用：
 
 | 方式 | 适合 | 要准备 |
 |---|---|---|
+| **[官方服务](https://pasteferry.cc/official/)** | 跨网络，无需自建服务器 | 每台电脑开启一个开关；当前默认每机器额度组每日 100 MB 中转流量，上下行合计，直连不消耗此额度 |
 | **[同一网络](https://pasteferry.cc/lan/)** | 电脑都连着同一个路由器（家里或办公室） | 什么都不用 |
 | **[公网服务器](https://pasteferry.cc/cloud/)** | 电脑分散在不同网络里，想在哪儿都能同步 | 一台有公网 IP 的 Linux 云主机，最低配置就够 |
 | **[Tailscale](https://pasteferry.cc/tailscale/)** | 要跨网络，但没有公网服务器 | 每台电脑都装 [Tailscale](https://tailscale.com)，配对时输入对方的 Tailscale 地址 |
 
-公网服务器上的安装命令：
+选择自建时的安装命令（可选）：
 
 ```bash
 curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
@@ -92,21 +93,23 @@ tar xzf pasteferry-server-linux-amd64.tar.gz && cd pasteferry-server-linux-amd64
 sudo ./install.sh <服务器公网IP>
 ```
 
-放行 TCP 8787、UDP 3478 与 UDP 32768–60999，然后在每台电脑的 **设置 → 信令服务器地址** 填入 `ws://<服务器地址>:8787/signal`。Docker 部署与全部参数见[服务器部署说明](server/deploy/README.md)。国内云服务器的域名没有备案时，客户端里请直接填 IP。
+放行 TCP 8787、UDP 3478 与 UDP 32768–60999，然后在每台电脑的 **设置 → 自定义服务器** 填入 `ws://<服务器地址>:8787/signal`，点击「保存并连接」。Docker 部署与全部参数见[服务器部署说明](server/deploy/README.md)。国内云服务器的域名没有备案时，客户端里请直接填 IP。
 
 | | 要求 |
 |---|---|
 | **Mac 客户端** | macOS 13 Ventura 及以上；Apple 芯片与 Intel 芯片 |
 | **Windows 客户端** | Windows 10 与 11，x64 |
 | **Linux 客户端** | x64 或 ARM64；X11 桌面，或带 XWayland 的 Wayland 桌面（GNOME、KDE 默认都带）；GTK 3 |
-| **服务器** | 可选，只在跨网络时需要：Linux（x86_64、ARM64；systemd 或 Docker）、macOS，或 Windows 10/11 x64 |
+| **服务器** | 自建时可选，使用官方服务无需部署：Linux（x86_64、ARM64；systemd 或 Docker）、macOS，或 Windows 10/11 x64 |
 | **iPhone / iPad** | 暂不支持：iOS 不允许 App 在后台监听剪贴板 |
+
+官网现已迁至 **[pasteferry.cc](https://pasteferry.cc/)**，原 GitHub Pages 地址会自动跳转。
 
 ## 文档
 
 - [工作原理](guide/how-it-works.zh-CN.md)：架构、NAT 打洞、安全模型、兜底、踩过的坑
 - [排障](guide/troubleshooting.zh-CN.md)与已知限制
-- [快速开始](https://pasteferry.cc/start/) · [同一网络](https://pasteferry.cc/lan/) · [公网服务器](https://pasteferry.cc/cloud/) · [Tailscale](https://pasteferry.cc/tailscale/) · [在局域网里部署服务器](https://pasteferry.cc/server/)，都是图文教程
+- [官方服务](https://pasteferry.cc/official/) · [快速开始](https://pasteferry.cc/start/) · [同一网络](https://pasteferry.cc/lan/) · [公网服务器](https://pasteferry.cc/cloud/) · [Tailscale](https://pasteferry.cc/tailscale/) · [在局域网里部署服务器](https://pasteferry.cc/server/)，都是图文教程
 - [服务器部署说明](server/deploy/README.md)：Windows、macOS、Linux、Docker、Tailscale
 - [从源码构建](guide/building.zh-CN.md)
 - 技术方案：[局域网直连](design/lan-mode.md)、[多出口网络的 NAT 打洞](design/nat-traversal.md)、[Windows 客户端](design/windows-client.md)
@@ -118,4 +121,4 @@ sudo ./install.sh <服务器公网IP>
 
 ## 可选官方服务（2.1）
 
-新安装默认关闭官方公网。在设置中开启“使用官方服务”后，先尝试直连，失败才申请官方中转；侧栏显示每日额度和用量。官方中转要求双方使用兼容客户端，局域网和自建服务器可独立运行。详见[隐私说明](PRIVACY.md)、[安全说明](SECURITY.md)及[公开协议](design/official-gateway.md)。
+新安装默认关闭官方公网。在设置中开启“使用官方服务”后，先尝试直连，失败才申请官方中转；侧栏显示每日额度、用量和更新时间，MB 保留两位小数。当前默认每机器额度组每日 100 MB，上下行合计，北京时间零点重置；直连不消耗中转额度，用尽后仍可直连。额度与可用性可能调整，以客户端显示为准。官方中转要求双方使用兼容客户端，局域网和自建服务器可独立运行。详见[隐私说明](PRIVACY.md)、[安全说明](SECURITY.md)及[公开协议](design/official-gateway.md)。

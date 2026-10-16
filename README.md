@@ -33,7 +33,7 @@
 
 Universal Clipboard needs the same Apple ID and both Macs close by. AirDrop makes you accept every time and doesn't touch the clipboard. Messaging yourself means manual downloads and your files on someone else's server. With one Mac and one Windows PC, none of the built-in options work.
 
-With PasteFerry you pair two computers once. After that, copy on one and paste on the other — Mac to Mac, Mac to Windows, or Windows to Windows. On the same network it works with no server at all; across networks, a server you run yourself or Tailscale lets the two find each other. Data goes directly between the devices, end-to-end encrypted; when a direct connection can't be made, it is relayed through your server, which still can't read it.
+With PasteFerry you pair two computers once. After that, copy on one and paste on the other — Mac to Mac, Mac to Windows, or Windows to Windows. On the same network it works without a server. Across networks, enable **Settings → Use official service**: no server to host and no address to enter. Direct connections are tried first; if they fail, official relay forwards end-to-end encrypted packets. Custom servers and Tailscale remain available.
 
 | | PasteFerry | Universal Clipboard | AirDrop | Chat apps |
 |---|:-:|:-:|:-:|:-:|
@@ -43,7 +43,7 @@ With PasteFerry you pair two computers once. After that, copy on one and paste o
 | Between Mac and Windows | ✓ | — | — | ✓ |
 | Files and whole folders | ✓ | Unreliable | ✓ | Zipped |
 | History of what you copied | ✓ | — | — | Scroll back |
-| Content stays off third-party servers | ✓ | ✓ | ✓ | — |
+| Only your devices can decrypt content | ✓ | ✓ | ✓ | — |
 
 ## Features
 
@@ -64,7 +64,7 @@ With PasteFerry you pair two computers once. After that, copy on one and paste o
 
 ## Get started
 
-New here? The **[quick start](https://pasteferry.cc/en/start/)** walks through it with screenshots. You need **the app on each computer**. On the same network that's all; across networks, add a server or Tailscale.
+New here? The **[quick start](https://pasteferry.cc/en/start/)** walks through it with screenshots. You need **the app on each computer**. On the same network that's all; across networks, enable official access or use your own server or Tailscale.
 
 **1. Install the app** on each computer from the **[download page](https://pasteferry.cc/en/download/)**:
 
@@ -76,15 +76,16 @@ The builds aren't notarized or code-signed yet: on Mac, allow it once under **Sy
 
 **2. Pair.** On one computer, **Devices → Add device → Show a code**; on the other, **Enter a code**. On a different subnet, click **On a different subnet?** and also enter the address shown under the code. Confirm only if both screens show the same two fingerprint lines. From then on, copy on either one and paste on the other.
 
-**3. Across networks (optional).** Three ways to connect, each with a step-by-step guide:
+**3. Across networks (optional).** Enable **Use official service** on both computers before pairing; existing pairings are kept. New installs keep this off until you choose it. See the [official service guide](https://pasteferry.cc/en/official/). Other connection choices remain available:
 
 | Way | Best for | You need |
 |---|---|---|
+| **[Official service](https://pasteferry.cc/en/official/)** | Different networks without hosting a server | Enable one switch on each computer; current default relay allowance is 100 MB/day per machine quota group, upload plus download; direct traffic does not consume it |
 | **[Same network](https://pasteferry.cc/en/lan/)** | Computers behind one router, at home or in the office | Nothing |
 | **[Public server](https://pasteferry.cc/en/cloud/)** | Computers on different networks that should sync from anywhere | A Linux VM with a public IP; the smallest is enough |
 | **[Tailscale](https://pasteferry.cc/en/tailscale/)** | Across networks without a server | [Tailscale](https://tailscale.com) on every computer; enter the other's Tailscale address when pairing |
 
-On a public server:
+To self-host instead (optional):
 
 ```bash
 curl -LO https://github.com/baiyuze/pasteferry/releases/latest/download/pasteferry-server-linux-amd64.tar.gz
@@ -92,30 +93,37 @@ tar xzf pasteferry-server-linux-amd64.tar.gz && cd pasteferry-server-linux-amd64
 sudo ./install.sh <public IP of the server>
 ```
 
-Open TCP 8787, UDP 3478 and UDP 32768–60999, then enter `ws://<server address>:8787/signal` under **Settings → Signaling server** on each computer. Docker and all options: [server deployment guide](server/deploy/README.md).
+Open TCP 8787, UDP 3478 and UDP 32768–60999, then enter `ws://<server address>:8787/signal` under **Settings → Custom server**, then click **Save and connect** on each computer. Docker and all options: [server deployment guide](server/deploy/README.md).
 
 | | Requirement |
 |---|---|
 | **Mac app** | macOS 13 Ventura or later; Apple silicon and Intel |
 | **Windows app** | Windows 10 and 11, x64 |
 | **Linux app** | x64 or ARM64; an X11 desktop, or Wayland with XWayland (GNOME and KDE have it by default); GTK 3 |
-| **Server** | Optional, only to sync across networks: Linux (x86_64, ARM64; systemd or Docker), macOS, or Windows 10/11 x64 |
+| **Server** | Optional for self-hosting; official access needs no deployment: Linux (x86_64, ARM64; systemd or Docker), macOS, or Windows 10/11 x64 |
 | **iPhone / iPad** | Not supported: iOS doesn't let apps watch the clipboard in the background |
 
-## Optional official access (2.1)
+## Official access and relay allowance (2.1)
 
 New installations keep official public service off. Enable **Settings → Use
 official service** to try direct connections first and request official relay
 only after direct failure. A separate sidebar shows the daily allowance and
-usage. Both peers need a compatible client for official relay; LAN and custom
+usage, shown in MB with two decimal places. The current default is 100 MB per
+machine quota group per day, upload plus download, resetting at midnight Beijing
+time. Direct traffic does not consume this allowance; direct connections remain
+available when relay allowance is exhausted. Actual limits and availability can
+change and are shown in the app. Both peers need a compatible client for official relay; LAN and custom
 servers continue to work without the gateway. See [privacy](PRIVACY.md),
 [security](SECURITY.md) and the [public protocol](design/official-gateway.md).
+
+The official website is **[pasteferry.cc](https://pasteferry.cc/)**. Old GitHub
+Pages links redirect to it.
 
 ## Documentation
 
 - [How it works](guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned
 - [Troubleshooting](guide/troubleshooting.md) and known limitations
-- [Quick start](https://pasteferry.cc/en/start/) · [Same network](https://pasteferry.cc/en/lan/) · [Public server](https://pasteferry.cc/en/cloud/) · [Tailscale](https://pasteferry.cc/en/tailscale/) · [Run a server on your LAN](https://pasteferry.cc/en/server/), all with screenshots
+- [Official service](https://pasteferry.cc/en/official/) · [Quick start](https://pasteferry.cc/en/start/) · [Same network](https://pasteferry.cc/en/lan/) · [Public server](https://pasteferry.cc/en/cloud/) · [Tailscale](https://pasteferry.cc/en/tailscale/) · [Run a server on your LAN](https://pasteferry.cc/en/server/), all with screenshots
 - [Server deployment](server/deploy/README.md): Windows, macOS, Linux, Docker, Tailscale
 - [Building from source](guide/building.md)
 - Design notes (Chinese): [Local network mode](design/lan-mode.md), [NAT traversal on multi-uplink networks](design/nat-traversal.md), [Windows client](design/windows-client.md)

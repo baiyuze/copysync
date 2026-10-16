@@ -119,13 +119,36 @@
       <div class="wrap">
         <p class="eyebrow">第 2 步</p>
         <h2 id="server-title">選擇一種連線方式</h2>
-        <p class="intro">兩台電腦在同一個網路裡時，什麼都不用架設。跨網路時，要靠雲端伺服器或 Tailscale 找到彼此，複製的內容不會存在上面。</p>
+        <p class="intro">同一網路裡裝好就能配對；不同網路裡，啟用官方服務即可，無需自建。也保留自建伺服器與 Tailscale，依需求選擇。</p>
         <div class="os-tabs" data-tabs="plan">
           <div class="tablist" role="tablist" aria-label="連線方式" hidden>
+            <button type="button" role="tab" id="tab-plan-official" aria-controls="plan-official">官方服務</button>
             <button type="button" role="tab" id="tab-plan-lan" aria-controls="plan-lan">同一網路</button>
-            <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">雲端伺服器</button>
+            <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">自建公網伺服器</button>
             <button type="button" role="tab" id="tab-plan-ts" aria-controls="plan-ts">Tailscale</button>
           </div>
+
+          <section class="os" id="plan-official" role="tabpanel" aria-labelledby="tab-plan-official">
+            <h3 class="os-title">官方服務</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>在每台需要同步的電腦上安裝最新版本，啟用背景同步。</li>
+                  <li>在每台電腦的「設定」中開啟「使用官方服務」，閱讀並確認必要統計說明。不需填寫官方網域或連接埠。</li>
+                  <li>一台產生配對碼，另一台輸入；核對兩邊的安全指紋後確認。原有配對關係可繼續使用。</li>
+                </ol>
+                <p class="plan-address">新安裝預設關閉。啟用後記錄必要連線統計；僅申請中繼時衍生專案專用機器摘要。真實裝置名稱、原始系統識別碼和複製內容不作為統計上傳。完整欄位與保留期限見隱私說明。</p>
+                <a class="button quiet" href="../../zh-tw/official/">啟用官方服務 →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+                <dl>
+                  <div><dt>先直連，再中繼</dt><dd>官方信令只協助在線裝置交換連線資訊。用戶端先透過 STUN 探測和打洞；本輪直連失敗後，才申請官方中繼。傳輸內容始終端到端加密。</dd></div>
+                  <div><dt>直連不消耗中繼額度</dt><dd>目前預設每機器額度組每日 100 MB 中繼流量，上傳與下載合計，北京時間午夜重設。重新安裝不保證獲得新額度。用量頁顯示實際額度、剩餘量與更新時間；額度用完仍可直連。額度與服務可用性可能調整，以用戶端顯示為準。</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
 
           <section class="os" id="plan-lan" role="tabpanel" aria-labelledby="tab-plan-lan">
             <h3 class="os-title">同一網路</h3>
@@ -151,7 +174,7 @@
           </section>
 
           <section class="os" id="plan-cloud" role="tabpanel" aria-labelledby="tab-plan-cloud">
-            <h3 class="os-title">雲端伺服器</h3>
+            <h3 class="os-title">自建公網伺服器</h3>
             <div class="plan-grid">
               <div>
                 <ol class="steps">
@@ -165,7 +188,7 @@
               <div class="plan-card">
                 <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
                 <dl>
-                  <div><dt>適合</dt><dd>電腦分散在不同的網路裡，想在哪裡都能同步。跨網路時最省事。</dd></div>
+                  <div><dt>適合</dt><dd>自行管理容量與部署</dd></div>
                   <div><dt>要準備</dt><dd>一台有公用 IP 的 Linux 雲端主機，最低規格就夠，需要 root。</dd></div>
                   <div><dt>要注意</dt><dd>雲端主機要花錢。直連打不通時改走中繼，速度受伺服器頻寬限制。用中國大陸的雲端主機、網域又沒有 ICP 備案時，用戶端要填 IP。</dd></div>
                 </dl>

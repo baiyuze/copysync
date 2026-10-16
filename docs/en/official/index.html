@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Official access: no server to host — PasteFerry</title>
+  <meta name="description" content="One switch helps your home and office computers find each other. Direct connections first, automatic encrypted relay if needed. No cloud VM or server address to configure.">
+  <link rel="canonical" href="https://pasteferry.cc/en/official/">
+  <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/official/">
+  <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/official/">
+  <link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/official/">
+  <link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/official/">
+  <link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/official/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="Official access: no server to host — PasteFerry">
+  <meta property="og:description" content="One switch helps your home and office computers find each other. Direct connections first, automatic encrypted relay if needed. No cloud VM or server address to configure.">
+  <meta property="og:url" content="https://pasteferry.cc/en/official/">
+  <meta property="og:image" content="https://pasteferry.cc/assets/og-en.png">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../en/" aria-label="PasteFerry home"><img src="../../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
+      <nav aria-label="Page">
+        <a href="../../en/start/">Quick start</a>
+        <a class="wide" href="../../en/#how">How it works</a>
+        <a class="wide" href="../../en/#faq">FAQ</a>
+        <a class="mid" href="../../en/start/#server">Ways to connect</a>
+        <a href="../../en/download/">Download</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
+        <details class="lang">
+          <summary aria-label="Language：English"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>English</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../../official/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a></li>
+            <li><a href="../../zh-tw/official/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a></li>
+            <li><a href="../../zh-hk/official/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../../en/official/" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a></li>
+            <li><a href="../../ja/official/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero"><div class="wrap">
+      <p class="crumb"><a href="../../en/">PasteFerry</a> / Official service</p>
+      <h1 class="display">Across networks, no hosting</h1>
+      <p class="lede">Install 2.1.0 or later on every computer, enable official access in Settings, then pair. Signaling introduces the devices; content travels directly whenever possible and uses encrypted relay only after direct failure.</p>
+      <a class="button" href="../../en/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>Download the latest app</a>
+    </div></section>
+    <section class="section"><div class="wrap">
+      <h2>Three steps to sync across networks</h2>
+      <div class="os-grid"><ol class="steps">                <li>Install the latest app and turn on background sync on every computer.</li>
+                <li>Enable Settings → Use official service on each computer and review the essential-data notice. No official hostname or port to enter.</li>
+                <li>Show a pairing code on one computer, enter it on the other, and compare both fingerprint lines before confirming. Existing pairings are kept.</li></ol>
+        <figure class="shot"><img src="../../assets/screenshots/en/official-settings-dark.png" width="2112" height="1472" alt="The Use official service switch in Settings, without an official address field"></figure>
+      </div>
+    </div></section>
+    <section class="section"><div class="wrap official-copy"><h2>Direct first, relay when needed</h2><p class="intro">Official signaling exchanges connection information between online peers. The clients try STUN discovery and NAT traversal first, requesting relay only after that direct attempt fails. Content remains end-to-end encrypted.</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>Direct traffic does not use relay allowance</h2><p class="intro">The current default is 100 MB per machine quota group per day, upload plus download, resetting at midnight Beijing time. Reinstalling does not guarantee a fresh allowance. The usage page shows the actual limit, remaining amount and update time. Direct connections still work when relay allowance runs out. Allowances and availability may change; check the app.</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>Your choice to enable it</h2><p class="intro">Official access is off on fresh installs. Enabling it records essential access statistics; an application-specific machine digest is derived only when relay is requested. Real device names, raw system identifiers and copied content are not uploaded as statistics. See the privacy notice for fields and retention.</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>Self-hosting stays independent</h2><p class="intro">LAN, custom servers and Tailscale continue to work without the official gateway. Host your own public server when you need to control capacity, then use Save and connect beside its custom address.</p></div></section>
+    <section class="section"><div class="wrap official-copy">
+      <figure class="shot"><img src="../../assets/screenshots/en/official-usage-dark.png" width="2112" height="1472" loading="lazy" alt="Demo usage page showing a 100.00 MB allowance and 80.00 MB remaining"></figure>
+      <p class="note"><a href="../../en/privacy/">Privacy and essential data</a> · <a href="../../en/cloud/">Self-hosting guide</a> · <a href="https://pasteferry.cc/">pasteferry.cc</a></p>
+    </div></section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>PasteFerry is open source under the GNU AGPL-3.0.</p>
+      <nav aria-label="Footer">
+        <a href="https://github.com/baiyuze/pasteferry/releases">All releases</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://pasteferry.cc/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">License</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">Report an issue</a>
+        <a href="../../en/privacy/">Privacy and essential data</a>
+      </nav>
+      <nav aria-label="Language">
+        <a href="../../official/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../zh-tw/official/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a>
+        <a href="../../zh-hk/official/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../../en/official/" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a>
+        <a href="../../ja/official/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

@@ -7,12 +7,9 @@ C = {
     "brand": "PasteFerry",
     "brand_alt": ["隔空贴", "CopySync"],
     "title": "PasteFerry: sync the clipboard and files between Mac, Windows and Linux, across accounts and networks",
-    "description": "PasteFerry lets you copy on one computer and paste on another, Mac, Windows or Linux: text, images, files and folders. "
-                   "No shared account required. On the same network it works with no server at all; across networks, use a server "
-                   "you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.",
+    "description": 'PasteFerry syncs clipboard text, images, files and folders across Mac, Windows and Linux. Enable optional official access to connect across networks without hosting a server: direct first, encrypted relay when needed. Free and open source.',
     "og_title": "PasteFerry: copy on this computer, paste on that one",
-    "og_description": "Mac, Windows and Linux. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end "
-                      "encrypted, no server needed on the same network. Free and open source.",
+    "og_description": 'PasteFerry syncs clipboard text, images, files and folders across Mac, Windows and Linux. Enable optional official access to connect across networks without hosting a server: direct first, encrypted relay when needed. Free and open source.',
     "og_image": "og-en.png",
     "skip": "Skip to content",
     "home_label": "PasteFerry home",
@@ -25,8 +22,7 @@ C = {
     "lang_label": "Language",
 
     "h1": "Copy on this computer.<br>Paste on that one.",
-    "lede": "Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. On the same network it works "
-            "with no server at all, and it works across networks too. Data moves directly between your devices, end-to-end encrypted.",
+    "lede": 'Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. Now connect across networks by enabling official access, with no server to host. Direct connections first, end-to-end encryption throughout.',
     "dl_button": "Download PasteFerry",
     "dl_mac": "Download for Mac",
     "dl_win": "Download for Windows",
@@ -44,9 +40,8 @@ C = {
     # the quick start tabs use name, facts, steps, address, go; the install section uses name, fit.
     # {lan}, {cloud}, {server} and {ts} in steps and address become links to the matching guide.
     "paths_h2": "How your computers connect",
-    "paths_intro": "On the same network, install the app and pair; no server needed. Across networks, your computers find each "
-                   "other through a server or Tailscale, and nothing you copy is stored there. Pick the way that fits.",
-    "paths_after": "Not sure? The <a href=\"{start}#server\">quick start</a> compares all three.",
+    "paths_intro": 'Same network? Install and pair. Different networks? Enable official access without hosting a server. Custom servers and Tailscale remain available when you prefer to manage the connection yourself.',
+    "paths_after": 'New here? Follow the <a href="{start}#server">quick start</a>. Official access is optional; its current relay default is 100 MB/day, and direct traffic does not consume it.',
     "plans_label": "Ways to connect",
     "plans": {
         "lan": {
@@ -70,13 +65,13 @@ C = {
             "address": "No server address to enter.",
         },
         "cloud": {
-            "name": "Public server",
-            "fit": "Syncs from anywhere",
+            "name": 'Self-hosted server',
+            "fit": 'Control your own capacity',
             "summary": "A Linux VM with a public IP; the smallest one is enough. Every computer connects to it directly, at home, "
                        "at the office or anywhere else, with nothing extra to install.",
             "go": "Public server guide →",
             "facts": [
-                ("Best for", "Computers spread across networks that should sync from anywhere. The simplest way across networks."),
+                ("Best for", 'Control your own capacity'),
                 ("You need", "A Linux VM with a public IP, as root; the smallest one is enough."),
                 ("Keep in mind", "The VM costs money. When a direct connection fails, the relay is limited by the server's "
                                  "bandwidth. In mainland China, use the IP unless the domain has an ICP filing."),
@@ -140,7 +135,7 @@ C = {
         ("Paste right away, nothing to accept", [("yes", "Yes"), ("yes", "Yes"), ("no", "No"), ("no", "No")]),
         ("Files and whole folders", [("yes", "Yes"), ("partial", "Unreliable"), ("yes", "Yes"), ("partial", "Zip first")]),
         ("Find something you copied earlier", [("yes", "Yes"), ("no", "No"), ("no", "No"), ("partial", "Scroll back")]),
-        ("Content stays off third-party servers", [("yes", "Yes"), ("yes", "Yes"), ("yes", "Yes"), ("no", "No")]),
+        ('Only your devices can decrypt content', [("yes", "Yes"), ("yes", "Yes"), ("yes", "Yes"), ("no", "No")]),
     ],
 
     "how_h2": "How it works",
@@ -244,8 +239,7 @@ C = {
         "You only do this once.</span>",
         "Click Turn on background sync. When macOS asks whether PasteFerry may read the clipboard or find devices on your local "
         "network, allow both.",
-        "To sync across networks, enter your server in Settings as <code>ws://server-address:8787/signal</code> and press "
-        "Return. On the same network, leave it empty.",
+        'For different networks, enable Settings → Use official service on each computer. No server address is needed. Custom hosting remains optional.',
     ],
     "win_steps": [
         "Run PasteFerry-Setup.exe. It installs for the current user, no administrator rights needed."
@@ -253,16 +247,16 @@ C = {
         f"then Run anyway. To skip the installer, get the <a href=\"{REPO}/releases/latest/download/PasteFerry-windows-x64.zip\">portable zip</a>.</span>",
         "Open PasteFerry and click Turn on background sync. Allow it if Windows Firewall asks. After you close the window it "
         "keeps running in the notification area.",
-        "To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.",
+        'For different networks, enable Settings → Use official service on each computer. No server address is needed. Custom hosting remains optional.',
     ],
     "linux_steps": [
         "On Ubuntu, Debian and similar, download the .deb and run <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>; "
         "on other distributions, download the tar.gz, extract it and run <code>./PasteFerry/install.sh</code>.",
         "Open PasteFerry from the app menu and click Turn on background sync. From then on it starts when you log in.",
-        "To sync across networks, enter your server address in Settings and press Enter. On the same network, leave it empty.",
+        'For different networks, enable Settings → Use official service on each computer. No server address is needed. Custom hosting remains optional.',
     ],
     "server_h3": "Ways to connect",
-    "server_intro": "No server on the same network. Pick the way that fits; each has a step-by-step guide:",
+    "server_intro": 'Same network? Install and pair. Different networks? Enable official access without hosting a server. Custom servers and Tailscale remain available when you prefer to manage the connection yourself.',
     "server_compare": "Compare the three",
     "copy": "Copy",
     "copied": "Copied",
@@ -292,70 +286,70 @@ C = {
     ],
 
     "faq_h2": "Questions",
-    "faq": [
-        ("Why do .uuremote_ files keep appearing while UU Remote is running?", [
-            "UU Remote writes temporary placeholder files to the system clipboard. Older PasteFerry clients recorded and forwarded them as ordinary files. Version 1.3.2 filters the confirmed placeholder naming pattern on send and receive, and removes placeholder-only history on startup. Ordinary empty, hidden and large files are unaffected. The 50 MB threshold only controls automatic transfer; UU’s UDP P2P setting is unrelated. Upgrade both clients. Other clipboard sync tools may still duplicate ordinary content.",
-        ]),
-        ("How is this different from Universal Clipboard?", [
-            "Universal Clipboard needs both devices on the same Apple ID, with Bluetooth and Wi‑Fi on, close to each other, and "
-            "works only between Apple devices. PasteFerry works on the same network as soon as it's installed; across networks, both "
-            "computers reach your server or run Tailscale. So different Apple IDs work, one Mac and one Windows PC work, and so "
-            "does one at home and one at the office. It also keeps a history and lets you pull large files on demand.",
-            "If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is already enough.",
-        ]),
-        ("Can the server see what I copy?", [
-            "No. With a direct connection the data never touches the server. When it relays, it forwards DTLS-encrypted packets. "
-            "It keeps no accounts and stores no clipboard content. The code is open, so you can check.",
-        ]),
-        ("Does it connect directly on office networks with several uplinks?", [
-            "Yes. These networks pick an uplink per destination. PasteFerry probes several servers from one port to learn its "
-            "address on every uplink and sends them all to the peer, which tries each one. A Mac behind a 4-uplink office "
-            "network connects directly to a home connection in our tests. Peers behind NATs that randomize ports still fall "
-            "back to the relay.",
-        ]),
-        ("Do I need my own server?", [
-            "Not necessarily. When your computers are on the <a href=\"{lan}\">same network</a>, install the app and pair; "
-            "there's no server.",
-            "Across networks there are two ways: a <a href=\"{cloud}\">public server</a>, where the smallest VM is enough and "
-            "sync works from anywhere; or <a href=\"{ts}\">Tailscale</a> on each computer, entering the other computer's "
-            "Tailscale address when pairing, with no server at all. There's no public PasteFerry server, so nobody's data passes "
-            "through anyone else's machine.",
-        ]),
-        ("No public IP at home. Can I sync between home and the office?", [
-            "Yes, in two ways. With a public server, run PasteFerry's server there and connect both computers to it; see the "
-            "<a href=\"{cloud}\">public server guide</a>. Without one, install Tailscale on every computer under the same "
-            "account and enter the other computer's Tailscale address when pairing; see the <a href=\"{ts}\">Tailscale guide</a>.",
-        ]),
-        ("Both computers are on the same network. Why can't they find each other?", [
-            "Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi with client "
-            "isolation don't let devices see each other. In that case, on the computer entering the code, click On a different "
-            "subnet? and enter the address shown under the other computer's code.",
-            "On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow under Settings → "
-            "Local network. On a Mac, turn on PasteFerry Daemon in System Settings → Privacy &amp; Security → Local Network. More in "
-            "the <a href=\"{lan}#faq\">same network guide</a>.",
-        ]),
-        ("Windows? Linux? iPhone?", [
-            "Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real files you "
-            "can drop into Explorer or Office.",
-            "Linux desktops on x64 and ARM64 are supported too: X11, or Wayland with XWayland (GNOME, KDE and others include it "
-            "by default). Files you copy paste straight into the file manager.",
-            "iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so "
-            "copy-and-it's-there can't work.",
-        ]),
-        ("Why does the system warn me the first time?", [
-            "PasteFerry isn't notarized by Apple yet, and the Windows build isn't code-signed yet; both require paid certificates.",
-            "On Mac, open System Settings → Privacy &amp; Security and click Open Anyway near the bottom. On Windows, click More "
-            "info and then Run anyway in the \"Windows protected your PC\" prompt. You only do this once.",
-        ]),
-        ("What about large files?", [
-            "By default, anything under 50 MB is pushed to the other computer as you copy it, so you can paste right away. "
-            "Larger files sync as a record; pull them from the history when you need them. The limit is adjustable in Settings.",
-        ]),
-        ("Is it free? Can my company use it?", [
-            "Yes. PasteFerry is open source under the GNU AGPL-3.0, so individuals and companies can use and modify it for free. "
-            "If you distribute it, or offer a modified version over a network, you publish your source under the same license.",
-        ]),
-    ],
+    "faq": [('Why do .uuremote_ files keep appearing while UU Remote is running?',
+      ['UU Remote writes temporary placeholder files to the system clipboard. Older PasteFerry clients recorded '
+       'and forwarded them as ordinary files. Version 1.3.2 filters the confirmed placeholder naming pattern on '
+       'send and receive, and removes placeholder-only history on startup. Ordinary empty, hidden and large '
+       'files are unaffected. The 50 MB threshold only controls automatic transfer; UU’s UDP P2P setting is '
+       'unrelated. Upgrade both clients. Other clipboard sync tools may still duplicate ordinary content.']),
+     ('How is this different from Universal Clipboard?',
+      ['Mac, Windows and Linux. Text, images, files, whole folders. No shared account required. Now connect '
+       'across networks by enabling official access, with no server to host. Direct connections first, '
+       'end-to-end encryption throughout.',
+       'If your Macs share an Apple ID, sit side by side, and you mostly copy text, the built-in feature is '
+       'already enough.']),
+     ('Can the server see what I copy?',
+      ['It cannot decrypt copied content: direct traffic stays between your devices, and relay forwards '
+       'end-to-end encrypted packets. Official access retains essential device and quota statistics, described '
+       'in the privacy notice. The public client and server source does not by itself prove how private '
+       'production storage is operated.']),
+     ('Does it connect directly on office networks with several uplinks?',
+      ['Yes. These networks pick an uplink per destination. PasteFerry probes several servers from one port to '
+       'learn its address on every uplink and sends them all to the peer, which tries each one. A Mac behind a '
+       '4-uplink office network connects directly to a home connection in our tests. Peers behind NATs that '
+       'randomize ports still fall back to the relay.']),
+     ('Do I need my own server?',
+      ['No. For different networks, enable <a href="{official}">official access</a> on both computers. No cloud '
+       'VM or address to configure. It is off by default and currently includes 100 MB/day of relay traffic; '
+       'direct connections do not use that allowance. LAN, <a href="{cloud}">self-hosting</a> and <a '
+       'href="{ts}">Tailscale</a> remain available.']),
+     ('No public IP at home. Can I sync between home and the office?',
+      ['No. For different networks, enable <a href="{official}">official access</a> on both computers. No cloud '
+       'VM or address to configure. It is off by default and currently includes 100 MB/day of relay traffic; '
+       'direct connections do not use that allowance. LAN, <a href="{cloud}">self-hosting</a> and <a '
+       'href="{ts}">Tailscale</a> remain available.']),
+     ("Both computers are on the same network. Why can't they find each other?",
+      ["Check that they're really on the same subnet: wired and Wi‑Fi in many offices, guest networks, and Wi‑Fi "
+       "with client isolation don't let devices see each other. In that case, on the computer entering the code, "
+       "click On a different subnet? and enter the address shown under the other computer's code.",
+       'On Windows, allow PasteFerry when the firewall asks on first run; if you clicked Cancel, click Allow '
+       'under Settings → Local network. On a Mac, turn on PasteFerry Daemon in System Settings → Privacy &amp; '
+       'Security → Local Network. More in the <a href="{lan}#faq">same network guide</a>.']),
+     ('Windows? Linux? iPhone?',
+      ['Windows 10 and 11 (x64) are supported and work together with Macs. Files you paste on Windows are real '
+       'files you can drop into Explorer or Office.',
+       'Linux desktops on x64 and ARM64 are supported too: X11, or Wayland with XWayland (GNOME, KDE and others '
+       'include it by default). Files you copy paste straight into the file manager.',
+       "iPhone and iPad aren't supported: iOS doesn't let apps watch the clipboard in the background, so "
+       "copy-and-it's-there can't work."]),
+     ('Why does the system warn me the first time?',
+      ["PasteFerry isn't notarized by Apple yet, and the Windows build isn't code-signed yet; both require paid "
+       'certificates.',
+       'On Mac, open System Settings → Privacy &amp; Security and click Open Anyway near the bottom. On Windows, '
+       'click More info and then Run anyway in the "Windows protected your PC" prompt. You only do this once.']),
+     ('What about large files?',
+      ['By default, anything under 50 MB is pushed to the other computer as you copy it, so you can paste right '
+       'away. Larger files sync as a record; pull them from the history when you need them. The limit is '
+       'adjustable in Settings.']),
+     ('Is it free? Can my company use it?',
+      ['Yes. PasteFerry is open source under the GNU AGPL-3.0, so individuals and companies can use and modify '
+       'it for free. If you distribute it, or offer a modified version over a network, you publish your source '
+       'under the same license.']),
+     ('Is official relay unlimited?',
+      ['The current default is 100 MB per machine quota group per day, upload plus download, resetting at '
+       'midnight Beijing time. Reinstalling does not guarantee a fresh allowance. The usage page shows the '
+       'actual limit, remaining amount and update time. Direct connections still work when relay allowance runs '
+       'out. Allowances and availability may change; check the app.'])],
 
     "closing": "Two computers, one clipboard.",
     "source": "View the source on GitHub",
@@ -694,8 +688,7 @@ C = {
         "app_alt": "PasteFerry the first time it opens, asking you to turn on background sync",
 
         "server_h2": "Pick a way to connect",
-        "server_intro": "On the same network there's nothing to set up. Across networks, your computers find each other through "
-                        "a public server or Tailscale, and nothing you copy is stored there.",
+        "server_intro": 'Same network? Install and pair. Different networks? Enable official access without hosting a server. Custom servers and Tailscale remain available when you prefer to manage the connection yourself.',
 
         "pair_h2": "Pair your computers",
         "pair_intro": "Pair each two computers once, and you're done.",

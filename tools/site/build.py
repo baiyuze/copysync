@@ -17,6 +17,7 @@ from pathlib import Path
 
 from content.tour import localized as tour_copy
 from content.privacy import COPY as PRIVACY_COPY
+from content.official import COPY as OFFICIAL_COPY
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
@@ -61,7 +62,8 @@ TAILSCALE = "tailscale/"
 DOWNLOAD = "download/"
 TOUR = "tour/"
 PRIVACY = "privacy/"
-SUBPAGES = [START, LAN, CLOUD, GUIDE, TAILSCALE, DOWNLOAD, TOUR, PRIVACY]
+OFFICIAL = "official/"
+SUBPAGES = [START, OFFICIAL, LAN, CLOUD, GUIDE, TAILSCALE, DOWNLOAD, TOUR, PRIVACY]
 DEPLOY_PAGES = [LAN, CLOUD, GUIDE, TAILSCALE]
 
 # 放到网站上的技术方案：文件名 → 网页名。其他 design/*.md 链接到 GitHub
@@ -143,7 +145,15 @@ def load(code: str) -> dict:
     spec = importlib.util.spec_from_file_location(f"content_{code}", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    return module.C
+    c = module.C
+    o = OFFICIAL_COPY[code]
+    c["official"] = o
+    c["plans"]["official"] = {
+        "name": o["name"], "fit": o["fit"], "summary": o["summary"], "go": o["go"],
+        "facts": [(o["routing_title"], o["routing"]), (o["quota_title"], o["quota"])],
+        "steps": o["steps"], "address": o["privacy"],
+    }
+    return c
 
 
 # ─────────────────────────── 首页 ───────────────────────────
@@ -244,6 +254,12 @@ def _server(x: int, y: int) -> str:
 
 # 三种连接方式，按这个顺序出现在首页、快速开始与安装一节：(文案里的键, 教程页面, 插图)
 PLANS = [
+    ("official", OFFICIAL, _server(98, 8)
+     + '<rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/>'
+     + '<rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/>'
+     + '<path class="p-sig" d="M56 64V22h42M184 64V22h-42"/>'
+     + '<path class="p-data" d="M80 80h80"/>'
+     + _laptop(32, 64) + _laptop(160, 64)),
     # 同一网络：一个网络里只有两台电脑，没有服务器
     ("lan", LAN, '<rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/>'
      + '<path class="p-data" d="M82 52h76"/>'
@@ -282,7 +298,7 @@ def paths(c: dict, base: str) -> str:
 def plan_tabs(c: dict, base: str) -> str:
     """快速开始第 2 步：三种连接方式分页，由用户自己选。每页是适合谁、要准备什么、要注意什么，
     精简的步骤，最后一句要点，以及完整教程的链接。"""
-    links = {"lan": base + LAN, "cloud": base + CLOUD, "server": base + GUIDE, "ts": base + TAILSCALE}
+    links = {"official": base + OFFICIAL, "lan": base + LAN, "cloud": base + CLOUD, "server": base + GUIDE, "ts": base + TAILSCALE}
     tabs, panels = [], []
     for key, page, art in PLANS:
         p = c["plans"][key]
@@ -385,7 +401,7 @@ def home(code: str) -> str:
         f'              <li><a href="{page}">{c["plans"][key]["name"]}</a><span>{c["plans"][key]["fit"]}</span></li>'
         for key, page, _ in PLANS)
     specs = "\n".join(f'            <tr><th scope="row">{k}</th><td>{v}</td></tr>' for k, v in c["specs"])
-    links = {"lan": LAN, "cloud": CLOUD, "server": GUIDE, "ts": TAILSCALE, "start": START}
+    links = {"official": OFFICIAL, "lan": LAN, "cloud": CLOUD, "server": GUIDE, "ts": TAILSCALE, "start": START}
     faq = faq_list(c["faq"], links)
     d = c["diagram"]
 
@@ -426,6 +442,7 @@ def home(code: str) -> str:
   <main id="main">
     <section class="hero">
       <div class="wrap">
+        <a class="release-note" href="{OFFICIAL}">{esc(c["official"]["badge"])}</a>
         <h1 class="display">{c["h1"]}</h1>
         <p class="lede">{c["lede"]}</p>{cta(c, "", START, tour_ui["watch"])}
         <div class="stage" data-play role="img" aria-label="{esc(c["stage_label"])}">
@@ -2191,6 +2208,40 @@ def privacy_page(code: str) -> str:
             + page_bottom(c, code, PRIVACY))
 
 
+def official_page(code: str) -> str:
+    c = load(code)
+    o = c["official"]
+    path = LANGS[code][0]
+    up = "../" * (path + OFFICIAL).count("/")
+    base = up + path
+    shots = up + shots_dir(code)
+    sections = "\n".join(
+        f'<section class="section"><div class="wrap official-copy"><h2>{esc(o[key + "_title"])}</h2><p class="intro">{esc(o[key])}</p></div></section>'
+        for key in ("routing", "quota", "privacy", "self")
+    )
+    return page_top(c, code, OFFICIAL, o["title"], o["summary"]) + f"""
+  <main id="main">
+    <section class="hero guide-hero"><div class="wrap">
+      <p class="crumb"><a href="{base or './'}">{c['brand']}</a> / {o['name']}</p>
+      <h1 class="display">{esc(o['fit'])}</h1>
+      <p class="lede">{esc(o['lede'])}</p>
+      <a class="button" href="{base}{DOWNLOAD}">{DOWN}{esc(o['download'])}</a>
+    </div></section>
+    <section class="section"><div class="wrap">
+      <h2>{esc(o['steps_title'])}</h2>
+      <div class="os-grid"><ol class="steps">{items(o['steps'])}</ol>
+        <figure class="shot"><img src="{shots}official-settings-dark.png" width="2112" height="1472" alt="{esc(o['settings_alt'])}"></figure>
+      </div>
+    </div></section>
+    {sections}
+    <section class="section"><div class="wrap official-copy">
+      <figure class="shot"><img src="{shots}official-usage-dark.png" width="2112" height="1472" loading="lazy" alt="{esc(o['usage_alt'])}"></figure>
+      <p class="note"><a href="{base}{PRIVACY}">{esc(o['privacy_link'])}</a> · <a href="{base}{CLOUD}">{esc(o['self_link'])}</a> · <a href="https://pasteferry.cc/">pasteferry.cc</a></p>
+    </div></section>
+  </main>
+""" + page_bottom(c, code, OFFICIAL)
+
+
 def main() -> None:
     for code, (path, _, _, _) in LANGS.items():
         write(DOCS / path / "index.html", home(code))
@@ -2202,6 +2253,7 @@ def main() -> None:
         write(DOCS / path / TAILSCALE / "index.html", tailscale_page(code))
         write(DOCS / path / DOWNLOAD / "index.html", download_page(code))
         write(DOCS / path / PRIVACY / "index.html", privacy_page(code))
+        write(DOCS / path / OFFICIAL / "index.html", official_page(code))
     for md_name, page in DESIGN_DOCS.items():
         write(DOCS / "design" / f"{page}.html", design_page(md_name, page))
     write(DOCS / "404.html", not_found())

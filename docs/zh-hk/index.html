@@ -13,7 +13,7 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>隔空貼 PasteFerry：在 Mac、Windows 與 Linux 之間同步剪貼簿與檔案，跨帳戶、跨網絡</title>
-  <meta name="description" content="隔空貼讓你在一部電腦上複製，到另一部電腦直接貼上，Mac、Windows、Linux 互通。支援文字、圖片、檔案和資料夾，不必使用同一個帳戶。在同一個網絡裏安裝好就能用，不需要伺服器；跨網絡時可用自己部署的伺服器或 Tailscale。裝置之間 P2P 直連、端對端加密。免費開源。">
+  <meta name="description" content="隔空貼讓 Mac、Windows、Linux 之間複製貼上文字、圖片、檔案與資料夾。啟用官方服務即可跨網絡同步，無需自建伺服器；優先打洞直連，失敗自動加密中轉。免費開源。">
   <link rel="canonical" href="https://pasteferry.cc/zh-hk/">
   <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/">
   <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/">
@@ -25,7 +25,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="隔空貼">
   <meta property="og:title" content="隔空貼：在這部電腦複製，到那部電腦貼上">
-  <meta property="og:description" content="Mac、Windows、Linux 互通。文字、圖片、檔案、資料夾，跨帳戶、跨網絡，P2P 直連、端對端加密，同一網絡內不需要伺服器。免費開源。">
+  <meta property="og:description" content="隔空貼讓 Mac、Windows、Linux 之間複製貼上文字、圖片、檔案與資料夾。啟用官方服務即可跨網絡同步，無需自建伺服器；優先打洞直連，失敗自動加密中轉。免費開源。">
   <meta property="og:url" content="https://pasteferry.cc/zh-hk/">
   <meta property="og:image" content="https://pasteferry.cc/assets/og-zh-hant.png">
   <meta property="og:image:width" content="1200">
@@ -101,7 +101,7 @@
             "name": "和 macOS 內建的「通用剪貼簿」有甚麼分別？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "「通用剪貼簿」要求兩部裝置登入同一個 Apple ID、開啟藍牙和 Wi‑Fi，而且要靠近，也只能在 Apple 裝置之間使用。隔空貼在同一個網絡裏安裝好就能用；跨網絡時，只要兩部電腦能連上你部署的伺服器，或者都安裝了 Tailscale 就可以：不同 Apple ID、一部在家一部在公司、一部 Mac 一部 Windows 電腦，都沒有問題。另外它有複製記錄，大檔案也可以按需要拉取。 如果你的兩部 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能已經足夠。"
+              "text": "Mac、Windows、Linux 互通，文字、圖片、檔案、整個資料夾都可以，不要求同一帳戶。現在啟用官方服務就能跨網絡同步，無需自行架設伺服器。優先直連，始終端到端加密。 如果你的兩部 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能已經足夠。"
             }
           },
           {
@@ -109,7 +109,7 @@
             "name": "伺服器會看到我複製的內容嗎？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "不會。直連時資料根本不經過伺服器；需要中轉時，伺服器轉發的是經 DTLS 加密的封包。伺服器不儲存帳戶，也不儲存任何複製內容。程式碼是開源的，你可以自己核對。"
+              "text": "伺服器無法解密複製內容：直連時內容不經過中轉伺服器；中轉時轉發端到端加密封包。官方服務保留必要裝置與用量統計，詳見私隱說明。原始碼可供審計，不代表能證明私有正式環境的儲存行為。"
             }
           },
           {
@@ -125,7 +125,7 @@
             "name": "一定要自己準備伺服器嗎？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "不一定。兩部電腦在同一個網絡裏時，安裝好 App 直接配對就可以，不需要伺服器。 跨網絡時有兩種做法：公網伺服器，最低配置的雲端伺服器已經足夠，在哪裏都能同步；Tailscale，每部電腦安裝它，配對時輸入對方的 Tailscale 地址，不需要伺服器。隔空貼不提供公共伺服器，所以任何人的資料都不會經過別人的機器。"
+              "text": "不需要。不同網絡時，在兩部電腦上啟用官方服務即可，不用購買雲端主機或填寫地址。預設關閉，目前提供每日 100 MB 中轉額度，直連不消耗此額度。區域網絡、自建伺服器與 Tailscale 繼續可用。"
             }
           },
           {
@@ -133,7 +133,7 @@
             "name": "家裏沒有公網 IP，能在家和公司之間同步嗎？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "能，有兩種做法。如果有一部公網伺服器，把伺服器部署在上面，家裏和公司的電腦都直接連線到它，見公網伺服器部署。沒有的話，每部電腦安裝 Tailscale、登入同一個帳戶，配對時輸入對方的 Tailscale 地址，見Tailscale 教學。"
+              "text": "不需要。不同網絡時，在兩部電腦上啟用官方服務即可，不用購買雲端主機或填寫地址。預設關閉，目前提供每日 100 MB 中轉額度，直連不消耗此額度。區域網絡、自建伺服器與 Tailscale 繼續可用。"
             }
           },
           {
@@ -175,6 +175,14 @@
               "@type": "Answer",
               "text": "免費。隔空貼以 GNU AGPL-3.0 開源，個人和公司都可以免費使用和修改。分發它，或透過網絡提供修改過的版本時，需要以同樣的授權公開原始碼。"
             }
+          },
+          {
+            "@type": "Question",
+            "name": "官方中轉不限量嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "目前預設每機器額度組每日 100 MB 中轉流量，上傳與下載合計，北京時間午夜重設。重新安裝不保證獲得新額度。用量頁顯示實際額度、剩餘量與更新時間；額度用完仍可直連。額度與服務可用性可能調整，以用戶端顯示為準。"
+            }
           }
         ]
       }
@@ -212,8 +220,9 @@
   <main id="main">
     <section class="hero">
       <div class="wrap">
+        <a class="release-note" href="official/">2.1 新增：跨網絡同步，無需自建伺服器 →</a>
         <h1 class="display">在這部電腦複製，<br>到那部電腦貼上。</h1>
-        <p class="lede">Mac、Windows、Linux 互通。文字、圖片、檔案以至整個資料夾都可以，不必使用同一個帳戶。在同一個網絡裏安裝好就能用，不需要伺服器；跨網絡也可以。資料在你的裝置之間直接傳輸，端對端加密。</p>
+        <p class="lede">Mac、Windows、Linux 互通，文字、圖片、檔案、整個資料夾都可以，不要求同一帳戶。現在啟用官方服務就能跨網絡同步，無需自行架設伺服器。優先直連，始終端到端加密。</p>
         <div class="cta">
           <a class="button" href="download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載隔空貼</a>
           <a class="button quiet tour-link" href="tour/" data-tour-open aria-haspopup="dialog"><span aria-hidden="true">▶</span> 觀看完整示範 <span class="tour-duration">1:25</span></a>
@@ -250,8 +259,15 @@
     <section class="section" id="deploy" aria-labelledby="deploy-title">
       <div class="wrap">
         <h2 id="deploy-title">兩部電腦怎樣連起來</h2>
-        <p class="intro">在同一個網絡裏，安裝好 App 就能直接配對，不需要伺服器。跨網絡時，兩部電腦要靠伺服器或 Tailscale 找到彼此，複製的內容不會儲存在上面。按你的情況選一種。</p>
+        <p class="intro">同一網絡裏裝好就能配對；不同網絡裏，啟用官方服務即可，無需自建。也保留自建伺服器與 Tailscale，按需要選擇。</p>
         <div class="paths">
+          <a class="path" href="official/">
+            <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+            <span class="path-when">跨網絡，無需自建</span>
+            <h3>官方服務</h3>
+            <p>開啟一個開關，讓家裏與公司的電腦找到彼此。優先打洞直連，失敗後自動中轉，不用購買雲端主機或填寫地址。</p>
+            <span class="path-go">啟用官方服務 →</span>
+          </a>
           <a class="path" href="lan/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-net" x="6" y="6" width="228" height="100" rx="14"/><path class="p-data" d="M82 52h76"/><rect class="p-dev" x="39" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M34 69h48"/><rect class="p-dev" x="163" y="40" width="38" height="24" rx="3"/><path class="p-dev" d="M158 69h48"/></svg>
             <span class="path-when">甚麼都不用部署</span>
@@ -261,8 +277,8 @@
           </a>
           <a class="path" href="cloud/">
             <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
-            <span class="path-when">在哪裏都能同步</span>
-            <h3>公網伺服器</h3>
+            <span class="path-when">自行管理容量與部署</span>
+            <h3>自建公網伺服器</h3>
             <p>一部有公網 IP 的 Linux 雲端伺服器，最低配置已經足夠。每部電腦直接連線到它，在家、在公司、在外面都能用，不用另外安裝軟件。</p>
             <span class="path-go">公網伺服器部署教學 →</span>
           </a>
@@ -274,7 +290,7 @@
             <span class="path-go">Tailscale 教學 →</span>
           </a>
         </div>
-        <p class="note">拿不定主意？<a href="start/#server">快速開始</a>裏有三種方式的比較。</p>
+        <p class="note">第一次用？跟著<a href="start/#server">快速開始</a>。官方服務可選，目前預設每日 100 MB 中轉額度，直連不扣此額度。</p>
       </div>
     </section>
 
@@ -315,7 +331,7 @@
               <tr><th scope="row">複製後直接貼上，不用按接受</th><td class="yes ours">可以</td><td class="yes">可以</td><td class="no">不行</td><td class="no">不行</td></tr>
               <tr><th scope="row">檔案與整個資料夾</th><td class="yes ours">可以</td><td class="partial">不穩定</td><td class="yes">可以</td><td class="partial">要先壓縮</td></tr>
               <tr><th scope="row">找回之前複製過的內容</th><td class="yes ours">可以</td><td class="no">不行</td><td class="no">不行</td><td class="partial">翻查聊天記錄</td></tr>
-              <tr><th scope="row">內容不經過第三方伺服器</th><td class="yes ours">不經過</td><td class="yes">不經過</td><td class="yes">不經過</td><td class="no">經過</td></tr>
+              <tr><th scope="row">只有自己的裝置可解密內容</th><td class="yes ours">不經過</td><td class="yes">不經過</td><td class="yes">不經過</td><td class="no">經過</td></tr>
             </tbody>
           </table>
         </div>
@@ -464,7 +480,7 @@
               <li>下載 DMG，開啟後把隔空貼拖進「應用程式」。<span class="aside">Apple 晶片與 Intel 處理器的 Mac 各有一個版本，下載頁會告訴你怎樣分辨自己的 Mac 屬於哪種。</span></li>
               <li>從「應用程式」裏開啟。<span class="aside">第一次會提示「無法驗證開發者」：隔空貼仍未經 Apple 公證。到「系統設定 → 私隱與保安」，按頁面下方的「強制開啟」，只需要做一次。</span></li>
               <li>按「啟用背景同步」。系統詢問是否允許讀取剪貼簿、能否尋找本地網絡上的裝置時，都選擇允許。</li>
-              <li>跨網絡同步時，在「設定」裏填入伺服器地址 <code>ws://伺服器地址:8787/signal</code>，按 Enter；在同一個網絡裏則不用填。</li>
+              <li>跨網絡時，在每部電腦的「設定」中開啟「使用官方服務」，無需填寫伺服器地址；也可以繼續自建。</li>
             </ol>
             <a class="button" href="download/#macos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Mac 版</a>
           </div>
@@ -473,7 +489,7 @@
             <ol>
               <li>執行 PasteFerry-Setup.exe。它會安裝在目前用戶的目錄下，不需要管理員權限。<span class="aside">隔空貼仍未有程式碼簽署，Windows 會提示「Windows 已保護您的電腦」：按「其他資訊」，再按「仍要執行」。不想執行安裝程式的話，可以下載<a href="https://github.com/baiyuze/pasteferry/releases/latest/download/PasteFerry-windows-x64.zip">免安裝版</a>。</span></li>
               <li>開啟隔空貼，按「啟用背景同步」。關閉視窗後，它會在右下角的系統匣裏繼續執行。防火牆詢問時選擇允許。</li>
-              <li>跨網絡同步時，在「設定」裏填入伺服器地址，按 Enter；在同一個網絡裏則不用填。</li>
+              <li>跨網絡時，在每部電腦的「設定」中開啟「使用官方服務」，無需填寫伺服器地址；也可以繼續自建。</li>
             </ol>
             <a class="button" href="download/#windows"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Windows 版</a>
           </div>
@@ -482,17 +498,18 @@
             <ol>
               <li>Ubuntu、Debian 等發行版下載 .deb，執行 <code>sudo apt install ./PasteFerry-linux-amd64.deb</code>；其他發行版下載 tar.gz，解壓後執行 <code>./PasteFerry/install.sh</code>。</li>
               <li>從應用程式選單開啟隔空貼，按「啟用背景同步」。之後它會在登入時自動啟動。</li>
-              <li>跨網絡同步時，在「設定」裏填入伺服器地址，按 Enter；在同一個網絡裏則不用填。</li>
+              <li>跨網絡時，在每部電腦的「設定」中開啟「使用官方服務」，無需填寫伺服器地址；也可以繼續自建。</li>
             </ol>
             <a class="button" href="download/#linux"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>下載 Linux 版</a>
           </div>
         </div>
         <div class="install-more">
           <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/></svg>連線方式</h3>
-          <p class="small">在同一個網絡裏不需要伺服器。三種方式按你的情況選一種，每種都有圖文教學：</p>
+          <p class="small">同一網絡裏裝好就能配對；不同網絡裏，啟用官方服務即可，無需自建。也保留自建伺服器與 Tailscale，按需要選擇。</p>
           <ul class="opts">
+              <li><a href="official/">官方服務</a><span>跨網絡，無需自建</span></li>
               <li><a href="lan/">同一網絡</a><span>甚麼都不用部署</span></li>
-              <li><a href="cloud/">公網伺服器</a><span>在哪裏都能同步</span></li>
+              <li><a href="cloud/">自建公網伺服器</a><span>自行管理容量與部署</span></li>
               <li><a href="tailscale/">Tailscale</a><span>跨網絡，不用伺服器</span></li>
           </ul>
           <a class="button quiet" href="start/#server">比較三種方式</a>
@@ -538,11 +555,11 @@
           </details>
           <details>
             <summary>和 macOS 內建的「通用剪貼簿」有甚麼分別？</summary>
-            <div class="answer"><p>「通用剪貼簿」要求兩部裝置登入同一個 Apple ID、開啟藍牙和 Wi‑Fi，而且要靠近，也只能在 Apple 裝置之間使用。隔空貼在同一個網絡裏安裝好就能用；跨網絡時，只要兩部電腦能連上你部署的伺服器，或者都安裝了 Tailscale 就可以：不同 Apple ID、一部在家一部在公司、一部 Mac 一部 Windows 電腦，都沒有問題。另外它有複製記錄，大檔案也可以按需要拉取。</p><p>如果你的兩部 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能已經足夠。</p></div>
+            <div class="answer"><p>Mac、Windows、Linux 互通，文字、圖片、檔案、整個資料夾都可以，不要求同一帳戶。現在啟用官方服務就能跨網絡同步，無需自行架設伺服器。優先直連，始終端到端加密。</p><p>如果你的兩部 Mac 用同一個 Apple ID、總是放在一起、主要複製文字，系統內建的功能已經足夠。</p></div>
           </details>
           <details>
             <summary>伺服器會看到我複製的內容嗎？</summary>
-            <div class="answer"><p>不會。直連時資料根本不經過伺服器；需要中轉時，伺服器轉發的是經 DTLS 加密的封包。伺服器不儲存帳戶，也不儲存任何複製內容。程式碼是開源的，你可以自己核對。</p></div>
+            <div class="answer"><p>伺服器無法解密複製內容：直連時內容不經過中轉伺服器；中轉時轉發端到端加密封包。官方服務保留必要裝置與用量統計，詳見私隱說明。原始碼可供審計，不代表能證明私有正式環境的儲存行為。</p></div>
           </details>
           <details>
             <summary>公司網絡（雙線、多出口）能直連嗎？</summary>
@@ -550,11 +567,11 @@
           </details>
           <details>
             <summary>一定要自己準備伺服器嗎？</summary>
-            <div class="answer"><p>不一定。兩部電腦在<a href="lan/">同一個網絡</a>裏時，安裝好 App 直接配對就可以，不需要伺服器。</p><p>跨網絡時有兩種做法：<a href="cloud/">公網伺服器</a>，最低配置的雲端伺服器已經足夠，在哪裏都能同步；<a href="tailscale/">Tailscale</a>，每部電腦安裝它，配對時輸入對方的 Tailscale 地址，不需要伺服器。隔空貼不提供公共伺服器，所以任何人的資料都不會經過別人的機器。</p></div>
+            <div class="answer"><p>不需要。不同網絡時，在兩部電腦上啟用<a href="official/">官方服務</a>即可，不用購買雲端主機或填寫地址。預設關閉，目前提供每日 100 MB 中轉額度，直連不消耗此額度。區域網絡、<a href="cloud/">自建伺服器</a>與 <a href="tailscale/">Tailscale</a> 繼續可用。</p></div>
           </details>
           <details>
             <summary>家裏沒有公網 IP，能在家和公司之間同步嗎？</summary>
-            <div class="answer"><p>能，有兩種做法。如果有一部公網伺服器，把伺服器部署在上面，家裏和公司的電腦都直接連線到它，見<a href="cloud/">公網伺服器部署</a>。沒有的話，每部電腦安裝 Tailscale、登入同一個帳戶，配對時輸入對方的 Tailscale 地址，見<a href="tailscale/">Tailscale 教學</a>。</p></div>
+            <div class="answer"><p>不需要。不同網絡時，在兩部電腦上啟用<a href="official/">官方服務</a>即可，不用購買雲端主機或填寫地址。預設關閉，目前提供每日 100 MB 中轉額度，直連不消耗此額度。區域網絡、<a href="cloud/">自建伺服器</a>與 <a href="tailscale/">Tailscale</a> 繼續可用。</p></div>
           </details>
           <details>
             <summary>在同一個網絡裏，為甚麼找不到另一部電腦？</summary>
@@ -575,6 +592,10 @@
           <details>
             <summary>免費嗎？公司可以用嗎？</summary>
             <div class="answer"><p>免費。隔空貼以 GNU AGPL-3.0 開源，個人和公司都可以免費使用和修改。分發它，或透過網絡提供修改過的版本時，需要以同樣的授權公開原始碼。</p></div>
+          </details>
+          <details>
+            <summary>官方中轉不限量嗎？</summary>
+            <div class="answer"><p>目前預設每機器額度組每日 100 MB 中轉流量，上傳與下載合計，北京時間午夜重設。重新安裝不保證獲得新額度。用量頁顯示實際額度、剩餘量與更新時間；額度用完仍可直連。額度與服務可用性可能調整，以用戶端顯示為準。</p></div>
           </details>
         </div>
       </div>

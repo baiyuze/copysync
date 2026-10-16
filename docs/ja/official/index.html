@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>公式サービス：サーバーの準備は不要 — PasteFerry</title>
+  <meta name="description" content="スイッチひとつで自宅と会社のパソコンを接続。直接接続を優先し、失敗時のみ暗号化中継を使います。クラウド契約やアドレス入力は不要です。">
+  <link rel="canonical" href="https://pasteferry.cc/ja/official/">
+  <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/official/">
+  <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/official/">
+  <link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/official/">
+  <link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/official/">
+  <link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/official/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="公式サービス：サーバーの準備は不要 — PasteFerry">
+  <meta property="og:description" content="スイッチひとつで自宅と会社のパソコンを接続。直接接続を優先し、失敗時のみ暗号化中継を使います。クラウド契約やアドレス入力は不要です。">
+  <meta property="og:url" content="https://pasteferry.cc/ja/official/">
+  <meta property="og:image" content="https://pasteferry.cc/assets/og-en.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../ja/" aria-label="PasteFerry ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
+      <nav aria-label="ページ内の移動">
+        <a href="../../ja/start/">はじめかた</a>
+        <a class="wide" href="../../ja/#how">しくみ</a>
+        <a class="wide" href="../../ja/#faq">よくある質問</a>
+        <a class="mid" href="../../ja/start/#server">接続方法</a>
+        <a href="../../ja/download/">ダウンロード</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
+        <details class="lang">
+          <summary aria-label="言語：日本語"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>日本語</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../../official/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a></li>
+            <li><a href="../../zh-tw/official/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a></li>
+            <li><a href="../../zh-hk/official/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../../en/official/" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../../ja/official/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero guide-hero"><div class="wrap">
+      <p class="crumb"><a href="../../ja/">PasteFerry</a> / 公式サービス</p>
+      <h1 class="display">別ネットワーク間、構築不要</h1>
+      <p class="lede">各パソコンに 2.1.0 以降を入れ、設定で公式サービスを有効にしてペアリングします。シグナリングが端末を引き合わせ、内容はまず直接送信。直接接続に失敗した場合のみ暗号化中継を使います。</p>
+      <a class="button" href="../../ja/download/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12"/></svg>最新版をダウンロード</a>
+    </div></section>
+    <section class="section"><div class="wrap">
+      <h2>3 ステップでネットワークを越えて同期</h2>
+      <div class="os-grid"><ol class="steps">                <li>同期する各パソコンに最新版を入れ、バックグラウンド同期を有効にします。</li>
+                <li>各パソコンで「設定 → 公式サービスを使う」をオンにし、必要なデータの説明を確認します。公式のホスト名やポートの入力は不要です。</li>
+                <li>一方でコードを表示し、もう一方で入力。両画面の指紋を照合して確認します。既存のペアリングはそのまま使えます。</li></ol>
+        <figure class="shot"><img src="../../assets/screenshots/ja/official-settings-dark.png" width="2112" height="1472" alt="公式アドレスの入力が不要な設定画面の公式サービススイッチ"></figure>
+      </div>
+    </div></section>
+    <section class="section"><div class="wrap official-copy"><h2>直接接続を先に、中継は必要なときだけ</h2><p class="intro">公式シグナリングはオンライン端末間の接続情報を交換します。まず STUN と NAT トラバーサルを試し、その試行に失敗した場合のみ中継を申請します。内容は常にエンドツーエンド暗号化されます。</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>直接通信は中継残量を消費しません</h2><p class="intro">現在の標準中継上限は端末の上限グループごとに送受信合計 100 MB/日で、北京時間午前 0 時にリセットします。再インストールで新たな残量が得られる保証はありません。使用量画面に実際の上限、残量、更新時刻を表示します。上限に達しても直接接続は利用できます。上限と提供状況は変更される場合があるため、アプリでご確認ください。</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>有効にするかは自分で選べます</h2><p class="intro">新規インストールではオフです。有効にした場合のみ必要な接続統計を記録し、中継申請時にのみ専用の端末ダイジェストを導出します。実際の端末名、元のシステム識別子、コピー内容を統計として送信しません。項目と保持期間はプライバシー説明をご覧ください。</p></div></section>
+<section class="section"><div class="wrap official-copy"><h2>独自サーバーも引き続き利用可能</h2><p class="intro">LAN、独自サーバー、Tailscale は公式ゲートウェイから独立して動作します。容量を自分で管理したい場合はサーバーを構築し、独自アドレスの横にある「保存して接続」を使えます。</p></div></section>
+    <section class="section"><div class="wrap official-copy">
+      <figure class="shot"><img src="../../assets/screenshots/ja/official-usage-dark.png" width="2112" height="1472" loading="lazy" alt="上限 100.00 MB、残量 80.00 MB のデモ使用量画面"></figure>
+      <p class="note"><a href="../../ja/privacy/">プライバシーと必要なデータ</a> · <a href="../../ja/cloud/">独自サーバーの構築</a> · <a href="https://pasteferry.cc/">pasteferry.cc</a></p>
+    </div></section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>PasteFerry は GNU AGPL-3.0 のオープンソースです。</p>
+      <nav aria-label="フッターのリンク">
+        <a href="https://github.com/baiyuze/pasteferry/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://pasteferry.cc/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">ライセンス</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">問題を報告</a>
+        <a href="../../ja/privacy/">プライバシーと必要なデータ</a>
+      </nav>
+      <nav aria-label="言語">
+        <a href="../../official/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../zh-tw/official/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a>
+        <a href="../../zh-hk/official/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../../en/official/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/official/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

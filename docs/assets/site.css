@@ -1724,6 +1724,9 @@ td {
 
 .tablist {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
   width: fit-content;
   margin: 0 auto clamp(2rem, 5vw, 3rem);
   padding: 4px;
@@ -2159,7 +2162,7 @@ td {
 
 @media (min-width: 60rem) {
   .paths {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.25rem;
   }
 }
@@ -2554,3 +2557,20 @@ td {
 .guide-hero + #get {
   padding-top: clamp(1.5rem, 4vw, 2.5rem);
 }
+
+/* Official access release notice and guide. */
+.release-note {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0 0 1.5rem;
+  padding: .6rem 1rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--blue-hi);
+  font-size: clamp(.85rem, 2.8vw, 1rem);
+  line-height: 1.5;
+  text-decoration: none;
+}
+.release-note:hover { background: var(--surface-2); }
+.official-copy { max-width: 56rem; }

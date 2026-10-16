@@ -119,13 +119,36 @@
       <div class="wrap">
         <p class="eyebrow">ステップ 2</p>
         <h2 id="server-title">接続方法を選ぶ</h2>
-        <p class="intro">同じネットワークなら、準備は何も要りません。ネットワークをまたぐときは、公開サーバーか Tailscale を通じてお互いを見つけます。コピーした内容がそこに保存されることはありません。</p>
+        <p class="intro">同じネットワークならインストールしてペアリング。別ネットワークなら公式サービスをオンにするだけで、サーバーの準備は不要です。独自サーバーと Tailscale も選べます。</p>
         <div class="os-tabs" data-tabs="plan">
           <div class="tablist" role="tablist" aria-label="接続方法" hidden>
+            <button type="button" role="tab" id="tab-plan-official" aria-controls="plan-official">公式サービス</button>
             <button type="button" role="tab" id="tab-plan-lan" aria-controls="plan-lan">同じネットワーク</button>
-            <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">公開サーバー</button>
+            <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">独自の公開サーバー</button>
             <button type="button" role="tab" id="tab-plan-ts" aria-controls="plan-ts">Tailscale</button>
           </div>
+
+          <section class="os" id="plan-official" role="tabpanel" aria-labelledby="tab-plan-official">
+            <h3 class="os-title">公式サービス</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>同期する各パソコンに最新版を入れ、バックグラウンド同期を有効にします。</li>
+                  <li>各パソコンで「設定 → 公式サービスを使う」をオンにし、必要なデータの説明を確認します。公式のホスト名やポートの入力は不要です。</li>
+                  <li>一方でコードを表示し、もう一方で入力。両画面の指紋を照合して確認します。既存のペアリングはそのまま使えます。</li>
+                </ol>
+                <p class="plan-address">新規インストールではオフです。有効にした場合のみ必要な接続統計を記録し、中継申請時にのみ専用の端末ダイジェストを導出します。実際の端末名、元のシステム識別子、コピー内容を統計として送信しません。項目と保持期間はプライバシー説明をご覧ください。</p>
+                <a class="button quiet" href="../../ja/official/">公式サービスを有効にする →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+                <dl>
+                  <div><dt>直接接続を先に、中継は必要なときだけ</dt><dd>公式シグナリングはオンライン端末間の接続情報を交換します。まず STUN と NAT トラバーサルを試し、その試行に失敗した場合のみ中継を申請します。内容は常にエンドツーエンド暗号化されます。</dd></div>
+                  <div><dt>直接通信は中継残量を消費しません</dt><dd>現在の標準中継上限は端末の上限グループごとに送受信合計 100 MB/日で、北京時間午前 0 時にリセットします。再インストールで新たな残量が得られる保証はありません。使用量画面に実際の上限、残量、更新時刻を表示します。上限に達しても直接接続は利用できます。上限と提供状況は変更される場合があるため、アプリでご確認ください。</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
 
           <section class="os" id="plan-lan" role="tabpanel" aria-labelledby="tab-plan-lan">
             <h3 class="os-title">同じネットワーク</h3>
@@ -151,7 +174,7 @@
           </section>
 
           <section class="os" id="plan-cloud" role="tabpanel" aria-labelledby="tab-plan-cloud">
-            <h3 class="os-title">公開サーバー</h3>
+            <h3 class="os-title">独自の公開サーバー</h3>
             <div class="plan-grid">
               <div>
                 <ol class="steps">
@@ -165,7 +188,7 @@
               <div class="plan-card">
                 <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
                 <dl>
-                  <div><dt>向いている</dt><dd>コンピューターが別々のネットワークにあり、どこからでも同期したい場合。ネットワークをまたぐならいちばん手間がかかりません。</dd></div>
+                  <div><dt>向いている</dt><dd>容量と運用を自分で管理</dd></div>
                   <div><dt>必要なもの</dt><dd>グローバル IP を持つ Linux のクラウドサーバー（最小構成で可）と root 権限。</dd></div>
                   <div><dt>注意</dt><dd>クラウドサーバーの費用がかかります。直接つながらないときの中継はサーバーの帯域に左右されます。中国本土では、ICP 登録のないドメインは使えないので IP を入力します。</dd></div>
                 </dl>

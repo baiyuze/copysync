@@ -119,13 +119,36 @@
       <div class="wrap">
         <p class="eyebrow">Step 2</p>
         <h2 id="server-title">Pick a way to connect</h2>
-        <p class="intro">On the same network there's nothing to set up. Across networks, your computers find each other through a public server or Tailscale, and nothing you copy is stored there.</p>
+        <p class="intro">Same network? Install and pair. Different networks? Enable official access without hosting a server. Custom servers and Tailscale remain available when you prefer to manage the connection yourself.</p>
         <div class="os-tabs" data-tabs="plan">
           <div class="tablist" role="tablist" aria-label="Ways to connect" hidden>
+            <button type="button" role="tab" id="tab-plan-official" aria-controls="plan-official">Official service</button>
             <button type="button" role="tab" id="tab-plan-lan" aria-controls="plan-lan">Same network</button>
-            <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">Public server</button>
+            <button type="button" role="tab" id="tab-plan-cloud" aria-controls="plan-cloud">Self-hosted server</button>
             <button type="button" role="tab" id="tab-plan-ts" aria-controls="plan-ts">Tailscale</button>
           </div>
+
+          <section class="os" id="plan-official" role="tabpanel" aria-labelledby="tab-plan-official">
+            <h3 class="os-title">Official service</h3>
+            <div class="plan-grid">
+              <div>
+                <ol class="steps">
+                  <li>Install the latest app and turn on background sync on every computer.</li>
+                  <li>Enable Settings → Use official service on each computer and review the essential-data notice. No official hostname or port to enter.</li>
+                  <li>Show a pairing code on one computer, enter it on the other, and compare both fingerprint lines before confirming. Existing pairings are kept.</li>
+                </ol>
+                <p class="plan-address">Official access is off on fresh installs. Enabling it records essential access statistics; an application-specific machine digest is derived only when relay is requested. Real device names, raw system identifiers and copied content are not uploaded as statistics. See the privacy notice for fields and retention.</p>
+                <a class="button quiet" href="../../en/official/">Enable official access →</a>
+              </div>
+              <div class="plan-card">
+                <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
+                <dl>
+                  <div><dt>Direct first, relay when needed</dt><dd>Official signaling exchanges connection information between online peers. The clients try STUN discovery and NAT traversal first, requesting relay only after that direct attempt fails. Content remains end-to-end encrypted.</dd></div>
+                  <div><dt>Direct traffic does not use relay allowance</dt><dd>The current default is 100 MB per machine quota group per day, upload plus download, resetting at midnight Beijing time. Reinstalling does not guarantee a fresh allowance. The usage page shows the actual limit, remaining amount and update time. Direct connections still work when relay allowance runs out. Allowances and availability may change; check the app.</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
 
           <section class="os" id="plan-lan" role="tabpanel" aria-labelledby="tab-plan-lan">
             <h3 class="os-title">Same network</h3>
@@ -151,7 +174,7 @@
           </section>
 
           <section class="os" id="plan-cloud" role="tabpanel" aria-labelledby="tab-plan-cloud">
-            <h3 class="os-title">Public server</h3>
+            <h3 class="os-title">Self-hosted server</h3>
             <div class="plan-grid">
               <div>
                 <ol class="steps">
@@ -165,7 +188,7 @@
               <div class="plan-card">
                 <svg viewBox="0 0 240 112" aria-hidden="true"><rect class="p-dev" x="98" y="8" width="44" height="12" rx="3"/><rect class="p-dev" x="98" y="23" width="44" height="12" rx="3"/><rect class="p-net" x="6" y="50" width="100" height="56" rx="10"/><rect class="p-net" x="134" y="50" width="100" height="56" rx="10"/><path class="p-sig" d="M56 64V22h42M184 64V22h-42"/><path class="p-data" d="M80 80h80"/><rect class="p-dev" x="37" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M32 93h48"/><rect class="p-dev" x="165" y="64" width="38" height="24" rx="3"/><path class="p-dev" d="M160 93h48"/></svg>
                 <dl>
-                  <div><dt>Best for</dt><dd>Computers spread across networks that should sync from anywhere. The simplest way across networks.</dd></div>
+                  <div><dt>Best for</dt><dd>Control your own capacity</dd></div>
                   <div><dt>You need</dt><dd>A Linux VM with a public IP, as root; the smallest one is enough.</dd></div>
                   <div><dt>Keep in mind</dt><dd>The VM costs money. When a direct connection fails, the relay is limited by the server's bandwidth. In mainland China, use the IP unless the domain has an ICP filing.</dd></div>
                 </dl>
