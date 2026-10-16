@@ -399,6 +399,17 @@ func (s *Store) SetClipStatus(id string, st Status, errMsg string) error {
 	return err
 }
 
+// SetClipboardError retains a write failure without changing local availability.
+// The predicate also prevents a late write result from reviving an expired clip.
+func (s *Store) SetClipboardError(id, message string) (bool, error) {
+	result, err := s.db.Exec(`UPDATE clips SET error=? WHERE id=? AND status=? AND outgoing=0 AND error<>?`, message, id, StatusReady, message)
+	if err != nil {
+		return false, err
+	}
+	n, err := result.RowsAffected()
+	return n > 0, err
+}
+
 // RecoverReceives runs once before the daemon accepts connections. There are
 // no live streams after a restart; show a retry action instead of a stale spinner.
 func (s *Store) RecoverReceives() error {

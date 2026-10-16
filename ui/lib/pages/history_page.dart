@@ -257,10 +257,12 @@ class _RecordRowState extends State<_RecordRow> {
     // 剪贴板里的图片、以及复制的图片文件，点一下这一行就能预览，不另放按钮
     final previewable = r.imageCount > 0;
     final outcome = AppScope.of(context).clipboardResultOf(r.id);
+    final clipboardFailed = r.status == ClipStatus.CLIP_STATUS_READY && r.error.isNotEmpty;
     final detail = switch (r.status) {
       ClipStatus.CLIP_STATUS_REMOTE_ONLY => context.l10n.notReceived,
       ClipStatus.CLIP_STATUS_FETCHING => context.l10n.receivingStatus,
       ClipStatus.CLIP_STATUS_FAILED => r.error.isEmpty ? context.l10n.transferFailed : r.error,
+      _ when clipboardFailed => '${context.l10n.clipboardWriteFailed}\n${r.error}',
       _ => switch (outcome?.outcome) {
         ClipboardWriteOutcome.CLIPBOARD_WRITE_OUTCOME_PRESERVED => context.l10n.receivedPreserved,
         ClipboardWriteOutcome.CLIPBOARD_WRITE_OUTCOME_FAILED => context.l10n.clipboardWriteFailed,
@@ -320,7 +322,7 @@ class _RecordRowState extends State<_RecordRow> {
                         message: outcome?.error.isNotEmpty == true ? outcome!.error : detail,
                         child: Text(detail, maxLines: 2, overflow: TextOverflow.ellipsis,
                           style: context.text.bodySmall?.copyWith(color:
-                            r.status == ClipStatus.CLIP_STATUS_FAILED || outcome?.outcome == ClipboardWriteOutcome.CLIPBOARD_WRITE_OUTCOME_FAILED
+                            clipboardFailed || r.status == ClipStatus.CLIP_STATUS_FAILED || outcome?.outcome == ClipboardWriteOutcome.CLIPBOARD_WRITE_OUTCOME_FAILED
                               ? p.danger : p.textDim)),
                       ),
                     ],
@@ -376,7 +378,7 @@ class _RecordRowState extends State<_RecordRow> {
         // 悬停时才显示「放入剪贴板」与删除，静态时列表保持干净。
         // 不悬停时它们只是看不见，位置照样留着：鼠标移上来时标题不会被挤短一截
         Widget hoverOnly(Widget child) => Visibility(
-              visible: _hovered || (AppScope.of(context).clipboardResultOf(r.id)?.outcome != null &&
+              visible: _hovered || r.error.isNotEmpty || (AppScope.of(context).clipboardResultOf(r.id)?.outcome != null &&
                 AppScope.of(context).clipboardResultOf(r.id)?.outcome != ClipboardWriteOutcome.CLIPBOARD_WRITE_OUTCOME_APPLIED),
               maintainSize: true,
               maintainAnimation: true,
