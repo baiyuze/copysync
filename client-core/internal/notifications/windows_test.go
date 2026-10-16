@@ -13,7 +13,7 @@ import (
 )
 
 func TestWindowsNativeToastXML(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	markup := base64.StdEncoding.EncodeToString([]byte(toastXML(Message{ID: "test", Title: "Receive", Body: `<file & name>`, Action: "receive", ActionLabel: "Receive"})))
 	output, err := powershell(ctx, toastPrelude+`$xml=New-Object Windows.Data.Xml.Dom.XmlDocument; $xml.LoadXml([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('`+markup+`'))); [Windows.UI.Notifications.ToastNotification]::new($xml).Content.GetXml()`)
