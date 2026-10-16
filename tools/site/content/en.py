@@ -135,30 +135,12 @@ C = {
         ("Paste right away, nothing to accept", [("yes", "Yes"), ("yes", "Yes"), ("no", "No"), ("no", "No")]),
         ("Files and whole folders", [("yes", "Yes"), ("partial", "Unreliable"), ("yes", "Yes"), ("partial", "Zip first")]),
         ("Find something you copied earlier", [("yes", "Yes"), ("no", "No"), ("no", "No"), ("partial", "Scroll back")]),
-        ('Only your devices can decrypt content', [("yes", "Yes"), ("yes", "Yes"), ("yes", "Yes"), ("no", "No")]),
+        ('Only your devices can decrypt content', [('yes', 'Yes'), ('yes', 'Yes'), ('yes', 'Yes'), ('some', 'Varies by app')]),
     ],
 
     "how_h2": "How it works",
-    "how_intro": "Your two computers open an encrypted connection to each other. On the same network they find each other "
-                 "on their own; across networks your server introduces them, and relays traffic when a direct path can't be "
-                 "made. The diagram shows the cross-network case.",
-    "diagram": {
-        "title": "How PasteFerry connects",
-        "desc": "Computer A and computer B (Mac or Windows) connect directly over WebRTC. Both connect to your server for "
-                "signaling. If the direct connection fails, data is relayed through the server's TURN service.",
-        "server": "Your server",
-        "server_sub": "Signaling, STUN, TURN relay",
-        "sig_note": "Signaling: connection details",
-        "relay_note": "Relay: only if direct fails",
-        "copy_here": "You copy here",
-        "other": "Mac or Windows",
-        "paste_here": "You paste here",
-        "direct": "Direct WebRTC, DTLS encrypted",
-        "direct_note": "Data moves only between your computers",
-        "legend_direct": "Data (direct)",
-        "legend_relay": "Data (relay, fallback)",
-        "legend_sig": "Signaling",
-    },
+    "how_intro": 'On the same network, devices find each other without a server. Across networks, official access or your own server exchanges connection information. Direct NAT traversal comes first; encrypted relay is used after direct failure. The diagram shows this general signaling and relay structure.',
+    "diagram": {'title': 'How PasteFerry connects', 'desc': "Computer A and computer B (Mac or Windows) connect directly over WebRTC. Both connect to your server for signaling. If the direct connection fails, data is relayed through the server's TURN service.", 'server': 'Signaling and relay service', 'server_sub': 'Signaling, STUN, TURN relay', 'sig_note': 'Signaling: connection details', 'relay_note': 'Relay: only if direct fails', 'copy_here': 'You copy here', 'other': 'Mac or Windows', 'paste_here': 'You paste here', 'direct': 'Direct WebRTC, DTLS encrypted', 'direct_note': 'Data moves only between your computers', 'legend_direct': 'Data (direct)', 'legend_relay': 'Data (relay, fallback)', 'legend_sig': 'Signaling'},
 
     "uplink_h2": "Direct on office networks too",
     "uplink_intro": "Office networks with two ISPs, or carriers with a pool of NAT addresses, have several uplinks and pick one "
@@ -171,7 +153,7 @@ C = {
         ("All of them sent to the peer.", " The peer tries each address; the one matching the real uplink gets through."),
         ("Uplinks remembered.", " If a round misses an uplink that keeps ports unchanged, its address is filled in as uplink IP plus local port."),
         ("A rule for who sends first.", " Some routers lock a port when the other side's packet arrives first. One side announces its addresses first; the other sends to them before announcing its own. Retries alternate the order."),
-        ("Relay first, direct later.", " If the first handshake lands on the relay, PasteFerry punches again while idle and switches to direct when that works."),
+        ('Retry direct while idle.', 'If direct traversal fails and relay is available, sync can use relay. When the connection is idle, the client can retry direct access and release the relay after success.'),
     ],
     "lab_h3": "Checked against real network topologies",
     "lab_intro": "The NAT lab builds these topologies with Linux network namespaces and iptables and runs PasteFerry's actual "
@@ -214,9 +196,9 @@ C = {
     "fallbacks": [
         ("Can't find the other computer on the network", "Different subnets, guest networks and Wi‑Fi with client isolation block local discovery. Enter the address shown under the other computer's code when pairing; it's remembered afterwards, and if both computers change addresses you enter it once more in the device list."),
         ("The system blocks the local network", "From macOS 15, the background service needs your permission to reach devices on the local network; Windows asks about the firewall on first run. If either isn't allowed, the app says so and links straight to the fix."),
-        ("No direct path between the computers", "Common behind symmetric NAT and corporate firewalls. Traffic switches to the TURN relay on your server, still encrypted, and the device list shows \"Relay\"."),
+        ("No direct path between the computers", 'Official access requests relay only after direct failure and within its current allowance. A custom server uses its own TURN relay instead. Content remains end-to-end encrypted in either case.'),
         ("Public STUN servers unreachable", "Public STUN is unreliable in some regions, including mainland China. Your server runs its own STUN, and clients prefer it."),
-        ("Connected through the relay first", "The relay handshake is fast and sometimes beats the direct path. Once connected, the side that started the connection punches again while idle and switches to direct when that works, never in the middle of a transfer."),
+        ('Switching back to direct', 'If direct traversal fails and relay is available, sync can use relay. When the connection is idle, the client can retry direct access and release the relay after success.'),
         ("The other computer sleeps, drops off or restarts", "A connection that dies silently is noticed, closed and reconnected. Anything you copy meanwhile is kept and added to the other computer's history once it's back, without overwriting what's on its clipboard now."),
         ("Server connection drops", "Reconnects automatically: the delay starts at 1 second and doubles up to 30, with jitter so devices don't all reconnect at once. Devices on the same network keep syncing."),
         ("File too large", "Above the limit only a record is synced, pulled when you need it. If the source file is gone by then, you get a clear message instead of a vague failure."),
@@ -257,12 +239,10 @@ C = {
     ],
     "server_h3": "Ways to connect",
     "server_intro": 'Same network? Install and pair. Different networks? Enable official access without hosting a server. Custom servers and Tailscale remain available when you prefer to manage the connection yourself.',
-    "server_compare": "Compare the three",
+    "server_compare": 'Compare connection options',
     "copy": "Copy",
     "copied": "Copied",
-    "pairing": "<strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on "
-               "the other, and confirm once both screens show the same two fingerprints. On a different subnet, also enter the "
-               "address shown under the code. Any mix of Mac, Windows and Linux works the same way.",
+    "pairing": 'Show a pairing code on one computer, enter it on the other, and compare both fingerprint lines before confirming. Existing pairings are kept. Official access needs no peer IP. Enter an address only for LAN subnets or Tailscale.',
 
     "specs_h2": "Specifications",
     "specs": [
@@ -272,7 +252,7 @@ C = {
         ("Windows app", "Windows 10 and Windows 11, x64; installs per user, no administrator rights; about 23 MB download"),
         ("Linux app", "x64 and ARM64; .deb (Debian, Ubuntu and similar) or tar.gz (other distributions), about 22 MB; "
                       "needs an X11 desktop, or a Wayland desktop with XWayland (GNOME, KDE and others include it by default); GTK 3"),
-        ("Server", "Optional, only for syncing across networks. Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM"),
+        ("Server", 'Deployment is needed only for self-hosting; official access needs no server of your own. Self-hosting supports Linux x86_64/ARM64, macOS and Windows 10/11 x64.'),
         ("Languages", "English, Simplified Chinese, Traditional Chinese (Taiwan and Hong Kong) and Japanese; follows the system by default, switchable in Settings"),
         ("Content", "Plain text, rich text, images and screenshots, files, folders; each type can be turned off"),
         ("Transport", "WebRTC data channels, direct first with TURN relay fallback; on the same network, mDNS discovery and connection details over UDP 8788; every uplink probed on multi-uplink networks; files streamed as tar + zstd"),

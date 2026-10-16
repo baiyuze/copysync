@@ -331,7 +331,7 @@
               <tr><th scope="row">コピーしてすぐ貼り付け、受け取り操作なし</th><td class="yes ours">できる</td><td class="yes">できる</td><td class="no">できない</td><td class="no">できない</td></tr>
               <tr><th scope="row">ファイルとフォルダまるごと</th><td class="yes ours">できる</td><td class="partial">不安定</td><td class="yes">できる</td><td class="partial">先に圧縮</td></tr>
               <tr><th scope="row">前にコピーしたものを探す</th><td class="yes ours">できる</td><td class="no">できない</td><td class="no">できない</td><td class="partial">履歴をさかのぼる</td></tr>
-              <tr><th scope="row">内容を復号できるのは自分の端末のみ</th><td class="yes ours">通らない</td><td class="yes">通らない</td><td class="yes">通らない</td><td class="no">通る</td></tr>
+              <tr><th scope="row">内容を復号できるのは自分の端末のみ</th><td class="yes ours">可能</td><td class="yes">可能</td><td class="yes">可能</td><td class="some">アプリによる</td></tr>
             </tbody>
           </table>
         </div>
@@ -341,13 +341,13 @@
     <section class="section" id="how" aria-labelledby="how-title">
       <div class="wrap">
         <h2 id="how-title">しくみ</h2>
-        <p class="intro">2 台のコンピューターは、暗号化された接続で直接つながります。同じネットワークなら自分たちでお互いを見つけます。ネットワークをまたぐときはサーバーが引き合わせ、直接つながらないときだけ中継します。下の図はネットワークをまたぐ場合です。</p>
+        <p class="intro">同じネットワークではサーバーなしで端末を検出します。別ネットワークでは公式サービスまたは独自サーバーが接続情報を交換。直接接続を優先し、失敗時に暗号化中継を使います。図は共通のシグナリングと中継構成です。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">PasteFerry の接続のしかた</title>
-            <desc id="diagram-desc">コンピューター A と B（Mac または Windows）は WebRTC で直接つながります。どちらもシグナリングのためにあなたのサーバーへ接続し、直接接続に失敗したときはサーバーの TURN でデータを中継します。</desc>
+            <desc id="diagram-desc">コンピューター A と B（Mac または Windows）は WebRTC で直接つながります。どちらもシグナリングのためにシグナリング・中継サービスへ接続し、直接接続に失敗したときはサーバーの TURN でデータを中継します。</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
-            <text class="d-title" x="480" y="64" text-anchor="middle">あなたのサーバー</text>
+            <text class="d-title" x="480" y="64" text-anchor="middle">シグナリング・中継サービス</text>
             <text class="d-sub" x="480" y="92" text-anchor="middle">シグナリング、STUN、TURN 中継</text>
             <path class="d-sig" d="M140 210V58H360"/>
             <path class="d-sig" d="M820 210V58H600"/>
@@ -372,7 +372,7 @@
           </svg>
           <ul class="points diagram-text">
             <li><strong>WebRTC 直接接続、DTLS 暗号化</strong> データは 2 台のあいだだけを流れる</li>
-            <li><strong>あなたのサーバー</strong> シグナリング、STUN、TURN 中継</li>
+            <li><strong>シグナリング・中継サービス</strong> シグナリング、STUN、TURN 中継</li>
             <li>中継：直接つながらないときだけ</li>
           </ul>
         </figure>
@@ -392,7 +392,7 @@
               <li><strong>すべて相手に伝える。</strong>相手はひとつずつ試し、実際の出口と合うものがつながります。</li>
               <li><strong>見た出口を覚えておく。</strong>ポートを書き換えない出口を取りこぼしたときは、「出口の IP ＋ローカルポート」で補います。</li>
               <li><strong>どちらが先に送るかを決める。</strong>相手のパケットが先に届くとポートをふさいでしまうルーターがあります。片方が先にアドレスを公開し、もう片方はそこへ送ってから自分のアドレスを公開します。再試行では順番を入れ替えます。</li>
-              <li><strong>まず中継、あとで直接。</strong>最初のハンドシェイクが中継になったら、アイドル時にもう一度穴あけを試み、成功すれば直接接続に切り替えます。</li>
+              <li><strong>待機中に直接接続を再試行。</strong>直接接続に失敗して中継が利用可能なら、中継で同期を続けます。待機中に直接接続を再試行し、成功したら中継を解放します。</li>
             </ul>
           </div>
           <div>
@@ -453,9 +453,9 @@
         <dl class="fallbacks">
           <div><dt>同じネットワークなのに相手が見つからない</dt><dd>サブネットが違う、ゲストネットワーク、クライアント分離（AP アイソレーション）が有効な Wi‑Fi では、LAN 内の検出が届きません。ペアリング時に相手のコードの下に表示されたアドレスを入力してください。アドレスはその後も記憶され、両方のアドレスが変わったときはデバイス一覧からもう一度入力します。</dd></div>
           <div><dt>システムがローカルネットワークを止めている</dt><dd>macOS 15 以降、バックグラウンドサービスが LAN 上のデバイスに接続するにはあなたの許可が要ります。Windows は初回起動時にファイアウォールについて聞いてきます。許可されていないときはアプリが知らせ、設定へ直接飛べるボタンを出します。</dd></div>
-          <div><dt>2 台が直接つながらない</dt><dd>対称型 NAT や会社のファイアウォールでよく起きます。自動であなたのサーバーの TURN 中継に切り替わり、内容は暗号化されたまま。デバイス一覧には「中継」と表示されます。</dd></div>
+          <div><dt>2 台が直接つながらない</dt><dd>公式モードでは直接接続に失敗した後、残量の範囲内で中継を申請します。独自サーバーではその TURN 中継を使います。どちらも内容はエンドツーエンド暗号化されます。</dd></div>
           <div><dt>公開 STUN サーバーにつながらない</dt><dd>中国本土などでは公開 STUN が不安定です。サーバーは STUN を内蔵していて、クライアントはそちらを優先します。</dd></div>
-          <div><dt>先に中継でつながった</dt><dd>中継のハンドシェイクは速く、直接接続より先に決まることがあります。接続後、接続を始めた側がアイドル時にもう一度穴あけを試み、成功すれば直接接続に切り替えます。転送中は邪魔しません。</dd></div>
+          <div><dt>直接接続へ切り替える</dt><dd>直接接続に失敗して中継が利用可能なら、中継で同期を続けます。待機中に直接接続を再試行し、成功したら中継を解放します。</dd></div>
           <div><dt>相手がスリープ、切断、再起動した</dt><dd>黙って切れた接続にも気づき、すぐに閉じて再接続します。そのあいだにコピーしたものは記録しておき、つながったら相手の履歴に追加します。相手のいまのクリップボードは上書きしません。</dd></div>
           <div><dt>サーバーとの接続が切れた</dt><dd>自動で再接続します。間隔は 1 秒から倍々で最大 30 秒、ランダムな揺らぎ付きで、たくさんのデバイスが一斉に再接続しないようにしています。同じネットワークのデバイスは影響を受けず、そのまま同期します。</dd></div>
           <div><dt>ファイルが大きすぎる</dt><dd>上限を超えるものは記録だけを同期し、必要なときに取り込みます。そのとき元のファイルが消えていれば、あいまいな失敗ではなく、はっきりそう伝えます。</dd></div>
@@ -512,9 +512,9 @@
               <li><a href="cloud/">独自の公開サーバー</a><span>容量と運用を自分で管理</span></li>
               <li><a href="tailscale/">Tailscale</a><span>ネットワークをまたぐ、サーバーなし</span></li>
           </ul>
-          <a class="button quiet" href="start/#server">3 通りを比べる</a>
+          <a class="button quiet" href="start/#server">接続方法を比較</a>
         </div>
-        <p class="pairing"><strong>ペアリング：</strong>一台で「デバイス → デバイスを追加」を開いて 6 桁のコードを表示し、もう一台で入力します。両方の画面に同じ 2 行の指紋が表示されたら確定します。別のサブネットにある場合は、コードの下に表示されたアドレスも入力します。Mac、Windows、Linux のどの組み合わせでも同じ手順です。</p>
+        <p class="pairing">一方でコードを表示し、もう一方で入力。両画面の指紋を照合して確認します。既存のペアリングはそのまま使えます。 公式サービスでは相手の IP は不要です。LAN の別サブネットや Tailscale の場合のみ相手のアドレスを入力します。</p>
       </div>
     </section>
 
@@ -528,7 +528,7 @@
             <tr><th scope="row">Mac アプリ</th><td>macOS 13 Ventura 以降。Apple シリコン版と Intel 版に分かれ、ダウンロードはそれぞれ約 25 MB で Rosetta 不要。両方で動くユニバーサル版は約 47 MB</td></tr>
             <tr><th scope="row">Windows アプリ</th><td>Windows 10 と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB</td></tr>
             <tr><th scope="row">Linux アプリ</th><td>x64 と ARM64。.deb（Debian、Ubuntu など）または tar.gz（ほかのディストリビューション）、約 22 MB。X11 のデスクトップ、または XWayland 付きの Wayland デスクトップ（GNOME、KDE などは標準で搭載）が必要。GTK 3</td></tr>
-            <tr><th scope="row">サーバー</th><td>任意。ネットワークをまたぐときだけ必要。Linux（x86_64 または ARM64、systemd または Docker）、macOS（Intel と Apple シリコン）、Windows 10・11 x64（サービスとして動作）。メモリは約 15 MB</td></tr>
+            <tr><th scope="row">サーバー</th><td>構築が必要なのは独自運用の場合のみ。公式サービスなら自分のサーバーは不要です。独自運用は Linux x86_64/ARM64、macOS、Windows 10/11 x64 に対応。</td></tr>
             <tr><th scope="row">表示言語</th><td>日本語、英語、簡体字中国語、繁体字中国語（台湾・香港）。初期設定はシステムに合わせ、「設定」で切り替え可能</td></tr>
             <tr><th scope="row">同期する内容</th><td>プレーンテキスト、書式付きテキスト、画像とスクリーンショット、ファイル、フォルダ。種類ごとにオフにできる</td></tr>
             <tr><th scope="row">転送</th><td>WebRTC データチャネル。直接接続を優先し、つながらなければ TURN で中継。同じネットワークでは mDNS で発見し、UDP 8788 で接続情報を交換。複数の出口があるネットワークでは出口ごとに調査。ファイルは tar + zstd でストリーム転送</td></tr>

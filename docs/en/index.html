@@ -331,7 +331,7 @@
               <tr><th scope="row">Paste right away, nothing to accept</th><td class="yes ours">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
               <tr><th scope="row">Files and whole folders</th><td class="yes ours">Yes</td><td class="partial">Unreliable</td><td class="yes">Yes</td><td class="partial">Zip first</td></tr>
               <tr><th scope="row">Find something you copied earlier</th><td class="yes ours">Yes</td><td class="no">No</td><td class="no">No</td><td class="partial">Scroll back</td></tr>
-              <tr><th scope="row">Only your devices can decrypt content</th><td class="yes ours">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td></tr>
+              <tr><th scope="row">Only your devices can decrypt content</th><td class="yes ours">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="some">Varies by app</td></tr>
             </tbody>
           </table>
         </div>
@@ -341,13 +341,13 @@
     <section class="section" id="how" aria-labelledby="how-title">
       <div class="wrap">
         <h2 id="how-title">How it works</h2>
-        <p class="intro">Your two computers open an encrypted connection to each other. On the same network they find each other on their own; across networks your server introduces them, and relays traffic when a direct path can't be made. The diagram shows the cross-network case.</p>
+        <p class="intro">On the same network, devices find each other without a server. Across networks, official access or your own server exchanges connection information. Direct NAT traversal comes first; encrypted relay is used after direct failure. The diagram shows this general signaling and relay structure.</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">How PasteFerry connects</title>
             <desc id="diagram-desc">Computer A and computer B (Mac or Windows) connect directly over WebRTC. Both connect to your server for signaling. If the direct connection fails, data is relayed through the server's TURN service.</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
-            <text class="d-title" x="480" y="64" text-anchor="middle">Your server</text>
+            <text class="d-title" x="480" y="64" text-anchor="middle">Signaling and relay service</text>
             <text class="d-sub" x="480" y="92" text-anchor="middle">Signaling, STUN, TURN relay</text>
             <path class="d-sig" d="M140 210V58H360"/>
             <path class="d-sig" d="M820 210V58H600"/>
@@ -372,7 +372,7 @@
           </svg>
           <ul class="points diagram-text">
             <li><strong>Direct WebRTC, DTLS encrypted</strong> Data moves only between your computers</li>
-            <li><strong>Your server</strong> Signaling, STUN, TURN relay</li>
+            <li><strong>Signaling and relay service</strong> Signaling, STUN, TURN relay</li>
             <li>Relay: only if direct fails</li>
           </ul>
         </figure>
@@ -392,7 +392,7 @@
               <li><strong>All of them sent to the peer.</strong> The peer tries each address; the one matching the real uplink gets through.</li>
               <li><strong>Uplinks remembered.</strong> If a round misses an uplink that keeps ports unchanged, its address is filled in as uplink IP plus local port.</li>
               <li><strong>A rule for who sends first.</strong> Some routers lock a port when the other side's packet arrives first. One side announces its addresses first; the other sends to them before announcing its own. Retries alternate the order.</li>
-              <li><strong>Relay first, direct later.</strong> If the first handshake lands on the relay, PasteFerry punches again while idle and switches to direct when that works.</li>
+              <li><strong>Retry direct while idle.</strong>If direct traversal fails and relay is available, sync can use relay. When the connection is idle, the client can retry direct access and release the relay after success.</li>
             </ul>
           </div>
           <div>
@@ -453,9 +453,9 @@
         <dl class="fallbacks">
           <div><dt>Can't find the other computer on the network</dt><dd>Different subnets, guest networks and Wi‑Fi with client isolation block local discovery. Enter the address shown under the other computer's code when pairing; it's remembered afterwards, and if both computers change addresses you enter it once more in the device list.</dd></div>
           <div><dt>The system blocks the local network</dt><dd>From macOS 15, the background service needs your permission to reach devices on the local network; Windows asks about the firewall on first run. If either isn't allowed, the app says so and links straight to the fix.</dd></div>
-          <div><dt>No direct path between the computers</dt><dd>Common behind symmetric NAT and corporate firewalls. Traffic switches to the TURN relay on your server, still encrypted, and the device list shows "Relay".</dd></div>
+          <div><dt>No direct path between the computers</dt><dd>Official access requests relay only after direct failure and within its current allowance. A custom server uses its own TURN relay instead. Content remains end-to-end encrypted in either case.</dd></div>
           <div><dt>Public STUN servers unreachable</dt><dd>Public STUN is unreliable in some regions, including mainland China. Your server runs its own STUN, and clients prefer it.</dd></div>
-          <div><dt>Connected through the relay first</dt><dd>The relay handshake is fast and sometimes beats the direct path. Once connected, the side that started the connection punches again while idle and switches to direct when that works, never in the middle of a transfer.</dd></div>
+          <div><dt>Switching back to direct</dt><dd>If direct traversal fails and relay is available, sync can use relay. When the connection is idle, the client can retry direct access and release the relay after success.</dd></div>
           <div><dt>The other computer sleeps, drops off or restarts</dt><dd>A connection that dies silently is noticed, closed and reconnected. Anything you copy meanwhile is kept and added to the other computer's history once it's back, without overwriting what's on its clipboard now.</dd></div>
           <div><dt>Server connection drops</dt><dd>Reconnects automatically: the delay starts at 1 second and doubles up to 30, with jitter so devices don't all reconnect at once. Devices on the same network keep syncing.</dd></div>
           <div><dt>File too large</dt><dd>Above the limit only a record is synced, pulled when you need it. If the source file is gone by then, you get a clear message instead of a vague failure.</dd></div>
@@ -512,9 +512,9 @@
               <li><a href="cloud/">Self-hosted server</a><span>Control your own capacity</span></li>
               <li><a href="tailscale/">Tailscale</a><span>Across networks, no server</span></li>
           </ul>
-          <a class="button quiet" href="start/#server">Compare the three</a>
+          <a class="button quiet" href="start/#server">Compare connection options</a>
         </div>
-        <p class="pairing"><strong>Pairing:</strong> on one computer, choose Devices → Add device to show a 6-character code; enter it on the other, and confirm once both screens show the same two fingerprints. On a different subnet, also enter the address shown under the code. Any mix of Mac, Windows and Linux works the same way.</p>
+        <p class="pairing">Show a pairing code on one computer, enter it on the other, and compare both fingerprint lines before confirming. Existing pairings are kept. Official access needs no peer IP. Enter an address only for LAN subnets or Tailscale.</p>
       </div>
     </section>
 
@@ -528,7 +528,7 @@
             <tr><th scope="row">Mac app</th><td>macOS 13 Ventura or later; separate downloads for Apple silicon and Intel, about 25 MB each, no Rosetta; a universal version for both is about 47 MB</td></tr>
             <tr><th scope="row">Windows app</th><td>Windows 10 and Windows 11, x64; installs per user, no administrator rights; about 23 MB download</td></tr>
             <tr><th scope="row">Linux app</th><td>x64 and ARM64; .deb (Debian, Ubuntu and similar) or tar.gz (other distributions), about 22 MB; needs an X11 desktop, or a Wayland desktop with XWayland (GNOME, KDE and others include it by default); GTK 3</td></tr>
-            <tr><th scope="row">Server</th><td>Optional, only for syncing across networks. Linux on x86_64 or ARM64 (systemd or Docker), macOS (Intel and Apple silicon), Windows 10 and 11 x64 (as a service); about 15 MB of RAM</td></tr>
+            <tr><th scope="row">Server</th><td>Deployment is needed only for self-hosting; official access needs no server of your own. Self-hosting supports Linux x86_64/ARM64, macOS and Windows 10/11 x64.</td></tr>
             <tr><th scope="row">Languages</th><td>English, Simplified Chinese, Traditional Chinese (Taiwan and Hong Kong) and Japanese; follows the system by default, switchable in Settings</td></tr>
             <tr><th scope="row">Content</th><td>Plain text, rich text, images and screenshots, files, folders; each type can be turned off</td></tr>
             <tr><th scope="row">Transport</th><td>WebRTC data channels, direct first with TURN relay fallback; on the same network, mDNS discovery and connection details over UDP 8788; every uplink probed on multi-uplink networks; files streamed as tar + zstd</td></tr>

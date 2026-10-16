@@ -299,7 +299,7 @@
         <h2 id="history-title">所有裝置上複製過的內容，都在這裏</h2>
         <p class="intro">複製記錄保留最近 3 天的內容，隨時可以放回剪貼簿，圖片按一下就能預覽。50 MB 以內的檔案在你複製的時候已經傳送好了，更大的檔案需要時按一下再拉取。想找以前複製過的，用文字內容或檔案名稱搜尋一下就找到。</p>
         <figure class="shot">
-          <img src="../assets/screenshots/zh-hk/history-dark.png" width="2112" height="1472" alt="隔空貼的複製記錄：來自 MacBook Air 和 Mac mini 的檔案、圖片、文字，大檔案顯示「拉取到本機」按鈕">
+          <img src="../assets/screenshots/zh-hk/history-dark.png" width="2112" height="1472" alt="隔空貼的複製記錄：來自 MacBook Air 和 Mac mini 的檔案、圖片、文字，大檔案顯示「接收」按鈕">
         </figure>
       </div>
     </section>
@@ -331,7 +331,7 @@
               <tr><th scope="row">複製後直接貼上，不用按接受</th><td class="yes ours">可以</td><td class="yes">可以</td><td class="no">不行</td><td class="no">不行</td></tr>
               <tr><th scope="row">檔案與整個資料夾</th><td class="yes ours">可以</td><td class="partial">不穩定</td><td class="yes">可以</td><td class="partial">要先壓縮</td></tr>
               <tr><th scope="row">找回之前複製過的內容</th><td class="yes ours">可以</td><td class="no">不行</td><td class="no">不行</td><td class="partial">翻查聊天記錄</td></tr>
-              <tr><th scope="row">只有自己的裝置可解密內容</th><td class="yes ours">不經過</td><td class="yes">不經過</td><td class="yes">不經過</td><td class="no">經過</td></tr>
+              <tr><th scope="row">只有自己的裝置可解密內容</th><td class="yes ours">可以</td><td class="yes">可以</td><td class="yes">可以</td><td class="some">視軟件而定</td></tr>
             </tbody>
           </table>
         </div>
@@ -341,13 +341,13 @@
     <section class="section" id="how" aria-labelledby="how-title">
       <div class="wrap">
         <h2 id="how-title">運作原理</h2>
-        <p class="intro">兩部電腦之間直接建立加密連線。在同一個網絡裏，它們自己就能找到對方；跨網絡時，由你的伺服器負責牽線，打不通直連的時候再幫忙轉發。下圖是跨網絡的情況。</p>
+        <p class="intro">同一網絡裏，裝置無需伺服器就能找到彼此；跨網絡時，官方服務或自建伺服器協助交換連線資料。優先打洞直連，失敗後才使用加密中轉。下圖展示通用的信令與中轉結構。</p>
         <figure class="diagram">
           <svg viewBox="0 0 960 400" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">隔空貼的連線方式</title>
-            <desc id="diagram-desc">電腦 A 與電腦 B（Mac 或 Windows）之間是 WebRTC 直連；兩部電腦都透過信令連接到你的伺服器；直連失敗時，資料經伺服器的 TURN 中轉。</desc>
+            <desc id="diagram-desc">電腦 A 與電腦 B（Mac 或 Windows）之間是 WebRTC 直連；兩部電腦都透過信令連接到信令與中轉服務；直連失敗時，資料經伺服器的 TURN 中轉。</desc>
             <rect class="d-box" x="360" y="24" width="240" height="96" rx="14"/>
-            <text class="d-title" x="480" y="64" text-anchor="middle">你的伺服器</text>
+            <text class="d-title" x="480" y="64" text-anchor="middle">信令與中轉服務</text>
             <text class="d-sub" x="480" y="92" text-anchor="middle">信令、STUN、TURN 中轉</text>
             <path class="d-sig" d="M140 210V58H360"/>
             <path class="d-sig" d="M820 210V58H600"/>
@@ -372,7 +372,7 @@
           </svg>
           <ul class="points diagram-text">
             <li><strong>WebRTC 直連，DTLS 加密</strong> 資料只在兩部電腦之間傳輸</li>
-            <li><strong>你的伺服器</strong> 信令、STUN、TURN 中轉</li>
+            <li><strong>信令與中轉服務</strong> 信令、STUN、TURN 中轉</li>
             <li>中轉：僅在打不通直連時</li>
           </ul>
         </figure>
@@ -392,7 +392,7 @@
               <li><strong>全部告訴對方。</strong>對方逐個嘗試，與實際出口吻合的那一個就能打通。</li>
               <li><strong>記住見過的出口。</strong>某次漏掉的出口如果沒有改變端口，就用「出口 IP + 本機端口」推算補上。</li>
               <li><strong>定好誰先發封包。</strong>有些路由器收到對方先到的封包，會佔用該端口。一方先公佈出口地址，另一方先向那邊發封包，再公佈自己的；重試時兩種次序輪流使用。</li>
-              <li><strong>先中轉，再換直連。</strong>第一次握手落到中轉時，閒置時會再打一次洞，打通就換成直連。</li>
+              <li><strong>閒置時重試直連。</strong>直連失敗且中轉可用時，先透過中轉保持同步。連線閒置時可重試打洞，成功後切回直連並釋放中轉。</li>
             </ul>
           </div>
           <div>
@@ -453,9 +453,9 @@
         <dl class="fallbacks">
           <div><dt>在同一網絡裏找不到對方</dt><dd>不同網段、訪客網絡、開啟了 AP 隔離的 Wi‑Fi 會阻礙區域網絡發現。配對時輸入對方配對碼下面顯示的地址就可以；之後地址會被記住，兩邊都換了地址時，在裝置列表裏為它重新輸入一次。</dd></div>
           <div><dt>系統阻擋區域網絡</dt><dd>由 macOS 15 起，背景服務連接區域網絡裏的裝置需要你允許；Windows 第一次執行時會詢問防火牆設定。未允許時 App 會提示，並提供直達設定的按鈕。</dd></div>
-          <div><dt>兩部電腦打不通直連</dt><dd>常見於對稱型 NAT 和公司防火牆。會自動改經你伺服器上的 TURN 中轉，內容依然加密，裝置列表裏顯示「中轉」。</dd></div>
+          <div><dt>兩部電腦打不通直連</dt><dd>官方模式在直連失敗後，按目前額度申請中轉；自建模式使用自己的 TURN 中轉。兩種方式的內容均保持端到端加密。</dd></div>
           <div><dt>公共 STUN 伺服器連不上</dt><dd>在內地連公共 STUN 時通時斷。伺服器自帶 STUN，用戶端會優先使用它。</dd></div>
-          <div><dt>先連上了中轉</dt><dd>中轉握手較快，有時會搶在直連之前。連上之後，發起連線的一方會在閒置時再打一次洞，打通就換成直連；正在傳送檔案時不會打擾。</dd></div>
+          <div><dt>從中轉切回直連</dt><dd>直連失敗且中轉可用時，先透過中轉保持同步。連線閒置時可重試打洞，成功後切回直連並釋放中轉。</dd></div>
           <div><dt>對方進入睡眠、斷網或重新啟動</dt><dd>連線悄悄斷了也能察覺，會立即關閉並重新連線。這期間複製的內容會記下來，連上後補發到對方的複製記錄裏，但不會覆蓋對方此刻剪貼簿裏的內容。</dd></div>
           <div><dt>伺服器斷線</dt><dd>自動重新連線，間隔由 1 秒開始倍增、最長 30 秒，並加入隨機抖動，避免大量裝置同時重新連線。同一網絡裏的裝置不受影響，照常同步。</dd></div>
           <div><dt>檔案太大</dt><dd>超過上限的只同步一條記錄，需要時再拉取。拉取時如果來源檔案已被刪除，會清楚告訴你，而不是莫名其妙地失敗。</dd></div>
@@ -512,9 +512,9 @@
               <li><a href="cloud/">自建公網伺服器</a><span>自行管理容量與部署</span></li>
               <li><a href="tailscale/">Tailscale</a><span>跨網絡，不用伺服器</span></li>
           </ul>
-          <a class="button quiet" href="start/#server">比較三種方式</a>
+          <a class="button quiet" href="start/#server">比較連線方式</a>
         </div>
-        <p class="pairing"><strong>配對：</strong>一部電腦按「裝置 → 新增裝置」產生 6 位配對碼，另一部輸入它；兩邊螢幕上的兩行安全指紋完全一致後確認。不在同一網段時，輸入配對碼的同時，也要輸入它下面顯示的地址。Mac、Windows、Linux 之間怎樣組合都一樣。</p>
+        <p class="pairing">一部產生配對碼，另一部輸入；核對兩邊的安全指紋後確認。原有配對關係可以繼續使用。 官方服務無需填寫對方 IP；只在區域網絡跨網段或 Tailscale 配對時填寫對方地址。</p>
       </div>
     </section>
 
@@ -528,7 +528,7 @@
             <tr><th scope="row">Mac 用戶端</th><td>macOS 13 Ventura 或以上；Apple 晶片與 Intel 處理器的 Mac 各有一個安裝檔，約 25 MB，不需要 Rosetta；另有兩種 Mac 通用的版本，約 47 MB</td></tr>
             <tr><th scope="row">Windows 用戶端</th><td>Windows 10 與 Windows 11，x64；為目前用戶安裝，不需要管理員權限；安裝檔約 23 MB</td></tr>
             <tr><th scope="row">Linux 用戶端</th><td>x64 與 ARM64；.deb（Debian、Ubuntu 等）或 tar.gz（其他發行版），約 22 MB；需要 X11 桌面，或帶 XWayland 的 Wayland 桌面（GNOME、KDE 等預設都已包含）；GTK 3</td></tr>
-            <tr><th scope="row">伺服器</th><td>可選，只在跨網絡時需要。Linux x86_64 或 ARM64（systemd 或 Docker）、macOS（Intel 與 Apple 晶片）、Windows 10 與 11 x64（系統服務）；約佔 15 MB 記憶體</td></tr>
+            <tr><th scope="row">伺服器</th><td>只在自建時需要部署；使用官方服務無需自備伺服器。自建支援 Linux x86_64/ARM64、macOS 與 Windows 10/11 x64。</td></tr>
             <tr><th scope="row">介面語言</th><td>簡體中文、繁體中文（台灣、香港）、English、日本語，預設跟隨系統，可在設定裏切換</td></tr>
             <tr><th scope="row">同步的內容</th><td>純文字、帶格式的文字、圖片與截圖、檔案、資料夾，可以按類型關閉</td></tr>
             <tr><th scope="row">傳輸</th><td>WebRTC 數據通道，直連優先，打不通時經 TURN 中轉；同一網絡裏經 mDNS 發現、UDP 8788 交換連線資訊；多出口網絡會逐一探測每個出口；檔案以 tar + zstd 串流方式打包</td></tr>
