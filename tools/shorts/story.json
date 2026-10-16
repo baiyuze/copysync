@@ -1,0 +1,45 @@
+{
+  "duration": 25.5,
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "website": "https://pasteferry.cc/",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 3.6,
+      "voice": "不在同一个网络，也能这台复制，那台粘贴。",
+      "caption": "跨网络，也能复制粘贴"
+    },
+    {
+      "start": 3.6,
+      "end": 8.0,
+      "voice": "隔空贴更新了。开启官方服务，不用自己搭服务器。",
+      "caption": "无需自建，开启官方服务"
+    },
+    {
+      "start": 8.0,
+      "end": 12.7,
+      "voice": "先打洞直连，失败自动中转。内容全程加密。",
+      "caption": "先打洞直连，失败自动中转"
+    },
+    {
+      "start": 12.7,
+      "end": 17.4,
+      "voice": "直连不扣额度。中转每天一百兆，上下行合计。",
+      "caption": "直连不扣额度 · 中转默认 100 MB／日"
+    },
+    {
+      "start": 17.4,
+      "end": 21.0,
+      "voice": "Mac、Windows、Linux，都能用。",
+      "caption": "三大桌面系统都能用"
+    },
+    {
+      "start": 21.0,
+      "end": 25.5,
+      "voice": "新官网，下载两边最新版，开启官方服务。",
+      "caption": "官网下载：pasteferry.cc"
+    }
+  ]
+}
