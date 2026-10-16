@@ -277,6 +277,17 @@ func directICEServers(servers []webrtc.ICEServer) []webrtc.ICEServer {
 	return out
 }
 func (m *Manager) officialFailed(id string, a *officialAttempt, err error) {
+	// A tunnel reports quota closure before ICE notices the disconnected
+	// transport. Preserve that reason so a later allowance increase can clear
+	// the cooldown and notify the peer, rather than waiting until midnight.
+	var quotaError *gateway.Error
+	if !errors.As(err, &quotaError) {
+		u := m.gateway.Usage()
+		switch u.Reason {
+		case "quota_exhausted", "global_exhausted", "global_paused", "relay_blocked", "device_banned":
+			err = &gateway.Error{Code: u.Reason, Usage: &u}
+		}
+	}
 	m.mu.Lock()
 	if m.relays[id] == a {
 		var ge *gateway.Error
@@ -285,7 +296,7 @@ func (m *Manager) officialFailed(id string, a *officialAttempt, err error) {
 		}
 		u := m.gateway.Usage()
 		a.failedUntil = time.Now().Add(time.Minute)
-		if u.ResetAt > time.Now().Unix() && (u.Reason == "quota_exhausted" || u.Reason == "global_exhausted" || u.Reason == "peer_quota_exhausted") {
+		if u.ResetAt > time.Now().Unix() && (a.failReason == "quota_exhausted" || a.failReason == "global_exhausted" || a.failReason == "peer_quota_exhausted") {
 			a.failedUntil = time.Unix(u.ResetAt, 0)
 		}
 	}

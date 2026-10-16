@@ -3,6 +3,7 @@ package p2p
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -111,6 +112,29 @@ func TestOfficialDirectNeverRequestsGateway(t *testing.T) {
 	waitPair(t, a, b, StateDirect, 10*time.Second)
 	if requests.Load() != 0 {
 		t.Fatal("direct path contacted relay authorization")
+	}
+}
+
+func TestOfficialQuotaRecoveryAfterTransportClosure(t *testing.T) {
+	id := identity.FromSeed(make([]byte, 32))
+	c, err := gateway.NewClient(id, "http://127.0.0.1:1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	c.ReportError(&gateway.Error{Code: "quota_exhausted", Usage: &gateway.Usage{Available: true, Reason: "quota_exhausted", ResetAt: time.Now().Add(time.Hour).Unix()}})
+	m := NewManager(ManagerOptions{SelfID: id.DeviceID, Gateway: c, Official: func() bool { return true }, DisableEgressProbe: true, SendSignal: func(context.Context, string, *pb.SignalMessage) error { return nil }})
+	defer m.Close()
+	ctx, cancel := context.WithCancel(context.Background())
+	a := &officialAttempt{id: "attempt", ctx: ctx, cancel: cancel}
+	m.relays["peer"] = a
+	m.officialFailed("peer", a, errors.New("relay connection closed"))
+	if a.failReason != "quota_exhausted" {
+		t.Fatalf("lost closure reason: %q", a.failReason)
+	}
+	m.OfficialAllowanceChanged()
+	if !a.failedUntil.IsZero() || a.failReason != "" {
+		t.Fatal("new allowance did not permit a retry")
 	}
 }
 func TestOfficialDirectThenGatewayTURN(t *testing.T) {
