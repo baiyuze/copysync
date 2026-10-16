@@ -234,6 +234,9 @@ func TestServerOnlyPairingStillWorks(t *testing.T) {
 	cfg := config.Default()
 	cfg.SignalingURL = "ws" + strings.TrimPrefix(srv.URL, "http") + "/signal"
 	cfg.LANDisabled = true
+	// This fixture has a local signaling server and no external STUN service.
+	// Public probe reachability must not decide whether local pairing passes.
+	cfg.OnlyOwnSTUN = true
 
 	a, b := newDevice(t, "a", nil, cfg), newDevice(t, "b", nil, cfg)
 	waitFor(t, "连上服务器", func() bool { return a.m.Connected() && b.m.Connected() })
