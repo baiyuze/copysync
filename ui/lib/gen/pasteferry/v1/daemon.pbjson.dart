@@ -91,6 +91,23 @@ final $typed_data.Uint8List clipboardPermissionDescriptor = $convert.base64Decod
     'ohQ0xJUEJPQVJEX1BFUk1JU1NJT05fQUxXQVlTX0FMTE9XEAQSJAogQ0xJUEJPQVJEX1BFUk1J'
     'U1NJT05fQUxXQVlTX0RFTlkQBQ==');
 
+@$core.Deprecated('Use serviceModeDescriptor instead')
+const ServiceMode$json = {
+  '1': 'ServiceMode',
+  '2': [
+    {'1': 'SERVICE_MODE_UNSPECIFIED', '2': 0},
+    {'1': 'SERVICE_MODE_LAN', '2': 1},
+    {'1': 'SERVICE_MODE_OFFICIAL', '2': 2},
+    {'1': 'SERVICE_MODE_CUSTOM', '2': 3},
+  ],
+};
+
+/// Descriptor for `ServiceMode`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List serviceModeDescriptor = $convert.base64Decode(
+    'CgtTZXJ2aWNlTW9kZRIcChhTRVJWSUNFX01PREVfVU5TUEVDSUZJRUQQABIUChBTRVJWSUNFX0'
+    '1PREVfTEFOEAESGQoVU0VSVklDRV9NT0RFX09GRklDSUFMEAISFwoTU0VSVklDRV9NT0RFX0NV'
+    'U1RPTRAD');
+
 @$core.Deprecated('Use emptyDescriptor instead')
 const Empty$json = {
   '1': 'Empty',
@@ -615,6 +632,28 @@ const Config$json = {
     {'1': 'only_own_stun', '3': 12, '4': 1, '5': 8, '10': 'onlyOwnStun'},
     {'1': 'language', '3': 13, '4': 1, '5': 9, '10': 'language'},
     {'1': 'lan_disabled', '3': 14, '4': 1, '5': 8, '10': 'lanDisabled'},
+    {
+      '1': 'service_mode',
+      '3': 15,
+      '4': 1,
+      '5': 14,
+      '6': '.pasteferry.v1.ServiceMode',
+      '10': 'serviceMode'
+    },
+    {
+      '1': 'custom_signaling_url',
+      '3': 16,
+      '4': 1,
+      '5': 9,
+      '10': 'customSignalingUrl'
+    },
+    {
+      '1': 'official_notice_ack',
+      '3': 17,
+      '4': 1,
+      '5': 9,
+      '10': 'officialNoticeAck'
+    },
   ],
 };
 
@@ -629,7 +668,37 @@ final $typed_data.Uint8List configDescriptor = $convert.base64Decode(
     'JgoPbGF1bmNoX2F0X2xvZ2luGAkgASgIUg1sYXVuY2hBdExvZ2luEh8KC2RldmljZV9uYW1lGA'
     'ogASgJUgpkZXZpY2VOYW1lEiMKDXNpZ25hbGluZ191cmwYCyABKAlSDHNpZ25hbGluZ1VybBIi'
     'Cg1vbmx5X293bl9zdHVuGAwgASgIUgtvbmx5T3duU3R1bhIaCghsYW5ndWFnZRgNIAEoCVIIbG'
-    'FuZ3VhZ2USIQoMbGFuX2Rpc2FibGVkGA4gASgIUgtsYW5EaXNhYmxlZA==');
+    'FuZ3VhZ2USIQoMbGFuX2Rpc2FibGVkGA4gASgIUgtsYW5EaXNhYmxlZBI9CgxzZXJ2aWNlX21v'
+    'ZGUYDyABKA4yGi5wYXN0ZWZlcnJ5LnYxLlNlcnZpY2VNb2RlUgtzZXJ2aWNlTW9kZRIwChRjdX'
+    'N0b21fc2lnbmFsaW5nX3VybBgQIAEoCVISY3VzdG9tU2lnbmFsaW5nVXJsEi4KE29mZmljaWFs'
+    'X25vdGljZV9hY2sYESABKAlSEW9mZmljaWFsTm90aWNlQWNr');
+
+@$core.Deprecated('Use officialUsageDescriptor instead')
+const OfficialUsage$json = {
+  '1': 'OfficialUsage',
+  '2': [
+    {'1': 'available', '3': 1, '4': 1, '5': 8, '10': 'available'},
+    {'1': 'day', '3': 2, '4': 1, '5': 9, '10': 'day'},
+    {'1': 'quota_group', '3': 3, '4': 1, '5': 9, '10': 'quotaGroup'},
+    {'1': 'upload_bytes', '3': 4, '4': 1, '5': 3, '10': 'uploadBytes'},
+    {'1': 'download_bytes', '3': 5, '4': 1, '5': 3, '10': 'downloadBytes'},
+    {'1': 'limit_bytes', '3': 6, '4': 1, '5': 3, '10': 'limitBytes'},
+    {'1': 'remaining_bytes', '3': 7, '4': 1, '5': 3, '10': 'remainingBytes'},
+    {'1': 'reset_at_unix', '3': 8, '4': 1, '5': 3, '10': 'resetAtUnix'},
+    {'1': 'updated_at_unix', '3': 9, '4': 1, '5': 3, '10': 'updatedAtUnix'},
+    {'1': 'reason', '3': 10, '4': 1, '5': 9, '10': 'reason'},
+  ],
+};
+
+/// Descriptor for `OfficialUsage`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List officialUsageDescriptor = $convert.base64Decode(
+    'Cg1PZmZpY2lhbFVzYWdlEhwKCWF2YWlsYWJsZRgBIAEoCFIJYXZhaWxhYmxlEhAKA2RheRgCIA'
+    'EoCVIDZGF5Eh8KC3F1b3RhX2dyb3VwGAMgASgJUgpxdW90YUdyb3VwEiEKDHVwbG9hZF9ieXRl'
+    'cxgEIAEoA1ILdXBsb2FkQnl0ZXMSJQoOZG93bmxvYWRfYnl0ZXMYBSABKANSDWRvd25sb2FkQn'
+    'l0ZXMSHwoLbGltaXRfYnl0ZXMYBiABKANSCmxpbWl0Qnl0ZXMSJwoPcmVtYWluaW5nX2J5dGVz'
+    'GAcgASgDUg5yZW1haW5pbmdCeXRlcxIiCg1yZXNldF9hdF91bml4GAggASgDUgtyZXNldEF0VW'
+    '5peBImCg91cGRhdGVkX2F0X3VuaXgYCSABKANSDXVwZGF0ZWRBdFVuaXgSFgoGcmVhc29uGAog'
+    'ASgJUgZyZWFzb24=');
 
 @$core.Deprecated('Use networkInfoDescriptor instead')
 const NetworkInfo$json = {
@@ -770,6 +839,14 @@ const Status$json = {
       '5': 3,
       '10': 'verboseLogUntilUnix'
     },
+    {
+      '1': 'official_usage',
+      '3': 12,
+      '4': 1,
+      '5': 11,
+      '6': '.pasteferry.v1.OfficialUsage',
+      '10': 'officialUsage'
+    },
   ],
 };
 
@@ -783,7 +860,8 @@ final $typed_data.Uint8List statusDescriptor = $convert.base64Decode(
     '9ubGluZRIYCgd2ZXJzaW9uGAcgASgJUgd2ZXJzaW9uEisKEXNlcnZlcl9jb25maWd1cmVkGAgg'
     'ASgIUhBzZXJ2ZXJDb25maWd1cmVkEh8KC2xhbl9lbmFibGVkGAkgASgIUgpsYW5FbmFibGVkEh'
     '8KC2xhbl9ibG9ja2VkGAogASgIUgpsYW5CbG9ja2VkEjMKFnZlcmJvc2VfbG9nX3VudGlsX3Vu'
-    'aXgYCyABKANSE3ZlcmJvc2VMb2dVbnRpbFVuaXg=');
+    'aXgYCyABKANSE3ZlcmJvc2VMb2dVbnRpbFVuaXgSQwoOb2ZmaWNpYWxfdXNhZ2UYDCABKAsyHC'
+    '5wYXN0ZWZlcnJ5LnYxLk9mZmljaWFsVXNhZ2VSDW9mZmljaWFsVXNhZ2U=');
 
 @$core.Deprecated('Use exportDiagnosticsRequestDescriptor instead')
 const ExportDiagnosticsRequest$json = {

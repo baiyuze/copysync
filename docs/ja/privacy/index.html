@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>プライバシーと必要なデータ — PasteFerry</title>
+  <meta name="description" content="新規インストールではLANのみを使用します。有効にした場合のみ公式シグナリングに接続し、必要な接続統計を記録します。独自サーバーは公式へ報告しません。まず直接接続を試し、失敗した場合のみ中継の認証と端末の残量識別を行います。">
+  <link rel="canonical" href="https://pasteferry.cc/ja/privacy/">
+  <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/">
+  <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/">
+  <link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/">
+  <link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/">
+  <link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="プライバシーと必要なデータ — PasteFerry">
+  <meta property="og:description" content="新規インストールではLANのみを使用します。有効にした場合のみ公式シグナリングに接続し、必要な接続統計を記録します。独自サーバーは公式へ報告しません。まず直接接続を試し、失敗した場合のみ中継の認証と端末の残量識別を行います。">
+  <meta property="og:url" content="https://pasteferry.cc/ja/privacy/">
+  <meta property="og:image" content="https://pasteferry.cc/assets/og-en.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">本文へ移動</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../ja/" aria-label="PasteFerry ホーム"><img src="../../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
+      <nav aria-label="ページ内の移動">
+        <a href="../../ja/start/">はじめかた</a>
+        <a class="wide" href="../../ja/#how">しくみ</a>
+        <a class="wide" href="../../ja/#faq">よくある質問</a>
+        <a class="mid" href="../../ja/start/#server">接続方法</a>
+        <a href="../../ja/download/">ダウンロード</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
+        <details class="lang">
+          <summary aria-label="言語：日本語"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>日本語</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../../privacy/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a></li>
+            <li><a href="../../zh-tw/privacy/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a></li>
+            <li><a href="../../zh-hk/privacy/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../../en/privacy/" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../../ja/privacy/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+<main id="main" class="wrap" style="max-width:850px;padding-top:5rem;padding-bottom:5rem;line-height:1.9"><h1>プライバシーと必要なデータ</h1><section><h2>公式サービスは任意です</h2><p>新規インストールではLANのみを使用します。有効にした場合のみ公式シグナリングに接続し、必要な接続統計を記録します。独自サーバーは公式へ報告しません。まず直接接続を試し、失敗した場合のみ中継の認証と端末の残量識別を行います。</p></section>
+<section><h2>最小限の記録</h2><p>仮名化した端末番号、初回・最終接続時刻、日別中継使用量、必要な上限の紐付けと累計を保持します。端末の日別明細は90日間保持します。公式端末数は人数や全インストール数ではありません。</p></section>
+<section><h2>内容と識別子</h2><p>内容と実際の端末名は端末間の暗号化通信で送信します。ファイル名、パス、ユーザー名、MAC、UA、行動履歴を収集しません。元のシステム識別子は送信せず、専用ダイジェストを中継上限の分類にのみ使います。改変クライアントによる偽装は防ぎきれません。</p></section>
+<section><h2>ネットワークと残量</h2><p>通信先は一時的な経路・アドレスを認識しますが、公式統計と通常のプロキシログには保存しません。中継上限は送受信合計100 MB/日で、北京時間午前0時にリセットします。直接接続は消費しません。無効化すると公式の要求、照会とトンネルを停止します。</p></section>
+<section><h2>ウェブサイトと監査</h2><p>当サイトは既存のCloudflare Web Analyticsを使います。閲覧数はソフトの利用者数ではありません。クライアント、シグナリングとTURNはオープンソースを維持し、ゲートウェイの仕様と項目を公開します。非公開の本番環境の保持実態には配備監査が必要です。</p></section><p><a href="https://github.com/baiyuze/pasteferry/blob/main/PRIVACY.md">PRIVACY.md</a> · <a href="https://github.com/baiyuze/pasteferry/blob/main/SECURITY.md">SECURITY.md</a> · <a href="https://github.com/baiyuze/pasteferry/blob/main/design/official-gateway.md">Gateway protocol v1</a></p></main>
+  <footer class="footer">
+    <div class="wrap">
+      <p>PasteFerry は GNU AGPL-3.0 のオープンソースです。</p>
+      <nav aria-label="フッターのリンク">
+        <a href="https://github.com/baiyuze/pasteferry/releases">すべてのリリース</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新履歴</a>
+        <a href="https://pasteferry.cc/design/nat-traversal.html">技術資料（中国語）</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">ライセンス</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">問題を報告</a>
+        <a href="../../ja/privacy/">プライバシーと必要なデータ</a>
+      </nav>
+      <nav aria-label="言語">
+        <a href="../../privacy/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../zh-tw/privacy/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a>
+        <a href="../../zh-hk/privacy/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../../en/privacy/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/privacy/" hreflang="ja" lang="ja" data-lang="ja" aria-current="page">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

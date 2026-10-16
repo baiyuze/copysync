@@ -16,14 +16,22 @@ enum LinkState { connecting, online, offline }
 typedef PairingCode = ({String code, List<String> addresses});
 
 /// 配对失败的原因。后台服务把原因写在错误消息开头（见 rpc/server.go 的 pairingStatus）。
-enum PairingFailure { notFound, wrongCode, codeExpired, badAddress, noChannel, other }
+enum PairingFailure {
+  notFound,
+  wrongCode,
+  codeExpired,
+  badAddress,
+  noChannel,
+  other,
+}
 
 /// 应用的单一状态源。
 ///
 /// 所有与 daemon 的交互都经过这里：页面只读状态、调方法，不直接碰 gRPC。
 /// 这样断线重连、事件合并这些琐事集中在一处，页面代码保持干净。
 class AppState extends ChangeNotifier {
-  AppState({BackgroundService? service}) : service = service ?? BackgroundService();
+  AppState({BackgroundService? service})
+    : service = service ?? BackgroundService();
 
   final BackgroundService service;
 
@@ -70,7 +78,8 @@ class AppState extends ChangeNotifier {
   String get searchQuery => _query.trim();
 
   /// 搜到的记录，按时间倒序；没在搜索、或这次搜索还没出结果时为 null。
-  List<ClipRecord>? get searchResults => _searchResults == null ? null : List.unmodifiable(_searchResults!);
+  List<ClipRecord>? get searchResults =>
+      _searchResults == null ? null : List.unmodifiable(_searchResults!);
 
   /// 传输进度；总量未知或尚未开始时为 null。
   double? progressOf(String clipId) => _progress[clipId];
@@ -83,6 +92,56 @@ class AppState extends ChangeNotifier {
   /// 设置里填了服务器地址。没填时只在局域网里同步，不算异常。
   bool get serverConfigured => _status?.serverConfigured ?? false;
   bool get lanEnabled => _status?.lanEnabled ?? false;
+  bool get officialEnabled =>
+      _config?.serviceMode == ServiceMode.SERVICE_MODE_OFFICIAL;
+  OfficialUsage? get officialUsage =>
+      _status?.hasOfficialUsage() == true ? _status!.officialUsage : null;
+  int _officialNavigationSerial = 0;
+  int get officialNavigationSerial => _officialNavigationSerial;
+  final Set<String> _acknowledgedOfficial = {};
+  String? get officialNoticeKey {
+    if (!officialEnabled) return null;
+    final u = officialUsage;
+    if (u == null ||
+        !const {
+          'quota_exhausted',
+          'peer_quota_exhausted',
+          'global_exhausted',
+          'global_paused',
+          'relay_blocked',
+          'device_banned',
+        }.contains(u.reason)) {
+      return null;
+    }
+    final day = u.day.isNotEmpty
+        ? u.day
+        : DateTime.now()
+              .toUtc()
+              .add(const Duration(hours: 8))
+              .toIso8601String()
+              .substring(0, 10);
+    final key = '${u.quotaGroup}:$day:${u.reason}';
+    if (_acknowledgedOfficial.contains(key) ||
+        (_config?.officialNoticeAck ?? '').split('\n').contains(key)) {
+      return null;
+    }
+    return key;
+  }
+
+  Future<void> acknowledgeOfficialNotice(String key) async {
+    _acknowledgedOfficial.add(key);
+    final cfg = _config;
+    if (cfg == null) return;
+    final keys = {
+      ...cfg.officialNoticeAck.split('\n').where((s) => s.isNotEmpty),
+      key,
+    }.toList();
+    final next = cfg.deepCopy()
+      ..officialNoticeAck = keys
+          .skip(keys.length > 64 ? keys.length - 64 : 0)
+          .join('\n');
+    await updateConfig(next);
+  }
 
   /// macOS 拦下了发往局域网的包：用户还没允许「本地网络」权限。
   bool get lanBlocked => _status?.lanBlocked ?? false;
@@ -90,7 +149,9 @@ class AppState extends ChangeNotifier {
   /// 详细日志打开到什么时候；没打开时为 null。
   DateTime? get verboseLogUntil {
     final until = _status?.verboseLogUntilUnix.toInt() ?? 0;
-    return until == 0 ? null : DateTime.fromMillisecondsSinceEpoch(until * 1000);
+    return until == 0
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(until * 1000);
   }
 
   @override
@@ -128,9 +189,12 @@ class AppState extends ChangeNotifier {
 
       await _loadDevices();
 
-      _events = conn.client.subscribe(SubscribeRequest()).listen(
+      _events = conn.client
+          .subscribe(SubscribeRequest())
+          .listen(
             _onEvent,
-            onError: (Object e) => _scheduleRetry(appL10n.linkConnectionLost(_describe(e))),
+            onError: (Object e) =>
+                _scheduleRetry(appL10n.linkConnectionLost(_describe(e))),
             onDone: () => _scheduleRetry(appL10n.linkServiceDisconnected),
           );
 
@@ -279,7 +343,9 @@ class AppState extends ChangeNotifier {
       case Event_Payload.clipAdded:
         _upsert(ev.clipAdded);
         // 新记录该不该出现在搜索结果里，只有后台服务知道
-        if (!_patchSearch(ev.clipAdded)) _scheduleSearch(const Duration(milliseconds: 300));
+        if (!_patchSearch(ev.clipAdded)) {
+          _scheduleSearch(const Duration(milliseconds: 300));
+        }
 
       case Event_Payload.clipUpdated:
         _upsert(ev.clipUpdated);
@@ -330,7 +396,10 @@ class AppState extends ChangeNotifier {
       return; // 已经传完的记录，迟到的进度事件不能把它拉回「接收中」
     }
     if (p.total > 0) {
-      _progress[p.clipId] = (p.transferred.toInt() / p.total.toInt()).clamp(0.0, 1.0);
+      _progress[p.clipId] = (p.transferred.toInt() / p.total.toInt()).clamp(
+        0.0,
+        1.0,
+      );
     }
   }
 
@@ -371,7 +440,10 @@ class AppState extends ChangeNotifier {
   /// [address] 是对方配对码下面显示的地址，不在同一网段时才需要。
   Future<Device> redeemPairingCode(String code, {String address = ''}) async {
     final resp = await _client.redeemPairingCode(
-      RedeemPairingCodeRequest(code: code.trim().toUpperCase(), address: address.trim()),
+      RedeemPairingCodeRequest(
+        code: code.trim().toUpperCase(),
+        address: address.trim(),
+      ),
       // 在局域网里找对方要几秒，找不到再去服务器上兑换
       options: CallOptions(timeout: const Duration(seconds: 30)),
     );
@@ -423,10 +495,13 @@ class AppState extends ChangeNotifier {
 
   /// 手动告诉后台服务某台设备的地址：跨网段、或两边都换了地址时用。
   Future<void> setDeviceAddress(String deviceId, String address) =>
-      _client.setDeviceAddress(SetDeviceAddressRequest(deviceId: deviceId, address: address.trim()));
+      _client.setDeviceAddress(
+        SetDeviceAddressRequest(deviceId: deviceId, address: address.trim()),
+      );
 
   /// macOS 打开「本地网络」设置；Windows 申请管理员权限放行防火墙。
-  Future<void> requestLocalNetworkPermission() => _client.requestLocalNetworkPermission(Empty());
+  Future<void> requestLocalNetworkPermission() =>
+      _client.requestLocalNetworkPermission(Empty());
 
   Future<void> unpair(String deviceId) async {
     await _client.unpair(UnpairRequest(deviceId: deviceId));
@@ -435,7 +510,9 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> updateConfig(Config next) async {
+    final wasOfficial = officialEnabled;
     _config = await _client.updateConfig(next);
+    if (!wasOfficial && officialEnabled) _officialNavigationSerial++;
     notifyListeners();
   }
 
@@ -443,11 +520,15 @@ class AppState extends ChangeNotifier {
 
   /// 反馈问题用的诊断报告，由后台服务生成并脱敏，带上最近 [logLines] 行日志。
   Future<String> exportDiagnostics({int logLines = 200}) async =>
-      (await _client.exportDiagnostics(ExportDiagnosticsRequest(logLines: logLines, uiVersion: appVersion))).report;
+      (await _client.exportDiagnostics(
+        ExportDiagnosticsRequest(logLines: logLines, uiVersion: appVersion),
+      )).report;
 
   /// 临时打开详细日志 [minutes] 分钟，0 表示立即关闭。
   Future<void> setVerboseLog(int minutes) async {
-    _status = await _client.setVerboseLog(SetVerboseLogRequest(minutes: minutes));
+    _status = await _client.setVerboseLog(
+      SetVerboseLogRequest(minutes: minutes),
+    );
     notifyListeners();
   }
 
@@ -494,7 +575,9 @@ class AppState extends ChangeNotifier {
     try {
       final r = await requestSearch(query);
       // 旧版后台服务不认识搜索词，会原样返回全部记录：退回到只在已加载的记录里找
-      found = r.searched ? List.of(r.records) : _records.where((x) => matchesSearch(x, query)).toList();
+      found = r.searched
+          ? List.of(r.records)
+          : _records.where((x) => matchesSearch(x, query)).toList();
     } catch (_) {
       found = _records.where((x) => matchesSearch(x, query)).toList();
     }
@@ -529,9 +612,13 @@ class AppState extends ChangeNotifier {
 
   /// 一条记录里第 [index] 张图片：本机路径、文件名，以及能预览的图片总数。
   /// HEIC 这类格式由后台服务先转换，大图可能要一两秒，超时放宽一些。
-  Future<GetImagePreviewResponse> imagePreview(String clipId, {int index = 0}) =>
-      _client.getImagePreview(GetImagePreviewRequest(clipId: clipId, index: index),
-          options: CallOptions(timeout: const Duration(seconds: 20)));
+  Future<GetImagePreviewResponse> imagePreview(
+    String clipId, {
+    int index = 0,
+  }) => _client.getImagePreview(
+    GetImagePreviewRequest(clipId: clipId, index: index),
+    options: CallOptions(timeout: const Duration(seconds: 20)),
+  );
 
   Future<void> requestClipboardPermission() =>
       _client.requestClipboardPermission(Empty());
@@ -569,7 +656,10 @@ class AppState extends ChangeNotifier {
 /// 只在后台服务不支持搜索时用；正常情况下由后台服务按全文搜索。
 bool matchesSearch(ClipRecord r, String query) {
   final q = query.toLowerCase();
-  if (r.kind != ClipKind.CLIP_KIND_IMAGE && r.items.any((i) => i.name.toLowerCase().contains(q))) return true;
+  if (r.kind != ClipKind.CLIP_KIND_IMAGE &&
+      r.items.any((i) => i.name.toLowerCase().contains(q))) {
+    return true;
+  }
   return r.kind != ClipKind.CLIP_KIND_FILE &&
       r.kind != ClipKind.CLIP_KIND_IMAGE &&
       r.textPreview.toLowerCase().contains(q);

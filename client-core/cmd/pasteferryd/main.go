@@ -312,14 +312,14 @@ func run(dataDir string) error {
 		if err := saveCfg(c); err != nil {
 			return err
 		}
-		if c.SignalingURL != prev.SignalingURL {
-			slog.Info("信令服务器地址已变更", "from", prev.SignalingURL, "to", c.SignalingURL)
-			peerMgr.SetSignalingURL(c.SignalingURL)
+		if c.EffectiveSignalingURL() != prev.EffectiveSignalingURL() || c.ServiceMode != prev.ServiceMode {
+			slog.Info("公网连接模式已变更")
+			peerMgr.SetSignalingURL(c.EffectiveSignalingURL())
 		}
 		if c.LANDisabled != prev.LANDisabled {
 			peerMgr.SetLANEnabled(!c.LANDisabled)
 		}
-		if c.SignalingURL != prev.SignalingURL || c.LANDisabled != prev.LANDisabled {
+		if c.EffectiveSignalingURL() != prev.EffectiveSignalingURL() || c.ServiceMode != prev.ServiceMode || c.LANDisabled != prev.LANDisabled {
 			select {
 			case statusDirty <- struct{}{}:
 			default:
@@ -363,6 +363,7 @@ func run(dataDir string) error {
 		SearchHistory:            engine.SearchHistory,
 		ImagePreview:             engine.ImagePreview,
 		CacheBytesUsed:           blobs.Size,
+		OfficialUsage:            peerMgr.OfficialUsage,
 		Permission: func() clipboard.Permission {
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()

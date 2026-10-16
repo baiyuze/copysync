@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"log/slog"
 	"math/rand"
+	"net/http"
 	"sync"
 	"time"
 
@@ -54,7 +55,8 @@ type Client struct {
 
 	verifier *signed.Verifier
 	// DeviceInfo 提供每次握手时上报的设备名与已配对列表
-	deviceInfo func() (name, platform string, pairedIDs []string)
+	deviceInfo  func() (name, platform string, pairedIDs []string)
+	dialHeaders func(string) http.Header
 
 	mu        sync.Mutex
 	conn      *websocket.Conn
@@ -76,6 +78,7 @@ type Options struct {
 	// 此时来自该设备的消息一律丢弃。
 	PublicKeyOf func(deviceID string) ed25519.PublicKey
 	DeviceInfo  func() (name, platform string, pairedIDs []string)
+	DialHeaders func(string) http.Header
 }
 
 func New(opts Options) *Client {
@@ -88,13 +91,14 @@ func New(opts Options) *Client {
 		verifier = signed.NewVerifier(opts.Identity.DeviceID, opts.PublicKeyOf)
 	}
 	return &Client{
-		identity:   opts.Identity,
-		url:        opts.URL,
-		log:        log,
-		handlers:   opts.Handlers,
-		verifier:   verifier,
-		deviceInfo: opts.DeviceInfo,
-		urlChanged: make(chan struct{}, 1),
+		identity:    opts.Identity,
+		url:         opts.URL,
+		log:         log,
+		handlers:    opts.Handlers,
+		verifier:    verifier,
+		deviceInfo:  opts.DeviceInfo,
+		dialHeaders: opts.DialHeaders,
+		urlChanged:  make(chan struct{}, 1),
 	}
 }
 
@@ -185,7 +189,11 @@ func (c *Client) session(ctx context.Context) (established bool, err error) {
 	}
 
 	dialCtx, cancel := context.WithTimeout(ctx, dialTimeout)
-	conn, _, err := websocket.Dial(dialCtx, url, nil)
+	var dialOpts *websocket.DialOptions
+	if c.dialHeaders != nil {
+		dialOpts = &websocket.DialOptions{HTTPHeader: c.dialHeaders(url)}
+	}
+	conn, _, err := websocket.Dial(dialCtx, url, dialOpts)
 	cancel()
 	if err != nil {
 		return false, fmt.Errorf("连接 %s: %w", url, err)

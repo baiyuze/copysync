@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -20,7 +21,10 @@ type Config struct {
 	DeviceName string `json:"device_name"`
 	// SignalingURL 是信令服务器地址。可以为空：同一局域网里的设备不需要服务器，
 	// 只有跨网络同步时才要填。
-	SignalingURL string `json:"signaling_url"`
+	SignalingURL       string `json:"signaling_url"`
+	ServiceMode        string `json:"service_mode,omitempty"`
+	CustomSignalingURL string `json:"custom_signaling_url,omitempty"`
+	OfficialNoticeAck  string `json:"official_notice_ack,omitempty"`
 
 	// 小于此值的内容在复制时自动推送给对端；大于则只同步元数据，
 	// 等用户在 UI 里手动拉取。这是 M-1 否决纯懒模式后的折中点。
@@ -54,7 +58,30 @@ type Config struct {
 // CurrentVersion 是当前的配置格式版本。
 //
 // 版本 2（1.4.0）：服务器变成可选，默认地址从 ws://127.0.0.1:8787/signal 改为空。
-const CurrentVersion = 2
+const CurrentVersion = 3
+
+const OfficialSignalURL = "wss://rtccpwsapi1.pasteferry.cc/signal"
+
+func (c Config) Official() bool { return c.ServiceMode == "official" }
+
+// UsesOfficialEndpoint hides system metadata even when an official address was
+// manually entered in custom mode. It does not enable gateway authorization.
+func (c Config) UsesOfficialEndpoint() bool {
+	u, err := url.Parse(c.EffectiveSignalingURL())
+	return err == nil && (u.Hostname() == "rtccpwsapi1.pasteferry.cc" || u.Hostname() == "pasteferry.cc")
+}
+func (c Config) EffectiveSignalingURL() string {
+	switch c.ServiceMode {
+	case "official":
+		return OfficialSignalURL
+	case "lan":
+		return ""
+	case "custom":
+		return c.CustomSignalingURL
+	default:
+		return c.SignalingURL
+	}
+}
 
 // legacyDefaultURL 是 1.4.0 之前的默认服务器地址。没改过它的用户其实没有服务器，
 // 升级后应当直接进入局域网模式，而不是一直显示「服务器连不上」。
@@ -83,6 +110,14 @@ func Default() Config {
 // Validate 修正越界值，避免用户或损坏的配置文件把 daemon 带进坏状态。
 func (c *Config) Validate() {
 	d := Default()
+	if c.ServiceMode != "" && c.ServiceMode != "lan" && c.ServiceMode != "official" && c.ServiceMode != "custom" {
+		c.ServiceMode = "lan"
+	}
+	if c.ServiceMode == "custom" {
+		c.SignalingURL = c.CustomSignalingURL
+	} else if c.ServiceMode == "official" || c.ServiceMode == "lan" {
+		c.SignalingURL = ""
+	}
 	if c.DeviceName == "" {
 		c.DeviceName = d.DeviceName
 	}
@@ -255,6 +290,18 @@ func (c *Config) migrate() bool {
 	}
 	if c.Version < 2 && c.SignalingURL == legacyDefaultURL {
 		c.SignalingURL = ""
+	}
+	if c.Version < 3 {
+		switch c.SignalingURL {
+		case OfficialSignalURL, "wss://pasteferry.cc/signal":
+			c.ServiceMode = "official"
+			c.SignalingURL = ""
+		case "":
+			c.ServiceMode = "lan"
+		default:
+			c.ServiceMode = "custom"
+			c.CustomSignalingURL = c.SignalingURL
+		}
 	}
 	c.Version = CurrentVersion
 	return true

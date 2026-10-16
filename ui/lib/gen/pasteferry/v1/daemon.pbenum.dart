@@ -137,5 +137,30 @@ class ClipboardPermission extends $pb.ProtobufEnum {
   const ClipboardPermission._(super.value, super.name);
 }
 
+class ServiceMode extends $pb.ProtobufEnum {
+  static const ServiceMode SERVICE_MODE_UNSPECIFIED =
+      ServiceMode._(0, _omitEnumNames ? '' : 'SERVICE_MODE_UNSPECIFIED');
+  static const ServiceMode SERVICE_MODE_LAN =
+      ServiceMode._(1, _omitEnumNames ? '' : 'SERVICE_MODE_LAN');
+  static const ServiceMode SERVICE_MODE_OFFICIAL =
+      ServiceMode._(2, _omitEnumNames ? '' : 'SERVICE_MODE_OFFICIAL');
+  static const ServiceMode SERVICE_MODE_CUSTOM =
+      ServiceMode._(3, _omitEnumNames ? '' : 'SERVICE_MODE_CUSTOM');
+
+  static const $core.List<ServiceMode> values = <ServiceMode>[
+    SERVICE_MODE_UNSPECIFIED,
+    SERVICE_MODE_LAN,
+    SERVICE_MODE_OFFICIAL,
+    SERVICE_MODE_CUSTOM,
+  ];
+
+  static final $core.List<ServiceMode?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 3);
+  static ServiceMode? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const ServiceMode._(super.value, super.name);
+}
+
 const $core.bool _omitEnumNames =
     $core.bool.fromEnvironment('protobuf.omit_enum_names');

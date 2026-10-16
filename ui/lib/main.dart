@@ -9,6 +9,7 @@ import 'pages/devices_page.dart';
 import 'pages/history_page.dart';
 import 'pages/service_page.dart';
 import 'pages/settings_page.dart';
+import 'pages/official_service_page.dart';
 import 'theme.dart';
 import 'widgets/common.dart';
 import 'widgets/pairing_dialog.dart';
@@ -57,13 +58,18 @@ class _PasteFerryAppState extends State<PasteFerryApp> {
           final locale = localeFromSetting(_state.config?.language ?? '');
           // zh、zh-Hant-TW、zh-Hant-HK、en、ja：Windows 与 Linux 上按它挑汉字字体
           final language =
-              (locale ?? resolveLocale(WidgetsBinding.instance.platformDispatcher.locales)).toLanguageTag();
+              (locale ??
+                      resolveLocale(
+                        WidgetsBinding.instance.platformDispatcher.locales,
+                      ))
+                  .toLanguageTag();
           final (light, dark) = _themes.putIfAbsent(
-              language,
-              () => (
-                    buildTheme(Brightness.light, language: language),
-                    buildTheme(Brightness.dark, language: language),
-                  ));
+            language,
+            () => (
+              buildTheme(Brightness.light, language: language),
+              buildTheme(Brightness.dark, language: language),
+            ),
+          );
           return MaterialApp(
             title: 'PasteFerry',
             debugShowCheckedModeBanner: false,
@@ -72,7 +78,8 @@ class _PasteFerryAppState extends State<PasteFerryApp> {
             locale: locale,
             supportedLocales: supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
-            localeListResolutionCallback: (preferred, _) => resolveLocale(preferred),
+            localeListResolutionCallback: (preferred, _) =>
+                resolveLocale(preferred),
             builder: (context, child) {
               appL10n = context.l10n;
               return child!;
@@ -89,7 +96,7 @@ class _PasteFerryAppState extends State<PasteFerryApp> {
 /// provider 之类的依赖——状态只有一个，没必要为此多一个包。
 class AppScope extends InheritedNotifier<AppState> {
   const AppScope({super.key, required AppState state, required super.child})
-      : super(notifier: state);
+    : super(notifier: state);
 
   static AppState of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
@@ -102,7 +109,7 @@ class AppScope extends InheritedNotifier<AppState> {
       context.getInheritedWidgetOfExactType<AppScope>()!.notifier!;
 }
 
-enum Section { history, devices, settings }
+enum Section { history, devices, official, settings }
 
 class Shell extends StatefulWidget {
   const Shell({super.key, this.initialSection = Section.history});
@@ -113,17 +120,46 @@ class Shell extends StatefulWidget {
   State<Shell> createState() => _ShellState();
 }
 
-class _ShellState extends State<Shell> {
+class _ShellState extends State<Shell> with WidgetsBindingObserver {
   late Section _section = widget.initialSection;
   bool _pairingDialogOpen = false;
+  bool _officialDialogOpen = false;
+  int _seenOfficialNavigation = 0;
+  AppLifecycleState _lifecycle = AppLifecycleState.resumed;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _lifecycle =
+        WidgetsBinding.instance.lifecycleState ?? AppLifecycleState.resumed;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (mounted) setState(() => _lifecycle = state);
+  }
 
   @override
   Widget build(BuildContext context) {
     final state = AppScope.of(context);
+    if (state.officialNavigationSerial != _seenOfficialNavigation) {
+      _seenOfficialNavigation = state.officialNavigationSerial;
+      if (state.officialEnabled) _section = Section.official;
+    }
+    if (!state.officialEnabled && _section == Section.official) {
+      _section = Section.settings;
+    }
 
     // 对端发起配对时主动弹出确认——指纹核对不能等用户自己去翻页面
     final pending = state.pendingPairing;
-    if (pending != null && !_pairingDialogOpen) {
+    if (pending != null && !_pairingDialogOpen && !_officialDialogOpen) {
       _pairingDialogOpen = true;
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (!mounted) return;
@@ -135,23 +171,88 @@ class _ShellState extends State<Shell> {
         if (mounted) setState(() => _pairingDialogOpen = false);
       });
     }
+    final notice = state.officialNoticeKey;
+    if (notice != null &&
+        pending == null &&
+        !_pairingDialogOpen &&
+        !_officialDialogOpen &&
+        _lifecycle == AppLifecycleState.resumed) {
+      _officialDialogOpen = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        if (state.officialNoticeKey != notice ||
+            _lifecycle != AppLifecycleState.resumed) {
+          setState(() => _officialDialogOpen = false);
+          return;
+        }
+        final l = context.l10n;
+        final reason = state.officialUsage?.reason;
+        final view = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(
+              reason == 'quota_exhausted'
+                  ? l.officialQuotaTitle
+                  : l.officialService,
+            ),
+            content: Text(
+              reason == 'quota_exhausted'
+                  ? l.officialQuotaBody
+                  : reason == 'peer_quota_exhausted'
+                  ? l.officialPeerQuota
+                  : l.officialPaused,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(l.officialAcknowledge),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(l.officialViewUsage),
+              ),
+            ],
+          ),
+        );
+        try {
+          await state.acknowledgeOfficialNotice(notice);
+        } catch (e) {
+          if (context.mounted) {
+            showToast(context, AppState.describeError(e), error: true);
+          }
+        }
+        if (mounted) {
+          setState(() {
+            _officialDialogOpen = false;
+            if (view == true && state.officialEnabled) {
+              _section = Section.official;
+            }
+          });
+        }
+      });
+    }
 
     // 后台服务没装或没在跑时，其他页面都无从谈起，先引导把它启用
     final service = state.serviceState;
-    final needsService = state.link == LinkState.offline &&
+    final needsService =
+        state.link == LinkState.offline &&
         service != null &&
         service != ServiceState.running;
 
     return Scaffold(
       body: Row(
         children: [
-          _Sidebar(current: _section, onSelect: (s) => setState(() => _section = s)),
+          _Sidebar(
+            current: _section,
+            onSelect: (s) => setState(() => _section = s),
+          ),
           Expanded(
             child: needsService
                 ? const ServicePage()
                 : switch (_section) {
                     Section.history => const HistoryPage(),
                     Section.devices => const DevicesPage(),
+                    Section.official => const OfficialServicePage(),
                     Section.settings => const SettingsPage(),
                   },
           ),
@@ -186,7 +287,12 @@ class _Sidebar extends StatelessWidget {
           // Windows 用系统标题栏，内容从标题栏下面开始
           SizedBox(height: Platform.isMacOS ? 52 : Insets.lg),
           Padding(
-            padding: const EdgeInsets.fromLTRB(Insets.lg, 0, Insets.lg, Insets.lg),
+            padding: const EdgeInsets.fromLTRB(
+              Insets.lg,
+              0,
+              Insets.lg,
+              Insets.lg,
+            ),
             child: Row(
               children: [
                 const AppMark(size: 22),
@@ -208,6 +314,13 @@ class _Sidebar extends StatelessWidget {
             selected: current == Section.devices,
             onTap: () => onSelect(Section.devices),
           ),
+          if (state.officialEnabled)
+            _NavItem(
+              icon: Icons.cloud_outlined,
+              label: l.officialService,
+              selected: current == Section.official,
+              onTap: () => onSelect(Section.official),
+            ),
           _NavItem(
             icon: AppIcons.gear,
             label: l.navSettings,
@@ -261,12 +374,18 @@ class _NavItemState extends State<_NavItem> {
             height: 30,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
-              color: selected ? p.selection : (_hovered ? p.hover : Colors.transparent),
+              color: selected
+                  ? p.selection
+                  : (_hovered ? p.hover : Colors.transparent),
               borderRadius: BorderRadius.circular(Radii.sm),
             ),
             child: Row(
               children: [
-                Icon(widget.icon, size: 16, color: selected ? p.accent : p.textDim),
+                Icon(
+                  widget.icon,
+                  size: 16,
+                  color: selected ? p.accent : p.textDim,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -305,16 +424,28 @@ class _ConnectionFooter extends StatelessWidget {
       LinkState.offline => (p.danger, state.error ?? l.linkServiceNotRunning),
       LinkState.online when state.lanBlocked => (p.warning, l.linkLanBlocked),
       LinkState.online when online > 0 => (p.online, l.linkOnlinePeers(online)),
-      LinkState.online when state.serverConfigured && !signaling =>
-        (p.warning, state.lanEnabled ? l.linkServerUnreachable : l.notConnected),
-      LinkState.online when state.serverConfigured => (p.online, l.linkServerConnected),
+      LinkState.online when state.serverConfigured && !signaling => (
+        p.warning,
+        state.lanEnabled ? l.linkServerUnreachable : l.notConnected,
+      ),
+      LinkState.online when state.serverConfigured => (
+        p.online,
+        l.linkServerConnected,
+      ),
       LinkState.online when state.lanEnabled => (p.textFaint, l.linkLanMode),
       LinkState.online => (p.warning, l.linkNothingOn),
     };
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(Insets.lg, Insets.md, Insets.lg, Insets.md),
-      decoration: BoxDecoration(border: Border(top: BorderSide(color: p.border))),
+      padding: const EdgeInsets.fromLTRB(
+        Insets.lg,
+        Insets.md,
+        Insets.lg,
+        Insets.md,
+      ),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: p.border)),
+      ),
       child: Row(
         children: [
           Container(

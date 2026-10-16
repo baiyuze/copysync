@@ -557,7 +557,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get signalingUrl => 'シグナリングサーバー';
 
   @override
-  String get signalingUrlDesc => 'Enter で保存。空欄にするとこのネットワーク内だけで同期します';
+  String get signalingUrlDesc =>
+      '「保存して接続」をクリックするか Enter を押します。空欄にするとこのネットワーク内だけで同期します';
 
   @override
   String get signalingUrlPlaceholder => 'ws://サーバーアドレス:8787/signal';
@@ -863,4 +864,85 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get svcCanDisable => 'バックグラウンド同期は「設定」でいつでもオフにできます。';
+
+  @override
+  String get officialService => '公式サービス';
+
+  @override
+  String get useOfficialService => '公式サービスを使う';
+
+  @override
+  String get officialPrivacy =>
+      '有効にした場合のみ公式サービスに接続し、必要最小限の接続情報を記録します。まず直接接続を試み、失敗した場合のみ中継を申請します。内容、実際の端末名、元のシステム識別子は送信しません。';
+
+  @override
+  String get officialEnableTitle => '公式インターネットサービスを有効にしますか？';
+
+  @override
+  String get officialSwitchConfirm => '現在のカスタムサーバーから切り替えます。保存済みのアドレスは保持されます。';
+
+  @override
+  String get customServer => 'カスタムサーバー';
+
+  @override
+  String get saveAndConnect => '保存して接続';
+
+  @override
+  String get officialUnused => '中継は未申請です。残量は未確認です';
+
+  @override
+  String get officialUnavailable => '使用量を取得できません。表示データは古い可能性があります';
+
+  @override
+  String get officialQuotaTitle => '本日の中継上限に達しました';
+
+  @override
+  String get officialQuotaBody =>
+      '公式中継は北京時間の午前0時にリセットされるまで停止します。LANと直接接続は引き続き利用できます。失敗した転送は後で再試行できます。';
+
+  @override
+  String get officialPeerQuota => '相手の中継残量がありません。直接接続は引き続き利用できます';
+
+  @override
+  String get officialPaused => '公式中継は現在利用できません。直接接続は引き続き利用できます';
+
+  @override
+  String get officialViewUsage => '使用量を表示';
+
+  @override
+  String get officialAcknowledge => '確認しました';
+
+  @override
+  String get officialToday => '本日の中継使用量';
+
+  @override
+  String get officialUsed => '使用済み';
+
+  @override
+  String get officialRemaining => '残量';
+
+  @override
+  String get officialDailyLimit => '1日の上限';
+
+  @override
+  String get officialUpload => 'アップロード';
+
+  @override
+  String get officialDownload => 'ダウンロード';
+
+  @override
+  String get officialReset => 'リセット時刻（北京時間）';
+
+  @override
+  String get officialUpdated => '最終更新';
+
+  @override
+  String get officialDeviceID => '端末 ID';
+
+  @override
+  String get officialWarning => '本日の中継上限の90%を使用しました。直接接続ではこの残量は消費しません。';
+
+  @override
+  String get officialAccounting =>
+      '暗号化の通信量を含む送受信の合計です。公式中継のみ計測し、直接接続の内容や通信量は記録しません。';
 }

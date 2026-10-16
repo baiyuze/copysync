@@ -554,7 +554,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get signalingUrl => '信令服务器地址';
 
   @override
-  String get signalingUrlDesc => '按回车保存。留空表示只在局域网里同步';
+  String get signalingUrlDesc => '点击“保存并连接”或按回车。留空表示只在局域网里同步';
 
   @override
   String get signalingUrlPlaceholder => 'ws://服务器地址:8787/signal';
@@ -854,6 +854,85 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get svcCanDisable => '随时可以在「设置」中停用后台同步。';
+
+  @override
+  String get officialService => '官方服务';
+
+  @override
+  String get useOfficialService => '使用官方服务';
+
+  @override
+  String get officialPrivacy =>
+      '仅开启后连接官方服务并统计必要接入信息。先尝试直连，失败才申请中转；不上传内容、真实设备名或原始系统标识。';
+
+  @override
+  String get officialEnableTitle => '启用官方公网服务？';
+
+  @override
+  String get officialSwitchConfirm => '这会切换当前自定义服务器，已保存的地址仍会保留。';
+
+  @override
+  String get customServer => '自定义服务器';
+
+  @override
+  String get saveAndConnect => '保存并连接';
+
+  @override
+  String get officialUnused => '尚未申请中转，余额待核验';
+
+  @override
+  String get officialUnavailable => '用量暂不可用，已有数据可能过期';
+
+  @override
+  String get officialQuotaTitle => '今日中转额度已用完';
+
+  @override
+  String get officialQuotaBody => '官方中转已暂停，北京时间零点重置。局域网和公网直连仍可使用；传输失败时可稍后重试。';
+
+  @override
+  String get officialPeerQuota => '对端中转额度不足，直连仍可使用';
+
+  @override
+  String get officialPaused => '官方中转暂不可用，直连仍可使用';
+
+  @override
+  String get officialViewUsage => '查看用量';
+
+  @override
+  String get officialAcknowledge => '知道了';
+
+  @override
+  String get officialToday => '今日中转用量';
+
+  @override
+  String get officialUsed => '已使用';
+
+  @override
+  String get officialRemaining => '剩余额度';
+
+  @override
+  String get officialDailyLimit => '每日额度';
+
+  @override
+  String get officialUpload => '上传';
+
+  @override
+  String get officialDownload => '下载';
+
+  @override
+  String get officialReset => '重置时间（北京时间）';
+
+  @override
+  String get officialUpdated => '最后更新';
+
+  @override
+  String get officialDeviceID => '设备 ID';
+
+  @override
+  String get officialWarning => '今日中转额度已使用 90%，直连不消耗此额度。';
+
+  @override
+  String get officialAccounting => '上下行合计，包含加密传输开销；只统计官方中转，不统计直连内容或流量。';
 }
 
 /// The translations for Chinese, as used in Hong Kong, using the Han script (`zh_Hant_HK`).
@@ -1406,7 +1485,7 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get signalingUrl => '信令伺服器地址';
 
   @override
-  String get signalingUrlDesc => '按 Enter 儲存。留空表示只在區域網絡裏同步';
+  String get signalingUrlDesc => '點擊「儲存並連線」或按 Enter。留空表示只在區域網絡裏同步';
 
   @override
   String get signalingUrlPlaceholder => 'ws://伺服器地址:8787/signal';
@@ -1706,6 +1785,85 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String get svcCanDisable => '隨時可以在「設定」中停用背景同步。';
+
+  @override
+  String get officialService => '官方服務';
+
+  @override
+  String get useOfficialService => '使用官方服務';
+
+  @override
+  String get officialPrivacy =>
+      '只在啟用後連接官方服務並統計必要連線資料。先嘗試直連，失敗才申請中轉；不傳送內容、真實裝置名稱或原始系統識別碼。';
+
+  @override
+  String get officialEnableTitle => '啟用官方公網服務？';
+
+  @override
+  String get officialSwitchConfirm => '這會切換目前的自訂伺服器，已儲存的地址仍會保留。';
+
+  @override
+  String get customServer => '自訂伺服器';
+
+  @override
+  String get saveAndConnect => '儲存並連接';
+
+  @override
+  String get officialUnused => '尚未申請中轉，餘額待確認';
+
+  @override
+  String get officialUnavailable => '用量暫時無法取得，現有資料可能過期';
+
+  @override
+  String get officialQuotaTitle => '今日中轉額度已用完';
+
+  @override
+  String get officialQuotaBody => '官方中轉已暫停，北京時間午夜重設。區域網絡和公網直連仍可使用；傳輸失敗時可稍後重試。';
+
+  @override
+  String get officialPeerQuota => '對方中轉額度不足，直連仍可使用';
+
+  @override
+  String get officialPaused => '官方中轉暫時無法使用，直連仍可使用';
+
+  @override
+  String get officialViewUsage => '查看用量';
+
+  @override
+  String get officialAcknowledge => '知道了';
+
+  @override
+  String get officialToday => '今日中轉用量';
+
+  @override
+  String get officialUsed => '已使用';
+
+  @override
+  String get officialRemaining => '剩餘額度';
+
+  @override
+  String get officialDailyLimit => '每日額度';
+
+  @override
+  String get officialUpload => '上傳';
+
+  @override
+  String get officialDownload => '下載';
+
+  @override
+  String get officialReset => '重設時間（北京時間）';
+
+  @override
+  String get officialUpdated => '上次更新';
+
+  @override
+  String get officialDeviceID => '裝置 ID';
+
+  @override
+  String get officialWarning => '今日中轉額度已使用 90%，直連不消耗此額度。';
+
+  @override
+  String get officialAccounting => '上下行合計，包含加密傳輸開銷；只統計官方中轉，不統計直連內容或流量。';
 }
 
 /// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
@@ -2258,7 +2416,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get signalingUrl => '信令伺服器位址';
 
   @override
-  String get signalingUrlDesc => '按 Enter 儲存。留空表示只在區域網路裡同步';
+  String get signalingUrlDesc => '點擊「儲存並連線」或按 Enter。留空表示只在區域網路裡同步';
 
   @override
   String get signalingUrlPlaceholder => 'ws://伺服器位址:8787/signal';
@@ -2558,4 +2716,83 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get svcCanDisable => '隨時可以在「設定」中停用背景同步。';
+
+  @override
+  String get officialService => '官方服務';
+
+  @override
+  String get useOfficialService => '使用官方服務';
+
+  @override
+  String get officialPrivacy =>
+      '僅開啟後連線官方服務並統計必要連線資訊。先嘗試直連，失敗才申請中繼；不傳送內容、真實裝置名稱或原始系統識別碼。';
+
+  @override
+  String get officialEnableTitle => '啟用官方公網服務？';
+
+  @override
+  String get officialSwitchConfirm => '這會切換目前的自訂伺服器，已儲存的位址仍會保留。';
+
+  @override
+  String get customServer => '自訂伺服器';
+
+  @override
+  String get saveAndConnect => '儲存並連線';
+
+  @override
+  String get officialUnused => '尚未申請中繼，餘額待確認';
+
+  @override
+  String get officialUnavailable => '用量暫時無法取得，現有資料可能過期';
+
+  @override
+  String get officialQuotaTitle => '今日中繼額度已用完';
+
+  @override
+  String get officialQuotaBody => '官方中繼已暫停，北京時間午夜重設。區域網路和公網直連仍可使用；傳輸失敗時可稍後重試。';
+
+  @override
+  String get officialPeerQuota => '對方中繼額度不足，直連仍可使用';
+
+  @override
+  String get officialPaused => '官方中繼暫時無法使用，直連仍可使用';
+
+  @override
+  String get officialViewUsage => '查看用量';
+
+  @override
+  String get officialAcknowledge => '知道了';
+
+  @override
+  String get officialToday => '今日中繼用量';
+
+  @override
+  String get officialUsed => '已使用';
+
+  @override
+  String get officialRemaining => '剩餘額度';
+
+  @override
+  String get officialDailyLimit => '每日額度';
+
+  @override
+  String get officialUpload => '上傳';
+
+  @override
+  String get officialDownload => '下載';
+
+  @override
+  String get officialReset => '重設時間（北京時間）';
+
+  @override
+  String get officialUpdated => '上次更新';
+
+  @override
+  String get officialDeviceID => '裝置 ID';
+
+  @override
+  String get officialWarning => '今日中繼額度已使用 90%，直連不消耗此額度。';
+
+  @override
+  String get officialAccounting => '上下行合計，包含加密傳輸開銷；僅統計官方中繼，不統計直連內容或流量。';
 }

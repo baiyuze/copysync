@@ -288,6 +288,31 @@ message Config {
   // 不在局域网里查找设备、也不接受局域网里的配对请求。
   // 默认 false（即开启）：写成反向的，旧配置不用迁移。
   bool lan_disabled = 14;
+
+  // Official service is opt-in; remembered custom URLs are inactive otherwise.
+  ServiceMode service_mode = 15;
+  string custom_signaling_url = 16;
+  string official_notice_ack = 17;
+}
+
+enum ServiceMode {
+  SERVICE_MODE_UNSPECIFIED = 0;
+  SERVICE_MODE_LAN = 1;
+  SERVICE_MODE_OFFICIAL = 2;
+  SERVICE_MODE_CUSTOM = 3;
+}
+
+message OfficialUsage {
+  bool available = 1;
+  string day = 2;
+  string quota_group = 3;
+  int64 upload_bytes = 4;
+  int64 download_bytes = 5;
+  int64 limit_bytes = 6;
+  int64 remaining_bytes = 7;
+  int64 reset_at_unix = 8;
+  int64 updated_at_unix = 9;
+  string reason = 10;
 }
 
 // 最近一轮网络出口探测的结果。
@@ -341,6 +366,7 @@ message Status {
   bool lan_blocked = 10;
   // 详细日志打开到什么时候；0 表示没打开
   int64 verbose_log_until_unix = 11;
+  OfficialUsage official_usage = 12;
 }
 
 message ExportDiagnosticsRequest {

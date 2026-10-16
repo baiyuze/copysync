@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>隱私與必要資料 — PasteFerry</title>
+  <meta name="description" content="新安裝預設僅使用區域網路。啟用官方公網後才連線官方信令並記錄必要連線統計；自訂伺服器不向官方回報。先嘗試直連，失敗才申請中繼並讀取機器額度摘要。">
+  <link rel="canonical" href="https://pasteferry.cc/zh-tw/privacy/">
+  <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/">
+  <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/">
+  <link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/">
+  <link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/">
+  <link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="隔空貼">
+  <meta property="og:title" content="隱私與必要資料 — PasteFerry">
+  <meta property="og:description" content="新安裝預設僅使用區域網路。啟用官方公網後才連線官方信令並記錄必要連線統計；自訂伺服器不向官方回報。先嘗試直連，失敗才申請中繼並讀取機器額度摘要。">
+  <meta property="og:url" content="https://pasteferry.cc/zh-tw/privacy/">
+  <meta property="og:image" content="https://pasteferry.cc/assets/og-zh-hant.png">
+  <meta property="og:locale" content="zh_TW">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要內容</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../zh-tw/" aria-label="隔空貼首頁"><img src="../../assets/icon.svg" alt="" width="26" height="26">隔空貼</a>
+      <nav aria-label="頁面導覽">
+        <a href="../../zh-tw/start/">快速入門</a>
+        <a class="wide" href="../../zh-tw/#how">運作原理</a>
+        <a class="wide" href="../../zh-tw/#faq">常見問題</a>
+        <a class="mid" href="../../zh-tw/start/#server">連線方式</a>
+        <a href="../../zh-tw/download/">下載</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
+        <details class="lang">
+          <summary aria-label="語言：繁體中文（台灣）"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>繁體中文（台灣）</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../../privacy/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a></li>
+            <li><a href="../../zh-tw/privacy/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw" aria-current="page">繁體中文（台灣）</a></li>
+            <li><a href="../../zh-hk/privacy/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../../en/privacy/" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../../ja/privacy/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+<main id="main" class="wrap" style="max-width:850px;padding-top:5rem;padding-bottom:5rem;line-height:1.9"><h1>隱私與必要資料</h1><section><h2>由你決定使用官方服務</h2><p>新安裝預設僅使用區域網路。啟用官方公網後才連線官方信令並記錄必要連線統計；自訂伺服器不向官方回報。先嘗試直連，失敗才申請中繼並讀取機器額度摘要。</p></section>
+<section><h2>最少必要資料</h2><p>網關保留去識別化裝置編號、首次與最近連線時間、每日中繼用量、必要額度綁定和累計彙總。每日裝置明細保留 90 天。這是官方服務裝置數，不是人數或全部安裝量。</p></section>
+<section><h2>內容與機器識別碼</h2><p>內容與真實裝置名稱透過裝置間加密通道傳送。不收集檔名、路徑、使用者名稱、MAC、UA 或行為軌跡。原始系統識別碼不上傳；摘要只用於額度分組，並非不可偽造。</p></section>
+<section><h2>網路資訊與額度</h2><p>網路端點暫時可見路由和網路位址，官方統計庫及一般代理日誌不保存這些資訊。每日 100 MB 中繼額度，含上下行，北京時間午夜重設；直連不計入。關閉官方服務會停止其請求、輪詢及通道。</p></section>
+<section><h2>網站與稽核</h2><p>本站使用既有的 Cloudflare Web Analytics，瀏覽量不代表軟體使用者數。用戶端、信令及 TURN 持續開源，網關協定和欄位公開；私有正式環境的儲存行為仍需部署稽核。</p></section><p><a href="https://github.com/baiyuze/pasteferry/blob/main/PRIVACY.md">PRIVACY.md</a> · <a href="https://github.com/baiyuze/pasteferry/blob/main/SECURITY.md">SECURITY.md</a> · <a href="https://github.com/baiyuze/pasteferry/blob/main/design/official-gateway.md">Gateway protocol v1</a></p></main>
+  <footer class="footer">
+    <div class="wrap">
+      <p>隔空貼以 GNU AGPL-3.0 授權開源。</p>
+      <nav aria-label="頁尾連結">
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新記錄</a>
+        <a href="https://pasteferry.cc/design/nat-traversal.html">技術說明</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">授權說明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">回報問題</a>
+        <a href="../../zh-tw/privacy/">隱私與必要資料</a>
+      </nav>
+      <nav aria-label="語言">
+        <a href="../../privacy/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../zh-tw/privacy/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw" aria-current="page">繁體中文（台灣）</a>
+        <a href="../../zh-hk/privacy/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../../en/privacy/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../../ja/privacy/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

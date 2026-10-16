@@ -8,6 +8,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  security:
+    name: Go dependency security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: client-core/go.mod
+      - run: go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+      - run: govulncheck ./...
+        working-directory: client-core
+      - run: govulncheck ./...
+        working-directory: server
+
   server:
     name: 服务器
     runs-on: ubuntu-latest

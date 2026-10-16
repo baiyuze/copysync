@@ -57,7 +57,8 @@ func Build(in Input) string {
 	c := in.Config
 	line("")
 	line("Settings")
-	row("Server", or(c.SignalingURL, "not set"))
+	row("Service mode", or(c.ServiceMode, "lan or legacy custom"))
+	row("Server", or(c.EffectiveSignalingURL(), "not set"))
 	row("Find devices on LAN", onOff(!c.LANDisabled))
 	row("Public STUN servers", onOff(!c.OnlyOwnSTUN))
 	row("Auto-sync limit", fmt.Sprintf("%d MB", c.AutoSyncThresholdBytes>>20))

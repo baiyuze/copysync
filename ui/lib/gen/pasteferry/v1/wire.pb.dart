@@ -112,6 +112,10 @@ class SignalMessage extends $pb.GeneratedMessage {
     $fixnum.Int64? timestampUnix,
     $core.List<$core.int>? nonce,
     $core.String? toDeviceId,
+    $core.String? connectionAttemptId,
+    $core.bool? officialRelay,
+    $core.bool? gatewayCapable,
+    $core.String? relayDenialCode,
     SdpOffer? offer,
     SdpAnswer? answer,
     IceCandidate? candidate,
@@ -122,6 +126,11 @@ class SignalMessage extends $pb.GeneratedMessage {
     if (timestampUnix != null) result.timestampUnix = timestampUnix;
     if (nonce != null) result.nonce = nonce;
     if (toDeviceId != null) result.toDeviceId = toDeviceId;
+    if (connectionAttemptId != null)
+      result.connectionAttemptId = connectionAttemptId;
+    if (officialRelay != null) result.officialRelay = officialRelay;
+    if (gatewayCapable != null) result.gatewayCapable = gatewayCapable;
+    if (relayDenialCode != null) result.relayDenialCode = relayDenialCode;
     if (offer != null) result.offer = offer;
     if (answer != null) result.answer = answer;
     if (candidate != null) result.candidate = candidate;
@@ -157,6 +166,10 @@ class SignalMessage extends $pb.GeneratedMessage {
     ..a<$core.List<$core.int>>(
         2, _omitFieldNames ? '' : 'nonce', $pb.PbFieldType.OY)
     ..aOS(3, _omitFieldNames ? '' : 'toDeviceId')
+    ..aOS(4, _omitFieldNames ? '' : 'connectionAttemptId')
+    ..aOB(5, _omitFieldNames ? '' : 'officialRelay')
+    ..aOB(6, _omitFieldNames ? '' : 'gatewayCapable')
+    ..aOS(7, _omitFieldNames ? '' : 'relayDenialCode')
     ..aOM<SdpOffer>(10, _omitFieldNames ? '' : 'offer',
         subBuilder: SdpOffer.$_createMessage)
     ..aOM<SdpAnswer>(11, _omitFieldNames ? '' : 'answer',
@@ -234,60 +247,98 @@ class SignalMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   void clearToDeviceId() => $_clearField(3);
 
+  /// Client-only negotiation metadata; the server forwards Signed unchanged.
+  @$pb.TagNumber(4)
+  $core.String get connectionAttemptId => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set connectionAttemptId($core.String value) => $_setString(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasConnectionAttemptId() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearConnectionAttemptId() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.bool get officialRelay => $_getBF(4);
+  @$pb.TagNumber(5)
+  set officialRelay($core.bool value) => $_setBool(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasOfficialRelay() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearOfficialRelay() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.bool get gatewayCapable => $_getBF(5);
+  @$pb.TagNumber(6)
+  set gatewayCapable($core.bool value) => $_setBool(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasGatewayCapable() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearGatewayCapable() => $_clearField(6);
+
+  /// Fixed relay-only denial codes; these never change pairing or direct trust.
+  @$pb.TagNumber(7)
+  $core.String get relayDenialCode => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set relayDenialCode($core.String value) => $_setString(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasRelayDenialCode() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearRelayDenialCode() => $_clearField(7);
+
   @$pb.TagNumber(10)
-  SdpOffer get offer => $_getN(3);
+  SdpOffer get offer => $_getN(7);
   @$pb.TagNumber(10)
   set offer(SdpOffer value) => $_setField(10, value);
   @$pb.TagNumber(10)
-  $core.bool hasOffer() => $_has(3);
+  $core.bool hasOffer() => $_has(7);
   @$pb.TagNumber(10)
   void clearOffer() => $_clearField(10);
   @$pb.TagNumber(10)
-  SdpOffer ensureOffer() => $_ensure(3);
+  SdpOffer ensureOffer() => $_ensure(7);
 
   @$pb.TagNumber(11)
-  SdpAnswer get answer => $_getN(4);
+  SdpAnswer get answer => $_getN(8);
   @$pb.TagNumber(11)
   set answer(SdpAnswer value) => $_setField(11, value);
   @$pb.TagNumber(11)
-  $core.bool hasAnswer() => $_has(4);
+  $core.bool hasAnswer() => $_has(8);
   @$pb.TagNumber(11)
   void clearAnswer() => $_clearField(11);
   @$pb.TagNumber(11)
-  SdpAnswer ensureAnswer() => $_ensure(4);
+  SdpAnswer ensureAnswer() => $_ensure(8);
 
   @$pb.TagNumber(12)
-  IceCandidate get candidate => $_getN(5);
+  IceCandidate get candidate => $_getN(9);
   @$pb.TagNumber(12)
   set candidate(IceCandidate value) => $_setField(12, value);
   @$pb.TagNumber(12)
-  $core.bool hasCandidate() => $_has(5);
+  $core.bool hasCandidate() => $_has(9);
   @$pb.TagNumber(12)
   void clearCandidate() => $_clearField(12);
   @$pb.TagNumber(12)
-  IceCandidate ensureCandidate() => $_ensure(5);
+  IceCandidate ensureCandidate() => $_ensure(9);
 
   @$pb.TagNumber(13)
-  Ping get ping => $_getN(6);
+  Ping get ping => $_getN(10);
   @$pb.TagNumber(13)
   set ping(Ping value) => $_setField(13, value);
   @$pb.TagNumber(13)
-  $core.bool hasPing() => $_has(6);
+  $core.bool hasPing() => $_has(10);
   @$pb.TagNumber(13)
   void clearPing() => $_clearField(13);
   @$pb.TagNumber(13)
-  Ping ensurePing() => $_ensure(6);
+  Ping ensurePing() => $_ensure(10);
 
   @$pb.TagNumber(14)
-  LanHello get lanHello => $_getN(7);
+  LanHello get lanHello => $_getN(11);
   @$pb.TagNumber(14)
   set lanHello(LanHello value) => $_setField(14, value);
   @$pb.TagNumber(14)
-  $core.bool hasLanHello() => $_has(7);
+  $core.bool hasLanHello() => $_has(11);
   @$pb.TagNumber(14)
   void clearLanHello() => $_clearField(14);
   @$pb.TagNumber(14)
-  LanHello ensureLanHello() => $_ensure(7);
+  LanHello ensureLanHello() => $_ensure(11);
 }
 
 class SdpOffer extends $pb.GeneratedMessage {
@@ -2464,7 +2515,16 @@ class LanNearbyPing extends $pb.GeneratedMessage {
   void clearToken() => $_clearField(4);
 }
 
-enum PeerMessage_Payload { offer, fetch, reject, header, done, link, notSet }
+enum PeerMessage_Payload {
+  offer,
+  fetch,
+  reject,
+  header,
+  done,
+  link,
+  display,
+  notSet
+}
 
 /// 控制通道消息
 class PeerMessage extends $pb.GeneratedMessage {
@@ -2475,6 +2535,7 @@ class PeerMessage extends $pb.GeneratedMessage {
     TransferHeader? header,
     TransferDone? done,
     LinkInfo? link,
+    PeerDisplay? display,
   }) {
     final result = PeerMessage._();
     if (offer != null) result.offer = offer;
@@ -2483,6 +2544,7 @@ class PeerMessage extends $pb.GeneratedMessage {
     if (header != null) result.header = header;
     if (done != null) result.done = done;
     if (link != null) result.link = link;
+    if (display != null) result.display = display;
     return result;
   }
 
@@ -2503,13 +2565,14 @@ class PeerMessage extends $pb.GeneratedMessage {
     4: PeerMessage_Payload.header,
     5: PeerMessage_Payload.done,
     6: PeerMessage_Payload.link,
+    7: PeerMessage_Payload.display,
     0: PeerMessage_Payload.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'PeerMessage',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'pasteferry.v1'),
       createEmptyInstance: PeerMessage.$_createMessage)
-    ..oo(0, [1, 2, 3, 4, 5, 6])
+    ..oo(0, [1, 2, 3, 4, 5, 6, 7])
     ..aOM<ClipOffer>(1, _omitFieldNames ? '' : 'offer',
         subBuilder: ClipOffer.$_createMessage)
     ..aOM<PeerFetch>(2, _omitFieldNames ? '' : 'fetch',
@@ -2522,6 +2585,8 @@ class PeerMessage extends $pb.GeneratedMessage {
         subBuilder: TransferDone.$_createMessage)
     ..aOM<LinkInfo>(6, _omitFieldNames ? '' : 'link',
         subBuilder: LinkInfo.$_createMessage)
+    ..aOM<PeerDisplay>(7, _omitFieldNames ? '' : 'display',
+        subBuilder: PeerDisplay.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2552,6 +2617,7 @@ class PeerMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
   @$pb.TagNumber(6)
+  @$pb.TagNumber(7)
   PeerMessage_Payload whichPayload() =>
       _PeerMessage_PayloadByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
@@ -2560,6 +2626,7 @@ class PeerMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
   @$pb.TagNumber(6)
+  @$pb.TagNumber(7)
   void clearPayload() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -2627,6 +2694,17 @@ class PeerMessage extends $pb.GeneratedMessage {
   void clearLink() => $_clearField(6);
   @$pb.TagNumber(6)
   LinkInfo ensureLink() => $_ensure(5);
+
+  @$pb.TagNumber(7)
+  PeerDisplay get display => $_getN(6);
+  @$pb.TagNumber(7)
+  set display(PeerDisplay value) => $_setField(7, value);
+  @$pb.TagNumber(7)
+  $core.bool hasDisplay() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearDisplay() => $_clearField(7);
+  @$pb.TagNumber(7)
+  PeerDisplay ensureDisplay() => $_ensure(6);
 }
 
 /// 连接就绪后各自发一次。只有本端能确定自己发出的数据是否走 TURN：
@@ -2685,6 +2763,75 @@ class LinkInfo extends $pb.GeneratedMessage {
   $core.bool hasRelayed() => $_has(0);
   @$pb.TagNumber(1)
   void clearRelayed() => $_clearField(1);
+}
+
+class PeerDisplay extends $pb.GeneratedMessage {
+  factory PeerDisplay({
+    $core.String? name,
+    $core.String? platform,
+  }) {
+    final result = PeerDisplay._();
+    if (name != null) result.name = name;
+    if (platform != null) result.platform = platform;
+    return result;
+  }
+
+  PeerDisplay._();
+
+  factory PeerDisplay.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      PeerDisplay()..mergeFromBuffer(data, registry);
+  factory PeerDisplay.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      PeerDisplay()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'PeerDisplay',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'pasteferry.v1'),
+      createEmptyInstance: PeerDisplay.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..aOS(2, _omitFieldNames ? '' : 'platform')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  PeerDisplay clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  PeerDisplay copyWith(void Function(PeerDisplay) updates) =>
+      super.copyWith((message) => updates(message as PeerDisplay))
+          as PeerDisplay;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use PeerDisplay() / PeerDisplay.new instead')
+  static PeerDisplay create() => PeerDisplay._();
+  static $pb.GeneratedMessage $_createMessage() => PeerDisplay._();
+  @$core.override
+  PeerDisplay createEmptyInstance() => PeerDisplay._();
+  @$core.pragma('dart2js:noInline')
+  static PeerDisplay getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PeerDisplay>(
+          PeerDisplay.$_createMessage);
+  static PeerDisplay? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get platform => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set platform($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasPlatform() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPlatform() => $_clearField(2);
 }
 
 /// 复制发生时广播给所有在线对端。

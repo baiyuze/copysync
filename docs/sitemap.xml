@@ -367,6 +367,51 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/tour/"/>
   </url>
   <url>
+    <loc>https://pasteferry.cc/privacy/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/"/>
+  </url>
+  <url>
+    <loc>https://pasteferry.cc/zh-tw/privacy/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/"/>
+  </url>
+  <url>
+    <loc>https://pasteferry.cc/zh-hk/privacy/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/"/>
+  </url>
+  <url>
+    <loc>https://pasteferry.cc/en/privacy/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/"/>
+  </url>
+  <url>
+    <loc>https://pasteferry.cc/ja/privacy/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/"/>
+  </url>
+  <url>
     <loc>https://pasteferry.cc/design/nat-traversal.html</loc>
     <lastmod>2026-10-14</lastmod>
   </url>
