@@ -2,6 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>85 秒でわかる PasteFerry — PasteFerry</title>
   <meta name="description" content="Mac、Windows、Linux に対応。テキスト、画像、ファイル、フォルダを、アカウントやネットワークをまたいで同期。P2P 直接接続、エンドツーエンド暗号化、同じネットワークならサーバー不要。無料・オープンソース。">

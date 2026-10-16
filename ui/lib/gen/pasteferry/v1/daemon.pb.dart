@@ -652,6 +652,7 @@ enum Event_Payload {
   deviceChanged,
   permissionChanged,
   statusChanged,
+  clipboardWritten,
   notSet
 }
 
@@ -664,6 +665,7 @@ class Event extends $pb.GeneratedMessage {
     Device? deviceChanged,
     ClipboardPermission? permissionChanged,
     Status? statusChanged,
+    ClipboardWriteResult? clipboardWritten,
   }) {
     final result = Event._();
     if (clipAdded != null) result.clipAdded = clipAdded;
@@ -673,6 +675,7 @@ class Event extends $pb.GeneratedMessage {
     if (deviceChanged != null) result.deviceChanged = deviceChanged;
     if (permissionChanged != null) result.permissionChanged = permissionChanged;
     if (statusChanged != null) result.statusChanged = statusChanged;
+    if (clipboardWritten != null) result.clipboardWritten = clipboardWritten;
     return result;
   }
 
@@ -693,13 +696,14 @@ class Event extends $pb.GeneratedMessage {
     5: Event_Payload.deviceChanged,
     6: Event_Payload.permissionChanged,
     7: Event_Payload.statusChanged,
+    8: Event_Payload.clipboardWritten,
     0: Event_Payload.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'Event',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'pasteferry.v1'),
       createEmptyInstance: Event.$_createMessage)
-    ..oo(0, [1, 2, 3, 4, 5, 6, 7])
+    ..oo(0, [1, 2, 3, 4, 5, 6, 7, 8])
     ..aOM<ClipRecord>(1, _omitFieldNames ? '' : 'clipAdded',
         subBuilder: ClipRecord.$_createMessage)
     ..aOM<ClipRecord>(2, _omitFieldNames ? '' : 'clipUpdated',
@@ -713,6 +717,8 @@ class Event extends $pb.GeneratedMessage {
         enumValues: ClipboardPermission.values)
     ..aOM<Status>(7, _omitFieldNames ? '' : 'statusChanged',
         subBuilder: Status.$_createMessage)
+    ..aOM<ClipboardWriteResult>(8, _omitFieldNames ? '' : 'clipboardWritten',
+        subBuilder: ClipboardWriteResult.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -742,6 +748,7 @@ class Event extends $pb.GeneratedMessage {
   @$pb.TagNumber(5)
   @$pb.TagNumber(6)
   @$pb.TagNumber(7)
+  @$pb.TagNumber(8)
   Event_Payload whichPayload() => _Event_PayloadByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
   @$pb.TagNumber(2)
@@ -750,6 +757,7 @@ class Event extends $pb.GeneratedMessage {
   @$pb.TagNumber(5)
   @$pb.TagNumber(6)
   @$pb.TagNumber(7)
+  @$pb.TagNumber(8)
   void clearPayload() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -824,6 +832,252 @@ class Event extends $pb.GeneratedMessage {
   void clearStatusChanged() => $_clearField(7);
   @$pb.TagNumber(7)
   Status ensureStatusChanged() => $_ensure(6);
+
+  @$pb.TagNumber(8)
+  ClipboardWriteResult get clipboardWritten => $_getN(7);
+  @$pb.TagNumber(8)
+  set clipboardWritten(ClipboardWriteResult value) => $_setField(8, value);
+  @$pb.TagNumber(8)
+  $core.bool hasClipboardWritten() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearClipboardWritten() => $_clearField(8);
+  @$pb.TagNumber(8)
+  ClipboardWriteResult ensureClipboardWritten() => $_ensure(7);
+}
+
+class NotificationStatus extends $pb.GeneratedMessage {
+  factory NotificationStatus({
+    $core.bool? supported,
+    $core.bool? actionsSupported,
+    $core.String? permission,
+  }) {
+    final result = NotificationStatus._();
+    if (supported != null) result.supported = supported;
+    if (actionsSupported != null) result.actionsSupported = actionsSupported;
+    if (permission != null) result.permission = permission;
+    return result;
+  }
+
+  NotificationStatus._();
+
+  factory NotificationStatus.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NotificationStatus()..mergeFromBuffer(data, registry);
+  factory NotificationStatus.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NotificationStatus()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'NotificationStatus',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'pasteferry.v1'),
+      createEmptyInstance: NotificationStatus.$_createMessage)
+    ..aOB(1, _omitFieldNames ? '' : 'supported')
+    ..aOB(2, _omitFieldNames ? '' : 'actionsSupported')
+    ..aOS(3, _omitFieldNames ? '' : 'permission')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NotificationStatus clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NotificationStatus copyWith(void Function(NotificationStatus) updates) =>
+      super.copyWith((message) => updates(message as NotificationStatus))
+          as NotificationStatus;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use NotificationStatus() / NotificationStatus.new instead')
+  static NotificationStatus create() => NotificationStatus._();
+  static $pb.GeneratedMessage $_createMessage() => NotificationStatus._();
+  @$core.override
+  NotificationStatus createEmptyInstance() => NotificationStatus._();
+  @$core.pragma('dart2js:noInline')
+  static NotificationStatus getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<NotificationStatus>(
+          NotificationStatus.$_createMessage);
+  static NotificationStatus? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get supported => $_getBF(0);
+  @$pb.TagNumber(1)
+  set supported($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSupported() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSupported() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.bool get actionsSupported => $_getBF(1);
+  @$pb.TagNumber(2)
+  set actionsSupported($core.bool value) => $_setBool(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasActionsSupported() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearActionsSupported() => $_clearField(2);
+
+  /// unknown, not_requested, allowed, denied, unavailable
+  @$pb.TagNumber(3)
+  $core.String get permission => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set permission($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasPermission() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPermission() => $_clearField(3);
+}
+
+class NotificationAction extends $pb.GeneratedMessage {
+  factory NotificationAction({
+    $core.String? clipId,
+    $core.String? action,
+  }) {
+    final result = NotificationAction._();
+    if (clipId != null) result.clipId = clipId;
+    if (action != null) result.action = action;
+    return result;
+  }
+
+  NotificationAction._();
+
+  factory NotificationAction.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NotificationAction()..mergeFromBuffer(data, registry);
+  factory NotificationAction.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      NotificationAction()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'NotificationAction',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'pasteferry.v1'),
+      createEmptyInstance: NotificationAction.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'clipId')
+    ..aOS(2, _omitFieldNames ? '' : 'action')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NotificationAction clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NotificationAction copyWith(void Function(NotificationAction) updates) =>
+      super.copyWith((message) => updates(message as NotificationAction))
+          as NotificationAction;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use NotificationAction() / NotificationAction.new instead')
+  static NotificationAction create() => NotificationAction._();
+  static $pb.GeneratedMessage $_createMessage() => NotificationAction._();
+  @$core.override
+  NotificationAction createEmptyInstance() => NotificationAction._();
+  @$core.pragma('dart2js:noInline')
+  static NotificationAction getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<NotificationAction>(
+          NotificationAction.$_createMessage);
+  static NotificationAction? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get clipId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set clipId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasClipId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearClipId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get action => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set action($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasAction() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAction() => $_clearField(2);
+}
+
+/// READY still means downloaded, not necessarily the current system clipboard.
+class ClipboardWriteResult extends $pb.GeneratedMessage {
+  factory ClipboardWriteResult({
+    $core.String? clipId,
+    ClipboardWriteOutcome? outcome,
+    $core.String? error,
+  }) {
+    final result = ClipboardWriteResult._();
+    if (clipId != null) result.clipId = clipId;
+    if (outcome != null) result.outcome = outcome;
+    if (error != null) result.error = error;
+    return result;
+  }
+
+  ClipboardWriteResult._();
+
+  factory ClipboardWriteResult.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      ClipboardWriteResult()..mergeFromBuffer(data, registry);
+  factory ClipboardWriteResult.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      ClipboardWriteResult()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ClipboardWriteResult',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'pasteferry.v1'),
+      createEmptyInstance: ClipboardWriteResult.$_createMessage)
+    ..aOS(1, _omitFieldNames ? '' : 'clipId')
+    ..aE<ClipboardWriteOutcome>(2, _omitFieldNames ? '' : 'outcome',
+        enumValues: ClipboardWriteOutcome.values)
+    ..aOS(3, _omitFieldNames ? '' : 'error')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ClipboardWriteResult clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ClipboardWriteResult copyWith(void Function(ClipboardWriteResult) updates) =>
+      super.copyWith((message) => updates(message as ClipboardWriteResult))
+          as ClipboardWriteResult;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated(
+      'Use ClipboardWriteResult() / ClipboardWriteResult.new instead')
+  static ClipboardWriteResult create() => ClipboardWriteResult._();
+  static $pb.GeneratedMessage $_createMessage() => ClipboardWriteResult._();
+  @$core.override
+  ClipboardWriteResult createEmptyInstance() => ClipboardWriteResult._();
+  @$core.pragma('dart2js:noInline')
+  static ClipboardWriteResult getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ClipboardWriteResult>(
+          ClipboardWriteResult.$_createMessage);
+  static ClipboardWriteResult? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get clipId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set clipId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasClipId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearClipId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  ClipboardWriteOutcome get outcome => $_getN(1);
+  @$pb.TagNumber(2)
+  set outcome(ClipboardWriteOutcome value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasOutcome() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearOutcome() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get error => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set error($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasError() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearError() => $_clearField(3);
 }
 
 class ListHistoryRequest extends $pb.GeneratedMessage {

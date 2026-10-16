@@ -49,6 +49,10 @@ class AppState extends ChangeNotifier {
 
   /// 正在传输的记录的进度（0–1），只在界面上展示，传完即移除。
   final Map<String, double> _progress = {};
+  final Map<String, ClipboardWriteResult> _clipboardResults = {};
+  NotificationStatus? _notificationStatus;
+  NotificationStatus? get notificationStatus => _notificationStatus;
+  ClipboardWriteResult? clipboardResultOf(String id) => _clipboardResults[id];
 
   /// 复制记录的搜索：搜索词，以及后台服务返回的结果（还没出结果时为 null）。
   /// 界面只加载最新的 200 条，更早的记录只有后台服务能搜到，所以不在界面里筛选。
@@ -188,6 +192,7 @@ class AppState extends ChangeNotifier {
       _status = results[2] as Status;
 
       await _loadDevices();
+      await refreshNotificationStatus();
 
       _events = conn.client
           .subscribe(SubscribeRequest())
@@ -353,7 +358,11 @@ class AppState extends ChangeNotifier {
 
       case Event_Payload.clipRemoved:
         _records.removeWhere((r) => r.id == ev.clipRemoved);
+        _clipboardResults.remove(ev.clipRemoved);
         _searchResults?.removeWhere((r) => r.id == ev.clipRemoved);
+
+      case Event_Payload.clipboardWritten:
+        _clipboardResults[ev.clipboardWritten.clipId] = ev.clipboardWritten;
 
       case Event_Payload.deviceChanged:
         _onDeviceChanged(ev.deviceChanged);
@@ -371,6 +380,7 @@ class AppState extends ChangeNotifier {
   }
 
   void _upsert(ClipRecord r) {
+    if (r.status == ClipStatus.CLIP_STATUS_FETCHING) _clipboardResults.remove(r.id);
     final i = _records.indexWhere((x) => x.id == r.id);
     if (i >= 0) {
       _records[i] = r;
@@ -599,6 +609,25 @@ class AppState extends ChangeNotifier {
     if (i < 0) return false;
     results![i] = r.deepCopy()..textPreview = results[i].textPreview;
     return true;
+  }
+
+  Future<void> refreshNotificationStatus() async {
+    final conn = _conn;
+    if (conn == null) return;
+    try {
+      final status = await conn.client.getNotificationStatus(Empty(),
+          options: CallOptions(timeout: const Duration(seconds: 12)));
+      if (_conn == conn) _notificationStatus = status;
+    } on GrpcError {
+      if (_conn == conn) _notificationStatus = NotificationStatus(permission: 'unavailable');
+    }
+    if (_conn == conn) notifyListeners();
+  }
+
+  Future<void> requestNotifications() async {
+    _notificationStatus = await _client.requestNotificationPermission(Empty(),
+        options: CallOptions(timeout: const Duration(seconds: 20)));
+    notifyListeners();
   }
 
   Future<void> fetch(String clipId) =>

@@ -156,3 +156,6 @@ func permissionToProto(p clipboard.Permission) pb.ClipboardPermission {
 		return pb.ClipboardPermission_CLIPBOARD_PERMISSION_UNSPECIFIED
 	}
 }
+
+// ClipToProto exposes the same record projection to desktop notifications.
+func ClipToProto(c store.Clip) *pb.ClipRecord { return clipToProto(c) }

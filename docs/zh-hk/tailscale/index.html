@@ -2,6 +2,15 @@
 <html lang="zh-HK">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>用 Tailscale 跨網絡使用隔空貼：不用伺服器，在家和公司之間同步</title>
   <meta name="description" content="每部電腦安裝 Tailscale、登入同一個帳戶，配對時輸入對方的 Tailscale 地址：不需要公網 IP，不需要伺服器，也不需要長期開着的電腦，在公司、在外面都能同步剪貼簿。">

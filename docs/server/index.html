@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>在局域网里部署隔空贴服务器：Windows、Mac、Linux 教程</title>
   <meta name="description" content="两台电脑在同一个网络里时，不需要云服务器：在一台常开的 Windows、Mac 或 Linux 电脑上运行隔空贴的信令与 TURN 服务器，下载后运行一个脚本即可，开机自动运行。附客户端设置与排错。">

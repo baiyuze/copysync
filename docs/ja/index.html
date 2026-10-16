@@ -2,6 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PasteFerry：Mac、Windows、Linux のあいだでクリップボードとファイルを同期。アカウントもネットワークも別々で OK</title>
   <meta name="description" content="PasteFerry は、一台でコピーしたものをもう一台でそのまま貼り付けられるアプリです。Mac、Windows、Linux に対応し、テキスト、画像、ファイル、フォルダを同期します。同じアカウントは不要。同じネットワークならサーバーなしで使え、ネットワークをまたぐときは自分で用意したサーバーか Tailscale を使います。デバイス間は P2P で直接つながり、エンドツーエンドで暗号化。無料・オープンソース。">

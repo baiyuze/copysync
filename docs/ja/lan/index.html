@@ -2,6 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>同じネットワークで PasteFerry を使う：サーバーなしで、ペアリングするだけ</title>
   <meta name="description" content="コンピューターが同じ Wi‑Fi か有線ネットワークにあれば、PasteFerry にサーバーは要りません。アプリを入れて 6 桁のペアリングコードを入力すれば、Mac と Windows のあいだでクリップボードとファイルを同期できます。サブネットが違う場合は、ペアリング時にアドレスをひとつ入力します。">

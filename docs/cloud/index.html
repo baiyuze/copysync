@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>把隔空贴服务器部署到公网：云服务器图文教程</title>
   <meta name="description" content="一台有公网 IP 的 Linux 云主机，运行一个脚本就能装好隔空贴的信令与 TURN 服务器。每台电脑直接连它，在家、在公司、在外面都能同步剪贴板。含安全组放行、检查、客户端设置与国内域名备案的说明。">

@@ -2,6 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>はじめかた：3 ステップで PasteFerry を使い始める</title>
   <meta name="description" content="PasteFerry がはじめての方へ。各コンピューターにアプリを入れ、同じネットワークならそのままペアリング（サーバー不要）、ネットワークをまたぐなら公開サーバーか Tailscale を選びます。あとは Mac と Windows のあいだでコピー＆ペーストできます。">

@@ -7,6 +7,7 @@ import 'i18n.dart';
 /// 构建时注入的版本号（build.sh 传 --dart-define=APP_VERSION）。
 /// 用来判断后台服务是不是跟界面同一个版本。
 const appVersion = String.fromEnvironment('APP_VERSION', defaultValue: 'dev');
+const appBuild = String.fromEnvironment('APP_BUILD');
 
 /// 后台服务的安装状态。
 enum ServiceState {

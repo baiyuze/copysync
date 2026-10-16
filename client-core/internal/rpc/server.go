@@ -74,6 +74,33 @@ type Deps struct {
 	OpenLocalNetworkSettings func() error
 	CacheBytesUsed           func() int64
 	OfficialUsage            func() *pb.OfficialUsage
+	NotificationStatus       func(context.Context) (*pb.NotificationStatus, error)
+	RequestNotifications     func(context.Context) (*pb.NotificationStatus, error)
+	ActivateNotification     func(context.Context, string, string) error
+}
+
+func (s *Server) GetNotificationStatus(ctx context.Context, _ *pb.Empty) (*pb.NotificationStatus, error) {
+	if s.deps.NotificationStatus == nil {
+		return &pb.NotificationStatus{Permission: "unavailable"}, nil
+	}
+	return s.deps.NotificationStatus(ctx)
+}
+
+func (s *Server) RequestNotificationPermission(ctx context.Context, _ *pb.Empty) (*pb.NotificationStatus, error) {
+	if s.deps.RequestNotifications == nil {
+		return &pb.NotificationStatus{Permission: "unavailable"}, nil
+	}
+	return s.deps.RequestNotifications(ctx)
+}
+
+func (s *Server) ActivateNotification(ctx context.Context, req *pb.NotificationAction) (*pb.Empty, error) {
+	if s.deps.ActivateNotification == nil {
+		return nil, status.Error(codes.Unimplemented, "Notifications unavailable")
+	}
+	if err := s.deps.ActivateNotification(ctx, req.GetClipId(), req.GetAction()); err != nil {
+		return nil, status.Error(codes.FailedPrecondition, err.Error())
+	}
+	return &pb.Empty{}, nil
 }
 
 type Server struct {

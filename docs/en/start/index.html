@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quick start: set up PasteFerry in three steps</title>
   <meta name="description" content="New to PasteFerry? Install the app on each computer. On the same network, just pair, with no server; across networks, use a public server or Tailscale. Then copy and paste between Mac and Windows.">

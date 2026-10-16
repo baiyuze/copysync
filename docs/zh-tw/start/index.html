@@ -2,6 +2,15 @@
 <html lang="zh-TW">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>快速入門：三個步驟用上隔空貼</title>
   <meta name="description" content="第一次用隔空貼？在每台電腦上安裝 App；兩台在同一個網路裡就直接配對，不需要伺服器；跨網路時選擇雲端伺服器或 Tailscale。之後就能在 Mac 與 Windows 之間複製貼上。">

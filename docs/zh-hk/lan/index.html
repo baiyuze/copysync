@@ -2,6 +2,15 @@
 <html lang="zh-HK">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>在同一網絡裏使用隔空貼：不用伺服器，配對就能同步</title>
   <meta name="description" content="兩部電腦在同一個 Wi‑Fi 或有線網絡裏時，隔空貼不需要伺服器：安裝好 App，輸入 6 位配對碼，就能在 Mac 與 Windows 之間同步剪貼簿和檔案。不在同一網段時，配對時多輸入一個地址即可。">

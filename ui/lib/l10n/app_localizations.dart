@@ -485,13 +485,13 @@ abstract class AppLocalizations {
   /// No description provided for @fetch.
   ///
   /// In en, this message translates to:
-  /// **'Pull to this device'**
+  /// **'Receive'**
   String get fetch;
 
   /// No description provided for @fetchStarted.
   ///
   /// In en, this message translates to:
-  /// **'Pulling…'**
+  /// **'Receiving… See History for progress'**
   String get fetchStarted;
 
   /// No description provided for @transferFailed.
@@ -1205,7 +1205,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoSyncLimitDesc.
   ///
   /// In en, this message translates to:
-  /// **'Pull larger items manually from History'**
+  /// **'Receive larger items manually from History'**
   String get autoSyncLimitDesc;
 
   /// No description provided for @autoApply.
@@ -1735,6 +1735,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload and download combined, including encryption overhead. Only official relay usage is measured; direct content and traffic are not recorded.'**
   String get officialAccounting;
+
+  /// No description provided for @buildDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'UI {uiVersion} · Service {serviceVersion} · Build {build}'**
+  String buildDetails(String uiVersion, String serviceVersion, String build);
+
+  /// No description provided for @notReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Not received — receive before pasting'**
+  String get notReceived;
+
+  /// No description provided for @receivedPreserved.
+  ///
+  /// In en, this message translates to:
+  /// **'Received; use Copy to clipboard when ready'**
+  String get receivedPreserved;
+
+  /// No description provided for @clipboardWriteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Received, but the clipboard could not be updated'**
+  String get clipboardWriteFailed;
+
+  /// No description provided for @receivingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving…'**
+  String get receivingStatus;
+
+  /// No description provided for @largeFileNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Large file reminders'**
+  String get largeFileNotifications;
+
+  /// No description provided for @notificationsAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are enabled. Progress is shown in History.'**
+  String get notificationsAllowed;
+
+  /// No description provided for @notificationsNotRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notifications so large files do not wait silently. You can always receive them from History.'**
+  String get notificationsNotRequested;
+
+  /// No description provided for @notificationsDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are blocked in system settings. Receive pending items from History.'**
+  String get notificationsDenied;
+
+  /// No description provided for @notificationsUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Your desktop controls notification delivery and Do Not Disturb. Receive items from History if no reminder appears.'**
+  String get notificationsUnknown;
+
+  /// No description provided for @notificationsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'System notifications are unavailable. Receive large files from History.'**
+  String get notificationsUnavailable;
+
+  /// No description provided for @enableNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable reminders'**
+  String get enableNotifications;
+
+  /// No description provided for @notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings'**
+  String get notificationSettings;
+
+  /// No description provided for @notifyPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive to paste'**
+  String get notifyPendingTitle;
+
+  /// No description provided for @notifyPendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} · {name} · {size}\nReceive this item before pasting. You can also receive it from History.'**
+  String notifyPendingBody(String device, String name, String size);
+
+  /// No description provided for @notifyReceivingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving…'**
+  String get notifyReceivingTitle;
+
+  /// No description provided for @notifyReceivingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\nSee History for progress.'**
+  String notifyReceivingBody(String name);
+
+  /// No description provided for @notifyReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to paste'**
+  String get notifyReadyTitle;
+
+  /// No description provided for @notifyReadyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\nReceived and placed on the clipboard.'**
+  String notifyReadyBody(String name);
+
+  /// No description provided for @notifyReceivedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get notifyReceivedTitle;
+
+  /// No description provided for @notifyReceivedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\nYour clipboard was kept. Use Copy to clipboard when ready; this is also available in History.'**
+  String notifyReceivedBody(String name);
+
+  /// No description provided for @notifyFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not receive'**
+  String get notifyFailedTitle;
+
+  /// No description provided for @notifyFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\n{error}\nTry again from this notification or History.'**
+  String notifyFailedBody(String name, String error);
+
+  /// No description provided for @notifyClipboardFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Received; clipboard was not updated'**
+  String get notifyClipboardFailedTitle;
+
+  /// No description provided for @notifyClipboardFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\n{error}\nUse Copy to clipboard to try again, here or in History.'**
+  String notifyClipboardFailedBody(String name, String error);
 }
 
 class _AppLocalizationsDelegate

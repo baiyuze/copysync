@@ -91,6 +91,24 @@ final $typed_data.Uint8List clipboardPermissionDescriptor = $convert.base64Decod
     'ohQ0xJUEJPQVJEX1BFUk1JU1NJT05fQUxXQVlTX0FMTE9XEAQSJAogQ0xJUEJPQVJEX1BFUk1J'
     'U1NJT05fQUxXQVlTX0RFTlkQBQ==');
 
+@$core.Deprecated('Use clipboardWriteOutcomeDescriptor instead')
+const ClipboardWriteOutcome$json = {
+  '1': 'ClipboardWriteOutcome',
+  '2': [
+    {'1': 'CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED', '2': 0},
+    {'1': 'CLIPBOARD_WRITE_OUTCOME_APPLIED', '2': 1},
+    {'1': 'CLIPBOARD_WRITE_OUTCOME_PRESERVED', '2': 2},
+    {'1': 'CLIPBOARD_WRITE_OUTCOME_FAILED', '2': 3},
+  ],
+};
+
+/// Descriptor for `ClipboardWriteOutcome`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List clipboardWriteOutcomeDescriptor = $convert.base64Decode(
+    'ChVDbGlwYm9hcmRXcml0ZU91dGNvbWUSJwojQ0xJUEJPQVJEX1dSSVRFX09VVENPTUVfVU5TUE'
+    'VDSUZJRUQQABIjCh9DTElQQk9BUkRfV1JJVEVfT1VUQ09NRV9BUFBMSUVEEAESJQohQ0xJUEJP'
+    'QVJEX1dSSVRFX09VVENPTUVfUFJFU0VSVkVEEAISIgoeQ0xJUEJPQVJEX1dSSVRFX09VVENPTU'
+    'VfRkFJTEVEEAM=');
+
 @$core.Deprecated('Use serviceModeDescriptor instead')
 const ServiceMode$json = {
   '1': 'ServiceMode',
@@ -317,6 +335,15 @@ const Event$json = {
       '9': 0,
       '10': 'statusChanged'
     },
+    {
+      '1': 'clipboard_written',
+      '3': 8,
+      '4': 1,
+      '5': 11,
+      '6': '.pasteferry.v1.ClipboardWriteResult',
+      '9': 0,
+      '10': 'clipboardWritten'
+    },
   ],
   '8': [
     {'1': 'payload'},
@@ -333,7 +360,67 @@ final $typed_data.Uint8List eventDescriptor = $convert.base64Decode(
     'VIAFINZGV2aWNlQ2hhbmdlZBJTChJwZXJtaXNzaW9uX2NoYW5nZWQYBiABKA4yIi5wYXN0ZWZl'
     'cnJ5LnYxLkNsaXBib2FyZFBlcm1pc3Npb25IAFIRcGVybWlzc2lvbkNoYW5nZWQSPgoOc3RhdH'
     'VzX2NoYW5nZWQYByABKAsyFS5wYXN0ZWZlcnJ5LnYxLlN0YXR1c0gAUg1zdGF0dXNDaGFuZ2Vk'
-    'QgkKB3BheWxvYWQ=');
+    'ElIKEWNsaXBib2FyZF93cml0dGVuGAggASgLMiMucGFzdGVmZXJyeS52MS5DbGlwYm9hcmRXcm'
+    'l0ZVJlc3VsdEgAUhBjbGlwYm9hcmRXcml0dGVuQgkKB3BheWxvYWQ=');
+
+@$core.Deprecated('Use notificationStatusDescriptor instead')
+const NotificationStatus$json = {
+  '1': 'NotificationStatus',
+  '2': [
+    {'1': 'supported', '3': 1, '4': 1, '5': 8, '10': 'supported'},
+    {
+      '1': 'actions_supported',
+      '3': 2,
+      '4': 1,
+      '5': 8,
+      '10': 'actionsSupported'
+    },
+    {'1': 'permission', '3': 3, '4': 1, '5': 9, '10': 'permission'},
+  ],
+};
+
+/// Descriptor for `NotificationStatus`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List notificationStatusDescriptor = $convert.base64Decode(
+    'ChJOb3RpZmljYXRpb25TdGF0dXMSHAoJc3VwcG9ydGVkGAEgASgIUglzdXBwb3J0ZWQSKwoRYW'
+    'N0aW9uc19zdXBwb3J0ZWQYAiABKAhSEGFjdGlvbnNTdXBwb3J0ZWQSHgoKcGVybWlzc2lvbhgD'
+    'IAEoCVIKcGVybWlzc2lvbg==');
+
+@$core.Deprecated('Use notificationActionDescriptor instead')
+const NotificationAction$json = {
+  '1': 'NotificationAction',
+  '2': [
+    {'1': 'clip_id', '3': 1, '4': 1, '5': 9, '10': 'clipId'},
+    {'1': 'action', '3': 2, '4': 1, '5': 9, '10': 'action'},
+  ],
+};
+
+/// Descriptor for `NotificationAction`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List notificationActionDescriptor = $convert.base64Decode(
+    'ChJOb3RpZmljYXRpb25BY3Rpb24SFwoHY2xpcF9pZBgBIAEoCVIGY2xpcElkEhYKBmFjdGlvbh'
+    'gCIAEoCVIGYWN0aW9u');
+
+@$core.Deprecated('Use clipboardWriteResultDescriptor instead')
+const ClipboardWriteResult$json = {
+  '1': 'ClipboardWriteResult',
+  '2': [
+    {'1': 'clip_id', '3': 1, '4': 1, '5': 9, '10': 'clipId'},
+    {
+      '1': 'outcome',
+      '3': 2,
+      '4': 1,
+      '5': 14,
+      '6': '.pasteferry.v1.ClipboardWriteOutcome',
+      '10': 'outcome'
+    },
+    {'1': 'error', '3': 3, '4': 1, '5': 9, '10': 'error'},
+  ],
+};
+
+/// Descriptor for `ClipboardWriteResult`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List clipboardWriteResultDescriptor = $convert.base64Decode(
+    'ChRDbGlwYm9hcmRXcml0ZVJlc3VsdBIXCgdjbGlwX2lkGAEgASgJUgZjbGlwSWQSPgoHb3V0Y2'
+    '9tZRgCIAEoDjIkLnBhc3RlZmVycnkudjEuQ2xpcGJvYXJkV3JpdGVPdXRjb21lUgdvdXRjb21l'
+    'EhQKBWVycm9yGAMgASgJUgVlcnJvcg==');
 
 @$core.Deprecated('Use listHistoryRequestDescriptor instead')
 const ListHistoryRequest$json = {

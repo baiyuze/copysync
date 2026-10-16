@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 // Cache 是缓存目录的封装。
@@ -16,7 +17,9 @@ import (
 // 每条记录占一个子目录，目录名即 clip id 派生的短标识。
 // 用目录而非单文件，是因为一次复制可能包含多个文件或整个文件夹。
 type Cache struct {
-	root string
+	root   string
+	mu     sync.Mutex
+	active map[string]int
 }
 
 func New(root string) (*Cache, error) {
@@ -27,6 +30,49 @@ func New(root string) (*Cache, error) {
 }
 
 func (c *Cache) Root() string { return c.root }
+
+// LeaseDir protects an in-progress unpacker from orphan collection. The lease
+// is released only after the record references the completed cache, or the
+// failed unpacker has stopped writing.
+func (c *Cache) LeaseDir(id string) (rel, abs string, release func(), err error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	rel, abs, err = c.Dir(id)
+	if err != nil {
+		return "", "", nil, err
+	}
+	if c.active == nil {
+		c.active = make(map[string]int)
+	}
+	c.active[rel]++
+	var once sync.Once
+	return rel, abs, func() {
+		once.Do(func() {
+			c.mu.Lock()
+			defer c.mu.Unlock()
+			c.active[rel]--
+			if c.active[rel] == 0 {
+				delete(c.active, rel)
+			}
+		})
+	}, nil
+}
+
+// RemoveOrphan rechecks the database while holding the lease lock. The
+// collector's earlier reference snapshot may predate a completed download.
+func (c *Cache) RemoveOrphan(rel string, referenced func(string) (bool, error)) (bool, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.active[rel] > 0 {
+		return false, nil
+	}
+	used, err := referenced(rel)
+	if err != nil || used {
+		return false, err
+	}
+	err = c.Remove(rel)
+	return err == nil, err
+}
 
 // Dir 返回某条记录的缓存目录（相对路径），必要时创建。
 func (c *Cache) Dir(clipID string) (rel, abs string, err error) {

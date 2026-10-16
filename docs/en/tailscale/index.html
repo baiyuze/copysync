@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Use PasteFerry across networks with Tailscale: no server, home and office in sync</title>
   <meta name="description" content="Install Tailscale on each computer under one account and enter the other computer&#x27;s Tailscale address when pairing: no public IP, no server and no computer that has to stay on. The clipboard syncs from the office or anywhere else.">

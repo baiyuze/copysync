@@ -43,6 +43,9 @@ const (
 	DaemonService_GetStatus_FullMethodName                     = "/pasteferry.v1.DaemonService/GetStatus"
 	DaemonService_RequestClipboardPermission_FullMethodName    = "/pasteferry.v1.DaemonService/RequestClipboardPermission"
 	DaemonService_RequestLocalNetworkPermission_FullMethodName = "/pasteferry.v1.DaemonService/RequestLocalNetworkPermission"
+	DaemonService_GetNotificationStatus_FullMethodName         = "/pasteferry.v1.DaemonService/GetNotificationStatus"
+	DaemonService_RequestNotificationPermission_FullMethodName = "/pasteferry.v1.DaemonService/RequestNotificationPermission"
+	DaemonService_ActivateNotification_FullMethodName          = "/pasteferry.v1.DaemonService/ActivateNotification"
 	DaemonService_GetNetwork_FullMethodName                    = "/pasteferry.v1.DaemonService/GetNetwork"
 	DaemonService_ExportDiagnostics_FullMethodName             = "/pasteferry.v1.DaemonService/ExportDiagnostics"
 	DaemonService_SetVerboseLog_FullMethodName                 = "/pasteferry.v1.DaemonService/SetVerboseLog"
@@ -83,6 +86,10 @@ type DaemonServiceClient interface {
 	// 让系统放行局域网访问：macOS 打开「本地网络」设置面板；
 	// Windows 申请管理员权限，在防火墙里放行后台服务。其他平台返回 UNIMPLEMENTED。
 	RequestLocalNetworkPermission(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
+	// These belong to the background service, which also notifies with the UI closed.
+	GetNotificationStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NotificationStatus, error)
+	RequestNotificationPermission(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NotificationStatus, error)
+	ActivateNotification(ctx context.Context, in *NotificationAction, opts ...grpc.CallOption) (*Empty, error)
 	// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 pasteferry-cli nat
 	GetNetwork(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkInfo, error)
 	// 反馈问题用的诊断报告：版本、系统、设置、设备与网络状态、最近的日志。
@@ -308,6 +315,36 @@ func (c *daemonServiceClient) RequestLocalNetworkPermission(ctx context.Context,
 	return out, nil
 }
 
+func (c *daemonServiceClient) GetNotificationStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NotificationStatus, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NotificationStatus)
+	err := c.cc.Invoke(ctx, DaemonService_GetNotificationStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonServiceClient) RequestNotificationPermission(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NotificationStatus, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NotificationStatus)
+	err := c.cc.Invoke(ctx, DaemonService_RequestNotificationPermission_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *daemonServiceClient) ActivateNotification(ctx context.Context, in *NotificationAction, opts ...grpc.CallOption) (*Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, DaemonService_ActivateNotification_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *daemonServiceClient) GetNetwork(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkInfo, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(NetworkInfo)
@@ -373,6 +410,10 @@ type DaemonServiceServer interface {
 	// 让系统放行局域网访问：macOS 打开「本地网络」设置面板；
 	// Windows 申请管理员权限，在防火墙里放行后台服务。其他平台返回 UNIMPLEMENTED。
 	RequestLocalNetworkPermission(context.Context, *Empty) (*Empty, error)
+	// These belong to the background service, which also notifies with the UI closed.
+	GetNotificationStatus(context.Context, *Empty) (*NotificationStatus, error)
+	RequestNotificationPermission(context.Context, *Empty) (*NotificationStatus, error)
+	ActivateNotification(context.Context, *NotificationAction) (*Empty, error)
 	// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 pasteferry-cli nat
 	GetNetwork(context.Context, *Empty) (*NetworkInfo, error)
 	// 反馈问题用的诊断报告：版本、系统、设置、设备与网络状态、最近的日志。
@@ -446,6 +487,15 @@ func (UnimplementedDaemonServiceServer) RequestClipboardPermission(context.Conte
 }
 func (UnimplementedDaemonServiceServer) RequestLocalNetworkPermission(context.Context, *Empty) (*Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method RequestLocalNetworkPermission not implemented")
+}
+func (UnimplementedDaemonServiceServer) GetNotificationStatus(context.Context, *Empty) (*NotificationStatus, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetNotificationStatus not implemented")
+}
+func (UnimplementedDaemonServiceServer) RequestNotificationPermission(context.Context, *Empty) (*NotificationStatus, error) {
+	return nil, status.Error(codes.Unimplemented, "method RequestNotificationPermission not implemented")
+}
+func (UnimplementedDaemonServiceServer) ActivateNotification(context.Context, *NotificationAction) (*Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method ActivateNotification not implemented")
 }
 func (UnimplementedDaemonServiceServer) GetNetwork(context.Context, *Empty) (*NetworkInfo, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetNetwork not implemented")
@@ -805,6 +855,60 @@ func _DaemonService_RequestLocalNetworkPermission_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DaemonService_GetNotificationStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).GetNotificationStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_GetNotificationStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).GetNotificationStatus(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DaemonService_RequestNotificationPermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).RequestNotificationPermission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_RequestNotificationPermission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).RequestNotificationPermission(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DaemonService_ActivateNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotificationAction)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServiceServer).ActivateNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DaemonService_ActivateNotification_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServiceServer).ActivateNotification(ctx, req.(*NotificationAction))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DaemonService_GetNetwork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
@@ -933,6 +1037,18 @@ var DaemonService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RequestLocalNetworkPermission",
 			Handler:    _DaemonService_RequestLocalNetworkPermission_Handler,
+		},
+		{
+			MethodName: "GetNotificationStatus",
+			Handler:    _DaemonService_GetNotificationStatus_Handler,
+		},
+		{
+			MethodName: "RequestNotificationPermission",
+			Handler:    _DaemonService_RequestNotificationPermission_Handler,
+		},
+		{
+			MethodName: "ActivateNotification",
+			Handler:    _DaemonService_ActivateNotification_Handler,
 		},
 		{
 			MethodName: "GetNetwork",

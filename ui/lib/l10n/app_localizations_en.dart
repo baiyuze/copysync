@@ -282,10 +282,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openSystemSettings => 'Open System Settings';
 
   @override
-  String get fetch => 'Pull to this device';
+  String get fetch => 'Receive';
 
   @override
-  String get fetchStarted => 'Pulling…';
+  String get fetchStarted => 'Receiving… See History for progress';
 
   @override
   String get transferFailed => 'Transfer failed';
@@ -701,7 +701,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoSyncLimit => 'Auto-sync limit';
 
   @override
-  String get autoSyncLimitDesc => 'Pull larger items manually from History';
+  String get autoSyncLimitDesc => 'Receive larger items manually from History';
 
   @override
   String get autoApply => 'Put received items on the clipboard';
@@ -1001,4 +1001,100 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get officialAccounting =>
       'Upload and download combined, including encryption overhead. Only official relay usage is measured; direct content and traffic are not recorded.';
+
+  @override
+  String buildDetails(String uiVersion, String serviceVersion, String build) {
+    return 'UI $uiVersion · Service $serviceVersion · Build $build';
+  }
+
+  @override
+  String get notReceived => 'Not received — receive before pasting';
+
+  @override
+  String get receivedPreserved => 'Received; use Copy to clipboard when ready';
+
+  @override
+  String get clipboardWriteFailed =>
+      'Received, but the clipboard could not be updated';
+
+  @override
+  String get receivingStatus => 'Receiving…';
+
+  @override
+  String get largeFileNotifications => 'Large file reminders';
+
+  @override
+  String get notificationsAllowed =>
+      'Notifications are enabled. Progress is shown in History.';
+
+  @override
+  String get notificationsNotRequested =>
+      'Enable notifications so large files do not wait silently. You can always receive them from History.';
+
+  @override
+  String get notificationsDenied =>
+      'Notifications are blocked in system settings. Receive pending items from History.';
+
+  @override
+  String get notificationsUnknown =>
+      'Your desktop controls notification delivery and Do Not Disturb. Receive items from History if no reminder appears.';
+
+  @override
+  String get notificationsUnavailable =>
+      'System notifications are unavailable. Receive large files from History.';
+
+  @override
+  String get enableNotifications => 'Enable reminders';
+
+  @override
+  String get notificationSettings => 'Notification settings';
+
+  @override
+  String get notifyPendingTitle => 'Receive to paste';
+
+  @override
+  String notifyPendingBody(String device, String name, String size) {
+    return '$device · $name · $size\nReceive this item before pasting. You can also receive it from History.';
+  }
+
+  @override
+  String get notifyReceivingTitle => 'Receiving…';
+
+  @override
+  String notifyReceivingBody(String name) {
+    return '$name\nSee History for progress.';
+  }
+
+  @override
+  String get notifyReadyTitle => 'Ready to paste';
+
+  @override
+  String notifyReadyBody(String name) {
+    return '$name\nReceived and placed on the clipboard.';
+  }
+
+  @override
+  String get notifyReceivedTitle => 'Received';
+
+  @override
+  String notifyReceivedBody(String name) {
+    return '$name\nYour clipboard was kept. Use Copy to clipboard when ready; this is also available in History.';
+  }
+
+  @override
+  String get notifyFailedTitle => 'Could not receive';
+
+  @override
+  String notifyFailedBody(String name, String error) {
+    return '$name\n$error\nTry again from this notification or History.';
+  }
+
+  @override
+  String get notifyClipboardFailedTitle =>
+      'Received; clipboard was not updated';
+
+  @override
+  String notifyClipboardFailedBody(String name, String error) {
+    return '$name\n$error\nUse Copy to clipboard to try again, here or in History.';
+  }
 }

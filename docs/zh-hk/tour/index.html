@@ -2,6 +2,15 @@
 <html lang="zh-HK">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>一分多鐘，認識隔空貼 — 隔空貼</title>
   <meta name="description" content="Mac、Windows、Linux 互通。文字、圖片、檔案、資料夾，跨帳戶、跨網絡，P2P 直連、端對端加密，同一網絡內不需要伺服器。免費開源。">

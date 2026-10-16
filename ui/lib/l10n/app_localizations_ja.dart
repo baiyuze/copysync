@@ -229,10 +229,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get openSystemSettings => 'システム設定を開く';
 
   @override
-  String get fetch => 'このデバイスに取り込む';
+  String get fetch => '受信';
 
   @override
-  String get fetchStarted => '取り込みを開始しました';
+  String get fetchStarted => '受信中…進捗は履歴で確認できます';
 
   @override
   String get transferFailed => '転送に失敗しました';
@@ -915,4 +915,94 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get officialAccounting =>
       '暗号化の通信量を含む送受信の合計です。公式中継のみ計測し、直接接続の内容や通信量は記録しません。';
+
+  @override
+  String buildDetails(String uiVersion, String serviceVersion, String build) {
+    return 'UI $uiVersion · サービス $serviceVersion · ビルド $build';
+  }
+
+  @override
+  String get notReceived => '未受信 — ペーストする前に受信してください';
+
+  @override
+  String get receivedPreserved => '受信済み。クリップボードに入れるとペーストできます';
+
+  @override
+  String get clipboardWriteFailed => '受信済みですが、クリップボードを更新できませんでした';
+
+  @override
+  String get receivingStatus => '受信中…';
+
+  @override
+  String get largeFileNotifications => '大きなファイルの受信通知';
+
+  @override
+  String get notificationsAllowed => '通知は有効です。受信の進捗は履歴で確認できます。';
+
+  @override
+  String get notificationsNotRequested => '大きなファイルの受信待ちを通知します。履歴からいつでも受信できます。';
+
+  @override
+  String get notificationsDenied => 'システム設定で通知が無効です。受信待ちの項目は履歴から受信できます。';
+
+  @override
+  String get notificationsUnknown =>
+      '通知とおやすみモードはデスクトップで管理されます。通知がない場合は履歴から受信できます。';
+
+  @override
+  String get notificationsUnavailable => 'システム通知を利用できません。大きなファイルは履歴から受信してください。';
+
+  @override
+  String get enableNotifications => '通知を有効にする';
+
+  @override
+  String get notificationSettings => '通知設定';
+
+  @override
+  String get notifyPendingTitle => '受信するとペーストできます';
+
+  @override
+  String notifyPendingBody(String device, String name, String size) {
+    return '$device · $name · $size\nペーストする前に受信してください。履歴からも受信できます。';
+  }
+
+  @override
+  String get notifyReceivingTitle => '受信中…';
+
+  @override
+  String notifyReceivingBody(String name) {
+    return '$name\n進捗は履歴で確認できます。';
+  }
+
+  @override
+  String get notifyReadyTitle => 'ペーストできます';
+
+  @override
+  String notifyReadyBody(String name) {
+    return '$name\n受信してクリップボードに入れました。';
+  }
+
+  @override
+  String get notifyReceivedTitle => '受信しました';
+
+  @override
+  String notifyReceivedBody(String name) {
+    return '$name\n現在のクリップボードは保持しました。クリップボードに入れる操作は履歴からもできます。';
+  }
+
+  @override
+  String get notifyFailedTitle => '受信できませんでした';
+
+  @override
+  String notifyFailedBody(String name, String error) {
+    return '$name\n$error\nこの通知または履歴から再試行できます。';
+  }
+
+  @override
+  String get notifyClipboardFailedTitle => '受信済みですがクリップボードを更新できませんでした';
+
+  @override
+  String notifyClipboardFailedBody(String name, String error) {
+    return '$name\n$error\nこの通知または履歴からクリップボードに入れて再試行できます。';
+  }
 }

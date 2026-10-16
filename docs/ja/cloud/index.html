@@ -2,6 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PasteFerry のサーバーを公開サーバーに置く：クラウドサーバーの手順</title>
   <meta name="description" content="グローバル IP を持つ Linux のクラウドサーバーに、スクリプトひとつで PasteFerry のシグナリング兼 TURN サーバーを入れます。各コンピューターが直接つながり、自宅でも会社でも外出先でもクリップボードを同期できます。セキュリティグループ、確認、アプリの設定、中国本土のドメインについて。">

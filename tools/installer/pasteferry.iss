@@ -71,6 +71,8 @@ Name: "{autodesktop}\PasteFerry"; Filename: "{app}\PasteFerry.exe"
 ; 卸载时删掉开机自启项与窗口位置记录。ValueType: none 表示安装时不写，只在卸载时删
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: "PasteFerry"; ValueType: none; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "Software\PasteFerry"; ValueType: none; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\pasteferry-notify"; ValueType: none; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\AppUserModelId\PasteFerry.Desktop"; ValueType: none; Flags: uninsdeletekey
 
 [Run]
 ; 升级前停掉了后台服务；之前启用过后台同步的话，装完立刻重新拉起，不必等用户打开界面

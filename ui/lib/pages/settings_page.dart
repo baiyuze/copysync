@@ -4,6 +4,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
+import '../background_service.dart';
 import '../gen/pasteferry/v1/daemon.pb.dart';
 import '../i18n.dart';
 import '../main.dart';
@@ -249,6 +250,46 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     SettingRow(
+                      title: l.largeFileNotifications,
+                      description:
+                          switch (state.notificationStatus?.permission) {
+                            'allowed' => l.notificationsAllowed,
+                            'not_requested' => l.notificationsNotRequested,
+                            'denied' => l.notificationsDenied,
+                            'unknown' => l.notificationsUnknown,
+                            _ => l.notificationsUnavailable,
+                          },
+                      child:
+                          state.notificationStatus?.supported == true &&
+                              !(Platform.isLinux &&
+                                  state.notificationStatus?.permission ==
+                                      'unknown')
+                          ? TextButton(
+                              onPressed: () async {
+                                try {
+                                  await state.requestNotifications();
+                                } catch (e) {
+                                  if (context.mounted)
+                                    showToast(
+                                      context,
+                                      AppState.describeError(e),
+                                      error: true,
+                                    );
+                                }
+                              },
+                              child: Text(
+                                state.notificationStatus?.permission ==
+                                        'not_requested'
+                                    ? l.enableNotifications
+                                    : l.notificationSettings,
+                              ),
+                            )
+                          : TextButton(
+                              onPressed: state.refreshNotificationStatus,
+                              child: Text(l.retry),
+                            ),
+                    ),
+                    SettingRow(
                       title: l.autoApply,
                       child: SmallSwitch(
                         value: cfg.autoApplyToClipboard,
@@ -355,7 +396,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     SettingRow(
                       title: '${l.appName} ${state.status?.version ?? ''}',
-                      description: l.aboutDesc,
+                      description: appBuild.isEmpty
+                          ? l.aboutDesc
+                          : '${l.aboutDesc}\n${l.buildDetails(appVersion, state.status?.version ?? '…', appBuild)}',
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

@@ -17,6 +17,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 VERSION=${VERSION:-$(sed -n 's/^VERSION=\${VERSION:-\(.*\)}$/\1/p' scripts/build.sh)}
+APP_BUILD=${APP_BUILD:-$(git rev-parse --short=8 HEAD)}
 case "$(uname -m)" in
     x86_64) ARCH=amd64 FLUTTER_ARCH=x64 ;;
     aarch64 | arm64) ARCH=arm64 FLUTTER_ARCH=arm64 ;;
@@ -37,7 +38,8 @@ echo "▶ 后台服务与命令行（$VERSION，$ARCH）"
 (cd client-core && CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o "../$APP/pasteferry-cli" ./cmd/pasteferry-cli)
 
 echo "▶ 界面"
-(cd ui && flutter build linux --release --build-name "$VERSION" --dart-define=APP_VERSION="$VERSION")
+(cd ui && flutter build linux --release --build-name "$VERSION" --dart-define=APP_VERSION="$VERSION" \
+    --dart-define=APP_BUILD="$APP_BUILD")
 cp -R "ui/build/linux/$FLUTTER_ARCH/release/bundle/." "$APP/"
 
 # ── tar.gz：解压即用 ──

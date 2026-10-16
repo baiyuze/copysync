@@ -70,12 +70,17 @@ type Engine struct {
 	pairedPeers func() []string
 
 	// 事件回传给界面
-	onRecord   func(*pb.ClipRecord)
-	onProgress func(*pb.TransferProgress)
+	onRecord            func(*pb.ClipRecord)
+	onProgress          func(*pb.TransferProgress)
+	onReceive           func(ReceiveEvent)
+	onClipboardResult   func(*pb.ClipboardWriteResult)
+	receiveStartTimeout time.Duration
+	offerMu             sync.Mutex
 
 	mu sync.Mutex
 	// 正在接收中的流：stream_id -> 接收器
 	incoming map[string]*receiver
+	receives map[string]*receiveAttempt
 	// 对端补发来的内容，收完后不写进剪贴板：clip_id 集合，见 PeerReady
 	quiet map[string]bool
 
@@ -98,9 +103,12 @@ type Options struct {
 	Send       func(deviceID string, msg *pb.PeerMessage) error
 	OpenStream func(deviceID, label string) (*webrtc.DataChannel, error)
 	// PairedPeers 返回所有已配对设备，不论在线与否：连不上的记进待补发
-	PairedPeers func() []string
-	OnRecord    func(*pb.ClipRecord)
-	OnProgress  func(*pb.TransferProgress)
+	PairedPeers         func() []string
+	OnRecord            func(*pb.ClipRecord)
+	OnProgress          func(*pb.TransferProgress)
+	OnReceive           func(ReceiveEvent)
+	OnClipboardResult   func(*pb.ClipboardWriteResult)
+	ReceiveStartTimeout time.Duration
 }
 
 func New(opts Options) *Engine {
@@ -109,21 +117,25 @@ func New(opts Options) *Engine {
 		log = slog.Default()
 	}
 	return &Engine{
-		log:          log,
-		store:        opts.Store,
-		cache:        opts.Cache,
-		watcher:      opts.Watcher,
-		deviceID:     opts.DeviceID,
-		deviceName:   opts.DeviceName,
-		loadConfig:   opts.LoadConfig,
-		send:         opts.Send,
-		openStream:   opts.OpenStream,
-		pairedPeers:  opts.PairedPeers,
-		onRecord:     opts.OnRecord,
-		onProgress:   opts.OnProgress,
-		incoming:     make(map[string]*receiver),
-		quiet:        make(map[string]bool),
-		lastProgress: make(map[string]time.Time),
+		log:                 log,
+		store:               opts.Store,
+		cache:               opts.Cache,
+		watcher:             opts.Watcher,
+		deviceID:            opts.DeviceID,
+		deviceName:          opts.DeviceName,
+		loadConfig:          opts.LoadConfig,
+		send:                opts.Send,
+		openStream:          opts.OpenStream,
+		pairedPeers:         opts.PairedPeers,
+		onRecord:            opts.OnRecord,
+		onProgress:          opts.OnProgress,
+		onReceive:           opts.OnReceive,
+		onClipboardResult:   opts.OnClipboardResult,
+		receiveStartTimeout: opts.ReceiveStartTimeout,
+		receives:            make(map[string]*receiveAttempt),
+		incoming:            make(map[string]*receiver),
+		quiet:               make(map[string]bool),
+		lastProgress:        make(map[string]time.Time),
 	}
 }
 
@@ -315,6 +327,19 @@ func (e *Engine) HandlePeerMessage(ctx context.Context, from string, msg *pb.Pee
 }
 
 func (e *Engine) handleOffer(ctx context.Context, from string, offer *pb.ClipOffer) {
+	e.offerMu.Lock()
+	defer e.offerMu.Unlock()
+	if existing, err := e.store.GetClip(offer.GetClipId()); err == nil {
+		// Offers are replayed after reconnect. Never erase a cache or an active
+		// manual request, and never turn an old record into a new notification.
+		if existing.OriginDeviceID != from || existing.Outgoing {
+			return
+		}
+		if offer.GetWillPush() && existing.Status != store.StatusReady && existing.Status != store.StatusFetching {
+			e.startAutomaticReceive(existing, offer.GetBacklog())
+		}
+		return
+	}
 	// Older clients can still announce UU placeholders. Ignore an all-placeholder
 	// offer before it reaches history or the local clipboard. Mixed offers are
 	// kept intact because their subsequent archive contains real user files too.
@@ -372,12 +397,14 @@ func (e *Engine) handleOffer(ctx context.Context, from string, offer *pb.ClipOff
 		return
 	}
 	backlog := offer.GetBacklog()
-	if backlog && clip.Status == store.StatusFetching {
-		e.mu.Lock()
-		e.quiet[clip.ID] = true
-		e.mu.Unlock()
+	if clip.Status == store.StatusFetching {
+		e.startAutomaticReceive(clip, backlog)
+	} else {
+		e.emitRecord(clip)
 	}
-	e.emitRecord(clip)
+	if clip.Status == store.StatusRemoteOnly && !backlog {
+		e.receiveEvent(clip, ReceivePending, nil)
+	}
 	e.log.Info("收到对端剪贴板内容",
 		"clip", clip.ID, "kind", clip.Kind, "status", clip.Status, "from", from, "补发", backlog)
 
@@ -402,11 +429,7 @@ func (e *Engine) handleFetch(ctx context.Context, from, clipID string) {
 }
 
 func (e *Engine) handleReject(r *pb.FetchReject) {
-	e.log.Warn("对端拒绝了拉取请求", "clip", r.GetClipId(), "原因", r.GetReason())
-	_ = e.store.SetClipStatus(r.GetClipId(), store.StatusFailed, r.GetReason())
-	if clip, err := e.store.GetClip(r.GetClipId()); err == nil {
-		e.emitRecord(clip)
-	}
+	e.failReceive(r.GetClipId(), nil, errors.New(r.GetReason()))
 }
 
 func (e *Engine) reject(to, clipID, reason string) {
@@ -542,56 +565,60 @@ func packRaw(w io.Writer, path string) error {
 
 // receiver 承接一条进行中的数据流。
 type receiver struct {
-	clipID   string
-	streamID string
-	from     string
-	total    int64
-	received int64
-	pipeW    *io.PipeWriter
-	done     chan error
-	start    time.Time
+	clipID      string
+	streamID    string
+	from        string
+	total       int64
+	received    int64
+	pipeW       *io.PipeWriter
+	done        chan error
+	start       time.Time
+	attempt     *receiveAttempt
+	closeStream func()
+	bound       bool
 }
 
 func (e *Engine) handleHeader(from string, h *pb.TransferHeader) {
-	// A rejected/ignored offer must not allocate a receiver or write files. This
-	// also handles a legacy sender that pushes immediately after its offer.
-	if _, err := e.store.GetClip(h.GetClipId()); err != nil {
+	clip, err := e.store.GetClip(h.GetClipId())
+	if err != nil || clip.Outgoing || clip.OriginDeviceID != from || clip.Status != store.StatusFetching {
 		return
 	}
-	rel, abs, err := e.cache.Dir(h.GetClipId())
-	if err != nil {
-		e.log.Warn("准备缓存目录失败", "err", err)
-		return
-	}
-
-	pr, pw := io.Pipe()
-	r := &receiver{
-		clipID:   h.GetClipId(),
-		streamID: h.GetStreamId(),
-		from:     from,
-		total:    h.GetTotalBytes(),
-		pipeW:    pw,
-		done:     make(chan error, 1),
-		start:    time.Now(),
-	}
-
 	e.mu.Lock()
-	e.incoming[h.GetStreamId()] = r
+	a := e.receives[clip.ID]
+	if a == nil || a.streamID != "" {
+		e.mu.Unlock()
+		return
+	}
+	a.streamID = h.GetStreamId()
+	// A fresh directory per stream prevents an old failed unpacker from
+	// racing a retry or leaving removed files in the retried archive.
+	rel, abs, release, err := e.cache.LeaseDir(clip.ID + "-" + newID())
+	if err != nil {
+		e.mu.Unlock()
+		e.failReceive(clip.ID, a, err)
+		return
+	}
+	pr, pw := io.Pipe()
+	r := &receiver{clipID: clip.ID, streamID: h.GetStreamId(), from: from,
+		total: h.GetTotalBytes(), pipeW: pw, done: make(chan error, 1), start: time.Now(), attempt: a}
+	if e.incoming == nil {
+		e.incoming = make(map[string]*receiver)
+	}
+	e.incoming[r.streamID] = r
 	e.mu.Unlock()
-
-	_ = e.store.SetClipStatus(h.GetClipId(), store.StatusFetching, "")
-
-	// 边收边解包：不等整条流收完就开始落盘，大文件才不会先堆在内存里
 	go func() {
+		defer release()
+		defer pr.Close()
 		tops, err := pack.Unpack(pr, abs)
 		if err != nil {
-			pr.CloseWithError(err)
-			e.log.Warn("解包失败", "clip", r.clipID, "err", err)
-			_ = e.store.SetClipStatus(r.clipID, store.StatusFailed, err.Error())
+			e.failReceive(r.clipID, a, err)
+			_ = e.cache.Remove(rel)
 			r.done <- err
 			return
 		}
-		e.finishReceive(r, rel, tops)
+		if !e.finishReceive(r, rel, tops) {
+			_ = e.cache.Remove(rel)
+		}
 		r.done <- nil
 	}()
 }
@@ -626,76 +653,94 @@ func (e *Engine) HandlePeerStream(from, label string, stream *p2p.Stream) {
 }
 
 func (e *Engine) bindStream(r *receiver, stream *p2p.Stream) {
-	e.log.Debug("已绑定数据流", "stream", r.streamID, "clip", r.clipID,
-		"state", stream.ReadyState())
-
-	idle := time.AfterFunc(streamIdleTimeout, func() {
-		r.pipeW.CloseWithError(errors.New("传输超时中断"))
+	e.mu.Lock()
+	if e.receives[r.clipID] != r.attempt || r.bound {
+		e.mu.Unlock()
 		stream.Close()
-	})
-
-	// Stream 的队列保证顺序与完整性，这里只管按序搬进管道。
-	// 队列在对端关闭数据流时关闭，循环随之退出并收尾。
+		return
+	}
+	r.bound = true
+	r.closeStream = func() { stream.Close() }
+	r.attempt.timer.Reset(streamIdleTimeout)
+	e.mu.Unlock()
 	go func() {
-		defer idle.Stop()
 		defer r.pipeW.Close()
-
+		var received int64
 		for chunk := range stream.Chunks() {
-			idle.Reset(streamIdleTimeout)
 			if _, err := r.pipeW.Write(chunk); err != nil {
 				stream.Close()
 				return
 			}
-			r.received += int64(len(chunk))
-			e.emitProgress(r.clipID, r.received, r.total, r.start)
+			received += int64(len(chunk))
+			e.mu.Lock()
+			if e.receives[r.clipID] != r.attempt {
+				e.mu.Unlock()
+				stream.Close()
+				return
+			}
+			r.received = received
+			r.attempt.timer.Reset(streamIdleTimeout)
+			e.mu.Unlock()
+			e.emitProgress(r.clipID, received, r.total, r.start)
 		}
 	}()
 }
 
-func (e *Engine) finishReceive(r *receiver, cacheRel string, tops []string) {
+func (e *Engine) finishReceive(r *receiver, cacheRel string, tops []string) bool {
 	e.mu.Lock()
-	delete(e.incoming, r.streamID)
+	a := r.attempt
+	if a == nil {
+		a = e.receives[r.clipID]
+	} // also used by the preview integration test
+	if a == nil || e.receives[r.clipID] != a {
+		e.mu.Unlock()
+		return false
+	}
+	if err := e.store.SetClipCache(r.clipID, cacheRel, max64(r.total, r.received)); err != nil {
+		e.mu.Unlock()
+		e.failReceive(r.clipID, a, err)
+		return false
+	}
 	quiet := e.quiet[r.clipID]
-	delete(e.quiet, r.clipID)
+	e.retireReceiveLocked(r.clipID, a)
 	e.mu.Unlock()
 	e.forgetProgress(r.clipID)
-
-	var size int64
-	for _, p := range tops {
-		if info, err := os.Stat(p); err == nil {
-			size += info.Size()
-		}
-	}
-	if err := e.store.SetClipCache(r.clipID, cacheRel, max64(size, r.received)); err != nil {
-		e.log.Warn("更新缓存记录失败", "err", err)
-	}
-
 	clip, err := e.store.GetClip(r.clipID)
 	if err != nil {
-		return
+		return false
 	}
 	e.emitRecord(clip)
-	e.log.Info("内容接收完成",
-		"clip", r.clipID, "from", r.from, "收到字节", r.received,
-		"条目", len(tops), "耗时", time.Since(r.start).Round(time.Millisecond))
-
+	result := &pb.ClipboardWriteResult{ClipId: clip.ID, Outcome: pb.ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_PRESERVED}
 	if e.loadConfig().AutoApplyToClipboard && !quiet {
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
-		if err := e.applyToClipboard(ctx, clip); err != nil {
-			e.log.Warn("写入剪贴板失败", "err", err)
+		if a.manual {
+			if a.revision != nil {
+				result = e.writeClipboard(ctx, clip, a.revision)
+			}
+		} else {
+			result = e.writeClipboard(ctx, clip, nil)
 		}
 	}
+	if !a.preview {
+		e.clipboardResult(result)
+		if a.manual {
+			e.receiveEvent(clip, ReceiveCompleted, result)
+		}
+	}
+	return true
 }
 
 func (e *Engine) handleDone(d *pb.TransferDone) {
 	if d.GetOk() {
 		return
 	}
-	e.log.Warn("对端报告传输失败", "clip", d.GetClipId(), "err", d.GetError())
-	_ = e.store.SetClipStatus(d.GetClipId(), store.StatusFailed, d.GetError())
-	if clip, err := e.store.GetClip(d.GetClipId()); err == nil {
-		e.emitRecord(clip)
+	e.mu.Lock()
+	a := e.receives[d.GetClipId()]
+	matches := a != nil && a.streamID == d.GetStreamId()
+	e.mu.Unlock()
+	if matches {
+		e.failReceive(d.GetClipId(), a, errors.New(d.GetError()))
 	}
 }
 
@@ -711,41 +756,29 @@ func (e *Engine) FetchForPreview(ctx context.Context, clipID string) error {
 	return e.fetch(ctx, clipID, true)
 }
 
-func (e *Engine) fetch(ctx context.Context, clipID string, preserveClipboard bool) error {
-	clip, err := e.store.GetClip(clipID)
-	if err != nil {
-		return err
-	}
-	if clip.Outgoing {
-		return errors.New("这是本机复制的内容，无需拉取")
-	}
-	if preserveClipboard {
-		e.mu.Lock()
-		e.quiet[clipID] = true
-		e.mu.Unlock()
-	}
-	if err := e.send(clip.OriginDeviceID, &pb.PeerMessage{
-		Payload: &pb.PeerMessage_Fetch{Fetch: &pb.PeerFetch{ClipId: clipID}},
-	}); err != nil {
-		return fmt.Errorf("源设备当前不可达: %w", err)
-	}
-	_ = e.store.SetClipStatus(clipID, store.StatusFetching, "")
-	if c, err := e.store.GetClip(clipID); err == nil {
-		e.emitRecord(c)
-	}
-	return nil
-}
-
 // ApplyToClipboard 把某条已就绪的记录写入本机剪贴板。
 func (e *Engine) ApplyToClipboard(ctx context.Context, clipID string) error {
 	clip, err := e.store.GetClip(clipID)
 	if err != nil {
 		return err
 	}
-	return e.applyToClipboard(ctx, clip)
+	result := e.writeClipboard(ctx, clip, nil)
+	e.clipboardResult(result)
+	if result.Outcome == pb.ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_FAILED {
+		return errors.New(result.Error)
+	}
+	return nil
 }
 
 func (e *Engine) applyToClipboard(ctx context.Context, clip store.Clip) error {
+	result := e.writeClipboard(ctx, clip, nil)
+	if result.Outcome == pb.ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_FAILED {
+		return errors.New(result.Error)
+	}
+	return nil
+}
+
+func (e *Engine) clipboardContent(clip store.Clip) (clipboard.Content, error) {
 	var content clipboard.Content
 
 	switch clip.Kind {
@@ -758,7 +791,7 @@ func (e *Engine) applyToClipboard(ctx context.Context, clip store.Clip) error {
 	case store.KindImage, store.KindFile:
 		paths, err := e.localPaths(clip)
 		if err != nil {
-			return err
+			return content, err
 		}
 		if clip.Kind == store.KindImage && len(paths) == 1 {
 			data, err := os.ReadFile(paths[0])
@@ -769,10 +802,10 @@ func (e *Engine) applyToClipboard(ctx context.Context, clip store.Clip) error {
 		}
 		content = clipboard.Content{Kind: clipboard.KindFile, Files: paths}
 	default:
-		return fmt.Errorf("不支持写入剪贴板的类型: %v", clip.Kind)
+		return content, fmt.Errorf("不支持写入剪贴板的类型: %v", clip.Kind)
 	}
 
-	return e.watcher.Write(ctx, content)
+	return content, nil
 }
 
 // ImagePreview 解析一条记录里第 index 张图片在本机的位置，不拉取文件、不写剪贴板。
@@ -844,16 +877,19 @@ func (e *Engine) localPaths(clip store.Clip) ([]string, error) {
 // ─────────────────────── 辅助 ───────────────────────
 
 func (e *Engine) emitRecord(clip store.Clip) {
-	if e.onRecord == nil {
-		return
+	if e.onRecord != nil {
+		e.onRecord(recordProto(clip))
 	}
+}
+
+func recordProto(clip store.Clip) *pb.ClipRecord {
 	items := make([]*pb.ClipItem, 0, len(clip.Items))
 	for _, it := range clip.Items {
 		items = append(items, &pb.ClipItem{
 			Name: it.Name, Size: it.Size, IsDir: it.IsDir, ContentType: it.ContentType,
 		})
 	}
-	e.onRecord(&pb.ClipRecord{
+	return &pb.ClipRecord{
 		Id:               clip.ID,
 		Kind:             pb.ClipKind(clip.Kind),
 		Status:           pb.ClipStatus(clip.Status),
@@ -867,7 +903,7 @@ func (e *Engine) emitRecord(clip store.Clip) {
 		ExpiresAtUnix:    clip.ExpiresAt.Unix(),
 		Error:            clip.Error,
 		ImageCount:       imagepreview.ImageCount(clip),
-	})
+	}
 }
 
 // progressInterval 是同一次传输两次进度上报之间的最小间隔。

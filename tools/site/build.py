@@ -87,11 +87,24 @@ GLOBE = ('<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-widt
 CHEVRON = ('<svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" '
            'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg>')
 
+# 同一份页面也由 GitHub Pages 发布；在那里先跳到官网，再加载样式和其他脚本。
+GITHUB_PAGES_REDIRECT = """  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\\/(?:pasteferry|copysync)(?=\\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace(SITE_ORIGIN + path + location.search + location.hash);
+    })();
+  </script>
+""".replace("SITE_ORIGIN", json.dumps(SITE.rstrip("/")))
+
 # 首页按浏览器语言跳转：只在简体中文的首页（网站根目录）做，选过语言后以选的为准。
 # 香港、澳门的繁体去香港版，其他繁体（台湾、只写了 zh-Hant 的）去台湾版
 REDIRECT = """  <script>
     // 第一次打开时按浏览器语言跳到对应页面；在页面上选过语言后，以选的为准
     (function () {
+      if (location.hostname === "baiyuze.github.io") return;
       try {
         var paths = PATHS;
         var pick = localStorage.getItem("pasteferry-lang");
@@ -109,7 +122,7 @@ REDIRECT = """  <script>
           }
           pick = pick || "en";
         }
-        if (paths[pick]) location.replace(paths[pick] + location.hash);
+        if (paths[pick]) location.replace(paths[pick] + location.search + location.hash);
       } catch (e) {}
     })();
   </script>
@@ -2161,6 +2174,9 @@ def tour_page(code: str) -> str:
 
 
 def write(path: Path, text: str) -> None:
+    if path.suffix == ".html":
+        text = text.replace('  <meta charset="utf-8">\n',
+                            '  <meta charset="utf-8">\n' + GITHUB_PAGES_REDIRECT, 1)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
     print("✓", path.relative_to(ROOT))

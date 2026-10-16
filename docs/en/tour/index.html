@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meet PasteFerry in 85 seconds — PasteFerry</title>
   <meta name="description" content="Mac, Windows and Linux. Text, images, files and folders across accounts and networks; peer-to-peer, end-to-end encrypted, no server needed on the same network. Free and open source.">
