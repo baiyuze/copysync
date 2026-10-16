@@ -93,7 +93,10 @@ func powershell(ctx context.Context, script string) ([]byte, error) {
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return nil, fmt.Errorf("Windows notification: %w", err)
+		if ctx.Err() != nil {
+			return nil, fmt.Errorf("Windows notification: %w", ctx.Err())
+		}
+		return nil, fmt.Errorf("Windows notification: %w: %s", err, bytes.TrimSpace(output))
 	}
 	return output, nil
 }
