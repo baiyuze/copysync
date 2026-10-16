@@ -36,7 +36,9 @@ The official website is now https://pasteferry.cc/.
   disconnects so reconnects do not accumulate server connections.
 - Preserve received history when writing the clipboard fails, and report the
   failure so a completed transfer is not confused with a failed clipboard action.
-- Isolate pairing checks from public STUN and use loopback relay in server tests.
+- Isolate pairing checks from public STUN and align local relay binding with
+  the transport fixtures for hosted Windows runners.
+- Fix macOS packaging under UTF-8 locales when reporting DMG filenames.
 
 ### Upgrade notes
 
