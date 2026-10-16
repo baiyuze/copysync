@@ -143,8 +143,14 @@ are not extra charges. Bill forwarded encrypted payload bytes, including
 encryption overhead; file size and usage therefore differ. Normal bounded
 TURN/STUN/ICE control exchanges are not charged to the device data quota.
 
-Global budget: 1,000,000,000 outbound tunnel datagram bytes/day, including
-control. This measures the gateway application boundary, not TCP/TLS headers,
+Recommended conservative global budgets: 17 GB per Beijing calendar day and
+550 GB per Beijing calendar month, with either limit stopping relay. Both
+measure outbound tunnel datagram bytes, including control. A monthly reset
+occurs at 00:00 Beijing time on the first day of the next month. Exhaustion
+uses the existing `global_exhausted` code; no new client capability is needed.
+An owner usage snapshot uses the next monthly reset when the monthly budget
+is exhausted. These are configurable hosting policies, not client constants.
+This measures the gateway application boundary, not TCP/TLS headers,
 TCP retransmissions or the hosting provider's bill. Per-group in-memory
 enforcement uses bounded durable reservations and idempotent settlement;
 never perform a SQLite transaction per packet. Exhaustion blocks existing

@@ -137,6 +137,27 @@ func TestOfficialQuotaRecoveryAfterTransportClosure(t *testing.T) {
 		t.Fatal("new allowance did not permit a retry")
 	}
 }
+
+func TestStaleOfficialClosureDoesNotCancelReplacement(t *testing.T) {
+	id := identity.FromSeed(make([]byte, 32))
+	c, err := gateway.NewClient(id, "http://127.0.0.1:1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	m := NewManager(ManagerOptions{SelfID: id.DeviceID, Gateway: c, Official: func() bool { return true }, DisableEgressProbe: true})
+	defer m.Close()
+	oldCtx, oldCancel := context.WithCancel(context.Background())
+	defer oldCancel()
+	currentCtx, currentCancel := context.WithCancel(context.Background())
+	defer currentCancel()
+	old := &officialAttempt{id: "old", ctx: oldCtx, cancel: oldCancel}
+	m.relays["peer"] = &officialAttempt{id: "replacement", ctx: currentCtx, cancel: currentCancel}
+	m.officialFailed("peer", old, &gateway.Error{Code: "quota_exhausted"})
+	if currentCtx.Err() != nil || c.Usage().Reason != "" {
+		t.Fatal("stale tunnel closure poisoned the replacement")
+	}
+}
 func TestOfficialDirectThenGatewayTURN(t *testing.T) {
 	binary := os.Getenv("PF_GATEWAY_TEST_BINARY")
 	if binary == "" {

@@ -182,6 +182,7 @@ func (m *Manager) startOfficial(deviceID, id string, initial *pb.SignalMessage, 
 			m.officialFailed(deviceID, a, err)
 			return
 		}
+		network.OnClosed = func(err error) { m.officialFailed(deviceID, a, err) }
 		p, err := NewPeer(PeerOptions{DeviceID: deviceID, SelfID: m.selfID, Logger: m.log, ICEServers: servers, ForceRelay: true, Net: network,
 			SendSignal: func(ctx context.Context, msg *pb.SignalMessage) error {
 				msg.GatewayCapable = true
@@ -289,6 +290,10 @@ func (m *Manager) officialFailed(id string, a *officialAttempt, err error) {
 		}
 	}
 	m.mu.Lock()
+	if m.relays[id] != a || a.ctx != nil && a.ctx.Err() != nil {
+		m.mu.Unlock()
+		return
+	}
 	if m.relays[id] == a {
 		var ge *gateway.Error
 		if errors.As(err, &ge) {

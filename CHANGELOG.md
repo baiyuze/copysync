@@ -21,6 +21,11 @@ relay access. LAN and custom servers continue to work independently.
 - **Dependencies**: update the Go toolchain and networking dependencies and fix
   a dependency initialization race found by concurrency checks.
 
+### Fixes
+
+- Retire closed official relay tunnels immediately so clipboard updates made
+  after a quota interruption enter the retry queue instead of a stale channel.
+
 ### Upgrade notes
 
 - **Mac, Windows and Linux apps**: both peers need 2.1.0 for official gateway

@@ -198,7 +198,7 @@ func TestGatewayTURNBlackBox(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	if _, err = db.Exec(`UPDATE settings SET body='{"daily_limit":0,"rate_bps":2000000,"global_limit":1000000000,"paused":false}' WHERE id=1`); err != nil {
+	if _, err = db.Exec(`UPDATE settings SET body=json_set(body,'$.daily_limit',0) WHERE id=1`); err != nil {
 		t.Fatal(err)
 	}
 	time.Sleep(1200 * time.Millisecond)

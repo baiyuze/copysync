@@ -20,10 +20,11 @@ import (
 // Net only exists for a relay-only PeerConnection. It is not a system proxy.
 type Net struct {
 	transport.Net
-	client  *Client
-	session string
-	turn    *net.UDPAddr
-	ctx     context.Context
+	client   *Client
+	session  string
+	turn     *net.UDPAddr
+	ctx      context.Context
+	OnClosed func(error)
 }
 
 func (c *Client) Network(ctx context.Context, session, turnAddress string) (*Net, error) {
@@ -41,7 +42,7 @@ func (n *Net) ListenPacket(network, address string) (net.PacketConn, error) {
 	if network != "udp4" && network != "udp" {
 		return nil, errors.New("official relay supports UDP4 only")
 	}
-	return n.client.openPacket(n.ctx, n.session, n.turn)
+	return n.client.openPacket(n.ctx, n.session, n.turn, n.OnClosed)
 }
 func (n *Net) DialUDP(network string, local, remote *net.UDPAddr) (transport.UDPConn, error) {
 	return nil, errors.New("official relay does not permit direct UDP dialing")
@@ -68,9 +69,10 @@ type packetConn struct {
 	readDeadline, writeDeadline time.Time
 	changed                     chan struct{}
 	once                        sync.Once
+	onClosed                    func(error)
 }
 
-func (c *Client) openPacket(ctx context.Context, session string, remote *net.UDPAddr) (*packetConn, error) {
+func (c *Client) openPacket(ctx context.Context, session string, remote *net.UDPAddr, onClosed ...func(error)) (*packetConn, error) {
 	c.mu.Lock()
 	a, ok := c.access[session]
 	enabled, root := c.enabled, c.root
@@ -133,6 +135,9 @@ func (c *Client) openPacket(ctx context.Context, session string, remote *net.UDP
 	}
 	connCtx, stop := context.WithCancel(ctx)
 	p := &packetConn{client: c, session: session, ws: ws, local: local, remote: remote, ctx: connCtx, cancel: func() { stop(); stopRoot(); cancelRoot() }, packets: make(chan []byte, 128), changed: make(chan struct{})}
+	if len(onClosed) > 0 {
+		p.onClosed = onClosed[0]
+	}
 	c.mu.Lock()
 	if !c.enabled || root.Err() != nil {
 		c.mu.Unlock()
@@ -151,6 +156,10 @@ func (p *packetConn) receive() {
 	for {
 		kind, b, err := p.ws.Read(p.ctx)
 		if err != nil {
+			if p.ctx.Err() != nil {
+				return
+			}
+			reason := "service_unavailable"
 			status := websocket.CloseStatus(err)
 			if status == websocket.StatusPolicyViolation {
 				u := p.client.Usage()
@@ -163,6 +172,12 @@ func (p *packetConn) receive() {
 					}
 				}
 				p.client.update(u)
+				reason = u.Reason
+			}
+			// ICE may otherwise keep a closed relay selected for many seconds.
+			// Notify the owning connection so new offers are queued for retry.
+			if p.onClosed != nil {
+				go p.onClosed(&Error{Code: reason})
 			}
 			return
 		}
