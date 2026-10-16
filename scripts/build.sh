@@ -15,6 +15,7 @@ cd "$(dirname "$0")/.."
 
 DIST=dist
 VERSION=${VERSION:-2.0.0}
+APP_BUILD=${APP_BUILD:-$(git rev-parse --short=8 HEAD)}
 rm -rf "$DIST" && mkdir -p "$DIST"
 
 # 支持的最低 macOS 版本，与界面工程的 MACOSX_DEPLOYMENT_TARGET、后台服务的 LSMinimumSystemVersion 一致。
@@ -97,7 +98,8 @@ echo "  ✓ $APP"
 
 echo "▶ 构建图形界面"
 (cd ui && flutter build macos --release \
-    --build-name "$VERSION" --dart-define=APP_VERSION="$VERSION" 2>&1 | tail -1)
+    --build-name "$VERSION" --dart-define=APP_VERSION="$VERSION" \
+    --dart-define=APP_BUILD="$APP_BUILD" 2>&1 | tail -1)
 UI="$DIST/PasteFerry.app"
 cp -R ui/build/macos/Build/Products/Release/PasteFerry.app "$UI"
 

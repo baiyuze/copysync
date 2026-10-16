@@ -183,6 +183,29 @@ class DaemonServiceClient extends $grpc.Client {
         options: options);
   }
 
+  /// These belong to the background service, which also notifies with the UI closed.
+  $grpc.ResponseFuture<$0.NotificationStatus> getNotificationStatus(
+    $0.Empty request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getNotificationStatus, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.NotificationStatus> requestNotificationPermission(
+    $0.Empty request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$requestNotificationPermission, request,
+        options: options);
+  }
+
+  $grpc.ResponseFuture<$0.Empty> activateNotification(
+    $0.NotificationAction request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$activateNotification, request, options: options);
+  }
+
   /// 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 pasteferry-cli nat
   $grpc.ResponseFuture<$0.NetworkInfo> getNetwork(
     $0.Empty request, {
@@ -297,6 +320,21 @@ class DaemonServiceClient extends $grpc.Client {
       $grpc.ClientMethod<$0.Empty, $0.Empty>(
           '/pasteferry.v1.DaemonService/RequestLocalNetworkPermission',
           ($0.Empty value) => value.writeToBuffer(),
+          $0.Empty.fromBuffer);
+  static final _$getNotificationStatus =
+      $grpc.ClientMethod<$0.Empty, $0.NotificationStatus>(
+          '/pasteferry.v1.DaemonService/GetNotificationStatus',
+          ($0.Empty value) => value.writeToBuffer(),
+          $0.NotificationStatus.fromBuffer);
+  static final _$requestNotificationPermission =
+      $grpc.ClientMethod<$0.Empty, $0.NotificationStatus>(
+          '/pasteferry.v1.DaemonService/RequestNotificationPermission',
+          ($0.Empty value) => value.writeToBuffer(),
+          $0.NotificationStatus.fromBuffer);
+  static final _$activateNotification =
+      $grpc.ClientMethod<$0.NotificationAction, $0.Empty>(
+          '/pasteferry.v1.DaemonService/ActivateNotification',
+          ($0.NotificationAction value) => value.writeToBuffer(),
           $0.Empty.fromBuffer);
   static final _$getNetwork = $grpc.ClientMethod<$0.Empty, $0.NetworkInfo>(
       '/pasteferry.v1.DaemonService/GetNetwork',
@@ -463,6 +501,28 @@ abstract class DaemonServiceBase extends $grpc.Service {
         false,
         false,
         ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
+        ($0.Empty value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.Empty, $0.NotificationStatus>(
+        'GetNotificationStatus',
+        getNotificationStatus_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
+        ($0.NotificationStatus value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.Empty, $0.NotificationStatus>(
+        'RequestNotificationPermission',
+        requestNotificationPermission_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.Empty.fromBuffer(value),
+        ($0.NotificationStatus value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.NotificationAction, $0.Empty>(
+        'ActivateNotification',
+        activateNotification_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.NotificationAction.fromBuffer(value),
         ($0.Empty value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.Empty, $0.NetworkInfo>(
         'GetNetwork',
@@ -641,6 +701,30 @@ abstract class DaemonServiceBase extends $grpc.Service {
 
   $async.Future<$0.Empty> requestLocalNetworkPermission(
       $grpc.ServiceCall call, $0.Empty request);
+
+  $async.Future<$0.NotificationStatus> getNotificationStatus_Pre(
+      $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async {
+    return getNotificationStatus($call, await $request);
+  }
+
+  $async.Future<$0.NotificationStatus> getNotificationStatus(
+      $grpc.ServiceCall call, $0.Empty request);
+
+  $async.Future<$0.NotificationStatus> requestNotificationPermission_Pre(
+      $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async {
+    return requestNotificationPermission($call, await $request);
+  }
+
+  $async.Future<$0.NotificationStatus> requestNotificationPermission(
+      $grpc.ServiceCall call, $0.Empty request);
+
+  $async.Future<$0.Empty> activateNotification_Pre($grpc.ServiceCall $call,
+      $async.Future<$0.NotificationAction> $request) async {
+    return activateNotification($call, await $request);
+  }
+
+  $async.Future<$0.Empty> activateNotification(
+      $grpc.ServiceCall call, $0.NotificationAction request);
 
   $async.Future<$0.NetworkInfo> getNetwork_Pre(
       $grpc.ServiceCall $call, $async.Future<$0.Empty> $request) async {

@@ -1,5 +1,97 @@
 {
   "@@locale": "en",
+  "buildDetails": "UI {uiVersion} · Service {serviceVersion} · Build {build}",
+  "@buildDetails": {
+    "placeholders": {
+      "uiVersion": {
+        "type": "String"
+      },
+      "serviceVersion": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
+  "notReceived": "Not received — receive before pasting",
+  "receivedPreserved": "Received; use Copy to clipboard when ready",
+  "clipboardWriteFailed": "Received, but the clipboard could not be updated",
+  "receivingStatus": "Receiving…",
+  "largeFileNotifications": "Large file reminders",
+  "notificationsAllowed": "Notifications are enabled. Progress is shown in History.",
+  "notificationsNotRequested": "Enable notifications so large files do not wait silently. You can always receive them from History.",
+  "notificationsDenied": "Notifications are blocked in system settings. Receive pending items from History.",
+  "notificationsUnknown": "Your desktop controls notification delivery and Do Not Disturb. Receive items from History if no reminder appears.",
+  "notificationsUnavailable": "System notifications are unavailable. Receive large files from History.",
+  "enableNotifications": "Enable reminders",
+  "notificationSettings": "Notification settings",
+  "notifyPendingTitle": "Receive to paste",
+  "notifyPendingBody": "{device} · {name} · {size}\nReceive this item before pasting. You can also receive it from History.",
+  "@notifyPendingBody": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyReceivingTitle": "Receiving…",
+  "notifyReceivingBody": "{name}\nSee History for progress.",
+  "@notifyReceivingBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyReadyTitle": "Ready to paste",
+  "notifyReadyBody": "{name}\nReceived and placed on the clipboard.",
+  "@notifyReadyBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyReceivedTitle": "Received",
+  "notifyReceivedBody": "{name}\nYour clipboard was kept. Use Copy to clipboard when ready; this is also available in History.",
+  "@notifyReceivedBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyFailedTitle": "Could not receive",
+  "notifyFailedBody": "{name}\n{error}\nTry again from this notification or History.",
+  "@notifyFailedBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyClipboardFailedTitle": "Received; clipboard was not updated",
+  "notifyClipboardFailedBody": "{name}\n{error}\nUse Copy to clipboard to try again, here or in History.",
+  "@notifyClipboardFailedBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "appName": "PasteFerry",
   "navHistory": "History",
   "navDevices": "Devices",
@@ -180,8 +272,8 @@
   "permDeniedBody": "What you copy on this Mac won't be synced. In System Settings, set PasteFerry Daemon to Allow.",
   "permAskBody": "Otherwise macOS asks every time. In System Settings, set PasteFerry Daemon to Allow.",
   "openSystemSettings": "Open System Settings",
-  "fetch": "Pull to this device",
-  "fetchStarted": "Pulling…",
+  "fetch": "Receive",
+  "fetchStarted": "Receiving… See History for progress",
   "transferFailed": "Transfer failed",
   "expired": "Expired",
   "putOnClipboard": "Copy to clipboard",
@@ -418,9 +510,9 @@
   "language": "Language",
   "languageSystem": "System",
   "sync": "Sync",
-  "syncFootnote": "Items under the limit are pushed to your other devices as you copy. Larger ones sync as a record; pull them from History when you need them, so big files don't waste bandwidth or disk space.",
+  "syncFootnote": "Items under the limit are pushed to your other devices as you copy. Larger ones sync as a record; receive them from History when you need them, so big files don't waste bandwidth or disk space.",
   "autoSyncLimit": "Auto-sync limit",
-  "autoSyncLimitDesc": "Larger files are pulled by hand",
+  "autoSyncLimitDesc": "Larger files must be received before pasting",
   "autoApply": "Put received items on the clipboard",
   "autoApplyDesc": "When off, put them on the clipboard from History yourself",
   "whatToSync": "What to sync",

@@ -5,6 +5,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
+import '../background_service.dart';
 import '../gen/pasteferry/v1/daemon.pb.dart';
 import '../i18n.dart';
 import '../main.dart';
@@ -21,7 +22,14 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver {
+  @override
+  void initState() { super.initState(); WidgetsBinding.instance.addObserver(this); }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) AppScope.read(context).refreshNotificationStatus();
+  }
   final _serverController = TextEditingController();
   final _nameController = TextEditingController();
   bool _serverDirty = false;
@@ -31,6 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _serverController.dispose();
     _nameController.dispose();
     super.dispose();
@@ -206,6 +215,27 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   SettingRow(
+                    title: l.largeFileNotifications,
+                    description: switch (state.notificationStatus?.permission) {
+                      'allowed' => l.notificationsAllowed,
+                      'not_requested' => l.notificationsNotRequested,
+                      'denied' => l.notificationsDenied,
+                      'unknown' => l.notificationsUnknown,
+                      _ => l.notificationsUnavailable,
+                    },
+                    child: state.notificationStatus?.supported == true &&
+                        !(Platform.isLinux && state.notificationStatus?.permission == 'unknown')
+                      ? TextButton(
+                          onPressed: () async {
+                            try { await state.requestNotifications(); }
+                            catch (e) { if (context.mounted) showToast(context, AppState.describeError(e), error: true); }
+                          },
+                          child: Text(state.notificationStatus?.permission == 'not_requested'
+                            ? l.enableNotifications : l.notificationSettings),
+                        )
+                      : TextButton(onPressed: state.refreshNotificationStatus, child: Text(l.retry)),
+                  ),
+                  SettingRow(
                     title: l.autoApply,
                     description: l.autoApplyDesc,
                     child: SmallSwitch(
@@ -298,7 +328,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: GroupBox(children: [
                   SettingRow(
                     title: '${l.appName} ${state.status?.version ?? ''}',
-                    description: l.aboutDesc,
+                    description: appBuild.isEmpty
+                        ? l.aboutDesc
+                        : '${l.aboutDesc}\n${l.buildDetails(appVersion, state.status?.version ?? '…', appBuild)}',
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

@@ -9,6 +9,95 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String buildDetails(String uiVersion, String serviceVersion, String build) {
+    return '界面 $uiVersion · 后台 $serviceVersion · 构建 $build';
+  }
+
+  @override
+  String get notReceived => '尚未接收，暂不可粘贴';
+
+  @override
+  String get receivedPreserved => '已接收，点击放入剪贴板后可粘贴';
+
+  @override
+  String get clipboardWriteFailed => '已接收，但未能写入剪贴板';
+
+  @override
+  String get receivingStatus => '正在接收…';
+
+  @override
+  String get largeFileNotifications => '大文件接收提醒';
+
+  @override
+  String get notificationsAllowed => '已允许系统通知，接收进度在复制记录中查看。';
+
+  @override
+  String get notificationsNotRequested => '开启系统通知，避免大文件等待接收时没有提示；也可随时从复制记录接收。';
+
+  @override
+  String get notificationsDenied => '系统通知已关闭，请在系统设置中开启；待接收内容仍可从复制记录接收。';
+
+  @override
+  String get notificationsUnknown => '通知显示和勿扰由系统控制；未看到提醒时，可在复制记录中接收。';
+
+  @override
+  String get notificationsUnavailable => '系统通知暂不可用，请从复制记录接收大文件。';
+
+  @override
+  String get enableNotifications => '开启提醒';
+
+  @override
+  String get notificationSettings => '通知设置';
+
+  @override
+  String get notifyPendingTitle => '接收后即可粘贴';
+
+  @override
+  String notifyPendingBody(String device, String name, String size) {
+    return '$device · $name · $size\n尚未接收，暂不可粘贴。也可从复制记录接收。';
+  }
+
+  @override
+  String get notifyReceivingTitle => '正在接收…';
+
+  @override
+  String notifyReceivingBody(String name) {
+    return '$name\n可在复制记录查看接收进度。';
+  }
+
+  @override
+  String get notifyReadyTitle => '已就绪，可以粘贴';
+
+  @override
+  String notifyReadyBody(String name) {
+    return '$name\n已接收并放入剪贴板。';
+  }
+
+  @override
+  String get notifyReceivedTitle => '已接收';
+
+  @override
+  String notifyReceivedBody(String name) {
+    return '$name\n已保留当前剪贴板，点击放入剪贴板后可粘贴，也可从复制记录操作。';
+  }
+
+  @override
+  String get notifyFailedTitle => '接收失败';
+
+  @override
+  String notifyFailedBody(String name, String error) {
+    return '$name\n$error\n可从此通知或复制记录重试。';
+  }
+
+  @override
+  String get notifyClipboardFailedTitle => '已接收，但未能写入剪贴板';
+
+  @override
+  String notifyClipboardFailedBody(String name, String error) {
+    return '$name\n$error\n可从此通知或复制记录重新放入剪贴板。';
+  }
+
+  @override
   String get appName => '隔空贴';
 
   @override
@@ -229,10 +318,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get openSystemSettings => '打开系统设置';
 
   @override
-  String get fetch => '拉取到本机';
+  String get fetch => '接收';
 
   @override
-  String get fetchStarted => '开始拉取';
+  String get fetchStarted => '正在接收，可在复制记录查看进度';
 
   @override
   String get transferFailed => '传输失败';
@@ -638,13 +727,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get syncFootnote =>
-      '小于阈值的内容在复制时直接推送到其他设备；超过阈值的只同步一条记录，需要时在「复制记录」里点「拉取到本机」，避免大文件无谓地占用带宽和磁盘。';
+      '小于阈值的内容在复制时直接推送到其他设备；超过阈值的只同步一条记录，需要时在「复制记录」里点「接收」，避免大文件无谓地占用带宽和磁盘。';
 
   @override
   String get autoSyncLimit => '自动同步上限';
 
   @override
-  String get autoSyncLimitDesc => '超过这个大小的文件改为手动拉取';
+  String get autoSyncLimitDesc => '超过这个大小的文件改为手动接收';
 
   @override
   String get autoApply => '收到后直接写入剪贴板';
@@ -859,6 +948,95 @@ class AppLocalizationsZh extends AppLocalizations {
 /// The translations for Chinese, as used in Hong Kong, using the Han script (`zh_Hant_HK`).
 class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   AppLocalizationsZhHantHk() : super('zh_Hant_HK');
+
+  @override
+  String buildDetails(String uiVersion, String serviceVersion, String build) {
+    return '介面 $uiVersion · 背景服務 $serviceVersion · 版本識別 $build';
+  }
+
+  @override
+  String get notReceived => '尚未接收，暫不可貼上';
+
+  @override
+  String get receivedPreserved => '已接收，按放入剪貼簿後即可貼上';
+
+  @override
+  String get clipboardWriteFailed => '已接收，但無法寫入剪貼簿';
+
+  @override
+  String get receivingStatus => '正在接收…';
+
+  @override
+  String get largeFileNotifications => '大檔案接收提醒';
+
+  @override
+  String get notificationsAllowed => '已允許系統通知，接收進度可在複製記錄中查看。';
+
+  @override
+  String get notificationsNotRequested => '開啟系統通知，避免大檔案等待接收時沒有提示；亦可隨時從複製記錄接收。';
+
+  @override
+  String get notificationsDenied => '系統通知已關閉，請在系統設定中開啟；待接收內容仍可從複製記錄接收。';
+
+  @override
+  String get notificationsUnknown => '通知顯示和勿擾由系統控制；未看到提示時，可在複製記錄中接收。';
+
+  @override
+  String get notificationsUnavailable => '系統通知暫時無法使用，請從複製記錄接收大檔案。';
+
+  @override
+  String get enableNotifications => '開啟提醒';
+
+  @override
+  String get notificationSettings => '通知設定';
+
+  @override
+  String get notifyPendingTitle => '接收後即可貼上';
+
+  @override
+  String notifyPendingBody(String device, String name, String size) {
+    return '$device · $name · $size\n尚未接收，暫不可貼上。亦可從複製記錄接收。';
+  }
+
+  @override
+  String get notifyReceivingTitle => '正在接收…';
+
+  @override
+  String notifyReceivingBody(String name) {
+    return '$name\n可在複製記錄查看接收進度。';
+  }
+
+  @override
+  String get notifyReadyTitle => '已就緒，可以貼上';
+
+  @override
+  String notifyReadyBody(String name) {
+    return '$name\n已接收並放入剪貼簿。';
+  }
+
+  @override
+  String get notifyReceivedTitle => '已接收';
+
+  @override
+  String notifyReceivedBody(String name) {
+    return '$name\n已保留目前剪貼簿，按放入剪貼簿後即可貼上，亦可從複製記錄操作。';
+  }
+
+  @override
+  String get notifyFailedTitle => '接收失敗';
+
+  @override
+  String notifyFailedBody(String name, String error) {
+    return '$name\n$error\n可從此通知或複製記錄重試。';
+  }
+
+  @override
+  String get notifyClipboardFailedTitle => '已接收，但無法寫入剪貼簿';
+
+  @override
+  String notifyClipboardFailedBody(String name, String error) {
+    return '$name\n$error\n可從此通知或複製記錄重新放入剪貼簿。';
+  }
 
   @override
   String get appName => '隔空貼';
@@ -1081,10 +1259,10 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get openSystemSettings => '開啟系統設定';
 
   @override
-  String get fetch => '拉取到本機';
+  String get fetch => '接收';
 
   @override
-  String get fetchStarted => '開始拉取';
+  String get fetchStarted => '正在接收，可在複製記錄查看進度';
 
   @override
   String get transferFailed => '傳輸失敗';
@@ -1490,13 +1668,13 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String get syncFootnote =>
-      '小於上限的內容在複製時直接推送到其他裝置；超過上限的只同步一條記錄，需要時在「複製記錄」裏按「拉取到本機」，避免大檔案無謂地佔用頻寬和磁碟空間。';
+      '小於上限的內容在複製時直接推送到其他裝置；超過上限的只同步一條記錄，需要時在「複製記錄」裏按「接收」，避免大檔案無謂地佔用頻寬和磁碟空間。';
 
   @override
   String get autoSyncLimit => '自動同步上限';
 
   @override
-  String get autoSyncLimitDesc => '超過這個大小的檔案改為手動拉取';
+  String get autoSyncLimitDesc => '超過這個大小的檔案改為手動接收';
 
   @override
   String get autoApply => '收到後直接寫入剪貼簿';
@@ -1711,6 +1889,95 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 /// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
 class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   AppLocalizationsZhHantTw() : super('zh_Hant_TW');
+
+  @override
+  String buildDetails(String uiVersion, String serviceVersion, String build) {
+    return '介面 $uiVersion · 背景服務 $serviceVersion · 建置 $build';
+  }
+
+  @override
+  String get notReceived => '尚未接收，暫不可貼上';
+
+  @override
+  String get receivedPreserved => '已接收，點選放入剪貼簿後即可貼上';
+
+  @override
+  String get clipboardWriteFailed => '已接收，但無法寫入剪貼簿';
+
+  @override
+  String get receivingStatus => '正在接收…';
+
+  @override
+  String get largeFileNotifications => '大檔案接收提醒';
+
+  @override
+  String get notificationsAllowed => '已允許系統通知，接收進度可在複製記錄中查看。';
+
+  @override
+  String get notificationsNotRequested => '開啟系統通知，避免大檔案等待接收時沒有提醒；也可隨時從複製記錄接收。';
+
+  @override
+  String get notificationsDenied => '系統通知已關閉，請在系統設定中開啟；待接收內容仍可從複製記錄接收。';
+
+  @override
+  String get notificationsUnknown => '通知顯示和勿擾由系統控制；未看到提醒時，可在複製記錄中接收。';
+
+  @override
+  String get notificationsUnavailable => '系統通知暫時無法使用，請從複製記錄接收大檔案。';
+
+  @override
+  String get enableNotifications => '開啟提醒';
+
+  @override
+  String get notificationSettings => '通知設定';
+
+  @override
+  String get notifyPendingTitle => '接收後即可貼上';
+
+  @override
+  String notifyPendingBody(String device, String name, String size) {
+    return '$device · $name · $size\n尚未接收，暫不可貼上。也可從複製記錄接收。';
+  }
+
+  @override
+  String get notifyReceivingTitle => '正在接收…';
+
+  @override
+  String notifyReceivingBody(String name) {
+    return '$name\n可在複製記錄查看接收進度。';
+  }
+
+  @override
+  String get notifyReadyTitle => '已就緒，可以貼上';
+
+  @override
+  String notifyReadyBody(String name) {
+    return '$name\n已接收並放入剪貼簿。';
+  }
+
+  @override
+  String get notifyReceivedTitle => '已接收';
+
+  @override
+  String notifyReceivedBody(String name) {
+    return '$name\n已保留目前剪貼簿，點選放入剪貼簿後即可貼上，也可從複製記錄操作。';
+  }
+
+  @override
+  String get notifyFailedTitle => '接收失敗';
+
+  @override
+  String notifyFailedBody(String name, String error) {
+    return '$name\n$error\n可從此通知或複製記錄重試。';
+  }
+
+  @override
+  String get notifyClipboardFailedTitle => '已接收，但無法寫入剪貼簿';
+
+  @override
+  String notifyClipboardFailedBody(String name, String error) {
+    return '$name\n$error\n可從此通知或複製記錄重新放入剪貼簿。';
+  }
 
   @override
   String get appName => '隔空貼';
@@ -1933,10 +2200,10 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get openSystemSettings => '打開系統設定';
 
   @override
-  String get fetch => '拉取到本機';
+  String get fetch => '接收';
 
   @override
-  String get fetchStarted => '開始拉取';
+  String get fetchStarted => '正在接收，可在複製記錄查看進度';
 
   @override
   String get transferFailed => '傳輸失敗';
@@ -2342,13 +2609,13 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get syncFootnote =>
-      '小於上限的內容在複製時直接推送到其他裝置；超過上限的只同步一筆記錄，需要時在「複製記錄」裡點「拉取到本機」，避免大檔案白白佔用頻寬和磁碟空間。';
+      '小於上限的內容在複製時直接推送到其他裝置；超過上限的只同步一筆記錄，需要時在「複製記錄」裡點「接收」，避免大檔案白白佔用頻寬和磁碟空間。';
 
   @override
   String get autoSyncLimit => '自動同步上限';
 
   @override
-  String get autoSyncLimitDesc => '超過這個大小的檔案改為手動拉取';
+  String get autoSyncLimitDesc => '超過這個大小的檔案改為手動接收';
 
   @override
   String get autoApply => '收到後直接寫入剪貼簿';

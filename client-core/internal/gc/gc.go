@@ -135,7 +135,7 @@ func (c *Collector) Collect() Result {
 			c.log.Warn("扫描孤儿缓存失败", "err", err)
 		} else {
 			for _, o := range orphans {
-				if err := c.cache.Remove(o); err == nil {
+				if removed, err := c.cache.RemoveOrphan(o, c.store.CacheReferenced); err == nil && removed {
 					res.OrphansRemoved++
 				}
 			}

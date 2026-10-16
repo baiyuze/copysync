@@ -137,5 +137,35 @@ class ClipboardPermission extends $pb.ProtobufEnum {
   const ClipboardPermission._(super.value, super.name);
 }
 
+class ClipboardWriteOutcome extends $pb.ProtobufEnum {
+  static const ClipboardWriteOutcome CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED =
+      ClipboardWriteOutcome._(
+          0, _omitEnumNames ? '' : 'CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED');
+  static const ClipboardWriteOutcome CLIPBOARD_WRITE_OUTCOME_APPLIED =
+      ClipboardWriteOutcome._(
+          1, _omitEnumNames ? '' : 'CLIPBOARD_WRITE_OUTCOME_APPLIED');
+  static const ClipboardWriteOutcome CLIPBOARD_WRITE_OUTCOME_PRESERVED =
+      ClipboardWriteOutcome._(
+          2, _omitEnumNames ? '' : 'CLIPBOARD_WRITE_OUTCOME_PRESERVED');
+  static const ClipboardWriteOutcome CLIPBOARD_WRITE_OUTCOME_FAILED =
+      ClipboardWriteOutcome._(
+          3, _omitEnumNames ? '' : 'CLIPBOARD_WRITE_OUTCOME_FAILED');
+
+  static const $core.List<ClipboardWriteOutcome> values =
+      <ClipboardWriteOutcome>[
+    CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED,
+    CLIPBOARD_WRITE_OUTCOME_APPLIED,
+    CLIPBOARD_WRITE_OUTCOME_PRESERVED,
+    CLIPBOARD_WRITE_OUTCOME_FAILED,
+  ];
+
+  static final $core.List<ClipboardWriteOutcome?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 3);
+  static ClipboardWriteOutcome? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const ClipboardWriteOutcome._(super.value, super.name);
+}
+
 const $core.bool _omitEnumNames =
     $core.bool.fromEnvironment('protobuf.omit_enum_names');

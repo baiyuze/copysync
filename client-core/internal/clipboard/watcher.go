@@ -155,15 +155,41 @@ func (w *Watcher) Read(ctx context.Context) (Content, error) {
 // Write 在主线程写入剪贴板，并记下由此产生的 changeCount，
 // 使下一轮轮询不会把它误判为用户的新复制。
 func (w *Watcher) Write(ctx context.Context, content Content) error {
-	return w.loop.Call(ctx, func() {
+	_, err := w.write(ctx, content, nil)
+	return err
+}
+
+// Revision reads metadata only. A failed read must never authorize a later write.
+func (w *Watcher) Revision(ctx context.Context) (int64, error) {
+	snap, err := CallResult(ctx, w.loop, w.cb.Peek)
+	return snap.ChangeCount, err
+}
+
+// WriteIfUnchanged checks and writes in the same main-loop task, including
+// changes made by other remote transfers and copies of sensitive content.
+func (w *Watcher) WriteIfUnchanged(ctx context.Context, content Content, revision int64) (bool, error) {
+	return w.write(ctx, content, &revision)
+}
+
+func (w *Watcher) write(ctx context.Context, content Content, revision *int64) (bool, error) {
+	return CallResult(ctx, w.loop, func() (bool, error) {
+		if revision != nil {
+			snap, err := w.cb.Peek()
+			if err != nil {
+				return false, err
+			}
+			if snap.ChangeCount != *revision {
+				return false, nil
+			}
+		}
 		if err := w.cb.Write(content); err != nil {
-			w.log.Warn("写入剪贴板失败", "err", err)
-			return
+			return false, err
 		}
 		if snap, err := w.cb.Peek(); err == nil {
 			w.selfWrites[snap.ChangeCount] = struct{}{}
 			w.lastChange = snap.ChangeCount
 		}
+		return true, nil
 	})
 }
 

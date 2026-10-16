@@ -172,6 +172,9 @@ func (l *MainLoop) Call(ctx context.Context, fn func()) error {
 	done := make(chan struct{})
 	wrapped := func() {
 		defer close(done)
+		if ctx.Err() != nil {
+			return
+		}
 		fn()
 	}
 	select {
@@ -181,7 +184,7 @@ func (l *MainLoop) Call(ctx context.Context, fn func()) error {
 	}
 	select {
 	case <-done:
-		return nil
+		return ctx.Err()
 	case <-ctx.Done():
 		return ctx.Err()
 	}

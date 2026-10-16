@@ -6,6 +6,7 @@ require modernc.org/sqlite v1.59.0
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/godbus/dbus/v5 v5.2.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/ncruces/go-strftime v1.0.0 // indirect
@@ -44,6 +45,7 @@ replace github.com/baiyuze/pasteferry/proto => ../proto
 
 require (
 	github.com/baiyuze/pasteferry/server v0.0.0
+	github.com/godbus/dbus/v5 v5.2.2
 	github.com/jezek/xgb v1.3.1
 	github.com/klauspost/compress v1.20.0
 	github.com/pion/ice/v4 v4.4.2

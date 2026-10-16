@@ -24,6 +24,7 @@ import (
 	"github.com/baiyuze/pasteferry/client-core/internal/config"
 	"github.com/baiyuze/pasteferry/client-core/internal/gc"
 	"github.com/baiyuze/pasteferry/client-core/internal/identity"
+	"github.com/baiyuze/pasteferry/client-core/internal/notifications"
 	"github.com/baiyuze/pasteferry/client-core/internal/peers"
 	"github.com/baiyuze/pasteferry/client-core/internal/rpc"
 	"github.com/baiyuze/pasteferry/client-core/internal/store"
@@ -45,14 +46,22 @@ func main() {
 	runtime.LockOSThread()
 
 	var (
-		dataDir = flag.String("data-dir", "", "数据目录（默认为系统标准位置）")
-		verbose = flag.Bool("v", false, "输出调试日志")
-		probe   = flag.Bool("probe-clipboard", false,
+		notificationAction = flag.String("notification-action", "", "Handle a desktop notification action and exit")
+		dataDir            = flag.String("data-dir", "", "数据目录（默认为系统标准位置）")
+		verbose            = flag.Bool("v", false, "输出调试日志")
+		probe              = flag.Bool("probe-clipboard", false,
 			"诊断用：在主线程直接读一次剪贴板并打印结果后退出")
 		supervise = flag.Bool("supervise", false,
 			"守护模式：拉起后台服务，异常退出时自动重启（Windows、Linux 开机自启用）")
 	)
 	flag.Parse()
+	if *notificationAction != "" {
+		if err := activateNotification(*notificationAction); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		return
+	}
 
 	if *dataDir == "" {
 		if p, err := config.DefaultPaths(); err == nil {
@@ -171,6 +180,9 @@ func run(dataDir string) error {
 		return err
 	}
 	defer db.Close()
+	if err := db.RecoverReceives(); err != nil {
+		return err
+	}
 
 	blobs, err := cache.New(paths.Cache)
 	if err != nil {
@@ -213,6 +225,19 @@ func run(dataDir string) error {
 
 	// ── 设备配对与信令（引擎稍后注入）──
 	var engine *syncengine.Engine
+	notifier := notifications.New(ctx, notifications.Options{
+		Enabled: dataDir == "", Loop: loop, Language: func() string { return loadCfg().Language },
+		Fetch: func(ctx context.Context, id string) error { return engine.Fetch(ctx, id) },
+		Apply: func(ctx context.Context, id string) error { return engine.ApplyToClipboard(ctx, id) },
+		Record: func(id string) (*pb.ClipRecord, error) {
+			clip, err := db.GetClip(id)
+			if err != nil {
+				return nil, err
+			}
+			return rpc.ClipToProto(clip), nil
+		},
+	})
+	defer notifier.Close()
 
 	// 状态快照要由 gRPC 服务组装，而它晚于 peerMgr 创建，这里先记下"状态变了"，
 	// 等服务就绪后统一推送。容量 1 让连续的变化合并成一次刷新。
@@ -276,6 +301,21 @@ func run(dataDir string) error {
 			}
 			return ids
 		},
+		OnReceive: func(ev syncengine.ReceiveEvent) {
+			switch ev.Stage {
+			case syncengine.ReceivePending:
+				notifier.Pending(ev.Record)
+			case syncengine.ReceiveStarted:
+				notifier.Started(ev.Record)
+			case syncengine.ReceiveCompleted:
+				notifier.Completed(ev.Record, ev.Clipboard)
+			case syncengine.ReceiveFailed:
+				notifier.Failed(ev.Record)
+			}
+		},
+		OnClipboardResult: func(result *pb.ClipboardWriteResult) {
+			hub.Publish(&pb.Event{Payload: &pb.Event_ClipboardWritten{ClipboardWritten: result}})
+		},
 		OnRecord: func(r *pb.ClipRecord) {
 			hub.Publish(rpc.EventClipAdded(r))
 		},
@@ -289,6 +329,8 @@ func run(dataDir string) error {
 	watcher.SetOnChange(func(snap clipboard.Snapshot) {
 		go engine.HandleClipboardChange(ctx, snap)
 	})
+
+	defer engine.Close()
 
 	go peerMgr.Run(ctx)
 	go watcher.Run(ctx)
@@ -388,6 +430,9 @@ func run(dataDir string) error {
 			defer cancel()
 			return watcher.OpenPermissionSettings(ctx)
 		},
+		NotificationStatus:   notifier.Status,
+		RequestNotifications: notifier.Request,
+		ActivateNotification: notifier.Activate,
 	}, hub, token)
 
 	// 信令连接与在线对端数的变化推给 UI。Subscribe 只在建立订阅时推一次状态，

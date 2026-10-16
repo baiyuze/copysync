@@ -251,6 +251,58 @@ func (ClipboardPermission) EnumDescriptor() ([]byte, []int) {
 	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{3}
 }
 
+type ClipboardWriteOutcome int32
+
+const (
+	ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED ClipboardWriteOutcome = 0
+	ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_APPLIED     ClipboardWriteOutcome = 1
+	ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_PRESERVED   ClipboardWriteOutcome = 2
+	ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_FAILED      ClipboardWriteOutcome = 3
+)
+
+// Enum value maps for ClipboardWriteOutcome.
+var (
+	ClipboardWriteOutcome_name = map[int32]string{
+		0: "CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED",
+		1: "CLIPBOARD_WRITE_OUTCOME_APPLIED",
+		2: "CLIPBOARD_WRITE_OUTCOME_PRESERVED",
+		3: "CLIPBOARD_WRITE_OUTCOME_FAILED",
+	}
+	ClipboardWriteOutcome_value = map[string]int32{
+		"CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED": 0,
+		"CLIPBOARD_WRITE_OUTCOME_APPLIED":     1,
+		"CLIPBOARD_WRITE_OUTCOME_PRESERVED":   2,
+		"CLIPBOARD_WRITE_OUTCOME_FAILED":      3,
+	}
+)
+
+func (x ClipboardWriteOutcome) Enum() *ClipboardWriteOutcome {
+	p := new(ClipboardWriteOutcome)
+	*p = x
+	return p
+}
+
+func (x ClipboardWriteOutcome) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ClipboardWriteOutcome) Descriptor() protoreflect.EnumDescriptor {
+	return file_pasteferry_v1_daemon_proto_enumTypes[4].Descriptor()
+}
+
+func (ClipboardWriteOutcome) Type() protoreflect.EnumType {
+	return &file_pasteferry_v1_daemon_proto_enumTypes[4]
+}
+
+func (x ClipboardWriteOutcome) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ClipboardWriteOutcome.Descriptor instead.
+func (ClipboardWriteOutcome) EnumDescriptor() ([]byte, []int) {
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{4}
+}
+
 type Empty struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -724,6 +776,7 @@ type Event struct {
 	//	*Event_DeviceChanged
 	//	*Event_PermissionChanged
 	//	*Event_StatusChanged
+	//	*Event_ClipboardWritten
 	Payload       isEvent_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -829,6 +882,15 @@ func (x *Event) GetStatusChanged() *Status {
 	return nil
 }
 
+func (x *Event) GetClipboardWritten() *ClipboardWriteResult {
+	if x != nil {
+		if x, ok := x.Payload.(*Event_ClipboardWritten); ok {
+			return x.ClipboardWritten
+		}
+	}
+	return nil
+}
+
 type isEvent_Payload interface {
 	isEvent_Payload()
 }
@@ -861,6 +923,10 @@ type Event_StatusChanged struct {
 	StatusChanged *Status `protobuf:"bytes,7,opt,name=status_changed,json=statusChanged,proto3,oneof"`
 }
 
+type Event_ClipboardWritten struct {
+	ClipboardWritten *ClipboardWriteResult `protobuf:"bytes,8,opt,name=clipboard_written,json=clipboardWritten,proto3,oneof"`
+}
+
 func (*Event_ClipAdded) isEvent_Payload() {}
 
 func (*Event_ClipUpdated) isEvent_Payload() {}
@@ -874,6 +940,182 @@ func (*Event_DeviceChanged) isEvent_Payload() {}
 func (*Event_PermissionChanged) isEvent_Payload() {}
 
 func (*Event_StatusChanged) isEvent_Payload() {}
+
+func (*Event_ClipboardWritten) isEvent_Payload() {}
+
+type NotificationStatus struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Supported        bool                   `protobuf:"varint,1,opt,name=supported,proto3" json:"supported,omitempty"`
+	ActionsSupported bool                   `protobuf:"varint,2,opt,name=actions_supported,json=actionsSupported,proto3" json:"actions_supported,omitempty"`
+	// unknown, not_requested, allowed, denied, unavailable
+	Permission    string `protobuf:"bytes,3,opt,name=permission,proto3" json:"permission,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NotificationStatus) Reset() {
+	*x = NotificationStatus{}
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NotificationStatus) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NotificationStatus) ProtoMessage() {}
+
+func (x *NotificationStatus) ProtoReflect() protoreflect.Message {
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NotificationStatus.ProtoReflect.Descriptor instead.
+func (*NotificationStatus) Descriptor() ([]byte, []int) {
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *NotificationStatus) GetSupported() bool {
+	if x != nil {
+		return x.Supported
+	}
+	return false
+}
+
+func (x *NotificationStatus) GetActionsSupported() bool {
+	if x != nil {
+		return x.ActionsSupported
+	}
+	return false
+}
+
+func (x *NotificationStatus) GetPermission() string {
+	if x != nil {
+		return x.Permission
+	}
+	return ""
+}
+
+type NotificationAction struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ClipId        string                 `protobuf:"bytes,1,opt,name=clip_id,json=clipId,proto3" json:"clip_id,omitempty"`
+	Action        string                 `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"` // receive, apply, open
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NotificationAction) Reset() {
+	*x = NotificationAction{}
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NotificationAction) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NotificationAction) ProtoMessage() {}
+
+func (x *NotificationAction) ProtoReflect() protoreflect.Message {
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NotificationAction.ProtoReflect.Descriptor instead.
+func (*NotificationAction) Descriptor() ([]byte, []int) {
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *NotificationAction) GetClipId() string {
+	if x != nil {
+		return x.ClipId
+	}
+	return ""
+}
+
+func (x *NotificationAction) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
+// READY still means downloaded, not necessarily the current system clipboard.
+type ClipboardWriteResult struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ClipId        string                 `protobuf:"bytes,1,opt,name=clip_id,json=clipId,proto3" json:"clip_id,omitempty"`
+	Outcome       ClipboardWriteOutcome  `protobuf:"varint,2,opt,name=outcome,proto3,enum=pasteferry.v1.ClipboardWriteOutcome" json:"outcome,omitempty"`
+	Error         string                 `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ClipboardWriteResult) Reset() {
+	*x = ClipboardWriteResult{}
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ClipboardWriteResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClipboardWriteResult) ProtoMessage() {}
+
+func (x *ClipboardWriteResult) ProtoReflect() protoreflect.Message {
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClipboardWriteResult.ProtoReflect.Descriptor instead.
+func (*ClipboardWriteResult) Descriptor() ([]byte, []int) {
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ClipboardWriteResult) GetClipId() string {
+	if x != nil {
+		return x.ClipId
+	}
+	return ""
+}
+
+func (x *ClipboardWriteResult) GetOutcome() ClipboardWriteOutcome {
+	if x != nil {
+		return x.Outcome
+	}
+	return ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED
+}
+
+func (x *ClipboardWriteResult) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
 
 type ListHistoryRequest struct {
 	state      protoimpl.MessageState `protogen:"open.v1"`
@@ -889,7 +1131,7 @@ type ListHistoryRequest struct {
 
 func (x *ListHistoryRequest) Reset() {
 	*x = ListHistoryRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[7]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -901,7 +1143,7 @@ func (x *ListHistoryRequest) String() string {
 func (*ListHistoryRequest) ProtoMessage() {}
 
 func (x *ListHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[7]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -914,7 +1156,7 @@ func (x *ListHistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListHistoryRequest.ProtoReflect.Descriptor instead.
 func (*ListHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{7}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ListHistoryRequest) GetLimit() int32 {
@@ -956,7 +1198,7 @@ type ListHistoryResponse struct {
 
 func (x *ListHistoryResponse) Reset() {
 	*x = ListHistoryResponse{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[8]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -968,7 +1210,7 @@ func (x *ListHistoryResponse) String() string {
 func (*ListHistoryResponse) ProtoMessage() {}
 
 func (x *ListHistoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[8]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -981,7 +1223,7 @@ func (x *ListHistoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListHistoryResponse.ProtoReflect.Descriptor instead.
 func (*ListHistoryResponse) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{8}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ListHistoryResponse) GetRecords() []*ClipRecord {
@@ -1008,7 +1250,7 @@ type DeleteHistoryRequest struct {
 
 func (x *DeleteHistoryRequest) Reset() {
 	*x = DeleteHistoryRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[9]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1020,7 +1262,7 @@ func (x *DeleteHistoryRequest) String() string {
 func (*DeleteHistoryRequest) ProtoMessage() {}
 
 func (x *DeleteHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[9]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1033,7 +1275,7 @@ func (x *DeleteHistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteHistoryRequest.ProtoReflect.Descriptor instead.
 func (*DeleteHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{9}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DeleteHistoryRequest) GetIds() []string {
@@ -1060,7 +1302,7 @@ type FetchRequest struct {
 
 func (x *FetchRequest) Reset() {
 	*x = FetchRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[10]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1072,7 +1314,7 @@ func (x *FetchRequest) String() string {
 func (*FetchRequest) ProtoMessage() {}
 
 func (x *FetchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[10]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1085,7 +1327,7 @@ func (x *FetchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FetchRequest.ProtoReflect.Descriptor instead.
 func (*FetchRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{10}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *FetchRequest) GetClipId() string {
@@ -1111,7 +1353,7 @@ type ApplyToClipboardRequest struct {
 
 func (x *ApplyToClipboardRequest) Reset() {
 	*x = ApplyToClipboardRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[11]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1123,7 +1365,7 @@ func (x *ApplyToClipboardRequest) String() string {
 func (*ApplyToClipboardRequest) ProtoMessage() {}
 
 func (x *ApplyToClipboardRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[11]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1136,7 +1378,7 @@ func (x *ApplyToClipboardRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApplyToClipboardRequest.ProtoReflect.Descriptor instead.
 func (*ApplyToClipboardRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{11}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ApplyToClipboardRequest) GetClipId() string {
@@ -1156,7 +1398,7 @@ type ListDevicesResponse struct {
 
 func (x *ListDevicesResponse) Reset() {
 	*x = ListDevicesResponse{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[12]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1168,7 +1410,7 @@ func (x *ListDevicesResponse) String() string {
 func (*ListDevicesResponse) ProtoMessage() {}
 
 func (x *ListDevicesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[12]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1181,7 +1423,7 @@ func (x *ListDevicesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDevicesResponse.ProtoReflect.Descriptor instead.
 func (*ListDevicesResponse) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{12}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *ListDevicesResponse) GetSelf() *Device {
@@ -1211,7 +1453,7 @@ type CreatePairingCodeResponse struct {
 
 func (x *CreatePairingCodeResponse) Reset() {
 	*x = CreatePairingCodeResponse{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[13]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1223,7 +1465,7 @@ func (x *CreatePairingCodeResponse) String() string {
 func (*CreatePairingCodeResponse) ProtoMessage() {}
 
 func (x *CreatePairingCodeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[13]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1236,7 +1478,7 @@ func (x *CreatePairingCodeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreatePairingCodeResponse.ProtoReflect.Descriptor instead.
 func (*CreatePairingCodeResponse) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{13}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CreatePairingCodeResponse) GetCode() string {
@@ -1273,7 +1515,7 @@ type RedeemPairingCodeRequest struct {
 
 func (x *RedeemPairingCodeRequest) Reset() {
 	*x = RedeemPairingCodeRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[14]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1285,7 +1527,7 @@ func (x *RedeemPairingCodeRequest) String() string {
 func (*RedeemPairingCodeRequest) ProtoMessage() {}
 
 func (x *RedeemPairingCodeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[14]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1298,7 +1540,7 @@ func (x *RedeemPairingCodeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RedeemPairingCodeRequest.ProtoReflect.Descriptor instead.
 func (*RedeemPairingCodeRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{14}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *RedeemPairingCodeRequest) GetCode() string {
@@ -1326,7 +1568,7 @@ type RedeemPairingCodeResponse struct {
 
 func (x *RedeemPairingCodeResponse) Reset() {
 	*x = RedeemPairingCodeResponse{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[15]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1338,7 +1580,7 @@ func (x *RedeemPairingCodeResponse) String() string {
 func (*RedeemPairingCodeResponse) ProtoMessage() {}
 
 func (x *RedeemPairingCodeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[15]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1351,7 +1593,7 @@ func (x *RedeemPairingCodeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RedeemPairingCodeResponse.ProtoReflect.Descriptor instead.
 func (*RedeemPairingCodeResponse) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{15}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *RedeemPairingCodeResponse) GetPeer() *Device {
@@ -1378,7 +1620,7 @@ type ConfirmPairingRequest struct {
 
 func (x *ConfirmPairingRequest) Reset() {
 	*x = ConfirmPairingRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[16]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1390,7 +1632,7 @@ func (x *ConfirmPairingRequest) String() string {
 func (*ConfirmPairingRequest) ProtoMessage() {}
 
 func (x *ConfirmPairingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[16]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1403,7 +1645,7 @@ func (x *ConfirmPairingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfirmPairingRequest.ProtoReflect.Descriptor instead.
 func (*ConfirmPairingRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{16}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *ConfirmPairingRequest) GetPairingSession() string {
@@ -1433,7 +1675,7 @@ type NearbyDevice struct {
 
 func (x *NearbyDevice) Reset() {
 	*x = NearbyDevice{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[17]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1445,7 +1687,7 @@ func (x *NearbyDevice) String() string {
 func (*NearbyDevice) ProtoMessage() {}
 
 func (x *NearbyDevice) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[17]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1458,7 +1700,7 @@ func (x *NearbyDevice) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NearbyDevice.ProtoReflect.Descriptor instead.
 func (*NearbyDevice) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{17}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *NearbyDevice) GetId() string {
@@ -1498,7 +1740,7 @@ type NearbyDevices struct {
 
 func (x *NearbyDevices) Reset() {
 	*x = NearbyDevices{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[18]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1510,7 +1752,7 @@ func (x *NearbyDevices) String() string {
 func (*NearbyDevices) ProtoMessage() {}
 
 func (x *NearbyDevices) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[18]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1523,7 +1765,7 @@ func (x *NearbyDevices) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NearbyDevices.ProtoReflect.Descriptor instead.
 func (*NearbyDevices) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{18}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *NearbyDevices) GetDevices() []*NearbyDevice {
@@ -1542,7 +1784,7 @@ type PairNearbyRequest struct {
 
 func (x *PairNearbyRequest) Reset() {
 	*x = PairNearbyRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[19]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1554,7 +1796,7 @@ func (x *PairNearbyRequest) String() string {
 func (*PairNearbyRequest) ProtoMessage() {}
 
 func (x *PairNearbyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[19]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1567,7 +1809,7 @@ func (x *PairNearbyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PairNearbyRequest.ProtoReflect.Descriptor instead.
 func (*PairNearbyRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{19}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *PairNearbyRequest) GetId() string {
@@ -1586,7 +1828,7 @@ type UnpairRequest struct {
 
 func (x *UnpairRequest) Reset() {
 	*x = UnpairRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[20]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1598,7 +1840,7 @@ func (x *UnpairRequest) String() string {
 func (*UnpairRequest) ProtoMessage() {}
 
 func (x *UnpairRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[20]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1611,7 +1853,7 @@ func (x *UnpairRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnpairRequest.ProtoReflect.Descriptor instead.
 func (*UnpairRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{20}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *UnpairRequest) GetDeviceId() string {
@@ -1631,7 +1873,7 @@ type SetDeviceAddressRequest struct {
 
 func (x *SetDeviceAddressRequest) Reset() {
 	*x = SetDeviceAddressRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[21]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1643,7 +1885,7 @@ func (x *SetDeviceAddressRequest) String() string {
 func (*SetDeviceAddressRequest) ProtoMessage() {}
 
 func (x *SetDeviceAddressRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[21]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1656,7 +1898,7 @@ func (x *SetDeviceAddressRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetDeviceAddressRequest.ProtoReflect.Descriptor instead.
 func (*SetDeviceAddressRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{21}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *SetDeviceAddressRequest) GetDeviceId() string {
@@ -1703,7 +1945,7 @@ type Config struct {
 
 func (x *Config) Reset() {
 	*x = Config{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[22]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1715,7 +1957,7 @@ func (x *Config) String() string {
 func (*Config) ProtoMessage() {}
 
 func (x *Config) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[22]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1728,7 +1970,7 @@ func (x *Config) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Config.ProtoReflect.Descriptor instead.
 func (*Config) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{22}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *Config) GetAutoSyncThresholdBytes() int64 {
@@ -1844,7 +2086,7 @@ type NetworkInfo struct {
 
 func (x *NetworkInfo) Reset() {
 	*x = NetworkInfo{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[23]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1856,7 +2098,7 @@ func (x *NetworkInfo) String() string {
 func (*NetworkInfo) ProtoMessage() {}
 
 func (x *NetworkInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[23]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1869,7 +2111,7 @@ func (x *NetworkInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NetworkInfo.ProtoReflect.Descriptor instead.
 func (*NetworkInfo) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{23}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *NetworkInfo) GetLocalPort() int32 {
@@ -1929,7 +2171,7 @@ type LanInfo struct {
 
 func (x *LanInfo) Reset() {
 	*x = LanInfo{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[24]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1941,7 +2183,7 @@ func (x *LanInfo) String() string {
 func (*LanInfo) ProtoMessage() {}
 
 func (x *LanInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[24]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1954,7 +2196,7 @@ func (x *LanInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LanInfo.ProtoReflect.Descriptor instead.
 func (*LanInfo) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{24}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *LanInfo) GetEnabled() bool {
@@ -2013,7 +2255,7 @@ type LanPeer struct {
 
 func (x *LanPeer) Reset() {
 	*x = LanPeer{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[25]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2025,7 +2267,7 @@ func (x *LanPeer) String() string {
 func (*LanPeer) ProtoMessage() {}
 
 func (x *LanPeer) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[25]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2038,7 +2280,7 @@ func (x *LanPeer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LanPeer.ProtoReflect.Descriptor instead.
 func (*LanPeer) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{25}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *LanPeer) GetDeviceId() string {
@@ -2095,7 +2337,7 @@ type NetworkEgress struct {
 
 func (x *NetworkEgress) Reset() {
 	*x = NetworkEgress{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[26]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2107,7 +2349,7 @@ func (x *NetworkEgress) String() string {
 func (*NetworkEgress) ProtoMessage() {}
 
 func (x *NetworkEgress) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[26]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2120,7 +2362,7 @@ func (x *NetworkEgress) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NetworkEgress.ProtoReflect.Descriptor instead.
 func (*NetworkEgress) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{26}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *NetworkEgress) GetAddress() string {
@@ -2173,7 +2415,7 @@ type Status struct {
 
 func (x *Status) Reset() {
 	*x = Status{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[27]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2185,7 +2427,7 @@ func (x *Status) String() string {
 func (*Status) ProtoMessage() {}
 
 func (x *Status) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[27]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2198,7 +2440,7 @@ func (x *Status) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Status.ProtoReflect.Descriptor instead.
 func (*Status) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{27}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *Status) GetDeviceId() string {
@@ -2288,7 +2530,7 @@ type ExportDiagnosticsRequest struct {
 
 func (x *ExportDiagnosticsRequest) Reset() {
 	*x = ExportDiagnosticsRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[28]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2300,7 +2542,7 @@ func (x *ExportDiagnosticsRequest) String() string {
 func (*ExportDiagnosticsRequest) ProtoMessage() {}
 
 func (x *ExportDiagnosticsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[28]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2313,7 +2555,7 @@ func (x *ExportDiagnosticsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExportDiagnosticsRequest.ProtoReflect.Descriptor instead.
 func (*ExportDiagnosticsRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{28}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *ExportDiagnosticsRequest) GetLogLines() int32 {
@@ -2339,7 +2581,7 @@ type Diagnostics struct {
 
 func (x *Diagnostics) Reset() {
 	*x = Diagnostics{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[29]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2351,7 +2593,7 @@ func (x *Diagnostics) String() string {
 func (*Diagnostics) ProtoMessage() {}
 
 func (x *Diagnostics) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[29]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2364,7 +2606,7 @@ func (x *Diagnostics) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Diagnostics.ProtoReflect.Descriptor instead.
 func (*Diagnostics) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{29}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *Diagnostics) GetReport() string {
@@ -2383,7 +2625,7 @@ type SetVerboseLogRequest struct {
 
 func (x *SetVerboseLogRequest) Reset() {
 	*x = SetVerboseLogRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[30]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2395,7 +2637,7 @@ func (x *SetVerboseLogRequest) String() string {
 func (*SetVerboseLogRequest) ProtoMessage() {}
 
 func (x *SetVerboseLogRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[30]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2408,7 +2650,7 @@ func (x *SetVerboseLogRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetVerboseLogRequest.ProtoReflect.Descriptor instead.
 func (*SetVerboseLogRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{30}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *SetVerboseLogRequest) GetMinutes() int32 {
@@ -2428,7 +2670,7 @@ type GetImagePreviewRequest struct {
 
 func (x *GetImagePreviewRequest) Reset() {
 	*x = GetImagePreviewRequest{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[31]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2440,7 +2682,7 @@ func (x *GetImagePreviewRequest) String() string {
 func (*GetImagePreviewRequest) ProtoMessage() {}
 
 func (x *GetImagePreviewRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[31]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2453,7 +2695,7 @@ func (x *GetImagePreviewRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetImagePreviewRequest.ProtoReflect.Descriptor instead.
 func (*GetImagePreviewRequest) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{31}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *GetImagePreviewRequest) GetClipId() string {
@@ -2481,7 +2723,7 @@ type GetImagePreviewResponse struct {
 
 func (x *GetImagePreviewResponse) Reset() {
 	*x = GetImagePreviewResponse{}
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[32]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2493,7 +2735,7 @@ func (x *GetImagePreviewResponse) String() string {
 func (*GetImagePreviewResponse) ProtoMessage() {}
 
 func (x *GetImagePreviewResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pasteferry_v1_daemon_proto_msgTypes[32]
+	mi := &file_pasteferry_v1_daemon_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2506,7 +2748,7 @@ func (x *GetImagePreviewResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetImagePreviewResponse.ProtoReflect.Descriptor instead.
 func (*GetImagePreviewResponse) Descriptor() ([]byte, []int) {
-	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{32}
+	return file_pasteferry_v1_daemon_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GetImagePreviewResponse) GetPath() string {
@@ -2577,7 +2819,7 @@ const file_pasteferry_v1_daemon_proto_rawDesc = "" +
 	"connection\x124\n" +
 	"\x16public_key_fingerprint\x18\x06 \x01(\tR\x14publicKeyFingerprint\x12$\n" +
 	"\x0epaired_at_unix\x18\a \x01(\x03R\fpairedAtUnix\x12'\n" +
-	"\x0fpairing_session\x18\b \x01(\tR\x0epairingSession\"\xc7\x03\n" +
+	"\x0fpairing_session\x18\b \x01(\tR\x0epairingSession\"\x9b\x04\n" +
 	"\x05Event\x12:\n" +
 	"\n" +
 	"clip_added\x18\x01 \x01(\v2\x19.pasteferry.v1.ClipRecordH\x00R\tclipAdded\x12>\n" +
@@ -2586,8 +2828,22 @@ const file_pasteferry_v1_daemon_proto_rawDesc = "" +
 	"\bprogress\x18\x04 \x01(\v2\x1f.pasteferry.v1.TransferProgressH\x00R\bprogress\x12>\n" +
 	"\x0edevice_changed\x18\x05 \x01(\v2\x15.pasteferry.v1.DeviceH\x00R\rdeviceChanged\x12S\n" +
 	"\x12permission_changed\x18\x06 \x01(\x0e2\".pasteferry.v1.ClipboardPermissionH\x00R\x11permissionChanged\x12>\n" +
-	"\x0estatus_changed\x18\a \x01(\v2\x15.pasteferry.v1.StatusH\x00R\rstatusChangedB\t\n" +
-	"\apayload\"\x9b\x01\n" +
+	"\x0estatus_changed\x18\a \x01(\v2\x15.pasteferry.v1.StatusH\x00R\rstatusChanged\x12R\n" +
+	"\x11clipboard_written\x18\b \x01(\v2#.pasteferry.v1.ClipboardWriteResultH\x00R\x10clipboardWrittenB\t\n" +
+	"\apayload\"\x7f\n" +
+	"\x12NotificationStatus\x12\x1c\n" +
+	"\tsupported\x18\x01 \x01(\bR\tsupported\x12+\n" +
+	"\x11actions_supported\x18\x02 \x01(\bR\x10actionsSupported\x12\x1e\n" +
+	"\n" +
+	"permission\x18\x03 \x01(\tR\n" +
+	"permission\"E\n" +
+	"\x12NotificationAction\x12\x17\n" +
+	"\aclip_id\x18\x01 \x01(\tR\x06clipId\x12\x16\n" +
+	"\x06action\x18\x02 \x01(\tR\x06action\"\x85\x01\n" +
+	"\x14ClipboardWriteResult\x12\x17\n" +
+	"\aclip_id\x18\x01 \x01(\tR\x06clipId\x12>\n" +
+	"\aoutcome\x18\x02 \x01(\x0e2$.pasteferry.v1.ClipboardWriteOutcomeR\aoutcome\x12\x14\n" +
+	"\x05error\x18\x03 \x01(\tR\x05error\"\x9b\x01\n" +
 	"\x12ListHistoryRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\x12\x1f\n" +
 	"\vbefore_unix\x18\x02 \x01(\x03R\n" +
@@ -2740,7 +2996,12 @@ const file_pasteferry_v1_daemon_proto_rawDesc = "" +
 	"\x1cCLIPBOARD_PERMISSION_DEFAULT\x10\x02\x12\x1c\n" +
 	"\x18CLIPBOARD_PERMISSION_ASK\x10\x03\x12%\n" +
 	"!CLIPBOARD_PERMISSION_ALWAYS_ALLOW\x10\x04\x12$\n" +
-	" CLIPBOARD_PERMISSION_ALWAYS_DENY\x10\x052\x9a\r\n" +
+	" CLIPBOARD_PERMISSION_ALWAYS_DENY\x10\x05*\xb0\x01\n" +
+	"\x15ClipboardWriteOutcome\x12'\n" +
+	"#CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED\x10\x00\x12#\n" +
+	"\x1fCLIPBOARD_WRITE_OUTCOME_APPLIED\x10\x01\x12%\n" +
+	"!CLIPBOARD_WRITE_OUTCOME_PRESERVED\x10\x02\x12\"\n" +
+	"\x1eCLIPBOARD_WRITE_OUTCOME_FAILED\x10\x032\x97\x0f\n" +
 	"\rDaemonService\x12D\n" +
 	"\tSubscribe\x12\x1f.pasteferry.v1.SubscribeRequest\x1a\x14.pasteferry.v1.Event0\x01\x12T\n" +
 	"\vListHistory\x12!.pasteferry.v1.ListHistoryRequest\x1a\".pasteferry.v1.ListHistoryResponse\x12J\n" +
@@ -2761,7 +3022,10 @@ const file_pasteferry_v1_daemon_proto_rawDesc = "" +
 	"\fUpdateConfig\x12\x15.pasteferry.v1.Config\x1a\x15.pasteferry.v1.Config\x128\n" +
 	"\tGetStatus\x12\x14.pasteferry.v1.Empty\x1a\x15.pasteferry.v1.Status\x12H\n" +
 	"\x1aRequestClipboardPermission\x12\x14.pasteferry.v1.Empty\x1a\x14.pasteferry.v1.Empty\x12K\n" +
-	"\x1dRequestLocalNetworkPermission\x12\x14.pasteferry.v1.Empty\x1a\x14.pasteferry.v1.Empty\x12>\n" +
+	"\x1dRequestLocalNetworkPermission\x12\x14.pasteferry.v1.Empty\x1a\x14.pasteferry.v1.Empty\x12P\n" +
+	"\x15GetNotificationStatus\x12\x14.pasteferry.v1.Empty\x1a!.pasteferry.v1.NotificationStatus\x12X\n" +
+	"\x1dRequestNotificationPermission\x12\x14.pasteferry.v1.Empty\x1a!.pasteferry.v1.NotificationStatus\x12O\n" +
+	"\x14ActivateNotification\x12!.pasteferry.v1.NotificationAction\x1a\x14.pasteferry.v1.Empty\x12>\n" +
 	"\n" +
 	"GetNetwork\x12\x14.pasteferry.v1.Empty\x1a\x1a.pasteferry.v1.NetworkInfo\x12X\n" +
 	"\x11ExportDiagnostics\x12'.pasteferry.v1.ExportDiagnosticsRequest\x1a\x1a.pasteferry.v1.Diagnostics\x12K\n" +
@@ -2779,117 +3043,129 @@ func file_pasteferry_v1_daemon_proto_rawDescGZIP() []byte {
 	return file_pasteferry_v1_daemon_proto_rawDescData
 }
 
-var file_pasteferry_v1_daemon_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_pasteferry_v1_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
+var file_pasteferry_v1_daemon_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
+var file_pasteferry_v1_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 36)
 var file_pasteferry_v1_daemon_proto_goTypes = []any{
 	(ClipKind)(0),                     // 0: pasteferry.v1.ClipKind
 	(ClipStatus)(0),                   // 1: pasteferry.v1.ClipStatus
 	(ConnectionKind)(0),               // 2: pasteferry.v1.ConnectionKind
 	(ClipboardPermission)(0),          // 3: pasteferry.v1.ClipboardPermission
-	(*Empty)(nil),                     // 4: pasteferry.v1.Empty
-	(*ClipItem)(nil),                  // 5: pasteferry.v1.ClipItem
-	(*ClipRecord)(nil),                // 6: pasteferry.v1.ClipRecord
-	(*SubscribeRequest)(nil),          // 7: pasteferry.v1.SubscribeRequest
-	(*TransferProgress)(nil),          // 8: pasteferry.v1.TransferProgress
-	(*Device)(nil),                    // 9: pasteferry.v1.Device
-	(*Event)(nil),                     // 10: pasteferry.v1.Event
-	(*ListHistoryRequest)(nil),        // 11: pasteferry.v1.ListHistoryRequest
-	(*ListHistoryResponse)(nil),       // 12: pasteferry.v1.ListHistoryResponse
-	(*DeleteHistoryRequest)(nil),      // 13: pasteferry.v1.DeleteHistoryRequest
-	(*FetchRequest)(nil),              // 14: pasteferry.v1.FetchRequest
-	(*ApplyToClipboardRequest)(nil),   // 15: pasteferry.v1.ApplyToClipboardRequest
-	(*ListDevicesResponse)(nil),       // 16: pasteferry.v1.ListDevicesResponse
-	(*CreatePairingCodeResponse)(nil), // 17: pasteferry.v1.CreatePairingCodeResponse
-	(*RedeemPairingCodeRequest)(nil),  // 18: pasteferry.v1.RedeemPairingCodeRequest
-	(*RedeemPairingCodeResponse)(nil), // 19: pasteferry.v1.RedeemPairingCodeResponse
-	(*ConfirmPairingRequest)(nil),     // 20: pasteferry.v1.ConfirmPairingRequest
-	(*NearbyDevice)(nil),              // 21: pasteferry.v1.NearbyDevice
-	(*NearbyDevices)(nil),             // 22: pasteferry.v1.NearbyDevices
-	(*PairNearbyRequest)(nil),         // 23: pasteferry.v1.PairNearbyRequest
-	(*UnpairRequest)(nil),             // 24: pasteferry.v1.UnpairRequest
-	(*SetDeviceAddressRequest)(nil),   // 25: pasteferry.v1.SetDeviceAddressRequest
-	(*Config)(nil),                    // 26: pasteferry.v1.Config
-	(*NetworkInfo)(nil),               // 27: pasteferry.v1.NetworkInfo
-	(*LanInfo)(nil),                   // 28: pasteferry.v1.LanInfo
-	(*LanPeer)(nil),                   // 29: pasteferry.v1.LanPeer
-	(*NetworkEgress)(nil),             // 30: pasteferry.v1.NetworkEgress
-	(*Status)(nil),                    // 31: pasteferry.v1.Status
-	(*ExportDiagnosticsRequest)(nil),  // 32: pasteferry.v1.ExportDiagnosticsRequest
-	(*Diagnostics)(nil),               // 33: pasteferry.v1.Diagnostics
-	(*SetVerboseLogRequest)(nil),      // 34: pasteferry.v1.SetVerboseLogRequest
-	(*GetImagePreviewRequest)(nil),    // 35: pasteferry.v1.GetImagePreviewRequest
-	(*GetImagePreviewResponse)(nil),   // 36: pasteferry.v1.GetImagePreviewResponse
+	(ClipboardWriteOutcome)(0),        // 4: pasteferry.v1.ClipboardWriteOutcome
+	(*Empty)(nil),                     // 5: pasteferry.v1.Empty
+	(*ClipItem)(nil),                  // 6: pasteferry.v1.ClipItem
+	(*ClipRecord)(nil),                // 7: pasteferry.v1.ClipRecord
+	(*SubscribeRequest)(nil),          // 8: pasteferry.v1.SubscribeRequest
+	(*TransferProgress)(nil),          // 9: pasteferry.v1.TransferProgress
+	(*Device)(nil),                    // 10: pasteferry.v1.Device
+	(*Event)(nil),                     // 11: pasteferry.v1.Event
+	(*NotificationStatus)(nil),        // 12: pasteferry.v1.NotificationStatus
+	(*NotificationAction)(nil),        // 13: pasteferry.v1.NotificationAction
+	(*ClipboardWriteResult)(nil),      // 14: pasteferry.v1.ClipboardWriteResult
+	(*ListHistoryRequest)(nil),        // 15: pasteferry.v1.ListHistoryRequest
+	(*ListHistoryResponse)(nil),       // 16: pasteferry.v1.ListHistoryResponse
+	(*DeleteHistoryRequest)(nil),      // 17: pasteferry.v1.DeleteHistoryRequest
+	(*FetchRequest)(nil),              // 18: pasteferry.v1.FetchRequest
+	(*ApplyToClipboardRequest)(nil),   // 19: pasteferry.v1.ApplyToClipboardRequest
+	(*ListDevicesResponse)(nil),       // 20: pasteferry.v1.ListDevicesResponse
+	(*CreatePairingCodeResponse)(nil), // 21: pasteferry.v1.CreatePairingCodeResponse
+	(*RedeemPairingCodeRequest)(nil),  // 22: pasteferry.v1.RedeemPairingCodeRequest
+	(*RedeemPairingCodeResponse)(nil), // 23: pasteferry.v1.RedeemPairingCodeResponse
+	(*ConfirmPairingRequest)(nil),     // 24: pasteferry.v1.ConfirmPairingRequest
+	(*NearbyDevice)(nil),              // 25: pasteferry.v1.NearbyDevice
+	(*NearbyDevices)(nil),             // 26: pasteferry.v1.NearbyDevices
+	(*PairNearbyRequest)(nil),         // 27: pasteferry.v1.PairNearbyRequest
+	(*UnpairRequest)(nil),             // 28: pasteferry.v1.UnpairRequest
+	(*SetDeviceAddressRequest)(nil),   // 29: pasteferry.v1.SetDeviceAddressRequest
+	(*Config)(nil),                    // 30: pasteferry.v1.Config
+	(*NetworkInfo)(nil),               // 31: pasteferry.v1.NetworkInfo
+	(*LanInfo)(nil),                   // 32: pasteferry.v1.LanInfo
+	(*LanPeer)(nil),                   // 33: pasteferry.v1.LanPeer
+	(*NetworkEgress)(nil),             // 34: pasteferry.v1.NetworkEgress
+	(*Status)(nil),                    // 35: pasteferry.v1.Status
+	(*ExportDiagnosticsRequest)(nil),  // 36: pasteferry.v1.ExportDiagnosticsRequest
+	(*Diagnostics)(nil),               // 37: pasteferry.v1.Diagnostics
+	(*SetVerboseLogRequest)(nil),      // 38: pasteferry.v1.SetVerboseLogRequest
+	(*GetImagePreviewRequest)(nil),    // 39: pasteferry.v1.GetImagePreviewRequest
+	(*GetImagePreviewResponse)(nil),   // 40: pasteferry.v1.GetImagePreviewResponse
 }
 var file_pasteferry_v1_daemon_proto_depIdxs = []int32{
 	0,  // 0: pasteferry.v1.ClipRecord.kind:type_name -> pasteferry.v1.ClipKind
 	1,  // 1: pasteferry.v1.ClipRecord.status:type_name -> pasteferry.v1.ClipStatus
-	5,  // 2: pasteferry.v1.ClipRecord.items:type_name -> pasteferry.v1.ClipItem
+	6,  // 2: pasteferry.v1.ClipRecord.items:type_name -> pasteferry.v1.ClipItem
 	2,  // 3: pasteferry.v1.Device.connection:type_name -> pasteferry.v1.ConnectionKind
-	6,  // 4: pasteferry.v1.Event.clip_added:type_name -> pasteferry.v1.ClipRecord
-	6,  // 5: pasteferry.v1.Event.clip_updated:type_name -> pasteferry.v1.ClipRecord
-	8,  // 6: pasteferry.v1.Event.progress:type_name -> pasteferry.v1.TransferProgress
-	9,  // 7: pasteferry.v1.Event.device_changed:type_name -> pasteferry.v1.Device
+	7,  // 4: pasteferry.v1.Event.clip_added:type_name -> pasteferry.v1.ClipRecord
+	7,  // 5: pasteferry.v1.Event.clip_updated:type_name -> pasteferry.v1.ClipRecord
+	9,  // 6: pasteferry.v1.Event.progress:type_name -> pasteferry.v1.TransferProgress
+	10, // 7: pasteferry.v1.Event.device_changed:type_name -> pasteferry.v1.Device
 	3,  // 8: pasteferry.v1.Event.permission_changed:type_name -> pasteferry.v1.ClipboardPermission
-	31, // 9: pasteferry.v1.Event.status_changed:type_name -> pasteferry.v1.Status
-	0,  // 10: pasteferry.v1.ListHistoryRequest.kind_filter:type_name -> pasteferry.v1.ClipKind
-	6,  // 11: pasteferry.v1.ListHistoryResponse.records:type_name -> pasteferry.v1.ClipRecord
-	9,  // 12: pasteferry.v1.ListDevicesResponse.self:type_name -> pasteferry.v1.Device
-	9,  // 13: pasteferry.v1.ListDevicesResponse.peers:type_name -> pasteferry.v1.Device
-	9,  // 14: pasteferry.v1.RedeemPairingCodeResponse.peer:type_name -> pasteferry.v1.Device
-	21, // 15: pasteferry.v1.NearbyDevices.devices:type_name -> pasteferry.v1.NearbyDevice
-	30, // 16: pasteferry.v1.NetworkInfo.egresses:type_name -> pasteferry.v1.NetworkEgress
-	28, // 17: pasteferry.v1.NetworkInfo.lan:type_name -> pasteferry.v1.LanInfo
-	29, // 18: pasteferry.v1.LanInfo.peers:type_name -> pasteferry.v1.LanPeer
-	3,  // 19: pasteferry.v1.Status.clipboard_permission:type_name -> pasteferry.v1.ClipboardPermission
-	7,  // 20: pasteferry.v1.DaemonService.Subscribe:input_type -> pasteferry.v1.SubscribeRequest
-	11, // 21: pasteferry.v1.DaemonService.ListHistory:input_type -> pasteferry.v1.ListHistoryRequest
-	13, // 22: pasteferry.v1.DaemonService.DeleteHistory:input_type -> pasteferry.v1.DeleteHistoryRequest
-	14, // 23: pasteferry.v1.DaemonService.Fetch:input_type -> pasteferry.v1.FetchRequest
-	15, // 24: pasteferry.v1.DaemonService.ApplyToClipboard:input_type -> pasteferry.v1.ApplyToClipboardRequest
-	35, // 25: pasteferry.v1.DaemonService.GetImagePreview:input_type -> pasteferry.v1.GetImagePreviewRequest
-	4,  // 26: pasteferry.v1.DaemonService.ListDevices:input_type -> pasteferry.v1.Empty
-	4,  // 27: pasteferry.v1.DaemonService.CreatePairingCode:input_type -> pasteferry.v1.Empty
-	18, // 28: pasteferry.v1.DaemonService.RedeemPairingCode:input_type -> pasteferry.v1.RedeemPairingCodeRequest
-	20, // 29: pasteferry.v1.DaemonService.ConfirmPairing:input_type -> pasteferry.v1.ConfirmPairingRequest
-	24, // 30: pasteferry.v1.DaemonService.Unpair:input_type -> pasteferry.v1.UnpairRequest
-	25, // 31: pasteferry.v1.DaemonService.SetDeviceAddress:input_type -> pasteferry.v1.SetDeviceAddressRequest
-	4,  // 32: pasteferry.v1.DaemonService.WatchNearby:input_type -> pasteferry.v1.Empty
-	23, // 33: pasteferry.v1.DaemonService.PairNearby:input_type -> pasteferry.v1.PairNearbyRequest
-	4,  // 34: pasteferry.v1.DaemonService.GetConfig:input_type -> pasteferry.v1.Empty
-	26, // 35: pasteferry.v1.DaemonService.UpdateConfig:input_type -> pasteferry.v1.Config
-	4,  // 36: pasteferry.v1.DaemonService.GetStatus:input_type -> pasteferry.v1.Empty
-	4,  // 37: pasteferry.v1.DaemonService.RequestClipboardPermission:input_type -> pasteferry.v1.Empty
-	4,  // 38: pasteferry.v1.DaemonService.RequestLocalNetworkPermission:input_type -> pasteferry.v1.Empty
-	4,  // 39: pasteferry.v1.DaemonService.GetNetwork:input_type -> pasteferry.v1.Empty
-	32, // 40: pasteferry.v1.DaemonService.ExportDiagnostics:input_type -> pasteferry.v1.ExportDiagnosticsRequest
-	34, // 41: pasteferry.v1.DaemonService.SetVerboseLog:input_type -> pasteferry.v1.SetVerboseLogRequest
-	10, // 42: pasteferry.v1.DaemonService.Subscribe:output_type -> pasteferry.v1.Event
-	12, // 43: pasteferry.v1.DaemonService.ListHistory:output_type -> pasteferry.v1.ListHistoryResponse
-	4,  // 44: pasteferry.v1.DaemonService.DeleteHistory:output_type -> pasteferry.v1.Empty
-	4,  // 45: pasteferry.v1.DaemonService.Fetch:output_type -> pasteferry.v1.Empty
-	4,  // 46: pasteferry.v1.DaemonService.ApplyToClipboard:output_type -> pasteferry.v1.Empty
-	36, // 47: pasteferry.v1.DaemonService.GetImagePreview:output_type -> pasteferry.v1.GetImagePreviewResponse
-	16, // 48: pasteferry.v1.DaemonService.ListDevices:output_type -> pasteferry.v1.ListDevicesResponse
-	17, // 49: pasteferry.v1.DaemonService.CreatePairingCode:output_type -> pasteferry.v1.CreatePairingCodeResponse
-	19, // 50: pasteferry.v1.DaemonService.RedeemPairingCode:output_type -> pasteferry.v1.RedeemPairingCodeResponse
-	4,  // 51: pasteferry.v1.DaemonService.ConfirmPairing:output_type -> pasteferry.v1.Empty
-	4,  // 52: pasteferry.v1.DaemonService.Unpair:output_type -> pasteferry.v1.Empty
-	4,  // 53: pasteferry.v1.DaemonService.SetDeviceAddress:output_type -> pasteferry.v1.Empty
-	22, // 54: pasteferry.v1.DaemonService.WatchNearby:output_type -> pasteferry.v1.NearbyDevices
-	19, // 55: pasteferry.v1.DaemonService.PairNearby:output_type -> pasteferry.v1.RedeemPairingCodeResponse
-	26, // 56: pasteferry.v1.DaemonService.GetConfig:output_type -> pasteferry.v1.Config
-	26, // 57: pasteferry.v1.DaemonService.UpdateConfig:output_type -> pasteferry.v1.Config
-	31, // 58: pasteferry.v1.DaemonService.GetStatus:output_type -> pasteferry.v1.Status
-	4,  // 59: pasteferry.v1.DaemonService.RequestClipboardPermission:output_type -> pasteferry.v1.Empty
-	4,  // 60: pasteferry.v1.DaemonService.RequestLocalNetworkPermission:output_type -> pasteferry.v1.Empty
-	27, // 61: pasteferry.v1.DaemonService.GetNetwork:output_type -> pasteferry.v1.NetworkInfo
-	33, // 62: pasteferry.v1.DaemonService.ExportDiagnostics:output_type -> pasteferry.v1.Diagnostics
-	31, // 63: pasteferry.v1.DaemonService.SetVerboseLog:output_type -> pasteferry.v1.Status
-	42, // [42:64] is the sub-list for method output_type
-	20, // [20:42] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	35, // 9: pasteferry.v1.Event.status_changed:type_name -> pasteferry.v1.Status
+	14, // 10: pasteferry.v1.Event.clipboard_written:type_name -> pasteferry.v1.ClipboardWriteResult
+	4,  // 11: pasteferry.v1.ClipboardWriteResult.outcome:type_name -> pasteferry.v1.ClipboardWriteOutcome
+	0,  // 12: pasteferry.v1.ListHistoryRequest.kind_filter:type_name -> pasteferry.v1.ClipKind
+	7,  // 13: pasteferry.v1.ListHistoryResponse.records:type_name -> pasteferry.v1.ClipRecord
+	10, // 14: pasteferry.v1.ListDevicesResponse.self:type_name -> pasteferry.v1.Device
+	10, // 15: pasteferry.v1.ListDevicesResponse.peers:type_name -> pasteferry.v1.Device
+	10, // 16: pasteferry.v1.RedeemPairingCodeResponse.peer:type_name -> pasteferry.v1.Device
+	25, // 17: pasteferry.v1.NearbyDevices.devices:type_name -> pasteferry.v1.NearbyDevice
+	34, // 18: pasteferry.v1.NetworkInfo.egresses:type_name -> pasteferry.v1.NetworkEgress
+	32, // 19: pasteferry.v1.NetworkInfo.lan:type_name -> pasteferry.v1.LanInfo
+	33, // 20: pasteferry.v1.LanInfo.peers:type_name -> pasteferry.v1.LanPeer
+	3,  // 21: pasteferry.v1.Status.clipboard_permission:type_name -> pasteferry.v1.ClipboardPermission
+	8,  // 22: pasteferry.v1.DaemonService.Subscribe:input_type -> pasteferry.v1.SubscribeRequest
+	15, // 23: pasteferry.v1.DaemonService.ListHistory:input_type -> pasteferry.v1.ListHistoryRequest
+	17, // 24: pasteferry.v1.DaemonService.DeleteHistory:input_type -> pasteferry.v1.DeleteHistoryRequest
+	18, // 25: pasteferry.v1.DaemonService.Fetch:input_type -> pasteferry.v1.FetchRequest
+	19, // 26: pasteferry.v1.DaemonService.ApplyToClipboard:input_type -> pasteferry.v1.ApplyToClipboardRequest
+	39, // 27: pasteferry.v1.DaemonService.GetImagePreview:input_type -> pasteferry.v1.GetImagePreviewRequest
+	5,  // 28: pasteferry.v1.DaemonService.ListDevices:input_type -> pasteferry.v1.Empty
+	5,  // 29: pasteferry.v1.DaemonService.CreatePairingCode:input_type -> pasteferry.v1.Empty
+	22, // 30: pasteferry.v1.DaemonService.RedeemPairingCode:input_type -> pasteferry.v1.RedeemPairingCodeRequest
+	24, // 31: pasteferry.v1.DaemonService.ConfirmPairing:input_type -> pasteferry.v1.ConfirmPairingRequest
+	28, // 32: pasteferry.v1.DaemonService.Unpair:input_type -> pasteferry.v1.UnpairRequest
+	29, // 33: pasteferry.v1.DaemonService.SetDeviceAddress:input_type -> pasteferry.v1.SetDeviceAddressRequest
+	5,  // 34: pasteferry.v1.DaemonService.WatchNearby:input_type -> pasteferry.v1.Empty
+	27, // 35: pasteferry.v1.DaemonService.PairNearby:input_type -> pasteferry.v1.PairNearbyRequest
+	5,  // 36: pasteferry.v1.DaemonService.GetConfig:input_type -> pasteferry.v1.Empty
+	30, // 37: pasteferry.v1.DaemonService.UpdateConfig:input_type -> pasteferry.v1.Config
+	5,  // 38: pasteferry.v1.DaemonService.GetStatus:input_type -> pasteferry.v1.Empty
+	5,  // 39: pasteferry.v1.DaemonService.RequestClipboardPermission:input_type -> pasteferry.v1.Empty
+	5,  // 40: pasteferry.v1.DaemonService.RequestLocalNetworkPermission:input_type -> pasteferry.v1.Empty
+	5,  // 41: pasteferry.v1.DaemonService.GetNotificationStatus:input_type -> pasteferry.v1.Empty
+	5,  // 42: pasteferry.v1.DaemonService.RequestNotificationPermission:input_type -> pasteferry.v1.Empty
+	13, // 43: pasteferry.v1.DaemonService.ActivateNotification:input_type -> pasteferry.v1.NotificationAction
+	5,  // 44: pasteferry.v1.DaemonService.GetNetwork:input_type -> pasteferry.v1.Empty
+	36, // 45: pasteferry.v1.DaemonService.ExportDiagnostics:input_type -> pasteferry.v1.ExportDiagnosticsRequest
+	38, // 46: pasteferry.v1.DaemonService.SetVerboseLog:input_type -> pasteferry.v1.SetVerboseLogRequest
+	11, // 47: pasteferry.v1.DaemonService.Subscribe:output_type -> pasteferry.v1.Event
+	16, // 48: pasteferry.v1.DaemonService.ListHistory:output_type -> pasteferry.v1.ListHistoryResponse
+	5,  // 49: pasteferry.v1.DaemonService.DeleteHistory:output_type -> pasteferry.v1.Empty
+	5,  // 50: pasteferry.v1.DaemonService.Fetch:output_type -> pasteferry.v1.Empty
+	5,  // 51: pasteferry.v1.DaemonService.ApplyToClipboard:output_type -> pasteferry.v1.Empty
+	40, // 52: pasteferry.v1.DaemonService.GetImagePreview:output_type -> pasteferry.v1.GetImagePreviewResponse
+	20, // 53: pasteferry.v1.DaemonService.ListDevices:output_type -> pasteferry.v1.ListDevicesResponse
+	21, // 54: pasteferry.v1.DaemonService.CreatePairingCode:output_type -> pasteferry.v1.CreatePairingCodeResponse
+	23, // 55: pasteferry.v1.DaemonService.RedeemPairingCode:output_type -> pasteferry.v1.RedeemPairingCodeResponse
+	5,  // 56: pasteferry.v1.DaemonService.ConfirmPairing:output_type -> pasteferry.v1.Empty
+	5,  // 57: pasteferry.v1.DaemonService.Unpair:output_type -> pasteferry.v1.Empty
+	5,  // 58: pasteferry.v1.DaemonService.SetDeviceAddress:output_type -> pasteferry.v1.Empty
+	26, // 59: pasteferry.v1.DaemonService.WatchNearby:output_type -> pasteferry.v1.NearbyDevices
+	23, // 60: pasteferry.v1.DaemonService.PairNearby:output_type -> pasteferry.v1.RedeemPairingCodeResponse
+	30, // 61: pasteferry.v1.DaemonService.GetConfig:output_type -> pasteferry.v1.Config
+	30, // 62: pasteferry.v1.DaemonService.UpdateConfig:output_type -> pasteferry.v1.Config
+	35, // 63: pasteferry.v1.DaemonService.GetStatus:output_type -> pasteferry.v1.Status
+	5,  // 64: pasteferry.v1.DaemonService.RequestClipboardPermission:output_type -> pasteferry.v1.Empty
+	5,  // 65: pasteferry.v1.DaemonService.RequestLocalNetworkPermission:output_type -> pasteferry.v1.Empty
+	12, // 66: pasteferry.v1.DaemonService.GetNotificationStatus:output_type -> pasteferry.v1.NotificationStatus
+	12, // 67: pasteferry.v1.DaemonService.RequestNotificationPermission:output_type -> pasteferry.v1.NotificationStatus
+	5,  // 68: pasteferry.v1.DaemonService.ActivateNotification:output_type -> pasteferry.v1.Empty
+	31, // 69: pasteferry.v1.DaemonService.GetNetwork:output_type -> pasteferry.v1.NetworkInfo
+	37, // 70: pasteferry.v1.DaemonService.ExportDiagnostics:output_type -> pasteferry.v1.Diagnostics
+	35, // 71: pasteferry.v1.DaemonService.SetVerboseLog:output_type -> pasteferry.v1.Status
+	47, // [47:72] is the sub-list for method output_type
+	22, // [22:47] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_pasteferry_v1_daemon_proto_init() }
@@ -2905,14 +3181,15 @@ func file_pasteferry_v1_daemon_proto_init() {
 		(*Event_DeviceChanged)(nil),
 		(*Event_PermissionChanged)(nil),
 		(*Event_StatusChanged)(nil),
+		(*Event_ClipboardWritten)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pasteferry_v1_daemon_proto_rawDesc), len(file_pasteferry_v1_daemon_proto_rawDesc)),
-			NumEnums:      4,
-			NumMessages:   33,
+			NumEnums:      5,
+			NumMessages:   36,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

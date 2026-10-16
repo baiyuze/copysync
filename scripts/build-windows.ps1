@@ -12,6 +12,7 @@
 param([string]$Version)
 
 $ErrorActionPreference = 'Stop'
+$AppBuild = if ($env:APP_BUILD) { $env:APP_BUILD } else { git -C $PSScriptRoot rev-parse --short=8 HEAD }
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location $root
 
@@ -46,7 +47,7 @@ try {
 Write-Host '▶ 构建图形界面'
 Push-Location ui
 try {
-    Invoke-Checked { flutter build windows --release --build-name $Version "--dart-define=APP_VERSION=$Version" } 'flutter build windows'
+    Invoke-Checked { flutter build windows --release --build-name $Version "--dart-define=APP_VERSION=$Version" "--dart-define=APP_BUILD=$AppBuild" } 'flutter build windows'
 } finally {
     Pop-Location
 }

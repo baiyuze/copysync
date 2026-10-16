@@ -399,6 +399,19 @@ func (s *Store) SetClipStatus(id string, st Status, errMsg string) error {
 	return err
 }
 
+// RecoverReceives runs once before the daemon accepts connections. There are
+// no live streams after a restart; show a retry action instead of a stale spinner.
+func (s *Store) RecoverReceives() error {
+	_, err := s.db.Exec(`UPDATE clips SET status=?, error=? WHERE status=? AND outgoing=0`, StatusFailed, "接收已中断，请重试", StatusFetching)
+	return err
+}
+
+func (s *Store) CacheReferenced(rel string) (bool, error) {
+	var used bool
+	err := s.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM clips WHERE cache_path=?)`, rel).Scan(&used)
+	return used, err
+}
+
 func (s *Store) SetClipCache(id, cachePath string, totalSize int64) error {
 	_, err := s.db.Exec(`
 UPDATE clips SET cache_path=?, total_size=?, status=?, error='' WHERE id=?`,

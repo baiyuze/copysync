@@ -47,6 +47,11 @@ service DaemonService {
   // Windows 申请管理员权限，在防火墙里放行后台服务。其他平台返回 UNIMPLEMENTED。
   rpc RequestLocalNetworkPermission(Empty) returns (Empty);
 
+  // These belong to the background service, which also notifies with the UI closed.
+  rpc GetNotificationStatus(Empty) returns (NotificationStatus);
+  rpc RequestNotificationPermission(Empty) returns (NotificationStatus);
+  rpc ActivateNotification(NotificationAction) returns (Empty);
+
   // 网络出口与打洞诊断：本机有几个出口、各自的公网地址，见 pasteferry-cli nat
   rpc GetNetwork(Empty) returns (NetworkInfo);
 
@@ -163,7 +168,34 @@ message Event {
     Device device_changed = 5;
     ClipboardPermission permission_changed = 6;
     Status status_changed = 7;
+    ClipboardWriteResult clipboard_written = 8;
   }
+}
+
+message NotificationStatus {
+  bool supported = 1;
+  bool actions_supported = 2;
+  // unknown, not_requested, allowed, denied, unavailable
+  string permission = 3;
+}
+
+message NotificationAction {
+  string clip_id = 1;
+  string action = 2; // receive, apply, open
+}
+
+enum ClipboardWriteOutcome {
+  CLIPBOARD_WRITE_OUTCOME_UNSPECIFIED = 0;
+  CLIPBOARD_WRITE_OUTCOME_APPLIED = 1;
+  CLIPBOARD_WRITE_OUTCOME_PRESERVED = 2;
+  CLIPBOARD_WRITE_OUTCOME_FAILED = 3;
+}
+
+// READY still means downloaded, not necessarily the current system clipboard.
+message ClipboardWriteResult {
+  string clip_id = 1;
+  ClipboardWriteOutcome outcome = 2;
+  string error = 3;
 }
 
 // ─────────────────────────── 查询与操作 ───────────────────────────
