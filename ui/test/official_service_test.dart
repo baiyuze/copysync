@@ -60,7 +60,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(OfficialServicePage), findsOneWidget);
       expect(find.text('尚未申请中转，余额待核验'), findsWidgets);
-      expect(find.text('0 MB'), findsNothing);
+      expect(find.text('0.00 MB'), findsNothing);
       state.debugSeed(
         status: state.status!,
         config: state.config!.deepCopy()
@@ -150,10 +150,10 @@ void main() {
           available: true,
           day: '2026-10-16',
           quotaGroup: 'bucket',
-          uploadBytes: Int64(50000000),
-          downloadBytes: Int64(40000000),
+          uploadBytes: Int64(90001234),
+          downloadBytes: Int64(456789),
           limitBytes: Int64(100000000),
-          remainingBytes: Int64(10000000),
+          remainingBytes: Int64(9541977),
           resetAtUnix: Int64(now + 3600),
           updatedAtUnix: Int64(now),
         ),
@@ -163,8 +163,11 @@ void main() {
       await tester.tap(find.byIcon(Icons.cloud_outlined).first);
       await tester.pumpAndSettle();
       expect(find.byType(OfficialServicePage), findsOneWidget);
-      expect(find.text('90 MB'), findsOneWidget);
-      expect(find.text('100 MB'), findsOneWidget);
+      expect(find.text('90.46 MB'), findsOneWidget);
+      expect(find.text('100.00 MB'), findsOneWidget);
+      expect(find.text('9.54 MB'), findsOneWidget);
+      expect(find.text('90.00 MB'), findsOneWidget);
+      expect(find.text('0.46 MB'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   }

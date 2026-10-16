@@ -66,12 +66,13 @@ class _SettingsPageState extends State<SettingsPage> {
     final l = context.l10n;
     final connected = state.status?.signalingConnected == true;
     // 服务器是可选的：没填地址不是故障，用中性色
-    final (Color statusColor, String statusLabel, String statusDesc) = switch ((
-      state.serverConfigured,
-      connected,
-    )) {
-      (false, _) => (p.textFaint, l.notSet, l.notSetDesc),
-      (true, true) => (p.online, l.connected, l.connectedDesc),
+    final (
+      Color statusColor,
+      String statusLabel,
+      String? statusDesc,
+    ) = switch ((state.serverConfigured, connected)) {
+      (false, _) => (p.textFaint, l.notSet, null),
+      (true, true) => (p.online, l.connected, null),
       (true, false) => (p.danger, l.notConnected, l.disconnectedDesc),
     };
 
@@ -90,12 +91,11 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               GroupSection(
                 title: l.server,
-                footnote: l.serverFootnote,
                 child: GroupBox(
                   children: [
                     SettingRow(
                       title: l.useOfficialService,
-                      description: l.officialPrivacy,
+                      description: l.officialServiceDesc,
                       child: SmallSwitch(
                         value: state.officialEnabled,
                         onChanged: _serverSaving
@@ -107,24 +107,25 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: l.customServer,
                       description: l.signalingUrlDesc,
                       child: SizedBox(
-                        width: 290,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                        width: 360,
+                        child: Row(
                           children: [
-                            TextField(
-                              controller: _serverController,
-                              style: context.text.bodyMedium?.copyWith(
-                                fontFamily: monoFamily,
-                                fontSize: 12,
+                            Expanded(
+                              child: TextField(
+                                controller: _serverController,
+                                style: context.text.bodyMedium?.copyWith(
+                                  fontFamily: monoFamily,
+                                  fontSize: 12,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: l.signalingUrlPlaceholder,
+                                ),
+                                onChanged: (_) =>
+                                    setState(() => _serverDirty = true),
+                                onSubmitted: (_) => _saveServer(state, cfg),
                               ),
-                              decoration: InputDecoration(
-                                hintText: l.signalingUrlPlaceholder,
-                              ),
-                              onChanged: (_) =>
-                                  setState(() => _serverDirty = true),
-                              onSubmitted: (_) => _saveServer(state, cfg),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(width: 8),
                             FilledButton(
                               onPressed: _serverSaving
                                   ? null
@@ -153,7 +154,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               GroupSection(
                 title: l.localNetwork,
-                footnote: l.lanFootnote,
                 child: GroupBox(
                   children: [
                     SettingRow(
@@ -192,7 +192,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     SettingRow(
                       title: l.deviceName,
-                      description: l.deviceNameDesc,
                       child: SizedBox(
                         width: 220,
                         child: TextField(
@@ -236,7 +235,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               GroupSection(
                 title: l.sync,
-                footnote: l.syncFootnote,
                 child: GroupBox(
                   children: [
                     SettingRow(
@@ -252,7 +250,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     SettingRow(
                       title: l.autoApply,
-                      description: l.autoApplyDesc,
                       child: SmallSwitch(
                         value: cfg.autoApplyToClipboard,
                         onChanged: (v) =>
@@ -326,7 +323,6 @@ class _SettingsPageState extends State<SettingsPage> {
               if (state.service.available)
                 GroupSection(
                   title: l.backgroundSync,
-                  footnote: l.backgroundFootnote,
                   child: GroupBox(
                     children: [
                       SettingRow(

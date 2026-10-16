@@ -547,32 +547,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get server => '服务器（可选）';
 
   @override
-  String get serverFootnote =>
-      '只在不同网络之间同步时需要，比如家里和公司；同一网络里的设备不用服务器也能直接连上。服务器只负责让设备找到彼此，看不到传输的内容。';
-
-  @override
   String get signalingUrl => '信令服务器地址';
 
   @override
-  String get signalingUrlDesc => '点击“保存并连接”或按回车。留空表示只在局域网里同步';
+  String get signalingUrlDesc => '留空仅在局域网同步';
 
   @override
   String get signalingUrlPlaceholder => 'ws://服务器地址:8787/signal';
 
   @override
-  String get publicStun => '用公共服务器探测网络出口';
+  String get publicStun => '增强公网直连';
 
   @override
-  String get publicStunDesc => '公司双线这类多出口网络里，能找到更多可以直连的路径。公共服务器只会看到你的公网 IP';
+  String get publicStunDesc => '公共服务器可见本机公网 IP';
 
   @override
   String get connectionStatus => '连接状态';
 
   @override
-  String get connectedDesc => '已连接到信令服务器';
-
-  @override
-  String get disconnectedDesc => '连不上服务器。检查地址是否正确、服务器是否在运行。';
+  String get disconnectedDesc => '请检查地址与服务器状态';
 
   @override
   String get connected => '已连接';
@@ -584,36 +577,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notSet => '未设置';
 
   @override
-  String get notSetDesc => '只与同一网络里的设备同步';
-
-  @override
   String get serverCleared => '已清除服务器地址，只在局域网里同步';
 
   @override
   String get localNetwork => '局域网';
 
   @override
-  String get lanFootnote => '使用 UDP 端口 8788。两台不在同一网段时，配对时输入对方的地址。';
-
-  @override
   String get lanDiscovery => '在局域网中查找设备';
 
   @override
-  String get lanDiscoveryDesc =>
-      '不用服务器就能配对和同步。网络里的其他人只能看到一个每天都变的匿名标识；打开「搜索附近设备」期间才看得到设备名';
+  String get lanDiscoveryDesc => '匿名发现，仅搜索附近设备时显示名称';
 
   @override
   String get macLocalNetwork => '本地网络权限';
 
   @override
-  String get macLocalNetworkDesc =>
-      'macOS 会问一次是否允许隔空贴连接网络里的设备。拒绝过的话，到那里打开 PasteFerry Daemon';
+  String get macLocalNetworkDesc => '在系统设置中允许 PasteFerry Daemon';
 
   @override
   String get allowLan => 'Windows 防火墙';
 
   @override
-  String get allowLanDesc => '其他设备连不上这台时放行，比如从别的网段配对。会请求一次管理员权限';
+  String get allowLanDesc => '连接受阻时放行，需管理员权限';
 
   @override
   String get allow => '放行';
@@ -625,9 +610,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceName => '设备名称';
 
   @override
-  String get deviceNameDesc => '显示在其他设备的列表里';
-
-  @override
   String get language => '语言';
 
   @override
@@ -637,20 +619,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sync => '同步';
 
   @override
-  String get syncFootnote =>
-      '小于阈值的内容在复制时直接推送到其他设备；超过阈值的只同步一条记录，需要时在「复制记录」里点「拉取到本机」，避免大文件无谓地占用带宽和磁盘。';
-
-  @override
   String get autoSyncLimit => '自动同步上限';
 
   @override
-  String get autoSyncLimitDesc => '超过这个大小的文件改为手动拉取';
+  String get autoSyncLimitDesc => '超出上限后，在复制记录中手动拉取';
 
   @override
   String get autoApply => '收到后直接写入剪贴板';
-
-  @override
-  String get autoApplyDesc => '关闭后，需要在「复制记录」里手动放入剪贴板';
 
   @override
   String get whatToSync => '同步哪些内容';
@@ -671,7 +646,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get storage => '存储';
 
   @override
-  String get storageFootnote => '到期的记录与缓存文件会被自动清理。';
+  String get storageFootnote => '到期自动清理记录与缓存。';
 
   @override
   String get keepHistory => '记录保留';
@@ -680,7 +655,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get keepCache => '缓存文件保留';
 
   @override
-  String get keepCacheDesc => '不会超过记录的保留时长';
+  String get keepCacheDesc => '不超过记录保留时长';
 
   @override
   String get cacheUsage => '缓存占用';
@@ -689,14 +664,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backgroundSync => '后台同步';
 
   @override
-  String get backgroundFootnote =>
-      '停用后不再同步，也不会开机启动。历史记录与配对关系会保留，重新打开 App 即可再次启用。';
-
-  @override
   String get backgroundService => '后台服务';
 
   @override
-  String get backgroundServiceDesc => '随系统登录自动启动，关掉窗口也照常同步';
+  String get backgroundServiceDesc => '登录自启，关闭窗口后继续同步';
 
   @override
   String get restart => '重新启动';
@@ -860,6 +831,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get useOfficialService => '使用官方服务';
+
+  @override
+  String get officialServiceDesc => '跨网络同步，优先直连';
 
   @override
   String get officialPrivacy =>
@@ -1478,32 +1452,25 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get server => '伺服器（可選）';
 
   @override
-  String get serverFootnote =>
-      '只在不同網絡之間同步時需要，例如家裏和公司；同一網絡裏的裝置不用伺服器也能直接連上。伺服器只負責讓裝置找到彼此，看不到傳輸的內容。';
-
-  @override
   String get signalingUrl => '信令伺服器地址';
 
   @override
-  String get signalingUrlDesc => '點擊「儲存並連線」或按 Enter。留空表示只在區域網絡裏同步';
+  String get signalingUrlDesc => '留空只在區域網絡同步';
 
   @override
   String get signalingUrlPlaceholder => 'ws://伺服器地址:8787/signal';
 
   @override
-  String get publicStun => '用公共伺服器探測網絡出口';
+  String get publicStun => '提升公網直連成功率';
 
   @override
-  String get publicStunDesc => '在公司雙線這類多出口網絡裏，能找到更多可以直連的路徑。公共伺服器只會看到你的公網 IP';
+  String get publicStunDesc => '公共伺服器可見本機公網 IP';
 
   @override
   String get connectionStatus => '連線狀態';
 
   @override
-  String get connectedDesc => '已連線到信令伺服器';
-
-  @override
-  String get disconnectedDesc => '連不上伺服器。請檢查地址是否正確、伺服器是否正在執行。';
+  String get disconnectedDesc => '請檢查地址與伺服器狀態';
 
   @override
   String get connected => '已連線';
@@ -1515,36 +1482,28 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get notSet => '未設定';
 
   @override
-  String get notSetDesc => '只與同一網絡裏的裝置同步';
-
-  @override
   String get serverCleared => '已清除伺服器地址，只在區域網絡裏同步';
 
   @override
   String get localNetwork => '區域網絡';
 
   @override
-  String get lanFootnote => '使用 UDP 端口 8788。兩部不在同一網段時，配對時要輸入對方的地址。';
-
-  @override
   String get lanDiscovery => '在區域網絡中尋找裝置';
 
   @override
-  String get lanDiscoveryDesc =>
-      '不用伺服器就能配對和同步。網絡裏的其他人只能看到一個每天都會改變的匿名標識；開啟「搜尋附近裝置」期間才看得到裝置名稱';
+  String get lanDiscoveryDesc => '匿名發現，只在搜尋附近裝置時顯示名稱';
 
   @override
   String get macLocalNetwork => '本地網絡權限';
 
   @override
-  String get macLocalNetworkDesc =>
-      'macOS 會詢問一次是否允許隔空貼連接網絡裏的裝置。如果拒絕過，請到那裏開啟 PasteFerry Daemon';
+  String get macLocalNetworkDesc => '在系統設定中允許 PasteFerry Daemon';
 
   @override
   String get allowLan => 'Windows 防火牆';
 
   @override
-  String get allowLanDesc => '其他裝置連不上這部電腦時允許連線，例如從別的網段配對。會要求一次管理員權限';
+  String get allowLanDesc => '連線受阻時允許連線，需管理員權限';
 
   @override
   String get allow => '允許';
@@ -1556,9 +1515,6 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get deviceName => '裝置名稱';
 
   @override
-  String get deviceNameDesc => '顯示在其他裝置的列表裏';
-
-  @override
   String get language => '語言';
 
   @override
@@ -1568,20 +1524,13 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get sync => '同步';
 
   @override
-  String get syncFootnote =>
-      '小於上限的內容在複製時直接推送到其他裝置；超過上限的只同步一條記錄，需要時在「複製記錄」裏按「拉取到本機」，避免大檔案無謂地佔用頻寬和磁碟空間。';
-
-  @override
   String get autoSyncLimit => '自動同步上限';
 
   @override
-  String get autoSyncLimitDesc => '超過這個大小的檔案改為手動拉取';
+  String get autoSyncLimitDesc => '超出上限後，在複製記錄中手動拉取';
 
   @override
   String get autoApply => '收到後直接寫入剪貼簿';
-
-  @override
-  String get autoApplyDesc => '關閉後，需要在「複製記錄」裏手動放入剪貼簿';
 
   @override
   String get whatToSync => '同步哪些內容';
@@ -1602,7 +1551,7 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get storage => '儲存空間';
 
   @override
-  String get storageFootnote => '到期的記錄與快取檔案會自動清理。';
+  String get storageFootnote => '到期自動清理記錄與快取。';
 
   @override
   String get keepHistory => '記錄保留';
@@ -1611,7 +1560,7 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get keepCache => '快取檔案保留';
 
   @override
-  String get keepCacheDesc => '不會超過記錄的保留時間';
+  String get keepCacheDesc => '不超過記錄保留時間';
 
   @override
   String get cacheUsage => '快取佔用空間';
@@ -1620,14 +1569,10 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
   String get backgroundSync => '背景同步';
 
   @override
-  String get backgroundFootnote =>
-      '停用後不再同步，也不會開機啟動。歷史記錄與配對關係會保留，重新開啟 App 即可再次啟用。';
-
-  @override
   String get backgroundService => '背景服務';
 
   @override
-  String get backgroundServiceDesc => '隨系統登入自動啟動，關閉視窗也照常同步';
+  String get backgroundServiceDesc => '登入自動啟動，關閉視窗後繼續同步';
 
   @override
   String get restart => '重新啟動';
@@ -1791,6 +1736,9 @@ class AppLocalizationsZhHantHk extends AppLocalizationsZh {
 
   @override
   String get useOfficialService => '使用官方服務';
+
+  @override
+  String get officialServiceDesc => '跨網絡同步，優先直連';
 
   @override
   String get officialPrivacy =>
@@ -2409,32 +2357,25 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get server => '伺服器（選用）';
 
   @override
-  String get serverFootnote =>
-      '只在不同網路之間同步時需要，例如家裡和公司；同一個網路裡的裝置不用伺服器也能直接連上。伺服器只負責讓裝置找到彼此，看不到傳輸的內容。';
-
-  @override
   String get signalingUrl => '信令伺服器位址';
 
   @override
-  String get signalingUrlDesc => '點擊「儲存並連線」或按 Enter。留空表示只在區域網路裡同步';
+  String get signalingUrlDesc => '留空僅在區域網路同步';
 
   @override
   String get signalingUrlPlaceholder => 'ws://伺服器位址:8787/signal';
 
   @override
-  String get publicStun => '用公共伺服器偵測網路出口';
+  String get publicStun => '改善公網直接連線';
 
   @override
-  String get publicStunDesc => '在公司雙線路這類多出口網路裡，能找到更多可以直連的路徑。公共伺服器只會看到你的公用 IP';
+  String get publicStunDesc => '公共伺服器可見本機的公用 IP';
 
   @override
   String get connectionStatus => '連線狀態';
 
   @override
-  String get connectedDesc => '已連線到信令伺服器';
-
-  @override
-  String get disconnectedDesc => '連不上伺服器。請檢查位址是否正確、伺服器是否在執行。';
+  String get disconnectedDesc => '請檢查位址與伺服器狀態';
 
   @override
   String get connected => '已連線';
@@ -2446,36 +2387,28 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get notSet => '未設定';
 
   @override
-  String get notSetDesc => '只與同一個網路裡的裝置同步';
-
-  @override
   String get serverCleared => '已清除伺服器位址，只在區域網路裡同步';
 
   @override
   String get localNetwork => '區域網路';
 
   @override
-  String get lanFootnote => '使用 UDP 連接埠 8788。兩台不在同一網段時，配對時輸入對方的位址。';
-
-  @override
   String get lanDiscovery => '在區域網路中尋找裝置';
 
   @override
-  String get lanDiscoveryDesc =>
-      '不用伺服器就能配對和同步。網路裡的其他人只能看到一個每天都會變的匿名識別碼；打開「搜尋附近裝置」期間才看得到裝置名稱';
+  String get lanDiscoveryDesc => '匿名探索，僅搜尋附近裝置時顯示名稱';
 
   @override
   String get macLocalNetwork => '本機網路權限';
 
   @override
-  String get macLocalNetworkDesc =>
-      'macOS 會詢問一次是否允許隔空貼連線到網路裡的裝置。拒絕過的話，到那裡開啟 PasteFerry Daemon';
+  String get macLocalNetworkDesc => '在系統設定中允許 PasteFerry Daemon';
 
   @override
   String get allowLan => 'Windows 防火牆';
 
   @override
-  String get allowLanDesc => '其他裝置連不上這台時允許連入，例如從別的網段配對。會要求一次系統管理員權限';
+  String get allowLanDesc => '連線受阻時允許連入，需系統管理員權限';
 
   @override
   String get allow => '允許';
@@ -2487,9 +2420,6 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get deviceName => '裝置名稱';
 
   @override
-  String get deviceNameDesc => '顯示在其他裝置的清單裡';
-
-  @override
   String get language => '語言';
 
   @override
@@ -2499,20 +2429,13 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get sync => '同步';
 
   @override
-  String get syncFootnote =>
-      '小於上限的內容在複製時直接推送到其他裝置；超過上限的只同步一筆記錄，需要時在「複製記錄」裡點「拉取到本機」，避免大檔案白白佔用頻寬和磁碟空間。';
-
-  @override
   String get autoSyncLimit => '自動同步上限';
 
   @override
-  String get autoSyncLimitDesc => '超過這個大小的檔案改為手動拉取';
+  String get autoSyncLimitDesc => '超過上限後，在複製記錄中手動拉取';
 
   @override
   String get autoApply => '收到後直接寫入剪貼簿';
-
-  @override
-  String get autoApplyDesc => '關閉後，需要在「複製記錄」裡手動放入剪貼簿';
 
   @override
   String get whatToSync => '同步哪些內容';
@@ -2533,7 +2456,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get storage => '儲存空間';
 
   @override
-  String get storageFootnote => '到期的記錄與快取檔案會自動清除。';
+  String get storageFootnote => '到期自動清除記錄與快取。';
 
   @override
   String get keepHistory => '記錄保留';
@@ -2542,7 +2465,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get keepCache => '快取檔案保留';
 
   @override
-  String get keepCacheDesc => '不會超過記錄的保留時間';
+  String get keepCacheDesc => '不超過記錄保留時間';
 
   @override
   String get cacheUsage => '快取佔用';
@@ -2551,14 +2474,10 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get backgroundSync => '背景同步';
 
   @override
-  String get backgroundFootnote =>
-      '停用後不再同步，也不會開機自動啟動。歷史記錄與配對關係會保留，重新打開 App 即可再次啟用。';
-
-  @override
   String get backgroundService => '背景服務';
 
   @override
-  String get backgroundServiceDesc => '隨系統登入自動啟動，關掉視窗也照常同步';
+  String get backgroundServiceDesc => '登入自動啟動，關閉視窗後繼續同步';
 
   @override
   String get restart => '重新啟動';
@@ -2722,6 +2641,9 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get useOfficialService => '使用官方服務';
+
+  @override
+  String get officialServiceDesc => '跨網路同步，優先直連';
 
   @override
   String get officialPrivacy =>

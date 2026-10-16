@@ -623,35 +623,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get server => 'Server (optional)';
 
   @override
-  String get serverFootnote =>
-      'Only needed to sync between different networks, such as home and office. Devices on the same network connect without it. The server only helps devices find each other and can\'t see what they send.';
-
-  @override
   String get signalingUrl => 'Signaling server';
 
   @override
-  String get signalingUrlDesc =>
-      'Click Save and connect or press Enter. Leave it empty to sync on this network only.';
+  String get signalingUrlDesc => 'Leave blank for local sync only';
 
   @override
   String get signalingUrlPlaceholder => 'ws://server-address:8787/signal';
 
   @override
-  String get publicStun => 'Probe with public servers';
+  String get publicStun => 'Improve direct connections';
 
   @override
-  String get publicStunDesc =>
-      'On networks with several uplinks, such as offices with two ISPs, this finds more direct paths. Public servers only see your public IP.';
+  String get publicStunDesc => 'Public servers can see your public IP';
 
   @override
   String get connectionStatus => 'Connection';
 
   @override
-  String get connectedDesc => 'Connected to the signaling server';
-
-  @override
-  String get disconnectedDesc =>
-      'Can\'t reach the server. Check the address and that the server is running.';
+  String get disconnectedDesc => 'Check the server address and availability';
 
   @override
   String get connected => 'Connected';
@@ -663,38 +653,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notSet => 'Not set';
 
   @override
-  String get notSetDesc => 'Syncing with devices on this network only';
-
-  @override
   String get serverCleared => 'Server removed. Syncing on this network only.';
 
   @override
   String get localNetwork => 'Local network';
 
   @override
-  String get lanFootnote =>
-      'Uses UDP port 8788. If the devices are on different subnets, enter the other device\'s address when pairing.';
-
-  @override
   String get lanDiscovery => 'Find devices on this network';
 
   @override
   String get lanDiscoveryDesc =>
-      'Pair and sync without a server. Others on the network only see an anonymous entry that changes daily, and the device name only while Search nearby is open.';
+      'Anonymous discovery; names are visible only during Search nearby';
 
   @override
   String get macLocalNetwork => 'Local Network access';
 
   @override
   String get macLocalNetworkDesc =>
-      'macOS asks once whether PasteFerry may connect to devices on your network. If you declined, turn on PasteFerry Daemon there.';
+      'Allow PasteFerry Daemon in System Settings';
 
   @override
   String get allowLan => 'Windows Firewall';
 
   @override
   String get allowLanDesc =>
-      'Allow this when other devices can\'t reach this one, for example when pairing from another subnet. Asks for administrator approval once.';
+      'Allow blocked connections; requires administrator approval';
 
   @override
   String get allow => 'Allow';
@@ -706,9 +689,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceName => 'Device name';
 
   @override
-  String get deviceNameDesc => 'Shown in the list on your other devices';
-
-  @override
   String get language => 'Language';
 
   @override
@@ -718,21 +698,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sync => 'Sync';
 
   @override
-  String get syncFootnote =>
-      'Items under the limit are pushed to your other devices as you copy. Larger ones sync as a record; pull them from History when you need them, so big files don\'t waste bandwidth or disk space.';
-
-  @override
   String get autoSyncLimit => 'Auto-sync limit';
 
   @override
-  String get autoSyncLimitDesc => 'Larger files are pulled by hand';
+  String get autoSyncLimitDesc => 'Pull larger items manually from History';
 
   @override
   String get autoApply => 'Put received items on the clipboard';
-
-  @override
-  String get autoApplyDesc =>
-      'When off, put them on the clipboard from History yourself';
 
   @override
   String get whatToSync => 'What to sync';
@@ -754,7 +726,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storageFootnote =>
-      'Expired items and cached files are cleaned up automatically.';
+      'Expired history and cached files are deleted automatically.';
 
   @override
   String get keepHistory => 'Keep history for';
@@ -763,7 +735,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get keepCache => 'Keep cached files for';
 
   @override
-  String get keepCacheDesc => 'Never longer than the history';
+  String get keepCacheDesc => 'No longer than history retention';
 
   @override
   String get cacheUsage => 'Cache size';
@@ -772,15 +744,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backgroundSync => 'Background sync';
 
   @override
-  String get backgroundFootnote =>
-      'When off, nothing syncs and PasteFerry doesn\'t start at login. History and pairings are kept; open the app to turn it back on.';
-
-  @override
   String get backgroundService => 'Background service';
 
   @override
   String get backgroundServiceDesc =>
-      'Starts at login and keeps syncing with the window closed';
+      'Starts at login; syncs with the window closed';
 
   @override
   String get restart => 'Restart';
@@ -948,6 +916,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get useOfficialService => 'Use official service';
+
+  @override
+  String get officialServiceDesc =>
+      'Sync across networks, direct connections first';
 
   @override
   String get officialPrivacy =>

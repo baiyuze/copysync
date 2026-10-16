@@ -1052,12 +1052,6 @@ abstract class AppLocalizations {
   /// **'Server (optional)'**
   String get server;
 
-  /// No description provided for @serverFootnote.
-  ///
-  /// In en, this message translates to:
-  /// **'Only needed to sync between different networks, such as home and office. Devices on the same network connect without it. The server only helps devices find each other and can\'t see what they send.'**
-  String get serverFootnote;
-
   /// No description provided for @signalingUrl.
   ///
   /// In en, this message translates to:
@@ -1067,7 +1061,7 @@ abstract class AppLocalizations {
   /// No description provided for @signalingUrlDesc.
   ///
   /// In en, this message translates to:
-  /// **'Click Save and connect or press Enter. Leave it empty to sync on this network only.'**
+  /// **'Leave blank for local sync only'**
   String get signalingUrlDesc;
 
   /// No description provided for @signalingUrlPlaceholder.
@@ -1079,13 +1073,13 @@ abstract class AppLocalizations {
   /// No description provided for @publicStun.
   ///
   /// In en, this message translates to:
-  /// **'Probe with public servers'**
+  /// **'Improve direct connections'**
   String get publicStun;
 
   /// No description provided for @publicStunDesc.
   ///
   /// In en, this message translates to:
-  /// **'On networks with several uplinks, such as offices with two ISPs, this finds more direct paths. Public servers only see your public IP.'**
+  /// **'Public servers can see your public IP'**
   String get publicStunDesc;
 
   /// No description provided for @connectionStatus.
@@ -1094,16 +1088,10 @@ abstract class AppLocalizations {
   /// **'Connection'**
   String get connectionStatus;
 
-  /// No description provided for @connectedDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Connected to the signaling server'**
-  String get connectedDesc;
-
   /// No description provided for @disconnectedDesc.
   ///
   /// In en, this message translates to:
-  /// **'Can\'t reach the server. Check the address and that the server is running.'**
+  /// **'Check the server address and availability'**
   String get disconnectedDesc;
 
   /// No description provided for @connected.
@@ -1124,12 +1112,6 @@ abstract class AppLocalizations {
   /// **'Not set'**
   String get notSet;
 
-  /// No description provided for @notSetDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Syncing with devices on this network only'**
-  String get notSetDesc;
-
   /// No description provided for @serverCleared.
   ///
   /// In en, this message translates to:
@@ -1142,12 +1124,6 @@ abstract class AppLocalizations {
   /// **'Local network'**
   String get localNetwork;
 
-  /// No description provided for @lanFootnote.
-  ///
-  /// In en, this message translates to:
-  /// **'Uses UDP port 8788. If the devices are on different subnets, enter the other device\'s address when pairing.'**
-  String get lanFootnote;
-
   /// No description provided for @lanDiscovery.
   ///
   /// In en, this message translates to:
@@ -1157,7 +1133,7 @@ abstract class AppLocalizations {
   /// No description provided for @lanDiscoveryDesc.
   ///
   /// In en, this message translates to:
-  /// **'Pair and sync without a server. Others on the network only see an anonymous entry that changes daily, and the device name only while Search nearby is open.'**
+  /// **'Anonymous discovery; names are visible only during Search nearby'**
   String get lanDiscoveryDesc;
 
   /// No description provided for @macLocalNetwork.
@@ -1169,7 +1145,7 @@ abstract class AppLocalizations {
   /// No description provided for @macLocalNetworkDesc.
   ///
   /// In en, this message translates to:
-  /// **'macOS asks once whether PasteFerry may connect to devices on your network. If you declined, turn on PasteFerry Daemon there.'**
+  /// **'Allow PasteFerry Daemon in System Settings'**
   String get macLocalNetworkDesc;
 
   /// No description provided for @allowLan.
@@ -1181,7 +1157,7 @@ abstract class AppLocalizations {
   /// No description provided for @allowLanDesc.
   ///
   /// In en, this message translates to:
-  /// **'Allow this when other devices can\'t reach this one, for example when pairing from another subnet. Asks for administrator approval once.'**
+  /// **'Allow blocked connections; requires administrator approval'**
   String get allowLanDesc;
 
   /// No description provided for @allow.
@@ -1202,12 +1178,6 @@ abstract class AppLocalizations {
   /// **'Device name'**
   String get deviceName;
 
-  /// No description provided for @deviceNameDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Shown in the list on your other devices'**
-  String get deviceNameDesc;
-
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
@@ -1226,12 +1196,6 @@ abstract class AppLocalizations {
   /// **'Sync'**
   String get sync;
 
-  /// No description provided for @syncFootnote.
-  ///
-  /// In en, this message translates to:
-  /// **'Items under the limit are pushed to your other devices as you copy. Larger ones sync as a record; pull them from History when you need them, so big files don\'t waste bandwidth or disk space.'**
-  String get syncFootnote;
-
   /// No description provided for @autoSyncLimit.
   ///
   /// In en, this message translates to:
@@ -1241,7 +1205,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoSyncLimitDesc.
   ///
   /// In en, this message translates to:
-  /// **'Larger files are pulled by hand'**
+  /// **'Pull larger items manually from History'**
   String get autoSyncLimitDesc;
 
   /// No description provided for @autoApply.
@@ -1249,12 +1213,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Put received items on the clipboard'**
   String get autoApply;
-
-  /// No description provided for @autoApplyDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'When off, put them on the clipboard from History yourself'**
-  String get autoApplyDesc;
 
   /// No description provided for @whatToSync.
   ///
@@ -1295,7 +1253,7 @@ abstract class AppLocalizations {
   /// No description provided for @storageFootnote.
   ///
   /// In en, this message translates to:
-  /// **'Expired items and cached files are cleaned up automatically.'**
+  /// **'Expired history and cached files are deleted automatically.'**
   String get storageFootnote;
 
   /// No description provided for @keepHistory.
@@ -1313,7 +1271,7 @@ abstract class AppLocalizations {
   /// No description provided for @keepCacheDesc.
   ///
   /// In en, this message translates to:
-  /// **'Never longer than the history'**
+  /// **'No longer than history retention'**
   String get keepCacheDesc;
 
   /// No description provided for @cacheUsage.
@@ -1328,12 +1286,6 @@ abstract class AppLocalizations {
   /// **'Background sync'**
   String get backgroundSync;
 
-  /// No description provided for @backgroundFootnote.
-  ///
-  /// In en, this message translates to:
-  /// **'When off, nothing syncs and PasteFerry doesn\'t start at login. History and pairings are kept; open the app to turn it back on.'**
-  String get backgroundFootnote;
-
   /// No description provided for @backgroundService.
   ///
   /// In en, this message translates to:
@@ -1343,7 +1295,7 @@ abstract class AppLocalizations {
   /// No description provided for @backgroundServiceDesc.
   ///
   /// In en, this message translates to:
-  /// **'Starts at login and keeps syncing with the window closed'**
+  /// **'Starts at login; syncs with the window closed'**
   String get backgroundServiceDesc;
 
   /// No description provided for @restart.
@@ -1633,6 +1585,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use official service'**
   String get useOfficialService;
+
+  /// No description provided for @officialServiceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync across networks, direct connections first'**
+  String get officialServiceDesc;
 
   /// No description provided for @officialPrivacy.
   ///

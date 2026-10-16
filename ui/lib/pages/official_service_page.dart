@@ -8,8 +8,7 @@ import '../widgets/common.dart';
 
 class OfficialServicePage extends StatelessWidget {
   const OfficialServicePage({super.key});
-  String _mb(int bytes) =>
-      bytes > 0 && bytes < 1000000 ? '<1 MB' : '${bytes ~/ 1000000} MB';
+  String _mb(int bytes) => '${(bytes / 1000000).toStringAsFixed(2)} MB';
   String _time(int seconds, {bool beijing = false}) {
     var d = DateTime.fromMillisecondsSinceEpoch(seconds * 1000, isUtc: true);
     d = beijing ? d.add(const Duration(hours: 8)) : d.toLocal();

@@ -550,34 +550,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get server => 'サーバー（任意）';
 
   @override
-  String get serverFootnote =>
-      '家と会社のように、別々のネットワーク間で同期するときだけ必要です。同じネットワーク内のデバイスはサーバーなしで直接つながります。サーバーはデバイス同士を引き合わせるだけで、やり取りする内容は見えません。';
-
-  @override
   String get signalingUrl => 'シグナリングサーバー';
 
   @override
-  String get signalingUrlDesc =>
-      '「保存して接続」をクリックするか Enter を押します。空欄にするとこのネットワーク内だけで同期します';
+  String get signalingUrlDesc => '空欄ならローカル同期のみ';
 
   @override
   String get signalingUrlPlaceholder => 'ws://サーバーアドレス:8787/signal';
 
   @override
-  String get publicStun => '公開サーバーで出口を調べる';
+  String get publicStun => '直接接続を補助';
 
   @override
-  String get publicStunDesc =>
-      '複数の回線を持つ会社などのネットワークで、直接つながる経路を多く見つけます。公開サーバーに見えるのはグローバル IP だけです。';
+  String get publicStunDesc => '公開サーバーにグローバル IP が伝わります';
 
   @override
   String get connectionStatus => '接続状態';
 
   @override
-  String get connectedDesc => 'シグナリングサーバーに接続しています';
-
-  @override
-  String get disconnectedDesc => 'サーバーに接続できません。アドレスとサーバーの稼働を確認してください。';
+  String get disconnectedDesc => 'アドレスとサーバーの稼働を確認';
 
   @override
   String get connected => '接続済み';
@@ -589,38 +580,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get notSet => '未設定';
 
   @override
-  String get notSetDesc => '同じネットワークのデバイスとだけ同期します';
-
-  @override
   String get serverCleared => 'サーバーを削除しました。このネットワーク内だけで同期します';
 
   @override
   String get localNetwork => 'ローカルネットワーク';
 
   @override
-  String get lanFootnote =>
-      'UDP ポート 8788 を使います。2 台が別のサブネットにある場合は、ペアリング時に相手のアドレスを入力します。';
-
-  @override
   String get lanDiscovery => 'このネットワークでデバイスを探す';
 
   @override
-  String get lanDiscoveryDesc =>
-      'サーバーなしでペアリングと同期ができます。ネットワーク上の他の人には、毎日変わる匿名の識別子しか見えません。デバイス名が見えるのは「近くを検索」を開いている間だけです';
+  String get lanDiscoveryDesc => '匿名で検出。「近くを検索」中のみ名前を公開';
 
   @override
   String get macLocalNetwork => 'ローカルネットワークへのアクセス';
 
   @override
-  String get macLocalNetworkDesc =>
-      'PasteFerry がネットワーク上のデバイスに接続してよいか、macOS が一度だけ確認します。拒否した場合は、そこで PasteFerry Daemon をオンにしてください';
+  String get macLocalNetworkDesc => 'システム設定で PasteFerry Daemon を許可';
 
   @override
   String get allowLan => 'Windows ファイアウォール';
 
   @override
-  String get allowLanDesc =>
-      '他のデバイスからこのデバイスに接続できないとき（別のサブネットからのペアリングなど）に許可します。管理者の承認を 1 回求めます';
+  String get allowLanDesc => '接続がブロックされた場合に許可。管理者権限が必要';
 
   @override
   String get allow => '許可';
@@ -632,9 +613,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deviceName => 'デバイス名';
 
   @override
-  String get deviceNameDesc => '他のデバイスの一覧に表示されます';
-
-  @override
   String get language => '言語';
 
   @override
@@ -644,20 +622,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sync => '同期';
 
   @override
-  String get syncFootnote =>
-      '上限より小さい内容はコピーした時点で他のデバイスに送られます。大きいものは記録だけを同期し、必要なときに「履歴」から取り込むので、帯域やディスクを無駄に使いません。';
-
-  @override
   String get autoSyncLimit => '自動同期の上限';
 
   @override
-  String get autoSyncLimitDesc => 'これより大きいファイルは手動で取り込みます';
+  String get autoSyncLimitDesc => '上限を超える内容は履歴から手動で取得';
 
   @override
   String get autoApply => '受け取った内容をクリップボードに入れる';
-
-  @override
-  String get autoApplyDesc => 'オフの場合は「履歴」から手動でクリップボードに入れます';
 
   @override
   String get whatToSync => '同期する内容';
@@ -678,7 +649,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get storage => 'ストレージ';
 
   @override
-  String get storageFootnote => '期限切れの履歴とキャッシュは自動で削除されます。';
+  String get storageFootnote => '期限が切れると履歴とキャッシュを自動削除します。';
 
   @override
   String get keepHistory => '履歴の保存期間';
@@ -687,7 +658,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get keepCache => 'キャッシュの保存期間';
 
   @override
-  String get keepCacheDesc => '履歴の保存期間を超えません';
+  String get keepCacheDesc => '履歴の保存期間以内';
 
   @override
   String get cacheUsage => 'キャッシュ容量';
@@ -696,14 +667,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backgroundSync => 'バックグラウンド同期';
 
   @override
-  String get backgroundFootnote =>
-      'オフにすると同期せず、ログイン時にも起動しません。履歴とペアリングは残り、アプリを開けば再び有効にできます。';
-
-  @override
   String get backgroundService => 'バックグラウンドサービス';
 
   @override
-  String get backgroundServiceDesc => 'ログイン時に起動し、ウィンドウを閉じても同期を続けます';
+  String get backgroundServiceDesc => 'ログイン時に起動。ウィンドウを閉じても同期';
 
   @override
   String get restart => '再起動';
@@ -870,6 +837,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get useOfficialService => '公式サービスを使う';
+
+  @override
+  String get officialServiceDesc => '別のネットワーク間で同期。直接接続を優先';
 
   @override
   String get officialPrivacy =>
