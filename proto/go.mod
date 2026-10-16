@@ -1,6 +1,6 @@
 module github.com/baiyuze/pasteferry/proto
 
-go 1.26.3
+go 1.26.9
 
 require (
 	google.golang.org/grpc v1.84.0

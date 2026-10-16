@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy and essential data — PasteFerry</title>
+  <meta name="description" content="Fresh installs use LAN mode. Official access and essential connection statistics begin only when enabled. Custom servers do not report to the official service. Direct connections are attempted first; machine quota identification and relay authorization happen only after direct failure.">
+  <link rel="canonical" href="https://pasteferry.cc/en/privacy/">
+  <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/">
+  <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/">
+  <link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/">
+  <link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/">
+  <link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="PasteFerry">
+  <meta property="og:title" content="Privacy and essential data — PasteFerry">
+  <meta property="og:description" content="Fresh installs use LAN mode. Official access and essential connection statistics begin only when enabled. Custom servers do not report to the official service. Direct connections are attempted first; machine quota identification and relay authorization happen only after direct failure.">
+  <meta property="og:url" content="https://pasteferry.cc/en/privacy/">
+  <meta property="og:image" content="https://pasteferry.cc/assets/og-en.png">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href="../../en/" aria-label="PasteFerry home"><img src="../../assets/icon.svg" alt="" width="26" height="26">PasteFerry</a>
+      <nav aria-label="Page">
+        <a href="../../en/start/">Quick start</a>
+        <a class="wide" href="../../en/#how">How it works</a>
+        <a class="wide" href="../../en/#faq">FAQ</a>
+        <a class="mid" href="../../en/start/#server">Ways to connect</a>
+        <a href="../../en/download/">Download</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
+        <details class="lang">
+          <summary aria-label="Language：English"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>English</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../../privacy/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a></li>
+            <li><a href="../../zh-tw/privacy/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a></li>
+            <li><a href="../../zh-hk/privacy/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../../en/privacy/" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a></li>
+            <li><a href="../../ja/privacy/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+<main id="main" class="wrap" style="max-width:850px;padding-top:5rem;padding-bottom:5rem;line-height:1.9"><h1>Privacy and essential data</h1><section><h2>Official service is optional</h2><p>Fresh installs use LAN mode. Official access and essential connection statistics begin only when enabled. Custom servers do not report to the official service. Direct connections are attempted first; machine quota identification and relay authorization happen only after direct failure.</p></section>
+<section><h2>Minimal service records</h2><p>The gateway retains pseudonymous device numbers, first/last access times, daily relay usage, essential quota bindings and cumulative totals. Daily device detail is retained for 90 days. Official device counts are not people or total installations.</p></section>
+<section><h2>Content and identifiers</h2><p>Content and real device names travel through the encrypted device channel. The gateway does not collect filenames, paths, usernames, MAC addresses, UA or behavior trails. Raw system identifiers are not uploaded; the application-specific digest groups relay quota and can be forged by a modified client.</p></section>
+<section><h2>Network visibility and allowance</h2><p>Network endpoints necessarily see transient routing/address metadata; official statistics and ordinary proxy logs do not retain it. The default allowance is 100 MB/day, upload plus download, reset at midnight Beijing time. Direct traffic is not charged. Disabling official access stops its requests, polling and tunnels.</p></section>
+<section><h2>Website and audit boundary</h2><p>This website uses its existing Cloudflare Web Analytics beacon. Visits are not software-user counts. The client and signaling/TURN server remain open source, with gateway fields and protocol published. Actual private production retention still requires deployment audit.</p></section><p><a href="https://github.com/baiyuze/pasteferry/blob/main/PRIVACY.md">PRIVACY.md</a> · <a href="https://github.com/baiyuze/pasteferry/blob/main/SECURITY.md">SECURITY.md</a> · <a href="https://github.com/baiyuze/pasteferry/blob/main/design/official-gateway.md">Gateway protocol v1</a></p></main>
+  <footer class="footer">
+    <div class="wrap">
+      <p>PasteFerry is open source under the GNU AGPL-3.0.</p>
+      <nav aria-label="Footer">
+        <a href="https://github.com/baiyuze/pasteferry/releases">All releases</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://pasteferry.cc/design/nat-traversal.html">Design notes (Chinese)</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">License</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">Report an issue</a>
+        <a href="../../en/privacy/">Privacy and essential data</a>
+      </nav>
+      <nav aria-label="Language">
+        <a href="../../privacy/" hreflang="zh-CN" lang="zh-CN" data-lang="zh">简体中文</a>
+        <a href="../../zh-tw/privacy/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a>
+        <a href="../../zh-hk/privacy/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../../en/privacy/" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a>
+        <a href="../../ja/privacy/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

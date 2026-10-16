@@ -68,6 +68,16 @@ const SignalMessage$json = {
     {'1': 'nonce', '3': 2, '4': 1, '5': 12, '10': 'nonce'},
     {'1': 'to_device_id', '3': 3, '4': 1, '5': 9, '10': 'toDeviceId'},
     {
+      '1': 'connection_attempt_id',
+      '3': 4,
+      '4': 1,
+      '5': 9,
+      '10': 'connectionAttemptId'
+    },
+    {'1': 'official_relay', '3': 5, '4': 1, '5': 8, '10': 'officialRelay'},
+    {'1': 'gateway_capable', '3': 6, '4': 1, '5': 8, '10': 'gatewayCapable'},
+    {'1': 'relay_denial_code', '3': 7, '4': 1, '5': 9, '10': 'relayDenialCode'},
+    {
       '1': 'offer',
       '3': 10,
       '4': 1,
@@ -122,11 +132,15 @@ const SignalMessage$json = {
 final $typed_data.Uint8List signalMessageDescriptor = $convert.base64Decode(
     'Cg1TaWduYWxNZXNzYWdlEiUKDnRpbWVzdGFtcF91bml4GAEgASgDUg10aW1lc3RhbXBVbml4Eh'
     'QKBW5vbmNlGAIgASgMUgVub25jZRIgCgx0b19kZXZpY2VfaWQYAyABKAlSCnRvRGV2aWNlSWQS'
-    'LwoFb2ZmZXIYCiABKAsyFy5wYXN0ZWZlcnJ5LnYxLlNkcE9mZmVySABSBW9mZmVyEjIKBmFuc3'
-    'dlchgLIAEoCzIYLnBhc3RlZmVycnkudjEuU2RwQW5zd2VySABSBmFuc3dlchI7CgljYW5kaWRh'
-    'dGUYDCABKAsyGy5wYXN0ZWZlcnJ5LnYxLkljZUNhbmRpZGF0ZUgAUgljYW5kaWRhdGUSKQoEcG'
-    'luZxgNIAEoCzITLnBhc3RlZmVycnkudjEuUGluZ0gAUgRwaW5nEjYKCWxhbl9oZWxsbxgOIAEo'
-    'CzIXLnBhc3RlZmVycnkudjEuTGFuSGVsbG9IAFIIbGFuSGVsbG9CCQoHcGF5bG9hZA==');
+    'MgoVY29ubmVjdGlvbl9hdHRlbXB0X2lkGAQgASgJUhNjb25uZWN0aW9uQXR0ZW1wdElkEiUKDm'
+    '9mZmljaWFsX3JlbGF5GAUgASgIUg1vZmZpY2lhbFJlbGF5EicKD2dhdGV3YXlfY2FwYWJsZRgG'
+    'IAEoCFIOZ2F0ZXdheUNhcGFibGUSKgoRcmVsYXlfZGVuaWFsX2NvZGUYByABKAlSD3JlbGF5RG'
+    'VuaWFsQ29kZRIvCgVvZmZlchgKIAEoCzIXLnBhc3RlZmVycnkudjEuU2RwT2ZmZXJIAFIFb2Zm'
+    'ZXISMgoGYW5zd2VyGAsgASgLMhgucGFzdGVmZXJyeS52MS5TZHBBbnN3ZXJIAFIGYW5zd2VyEj'
+    'sKCWNhbmRpZGF0ZRgMIAEoCzIbLnBhc3RlZmVycnkudjEuSWNlQ2FuZGlkYXRlSABSCWNhbmRp'
+    'ZGF0ZRIpCgRwaW5nGA0gASgLMhMucGFzdGVmZXJyeS52MS5QaW5nSABSBHBpbmcSNgoJbGFuX2'
+    'hlbGxvGA4gASgLMhcucGFzdGVmZXJyeS52MS5MYW5IZWxsb0gAUghsYW5IZWxsb0IJCgdwYXls'
+    'b2Fk');
 
 @$core.Deprecated('Use sdpOfferDescriptor instead')
 const SdpOffer$json = {
@@ -744,6 +758,15 @@ const PeerMessage$json = {
       '9': 0,
       '10': 'link'
     },
+    {
+      '1': 'display',
+      '3': 7,
+      '4': 1,
+      '5': 11,
+      '6': '.pasteferry.v1.PeerDisplay',
+      '9': 0,
+      '10': 'display'
+    },
   ],
   '8': [
     {'1': 'payload'},
@@ -757,7 +780,9 @@ final $typed_data.Uint8List peerMessageDescriptor = $convert.base64Decode(
     'Y2gSNAoGcmVqZWN0GAMgASgLMhoucGFzdGVmZXJyeS52MS5GZXRjaFJlamVjdEgAUgZyZWplY3'
     'QSNwoGaGVhZGVyGAQgASgLMh0ucGFzdGVmZXJyeS52MS5UcmFuc2ZlckhlYWRlckgAUgZoZWFk'
     'ZXISMQoEZG9uZRgFIAEoCzIbLnBhc3RlZmVycnkudjEuVHJhbnNmZXJEb25lSABSBGRvbmUSLQ'
-    'oEbGluaxgGIAEoCzIXLnBhc3RlZmVycnkudjEuTGlua0luZm9IAFIEbGlua0IJCgdwYXlsb2Fk');
+    'oEbGluaxgGIAEoCzIXLnBhc3RlZmVycnkudjEuTGlua0luZm9IAFIEbGluaxI2CgdkaXNwbGF5'
+    'GAcgASgLMhoucGFzdGVmZXJyeS52MS5QZWVyRGlzcGxheUgAUgdkaXNwbGF5QgkKB3BheWxvYW'
+    'Q=');
 
 @$core.Deprecated('Use linkInfoDescriptor instead')
 const LinkInfo$json = {
@@ -770,6 +795,20 @@ const LinkInfo$json = {
 /// Descriptor for `LinkInfo`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List linkInfoDescriptor =
     $convert.base64Decode('CghMaW5rSW5mbxIYCgdyZWxheWVkGAEgASgIUgdyZWxheWVk');
+
+@$core.Deprecated('Use peerDisplayDescriptor instead')
+const PeerDisplay$json = {
+  '1': 'PeerDisplay',
+  '2': [
+    {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
+    {'1': 'platform', '3': 2, '4': 1, '5': 9, '10': 'platform'},
+  ],
+};
+
+/// Descriptor for `PeerDisplay`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List peerDisplayDescriptor = $convert.base64Decode(
+    'CgtQZWVyRGlzcGxheRISCgRuYW1lGAEgASgJUgRuYW1lEhoKCHBsYXRmb3JtGAIgASgJUghwbG'
+    'F0Zm9ybQ==');
 
 @$core.Deprecated('Use clipOfferDescriptor instead')
 const ClipOffer$json = {

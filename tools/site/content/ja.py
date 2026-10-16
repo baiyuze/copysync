@@ -32,7 +32,7 @@ C = {
     "dl_mac": "Mac 版をダウンロード",
     "dl_win": "Windows 版をダウンロード",
     "dl_linux": "Linux 版をダウンロード",
-    "dl_note": "バージョン 2.0.0、無料・オープンソース。macOS 13 以降、Windows 10・11、Linux（x64 と ARM64）。",
+    "dl_note": "バージョン 2.2.0、無料・オープンソース。macOS 13 以降、Windows 10・11、Linux（x64 と ARM64）。",
     "start_link": "はじめての方は、3 ステップのはじめかたへ →",
     "stage_label": "デモ：MacBook で Command C を押すと、ファイルが一枚の紙になって直接接続で Windows ノートへ飛び、そこで Ctrl V を押して貼り付けます",
     "stage_file": "四半期報告_最終版.pptx",
@@ -255,7 +255,7 @@ C = {
 
     "specs_h2": "仕様",
     "specs": [
-        ("バージョン", '2.0.0（<time datetime="2026-10-14">2026 年 10 月 14 日</time>公開）'),
+        ("バージョン", '2.2.0（<time datetime="2026-10-16">2026 年 10 月 16 日</time>公開）'),
         ("Mac アプリ", "macOS 13 Ventura 以降。Apple シリコン版と Intel 版に分かれ、ダウンロードはそれぞれ約 25 MB で Rosetta 不要。"
                        "両方で動くユニバーサル版は約 47 MB"),
         ("Windows アプリ", "Windows 10 と Windows 11、x64。ユーザーごとのインストールで管理者権限不要。ダウンロードは約 23 MB"),

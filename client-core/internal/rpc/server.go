@@ -73,6 +73,7 @@ type Deps struct {
 	// OpenLocalNetworkSettings 让系统放行局域网访问（macOS 打开设置面板，Windows 放行防火墙）
 	OpenLocalNetworkSettings func() error
 	CacheBytesUsed           func() int64
+	OfficialUsage            func() *pb.OfficialUsage
 	NotificationStatus       func(context.Context) (*pb.NotificationStatus, error)
 	RequestNotifications     func(context.Context) (*pb.NotificationStatus, error)
 	ActivateNotification     func(context.Context, string, string) error
@@ -339,6 +340,9 @@ func (s *Server) GetStatus(context.Context, *pb.Empty) (*pb.Status, error) {
 		DeviceId:   s.deps.DeviceID,
 		DeviceName: cfg.DeviceName,
 		Version:    s.deps.Version,
+	}
+	if s.deps.OfficialUsage != nil {
+		st.OfficialUsage = s.deps.OfficialUsage()
 	}
 	if s.deps.Permission != nil {
 		st.ClipboardPermission = permissionToProto(s.deps.Permission())

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/pion/ice/v4"
+	"github.com/pion/transport/v5"
 	"github.com/pion/webrtc/v4"
 	"google.golang.org/protobuf/proto"
 
@@ -93,7 +94,9 @@ type Peer struct {
 	onState    func(ConnState)
 	onMessage  func(*pb.PeerMessage)
 	// onStream 处理对端新开的数据流（大文件传输用）
-	onStream func(label string, stream *Stream)
+	onStream            func(label string, stream *Stream)
+	onGathered          func()
+	remoteCandidateSeen bool
 	// extraCands 返回出口探测得到的公网地址，见 sendExtraCandidates
 	extraCands func() []string
 	// refreshEgress 重新探测一轮出口，见 tryUpgrade
@@ -143,6 +146,8 @@ type Peer struct {
 }
 
 type PeerOptions struct {
+	OnGathered func()
+	Net        transport.Net
 	DeviceID   string
 	SelfID     string
 	Logger     *slog.Logger
@@ -174,6 +179,11 @@ func NewPeer(opts PeerOptions) (*Peer, error) {
 	// 分片与背压（BufferedAmount / OnBufferedAmountLow）本来就要自己处理，
 	// 统一走消息接口反而让两类通道的代码保持一致。
 	settings := webrtc.SettingEngine{}
+	if opts.Net != nil {
+		settings.SetNet(opts.Net)
+		settings.SetICEMulticastDNSMode(ice.MulticastDNSModeDisabled)
+		settings.SetNetworkTypes([]webrtc.NetworkType{webrtc.NetworkTypeUDP4})
+	}
 	if opts.UDPMux != nil {
 		settings.SetICEUDPMux(opts.UDPMux)
 	}
@@ -193,6 +203,7 @@ func NewPeer(opts PeerOptions) (*Peer, error) {
 		onState:       opts.OnState,
 		onMessage:     opts.OnMessage,
 		onStream:      opts.OnStream,
+		onGathered:    opts.OnGathered,
 		extraCands:    opts.ExtraCandidates,
 		refreshEgress: opts.RefreshEgress,
 		api:           webrtc.NewAPI(webrtc.WithSettingEngine(settings)),
@@ -208,6 +219,15 @@ func (p *Peer) State() ConnState {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	return p.state
+}
+
+func (p *Peer) DirectAttemptReady() bool {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.pc == nil || p.state == StateDirect || p.pc.RemoteDescription() == nil || p.pc.ICEGatheringState() != webrtc.ICEGatheringStateComplete {
+		return false
+	}
+	return p.remoteCandidateSeen || strings.Contains(p.pc.RemoteDescription().SDP, "a=candidate:")
 }
 
 func (p *Peer) setState(s ConnState) {
@@ -638,6 +658,9 @@ func (p *Peer) handleCandidate(c *pb.IceCandidate) error {
 	if err := pc.AddICECandidate(init); err != nil {
 		return err
 	}
+	p.mu.Lock()
+	p.remoteCandidateSeen = true
+	p.mu.Unlock()
 	p.noteRemoteCandidate(init.Candidate)
 	return nil
 }
@@ -683,6 +706,9 @@ func (p *Peer) flushPendingCandidates() {
 			continue
 		}
 		p.noteRemoteCandidate(c.Candidate)
+		p.mu.Lock()
+		p.remoteCandidateSeen = true
+		p.mu.Unlock()
 	}
 }
 
@@ -694,6 +720,9 @@ func (p *Peer) newPeerConnection() (*webrtc.PeerConnection, error) {
 
 	pc.OnICECandidate(func(c *webrtc.ICECandidate) {
 		if c == nil {
+			if p.onGathered != nil {
+				go p.onGathered()
+			}
 			return // candidate 收集完毕
 		}
 		init := c.ToJSON()
@@ -1081,6 +1110,7 @@ func (p *Peer) closeLocked() {
 	p.makingOffer = false
 	p.pendingKind = StateOffline
 	p.remoteRelayed = false
+	p.remoteCandidateSeen = false
 	p.dialing = false
 	if p.connectTimer != nil {
 		p.connectTimer.Stop()

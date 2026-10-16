@@ -13,12 +13,14 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"net/netip"
 	"runtime"
 	"sync"
 	"time"
 
 	"github.com/baiyuze/pasteferry/client-core/internal/config"
+	"github.com/baiyuze/pasteferry/client-core/internal/gateway"
 	"github.com/baiyuze/pasteferry/client-core/internal/identity"
 	"github.com/baiyuze/pasteferry/client-core/internal/store"
 	"github.com/baiyuze/pasteferry/client-core/internal/transport/lan"
@@ -78,6 +80,7 @@ type Manager struct {
 	lan      *lan.Transport
 	verifier *signed.Verifier
 	p2p      *p2p.Manager
+	gateway  *gateway.Client
 
 	mu sync.RWMutex
 	// 不能在持有 mu 时调用 lan 里会加它自己的锁的方法（Reachable 除外）：
@@ -151,19 +154,40 @@ func NewManager(opts Options) (*Manager, error) {
 		m.known[d.ID] = d
 	}
 
+	m.gateway, err = gateway.NewClient(opts.Identity, gateway.OfficialBaseURL, func(u gateway.Usage) {
+		m.notifyStatus()
+		if m.p2p != nil && u.Available && u.Remaining > 0 && u.Reason == "" {
+			m.p2p.OfficialAllowanceChanged()
+		}
+	})
+	if err != nil {
+		return nil, err
+	}
+	m.gateway.SetEnabled(opts.LoadConfig().Official())
 	m.p2p = p2p.NewManager(p2p.ManagerOptions{
-		SelfID:     opts.Identity.DeviceID,
-		Logger:     log,
-		SendSignal: m.sendSignal,
-		OnState:    m.handleP2PState,
-		OnMessage:  opts.OnPeerMessage,
-		OnStream:   opts.OnPeerStream,
-		StatePath:  opts.StatePath,
+		Gateway:        m.gateway,
+		Official:       func() bool { return opts.LoadConfig().Official() },
+		OfficialOnline: func(id string) bool { m.mu.RLock(); defer m.mu.RUnlock(); return m.serverOnline[id] },
+		SelfID:         opts.Identity.DeviceID,
+		Logger:         log,
+		SendSignal:     m.sendSignal,
+		OnState:        m.handleP2PState,
+		OnMessage: func(id string, msg *pb.PeerMessage) {
+			if display := msg.GetDisplay(); display != nil {
+				m.updatePeerDisplay(id, display)
+				return
+			}
+			if opts.OnPeerMessage != nil {
+				opts.OnPeerMessage(id, msg)
+			}
+		},
+		OnStream:  opts.OnPeerStream,
+		StatePath: opts.StatePath,
 		// 公共 STUN 服务器 IP 分散，能探测到更多出口；用户可以在设置里关掉。
 		// 没有服务器时只在局域网里连，探测出口没有用，还会把公网 IP 暴露给公共服务器
 		ProbeServers: func() []string {
 			cfg := opts.LoadConfig()
-			if cfg.OnlyOwnSTUN || cfg.SignalingURL == "" {
+			if cfg.OnlyOwnSTUN || cfg.EffectiveSignalingURL() == "" {
 				return nil
 			}
 			return p2p.DefaultProbeServers
@@ -192,8 +216,14 @@ func NewManager(opts Options) (*Manager, error) {
 	})
 
 	m.client = signaling.New(signaling.Options{
-		Identity:    opts.Identity,
-		URL:         opts.LoadConfig().SignalingURL,
+		Identity: opts.Identity,
+		URL:      opts.LoadConfig().EffectiveSignalingURL(),
+		DialHeaders: func(url string) http.Header {
+			if opts.LoadConfig().Official() && url == gateway.OfficialSignalURL {
+				return gateway.SignalHeaders(opts.Identity)
+			}
+			return nil
+		},
 		Logger:      log,
 		Verifier:    m.verifier,
 		PublicKeyOf: m.publicKeyOf,
@@ -222,6 +252,7 @@ func (m *Manager) Run(ctx context.Context) {
 		}
 	}
 	go m.gcPending(ctx)
+	go m.gateway.Run(ctx)
 	go m.reconnectLoop(ctx)
 	m.client.Run(ctx)
 	m.lan.Stop()
@@ -282,7 +313,7 @@ func (m *Manager) connectPending(ctx context.Context) {
 func (m *Manager) Connected() bool { return m.client.Connected() }
 
 // ServerConfigured 报告设置里是否填了服务器地址。没填时只在局域网里同步。
-func (m *Manager) ServerConfigured() bool { return m.loadConfig().SignalingURL != "" }
+func (m *Manager) ServerConfigured() bool { return m.loadConfig().EffectiveSignalingURL() != "" }
 
 // LANEnabled 报告局域网直连是否在运行。
 func (m *Manager) LANEnabled() bool { return m.lan.Running() }
@@ -291,7 +322,41 @@ func (m *Manager) LANEnabled() bool { return m.lan.Running() }
 func (m *Manager) LANBlocked() bool { return m.lan.Blocked() }
 
 // SetSignalingURL 在用户于设置里改了服务器地址后调用，立即重连。
-func (m *Manager) SetSignalingURL(url string) { m.client.SetURL(url) }
+func (m *Manager) SetSignalingURL(url string) {
+	m.p2p.CloseAll()
+	m.p2p.SetICEServers(nil)
+	m.gateway.Close()
+	m.gateway.SetEnabled(m.loadConfig().Official())
+	m.client.SetURL(url)
+}
+
+func (m *Manager) OfficialUsage() *pb.OfficialUsage {
+	if !m.loadConfig().Official() {
+		return nil
+	}
+	u := m.gateway.Usage()
+	return &pb.OfficialUsage{Available: u.Available, Day: u.Day, QuotaGroup: u.Group, UploadBytes: u.Upload, DownloadBytes: u.Download, LimitBytes: u.Limit, RemainingBytes: u.Remaining, ResetAtUnix: u.ResetAt, UpdatedAtUnix: u.UpdatedAt, Reason: u.Reason}
+}
+
+func (m *Manager) updatePeerDisplay(id string, display *pb.PeerDisplay) {
+	if len(display.GetName()) > 256 || len(display.GetPlatform()) > 32 {
+		return
+	}
+	m.mu.Lock()
+	d, ok := m.known[id]
+	if ok && display.GetName() != "" {
+		d.Name = display.GetName()
+		d.Platform = display.GetPlatform()
+		m.known[id] = d
+	}
+	m.mu.Unlock()
+	if ok {
+		_ = m.store.PutDevice(d)
+		if p, ok := m.device(id); ok {
+			m.notify(p)
+		}
+	}
+}
 
 // ─────────────────────── 信令回调 ───────────────────────
 
@@ -321,6 +386,9 @@ func (m *Manager) deviceInfo() (name, platform string, paired []string) {
 	ids := make([]string, 0, len(m.known))
 	for id := range m.known {
 		ids = append(ids, id)
+	}
+	if m.loadConfig().UsesOfficialEndpoint() {
+		return "PasteFerry " + m.identity.DeviceID[:8], "", ids
 	}
 	return m.loadConfig().DeviceName, runtime.GOOS, ids
 }
@@ -492,6 +560,10 @@ func (m *Manager) handleP2PState(deviceID string, state p2p.ConnState) {
 	prev := m.conn[deviceID]
 	m.conn[deviceID] = state
 	m.mu.Unlock()
+	if connected(state) && !connected(prev) {
+		cfg := m.loadConfig()
+		_ = m.p2p.Send(deviceID, &pb.PeerMessage{Payload: &pb.PeerMessage_Display{Display: &pb.PeerDisplay{Name: cfg.DeviceName, Platform: runtime.GOOS}}})
+	}
 
 	m.log.Info("P2P 连接状态", "device", deviceID, "state", state)
 	if d, ok := m.device(deviceID); ok {

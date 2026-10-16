@@ -1217,7 +1217,7 @@ abstract class AppLocalizations {
   /// No description provided for @signalingUrlDesc.
   ///
   /// In en, this message translates to:
-  /// **'Press Return to save. Leave it empty to sync on this network only.'**
+  /// **'Click Save and connect or press Enter. Leave it empty to sync on this network only.'**
   String get signalingUrlDesc;
 
   /// No description provided for @signalingUrlPlaceholder.
@@ -1771,6 +1771,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can turn background sync off anytime in Settings.'**
   String get svcCanDisable;
+
+  /// No description provided for @officialService.
+  ///
+  /// In en, this message translates to:
+  /// **'Official service'**
+  String get officialService;
+
+  /// No description provided for @useOfficialService.
+  ///
+  /// In en, this message translates to:
+  /// **'Use official service'**
+  String get useOfficialService;
+
+  /// No description provided for @officialPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Connects to the official service only when enabled and records essential access statistics. Direct connections are tried first; relay access is requested only if they fail. Content, real device names and raw system identifiers are not uploaded.'**
+  String get officialPrivacy;
+
+  /// No description provided for @officialEnableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable official Internet service?'**
+  String get officialEnableTitle;
+
+  /// No description provided for @officialSwitchConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This switches away from your custom server. Its saved address will be retained.'**
+  String get officialSwitchConfirm;
+
+  /// No description provided for @customServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom server'**
+  String get customServer;
+
+  /// No description provided for @saveAndConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and connect'**
+  String get saveAndConnect;
+
+  /// No description provided for @officialUnused.
+  ///
+  /// In en, this message translates to:
+  /// **'Relay not requested; allowance not yet verified'**
+  String get officialUnused;
+
+  /// No description provided for @officialUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage is unavailable; existing data may be out of date'**
+  String get officialUnavailable;
+
+  /// No description provided for @officialQuotaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily relay allowance used up'**
+  String get officialQuotaTitle;
+
+  /// No description provided for @officialQuotaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Official relay is paused until the daily reset at midnight Beijing time. LAN and direct Internet connections remain available. Failed transfers can be retried later.'**
+  String get officialQuotaBody;
+
+  /// No description provided for @officialPeerQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'The peer has no relay allowance left. Direct connections remain available.'**
+  String get officialPeerQuota;
+
+  /// No description provided for @officialPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Official relay is unavailable. Direct connections remain available.'**
+  String get officialPaused;
+
+  /// No description provided for @officialViewUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'View usage'**
+  String get officialViewUsage;
+
+  /// No description provided for @officialAcknowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get officialAcknowledge;
+
+  /// No description provided for @officialToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s relay usage'**
+  String get officialToday;
+
+  /// No description provided for @officialUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get officialUsed;
+
+  /// No description provided for @officialRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get officialRemaining;
+
+  /// No description provided for @officialDailyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily allowance'**
+  String get officialDailyLimit;
+
+  /// No description provided for @officialUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get officialUpload;
+
+  /// No description provided for @officialDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get officialDownload;
+
+  /// No description provided for @officialReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset time (Beijing)'**
+  String get officialReset;
+
+  /// No description provided for @officialUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated'**
+  String get officialUpdated;
+
+  /// No description provided for @officialDeviceID.
+  ///
+  /// In en, this message translates to:
+  /// **'Device ID'**
+  String get officialDeviceID;
+
+  /// No description provided for @officialWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'90% of the daily relay allowance has been used. Direct connections do not consume it.'**
+  String get officialWarning;
+
+  /// No description provided for @officialAccounting.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload and download combined, including encryption overhead. Only official relay usage is measured; direct content and traffic are not recorded.'**
+  String get officialAccounting;
 }
 
 class _AppLocalizationsDelegate

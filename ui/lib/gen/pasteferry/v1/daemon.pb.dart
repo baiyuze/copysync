@@ -2153,6 +2153,9 @@ class Config extends $pb.GeneratedMessage {
     $core.bool? onlyOwnStun,
     $core.String? language,
     $core.bool? lanDisabled,
+    ServiceMode? serviceMode,
+    $core.String? customSignalingUrl,
+    $core.String? officialNoticeAck,
   }) {
     final result = Config._();
     if (autoSyncThresholdBytes != null)
@@ -2171,6 +2174,10 @@ class Config extends $pb.GeneratedMessage {
     if (onlyOwnStun != null) result.onlyOwnStun = onlyOwnStun;
     if (language != null) result.language = language;
     if (lanDisabled != null) result.lanDisabled = lanDisabled;
+    if (serviceMode != null) result.serviceMode = serviceMode;
+    if (customSignalingUrl != null)
+      result.customSignalingUrl = customSignalingUrl;
+    if (officialNoticeAck != null) result.officialNoticeAck = officialNoticeAck;
     return result;
   }
 
@@ -2201,6 +2208,10 @@ class Config extends $pb.GeneratedMessage {
     ..aOB(12, _omitFieldNames ? '' : 'onlyOwnStun')
     ..aOS(13, _omitFieldNames ? '' : 'language')
     ..aOB(14, _omitFieldNames ? '' : 'lanDisabled')
+    ..aE<ServiceMode>(15, _omitFieldNames ? '' : 'serviceMode',
+        enumValues: ServiceMode.values)
+    ..aOS(16, _omitFieldNames ? '' : 'customSignalingUrl')
+    ..aOS(17, _omitFieldNames ? '' : 'officialNoticeAck')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2356,6 +2367,199 @@ class Config extends $pb.GeneratedMessage {
   $core.bool hasLanDisabled() => $_has(13);
   @$pb.TagNumber(14)
   void clearLanDisabled() => $_clearField(14);
+
+  /// Official service is opt-in; remembered custom URLs are inactive otherwise.
+  @$pb.TagNumber(15)
+  ServiceMode get serviceMode => $_getN(14);
+  @$pb.TagNumber(15)
+  set serviceMode(ServiceMode value) => $_setField(15, value);
+  @$pb.TagNumber(15)
+  $core.bool hasServiceMode() => $_has(14);
+  @$pb.TagNumber(15)
+  void clearServiceMode() => $_clearField(15);
+
+  @$pb.TagNumber(16)
+  $core.String get customSignalingUrl => $_getSZ(15);
+  @$pb.TagNumber(16)
+  set customSignalingUrl($core.String value) => $_setString(15, value);
+  @$pb.TagNumber(16)
+  $core.bool hasCustomSignalingUrl() => $_has(15);
+  @$pb.TagNumber(16)
+  void clearCustomSignalingUrl() => $_clearField(16);
+
+  @$pb.TagNumber(17)
+  $core.String get officialNoticeAck => $_getSZ(16);
+  @$pb.TagNumber(17)
+  set officialNoticeAck($core.String value) => $_setString(16, value);
+  @$pb.TagNumber(17)
+  $core.bool hasOfficialNoticeAck() => $_has(16);
+  @$pb.TagNumber(17)
+  void clearOfficialNoticeAck() => $_clearField(17);
+}
+
+class OfficialUsage extends $pb.GeneratedMessage {
+  factory OfficialUsage({
+    $core.bool? available,
+    $core.String? day,
+    $core.String? quotaGroup,
+    $fixnum.Int64? uploadBytes,
+    $fixnum.Int64? downloadBytes,
+    $fixnum.Int64? limitBytes,
+    $fixnum.Int64? remainingBytes,
+    $fixnum.Int64? resetAtUnix,
+    $fixnum.Int64? updatedAtUnix,
+    $core.String? reason,
+  }) {
+    final result = OfficialUsage._();
+    if (available != null) result.available = available;
+    if (day != null) result.day = day;
+    if (quotaGroup != null) result.quotaGroup = quotaGroup;
+    if (uploadBytes != null) result.uploadBytes = uploadBytes;
+    if (downloadBytes != null) result.downloadBytes = downloadBytes;
+    if (limitBytes != null) result.limitBytes = limitBytes;
+    if (remainingBytes != null) result.remainingBytes = remainingBytes;
+    if (resetAtUnix != null) result.resetAtUnix = resetAtUnix;
+    if (updatedAtUnix != null) result.updatedAtUnix = updatedAtUnix;
+    if (reason != null) result.reason = reason;
+    return result;
+  }
+
+  OfficialUsage._();
+
+  factory OfficialUsage.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      OfficialUsage()..mergeFromBuffer(data, registry);
+  factory OfficialUsage.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      OfficialUsage()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'OfficialUsage',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'pasteferry.v1'),
+      createEmptyInstance: OfficialUsage.$_createMessage)
+    ..aOB(1, _omitFieldNames ? '' : 'available')
+    ..aOS(2, _omitFieldNames ? '' : 'day')
+    ..aOS(3, _omitFieldNames ? '' : 'quotaGroup')
+    ..aInt64(4, _omitFieldNames ? '' : 'uploadBytes')
+    ..aInt64(5, _omitFieldNames ? '' : 'downloadBytes')
+    ..aInt64(6, _omitFieldNames ? '' : 'limitBytes')
+    ..aInt64(7, _omitFieldNames ? '' : 'remainingBytes')
+    ..aInt64(8, _omitFieldNames ? '' : 'resetAtUnix')
+    ..aInt64(9, _omitFieldNames ? '' : 'updatedAtUnix')
+    ..aOS(10, _omitFieldNames ? '' : 'reason')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  OfficialUsage clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  OfficialUsage copyWith(void Function(OfficialUsage) updates) =>
+      super.copyWith((message) => updates(message as OfficialUsage))
+          as OfficialUsage;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  @$core.Deprecated('Use OfficialUsage() / OfficialUsage.new instead')
+  static OfficialUsage create() => OfficialUsage._();
+  static $pb.GeneratedMessage $_createMessage() => OfficialUsage._();
+  @$core.override
+  OfficialUsage createEmptyInstance() => OfficialUsage._();
+  @$core.pragma('dart2js:noInline')
+  static OfficialUsage getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OfficialUsage>(
+          OfficialUsage.$_createMessage);
+  static OfficialUsage? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get available => $_getBF(0);
+  @$pb.TagNumber(1)
+  set available($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasAvailable() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAvailable() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get day => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set day($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasDay() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDay() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get quotaGroup => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set quotaGroup($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasQuotaGroup() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearQuotaGroup() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $fixnum.Int64 get uploadBytes => $_getI64(3);
+  @$pb.TagNumber(4)
+  set uploadBytes($fixnum.Int64 value) => $_setInt64(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasUploadBytes() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearUploadBytes() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $fixnum.Int64 get downloadBytes => $_getI64(4);
+  @$pb.TagNumber(5)
+  set downloadBytes($fixnum.Int64 value) => $_setInt64(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasDownloadBytes() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearDownloadBytes() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get limitBytes => $_getI64(5);
+  @$pb.TagNumber(6)
+  set limitBytes($fixnum.Int64 value) => $_setInt64(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasLimitBytes() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearLimitBytes() => $_clearField(6);
+
+  @$pb.TagNumber(7)
+  $fixnum.Int64 get remainingBytes => $_getI64(6);
+  @$pb.TagNumber(7)
+  set remainingBytes($fixnum.Int64 value) => $_setInt64(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasRemainingBytes() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearRemainingBytes() => $_clearField(7);
+
+  @$pb.TagNumber(8)
+  $fixnum.Int64 get resetAtUnix => $_getI64(7);
+  @$pb.TagNumber(8)
+  set resetAtUnix($fixnum.Int64 value) => $_setInt64(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasResetAtUnix() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearResetAtUnix() => $_clearField(8);
+
+  @$pb.TagNumber(9)
+  $fixnum.Int64 get updatedAtUnix => $_getI64(8);
+  @$pb.TagNumber(9)
+  set updatedAtUnix($fixnum.Int64 value) => $_setInt64(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasUpdatedAtUnix() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearUpdatedAtUnix() => $_clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.String get reason => $_getSZ(9);
+  @$pb.TagNumber(10)
+  set reason($core.String value) => $_setString(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasReason() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearReason() => $_clearField(10);
 }
 
 /// 最近一轮网络出口探测的结果。
@@ -2788,6 +2992,7 @@ class Status extends $pb.GeneratedMessage {
     $core.bool? lanEnabled,
     $core.bool? lanBlocked,
     $fixnum.Int64? verboseLogUntilUnix,
+    OfficialUsage? officialUsage,
   }) {
     final result = Status._();
     if (deviceId != null) result.deviceId = deviceId;
@@ -2804,6 +3009,7 @@ class Status extends $pb.GeneratedMessage {
     if (lanBlocked != null) result.lanBlocked = lanBlocked;
     if (verboseLogUntilUnix != null)
       result.verboseLogUntilUnix = verboseLogUntilUnix;
+    if (officialUsage != null) result.officialUsage = officialUsage;
     return result;
   }
 
@@ -2832,6 +3038,8 @@ class Status extends $pb.GeneratedMessage {
     ..aOB(9, _omitFieldNames ? '' : 'lanEnabled')
     ..aOB(10, _omitFieldNames ? '' : 'lanBlocked')
     ..aInt64(11, _omitFieldNames ? '' : 'verboseLogUntilUnix')
+    ..aOM<OfficialUsage>(12, _omitFieldNames ? '' : 'officialUsage',
+        subBuilder: OfficialUsage.$_createMessage)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2955,6 +3163,17 @@ class Status extends $pb.GeneratedMessage {
   $core.bool hasVerboseLogUntilUnix() => $_has(10);
   @$pb.TagNumber(11)
   void clearVerboseLogUntilUnix() => $_clearField(11);
+
+  @$pb.TagNumber(12)
+  OfficialUsage get officialUsage => $_getN(11);
+  @$pb.TagNumber(12)
+  set officialUsage(OfficialUsage value) => $_setField(12, value);
+  @$pb.TagNumber(12)
+  $core.bool hasOfficialUsage() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearOfficialUsage() => $_clearField(12);
+  @$pb.TagNumber(12)
+  OfficialUsage ensureOfficialUsage() => $_ensure(11);
 }
 
 class ExportDiagnosticsRequest extends $pb.GeneratedMessage {

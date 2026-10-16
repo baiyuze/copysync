@@ -727,7 +727,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signalingUrlDesc =>
-      'Press Return to save. Leave it empty to sync on this network only.';
+      'Click Save and connect or press Enter. Leave it empty to sync on this network only.';
 
   @override
   String get signalingUrlPlaceholder => 'ws://server-address:8787/signal';
@@ -1039,4 +1039,91 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get svcCanDisable =>
       'You can turn background sync off anytime in Settings.';
+
+  @override
+  String get officialService => 'Official service';
+
+  @override
+  String get useOfficialService => 'Use official service';
+
+  @override
+  String get officialPrivacy =>
+      'Connects to the official service only when enabled and records essential access statistics. Direct connections are tried first; relay access is requested only if they fail. Content, real device names and raw system identifiers are not uploaded.';
+
+  @override
+  String get officialEnableTitle => 'Enable official Internet service?';
+
+  @override
+  String get officialSwitchConfirm =>
+      'This switches away from your custom server. Its saved address will be retained.';
+
+  @override
+  String get customServer => 'Custom server';
+
+  @override
+  String get saveAndConnect => 'Save and connect';
+
+  @override
+  String get officialUnused =>
+      'Relay not requested; allowance not yet verified';
+
+  @override
+  String get officialUnavailable =>
+      'Usage is unavailable; existing data may be out of date';
+
+  @override
+  String get officialQuotaTitle => 'Daily relay allowance used up';
+
+  @override
+  String get officialQuotaBody =>
+      'Official relay is paused until the daily reset at midnight Beijing time. LAN and direct Internet connections remain available. Failed transfers can be retried later.';
+
+  @override
+  String get officialPeerQuota =>
+      'The peer has no relay allowance left. Direct connections remain available.';
+
+  @override
+  String get officialPaused =>
+      'Official relay is unavailable. Direct connections remain available.';
+
+  @override
+  String get officialViewUsage => 'View usage';
+
+  @override
+  String get officialAcknowledge => 'Got it';
+
+  @override
+  String get officialToday => 'Today\'s relay usage';
+
+  @override
+  String get officialUsed => 'Used';
+
+  @override
+  String get officialRemaining => 'Remaining';
+
+  @override
+  String get officialDailyLimit => 'Daily allowance';
+
+  @override
+  String get officialUpload => 'Upload';
+
+  @override
+  String get officialDownload => 'Download';
+
+  @override
+  String get officialReset => 'Reset time (Beijing)';
+
+  @override
+  String get officialUpdated => 'Last updated';
+
+  @override
+  String get officialDeviceID => 'Device ID';
+
+  @override
+  String get officialWarning =>
+      '90% of the daily relay allowance has been used. Direct connections do not consume it.';
+
+  @override
+  String get officialAccounting =>
+      'Upload and download combined, including encryption overhead. Only official relay usage is measured; direct content and traffic are not recorded.';
 }

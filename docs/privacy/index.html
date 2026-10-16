@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>隐私与必要数据 — PasteFerry</title>
+  <meta name="description" content="新安装默认只使用局域网。开启官方公网后才连接官方信令并记录必要接入统计；自建服务器模式不向官方上报。先尝试直连，失败后才申请中转授权和读取机器额度摘要。">
+  <link rel="canonical" href="https://pasteferry.cc/privacy/">
+  <link rel="alternate" hreflang="zh-CN" href="https://pasteferry.cc/privacy/">
+  <link rel="alternate" hreflang="zh-TW" href="https://pasteferry.cc/zh-tw/privacy/">
+  <link rel="alternate" hreflang="zh-HK" href="https://pasteferry.cc/zh-hk/privacy/">
+  <link rel="alternate" hreflang="en" href="https://pasteferry.cc/en/privacy/">
+  <link rel="alternate" hreflang="ja" href="https://pasteferry.cc/ja/privacy/">
+  <meta name="theme-color" content="#141416">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="隔空贴">
+  <meta property="og:title" content="隐私与必要数据 — PasteFerry">
+  <meta property="og:description" content="新安装默认只使用局域网。开启官方公网后才连接官方信令并记录必要接入统计；自建服务器模式不向官方上报。先尝试直连，失败后才申请中转授权和读取机器额度摘要。">
+  <meta property="og:url" content="https://pasteferry.cc/privacy/">
+  <meta property="og:image" content="https://pasteferry.cc/assets/og.png">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+
+  <header class="bar">
+    <div class="wrap">
+      <a class="brand" href=".././" aria-label="隔空贴首页"><img src="../assets/icon.svg" alt="" width="26" height="26">隔空贴</a>
+      <nav aria-label="页面导航">
+        <a href="../start/">快速开始</a>
+        <a class="wide" href=".././#how">工作原理</a>
+        <a class="wide" href=".././#faq">常见问题</a>
+        <a class="mid" href="../start/#server">连接方式</a>
+        <a href="../download/">下载</a>
+        <a class="wide" href="https://github.com/baiyuze/pasteferry">GitHub</a>
+        <details class="lang">
+          <summary aria-label="语言：简体中文"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M2.75 10h14.5M10 2.75c-2.1 2-3.1 4.4-3.1 7.25s1 5.25 3.1 7.25M10 2.75c2.1 2 3.1 4.4 3.1 7.25s-1 5.25-3.1 7.25"/></svg><span>简体中文</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary>
+          <ul>
+            <li><a href="../privacy/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a></li>
+            <li><a href="../zh-tw/privacy/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a></li>
+            <li><a href="../zh-hk/privacy/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a></li>
+            <li><a href="../en/privacy/" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../ja/privacy/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+          </ul>
+        </details>
+      </nav>
+    </div>
+  </header>
+<main id="main" class="wrap" style="max-width:850px;padding-top:5rem;padding-bottom:5rem;line-height:1.9"><h1>隐私与必要数据</h1><section><h2>你决定是否使用官方服务</h2><p>新安装默认只使用局域网。开启官方公网后才连接官方信令并记录必要接入统计；自建服务器模式不向官方上报。先尝试直连，失败后才申请中转授权和读取机器额度摘要。</p></section>
+<section><h2>仅保留服务所需数据</h2><p>官方网关保留脱敏设备编号、首次及最近接入时间、每日中转用量、必要额度绑定和累计汇总。每日设备明细保留 90 天。统计表示官方服务设备数，不能代表真实人数或全部安装量。</p></section>
+<section><h2>内容与机器标识</h2><p>剪贴板、文件内容与真实设备名通过设备间加密通道传输。网关不收集文件名、路径、用户名、MAC、UA 或行为轨迹；原始系统标识不上传，机器摘要仅用于中转额度归组，不能保证不可伪造。</p></section>
+<section><h2>网络可见性和额度</h2><p>联网端点必然能看到临时网络地址和路由信息，但官方统计库及普通代理日志不保存这些信息。默认每日 100 MB 中转额度，上下行合计，北京时间零点重置；直连不消耗额度。关闭官方服务会停止其请求、轮询与中转通道。</p></section>
+<section><h2>网站与可审计边界</h2><p>本站使用既有的 Cloudflare Web Analytics，网站访问不等于软件用户统计。客户端、信令和 TURN 保持开源，公开所有官方网关协议与字段；私有生产后台的实际存储行为仍需要部署审计。</p></section><p><a href="https://github.com/baiyuze/pasteferry/blob/main/PRIVACY.md">PRIVACY.md</a> · <a href="https://github.com/baiyuze/pasteferry/blob/main/SECURITY.md">SECURITY.md</a> · <a href="https://github.com/baiyuze/pasteferry/blob/main/design/official-gateway.md">Gateway protocol v1</a></p></main>
+  <footer class="footer">
+    <div class="wrap">
+      <p>隔空贴以 GNU AGPL-3.0 开源。</p>
+      <nav aria-label="页脚链接">
+        <a href="https://github.com/baiyuze/pasteferry/releases">所有版本</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/CHANGELOG.md">更新记录</a>
+        <a href="https://pasteferry.cc/design/nat-traversal.html">技术方案</a>
+        <a href="https://github.com/baiyuze/pasteferry/blob/main/LICENSING.md">许可说明</a>
+        <a href="https://github.com/baiyuze/pasteferry/issues">反馈问题</a>
+        <a href="../privacy/">隐私与必要数据</a>
+      </nav>
+      <nav aria-label="语言">
+        <a href="../privacy/" hreflang="zh-CN" lang="zh-CN" data-lang="zh" aria-current="page">简体中文</a>
+        <a href="../zh-tw/privacy/" hreflang="zh-TW" lang="zh-TW" data-lang="zh-tw">繁體中文（台灣）</a>
+        <a href="../zh-hk/privacy/" hreflang="zh-HK" lang="zh-HK" data-lang="zh-hk">繁體中文（香港）</a>
+        <a href="../en/privacy/" hreflang="en" lang="en" data-lang="en">English</a>
+        <a href="../ja/privacy/" hreflang="ja" lang="ja" data-lang="ja">日本語</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js" defer></script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7ee226baf4a949a397c4bfd69a9e7461"}'></script>
+</body>
+</html>

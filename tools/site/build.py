@@ -16,6 +16,7 @@ import re
 from pathlib import Path
 
 from content.tour import localized as tour_copy
+from content.privacy import COPY as PRIVACY_COPY
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
@@ -24,8 +25,8 @@ REPO = "https://github.com/baiyuze/pasteferry"
 # 网站部署在独立域名的根目录，404 页面用绝对路径引用资源。
 BASE = "/"
 DL = REPO + "/releases/latest/download/"
-VERSION = "2.0.0"
-DATE = "2026-10-14"
+VERSION = "2.2.0"
+DATE = "2026-10-16"
 
 # 语言代码 → (页面目录, html 的 lang, og:locale, 语言名)。顶栏的语言菜单按这个顺序列出。
 # 繁体的两份文案由 zh.py 转换后逐条校订，改了 zh.py 要一起改
@@ -59,7 +60,8 @@ TAILSCALE = "tailscale/"
 # 下载页：所有「下载」按钮都指向它，按系统、芯片选具体的安装包
 DOWNLOAD = "download/"
 TOUR = "tour/"
-SUBPAGES = [START, LAN, CLOUD, GUIDE, TAILSCALE, DOWNLOAD, TOUR]
+PRIVACY = "privacy/"
+SUBPAGES = [START, LAN, CLOUD, GUIDE, TAILSCALE, DOWNLOAD, TOUR, PRIVACY]
 DEPLOY_PAGES = [LAN, CLOUD, GUIDE, TAILSCALE]
 
 # 放到网站上的技术方案：文件名 → 网页名。其他 design/*.md 链接到 GitHub
@@ -169,6 +171,7 @@ def footer(c: dict, code: str, up: str, sub: str = "") -> str:
         cur = ' aria-current="page"' if other == code else ""
         langs.append(f'<a href="{up}{path + sub or "./"}" hreflang="{hl}" lang="{hl}" data-lang="{other}"{cur}>{name}</a>')
     links = "".join(f'\n        <a href="{href}">{label}</a>' for label, href in c["footer_links"])
+    links += f'\n        <a href="{up}{LANGS[code][0]}{PRIVACY}">{PRIVACY_COPY[code][0]}</a>'
     return f"""  <footer class="footer">
     <div class="wrap">
       <p>{c["footer_license"]}</p>
@@ -2178,6 +2181,15 @@ def write(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
     print("✓", path.relative_to(ROOT))
 
+def privacy_page(code: str) -> str:
+    c = load(code)
+    title, sections = PRIVACY_COPY[code]
+    body = "\n".join(f'<section><h2>{esc(h)}</h2><p>{esc(p)}</p></section>' for h, p in sections)
+    return (page_top(c, code, PRIVACY, f'{esc(title)} — PasteFerry', sections[0][1])
+            + f'<main id="main" class="wrap" style="max-width:850px;padding-top:5rem;padding-bottom:5rem;line-height:1.9"><h1>{esc(title)}</h1>{body}'
+            + f'<p><a href="{REPO}/blob/main/PRIVACY.md">PRIVACY.md</a> · <a href="{REPO}/blob/main/SECURITY.md">SECURITY.md</a> · <a href="{REPO}/blob/main/design/official-gateway.md">Gateway protocol v1</a></p></main>'
+            + page_bottom(c, code, PRIVACY))
+
 
 def main() -> None:
     for code, (path, _, _, _) in LANGS.items():
@@ -2189,6 +2201,7 @@ def main() -> None:
         write(DOCS / path / CLOUD / "index.html", cloud_page(code))
         write(DOCS / path / TAILSCALE / "index.html", tailscale_page(code))
         write(DOCS / path / DOWNLOAD / "index.html", download_page(code))
+        write(DOCS / path / PRIVACY / "index.html", privacy_page(code))
     for md_name, page in DESIGN_DOCS.items():
         write(DOCS / "design" / f"{page}.html", design_page(md_name, page))
     write(DOCS / "404.html", not_found())

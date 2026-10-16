@@ -56,6 +56,7 @@ func configToProto(c config.Config) *pb.Config {
 		OnlyOwnStun:            c.OnlyOwnSTUN,
 		Language:               c.Language,
 		LanDisabled:            c.LANDisabled,
+		ServiceMode:            serviceModeToProto(c), CustomSignalingUrl: c.CustomSignalingURL, OfficialNoticeAck: c.OfficialNoticeAck,
 	}
 }
 
@@ -90,8 +91,53 @@ func configFromProto(in *pb.Config, base config.Config) config.Config {
 	c.Language = in.GetLanguage()
 	// 服务器地址同理：空字符串就是不用服务器
 	c.SignalingURL = in.GetSignalingUrl()
+	if in.GetServiceMode() != pb.ServiceMode_SERVICE_MODE_UNSPECIFIED {
+		c.CustomSignalingURL = in.GetCustomSignalingUrl()
+	}
+	switch in.GetServiceMode() {
+	case pb.ServiceMode_SERVICE_MODE_OFFICIAL:
+		c.ServiceMode = "official"
+		c.SignalingURL = ""
+	case pb.ServiceMode_SERVICE_MODE_CUSTOM:
+		c.ServiceMode = "custom"
+		c.CustomSignalingURL = in.GetCustomSignalingUrl()
+		if c.CustomSignalingURL == "" {
+			c.CustomSignalingURL = in.GetSignalingUrl()
+		}
+		c.SignalingURL = c.CustomSignalingURL
+	case pb.ServiceMode_SERVICE_MODE_LAN:
+		c.ServiceMode = "lan"
+		c.SignalingURL = ""
+	default:
+		if c.SignalingURL != "" {
+			c.ServiceMode = "custom"
+			c.CustomSignalingURL = c.SignalingURL
+		} else {
+			c.ServiceMode = "lan"
+		}
+	}
+	if in.GetCustomSignalingUrl() != "" {
+		c.CustomSignalingURL = in.GetCustomSignalingUrl()
+	}
+	c.OfficialNoticeAck = in.GetOfficialNoticeAck()
 	c.LANDisabled = in.GetLanDisabled()
 	return c
+}
+
+func serviceModeToProto(c config.Config) pb.ServiceMode {
+	switch c.ServiceMode {
+	case "official":
+		return pb.ServiceMode_SERVICE_MODE_OFFICIAL
+	case "custom":
+		return pb.ServiceMode_SERVICE_MODE_CUSTOM
+	case "lan":
+		return pb.ServiceMode_SERVICE_MODE_LAN
+	default:
+		if c.SignalingURL != "" {
+			return pb.ServiceMode_SERVICE_MODE_CUSTOM
+		}
+		return pb.ServiceMode_SERVICE_MODE_LAN
+	}
 }
 
 func permissionToProto(p clipboard.Permission) pb.ClipboardPermission {

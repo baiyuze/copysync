@@ -102,6 +102,15 @@ Open TCP 8787, UDP 3478 and UDP 32768–60999, then enter `ws://<server address>
 | **Server** | Optional, only to sync across networks: Linux (x86_64, ARM64; systemd or Docker), macOS, or Windows 10/11 x64 |
 | **iPhone / iPad** | Not supported: iOS doesn't let apps watch the clipboard in the background |
 
+## Optional official access (2.1)
+
+New installations keep official public service off. Enable **Settings → Use
+official service** to try direct connections first and request official relay
+only after direct failure. A separate sidebar shows the daily allowance and
+usage. Both peers need a compatible client for official relay; LAN and custom
+servers continue to work without the gateway. See [privacy](PRIVACY.md),
+[security](SECURITY.md) and the [public protocol](design/official-gateway.md).
+
 ## Documentation
 
 - [How it works](guide/how-it-works.md): architecture, NAT traversal, security model, fallbacks, lessons learned

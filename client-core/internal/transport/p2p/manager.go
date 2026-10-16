@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/baiyuze/pasteferry/client-core/internal/gateway"
 	"github.com/pion/ice/v4"
 	"github.com/pion/webrtc/v4"
 
@@ -17,8 +18,14 @@ import (
 
 // Manager 管理与所有已配对设备的 P2P 连接。
 type Manager struct {
-	selfID string
-	log    *slog.Logger
+	gateway        *gateway.Client
+	official       func() bool
+	officialOnline func(string) bool
+	relays         map[string]*officialAttempt
+	capable        map[string]bool
+	fallbackTimers map[string]*time.Timer
+	selfID         string
+	log            *slog.Logger
 
 	sendSignal func(ctx context.Context, to string, msg *pb.SignalMessage) error
 	onState    func(deviceID string, state ConnState)
@@ -48,12 +55,15 @@ type Manager struct {
 }
 
 type ManagerOptions struct {
-	SelfID     string
-	Logger     *slog.Logger
-	SendSignal func(ctx context.Context, to string, msg *pb.SignalMessage) error
-	OnState    func(deviceID string, state ConnState)
-	OnMessage  func(deviceID string, msg *pb.PeerMessage)
-	OnStream   func(deviceID, label string, stream *Stream)
+	Gateway        *gateway.Client
+	Official       func() bool
+	OfficialOnline func(string) bool
+	SelfID         string
+	Logger         *slog.Logger
+	SendSignal     func(ctx context.Context, to string, msg *pb.SignalMessage) error
+	OnState        func(deviceID string, state ConnState)
+	OnMessage      func(deviceID string, msg *pb.PeerMessage)
+	OnStream       func(deviceID, label string, stream *Stream)
 	// ForceRelay 强制走 TURN 中转，用于验证中转链路
 	ForceRelay bool
 
@@ -74,6 +84,8 @@ func NewManager(opts ManagerOptions) *Manager {
 		log = slog.Default()
 	}
 	m := &Manager{
+		gateway: opts.Gateway, official: opts.Official, officialOnline: opts.OfficialOnline,
+		relays: make(map[string]*officialAttempt), capable: make(map[string]bool), fallbackTimers: make(map[string]*time.Timer),
 		selfID:       opts.SelfID,
 		log:          log,
 		sendSignal:   opts.SendSignal,
@@ -87,6 +99,7 @@ func NewManager(opts ManagerOptions) *Manager {
 		history:      loadEgressHistory(opts.StatePath),
 		stop:         make(chan struct{}),
 	}
+	go m.officialRetryLoop()
 
 	if opts.DisableEgressProbe {
 		return m
@@ -321,17 +334,29 @@ func (m *Manager) Connect(ctx context.Context, deviceID string) error {
 
 // HandleSignal 把验签后的信令分派给对应的 Peer。
 func (m *Manager) HandleSignal(ctx context.Context, from string, msg *pb.SignalMessage) error {
+	if m.officialEnabled() {
+		m.mu.Lock()
+		m.capable[from] = m.capable[from] || msg.GetGatewayCapable()
+		m.mu.Unlock()
+		if msg.GetOfficialRelay() {
+			return m.handleOfficialSignal(from, msg)
+		}
+	}
 	p, err := m.peer(from)
 	if err != nil {
 		return err
 	}
-	return p.HandleSignal(ctx, msg)
+	err = p.HandleSignal(ctx, msg)
+	if err == nil && (msg.GetOffer() != nil || msg.GetAnswer() != nil || msg.GetCandidate() != nil) {
+		m.scheduleFallback(from)
+	}
+	return err
 }
 
 // Send 向对端发送控制消息。
 func (m *Manager) Send(deviceID string, msg *pb.PeerMessage) error {
 	m.mu.RLock()
-	p := m.peers[deviceID]
+	p := m.selectedLocked(deviceID)
 	m.mu.RUnlock()
 
 	if p == nil {
@@ -344,7 +369,8 @@ func (m *Manager) Send(deviceID string, msg *pb.PeerMessage) error {
 func (m *Manager) Broadcast(msg *pb.PeerMessage) int {
 	m.mu.RLock()
 	peers := make([]*Peer, 0, len(m.peers))
-	for _, p := range m.peers {
+	for id := range m.peers {
+		p := m.selectedLocked(id)
 		peers = append(peers, p)
 	}
 	m.mu.RUnlock()
@@ -360,7 +386,7 @@ func (m *Manager) Broadcast(msg *pb.PeerMessage) int {
 
 func (m *Manager) OpenStream(deviceID, label string) (*webrtc.DataChannel, error) {
 	m.mu.RLock()
-	p := m.peers[deviceID]
+	p := m.selectedLocked(deviceID)
 	m.mu.RUnlock()
 
 	if p == nil {
@@ -371,7 +397,7 @@ func (m *Manager) OpenStream(deviceID, label string) (*webrtc.DataChannel, error
 
 func (m *Manager) State(deviceID string) ConnState {
 	m.mu.RLock()
-	p := m.peers[deviceID]
+	p := m.selectedLocked(deviceID)
 	m.mu.RUnlock()
 
 	if p == nil {
@@ -382,6 +408,7 @@ func (m *Manager) State(deviceID string) ConnState {
 
 // Disconnect 断开并丢弃与某个对端的连接（解除配对或对端离线时）。
 func (m *Manager) Disconnect(deviceID string) {
+	m.stopOfficial(deviceID)
 	m.mu.Lock()
 	p := m.peers[deviceID]
 	delete(m.peers, deviceID)
@@ -393,6 +420,7 @@ func (m *Manager) Disconnect(deviceID string) {
 }
 
 func (m *Manager) CloseAll() {
+	m.stopAllOfficial()
 	m.mu.Lock()
 	peers := m.peers
 	m.peers = make(map[string]*Peer)
@@ -411,6 +439,9 @@ func (m *Manager) peer(deviceID string) (*Peer, error) {
 		return p, nil
 	}
 	iceServers := m.iceServers
+	if m.officialEnabled() {
+		iceServers = directICEServers(iceServers)
+	}
 	forceRelay := m.forceRelay
 	m.mu.Unlock()
 
@@ -427,10 +458,21 @@ func (m *Manager) peer(deviceID string) (*Peer, error) {
 		UDPMux:          mux,
 		ExtraCandidates: m.advertisedCandidates,
 		RefreshEgress:   m.refreshEgress,
+		OnGathered:      func() { m.scheduleFallback(deviceID) },
 		SendSignal: func(ctx context.Context, msg *pb.SignalMessage) error {
+			msg.GatewayCapable = m.officialEnabled()
 			return m.sendSignal(ctx, deviceID, msg)
 		},
 		OnState: func(s ConnState) {
+			if s == StateDirect {
+				m.stopOfficial(deviceID)
+			}
+			m.mu.RLock()
+			active := m.selectedLocked(deviceID)
+			m.mu.RUnlock()
+			if active != nil && active.State() == StateRelay {
+				s = StateRelay
+			}
 			if m.onState != nil {
 				m.onState(deviceID, s)
 			}

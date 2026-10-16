@@ -14,7 +14,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 DIST=dist
-VERSION=${VERSION:-2.0.0}
+VERSION=${VERSION:-2.2.0}
 APP_BUILD=${APP_BUILD:-$(git rev-parse --short=8 HEAD)}
 rm -rf "$DIST" && mkdir -p "$DIST"
 

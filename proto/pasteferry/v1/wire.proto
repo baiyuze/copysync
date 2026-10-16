@@ -30,6 +30,12 @@ message SignalMessage {
   bytes nonce = 2;
   // 接收方只收发给自己的消息：局域网里谁都能把截到的消息转发给第三台设备
   string to_device_id = 3;
+  // Client-only negotiation metadata; the server forwards Signed unchanged.
+  string connection_attempt_id = 4;
+  bool official_relay = 5;
+  bool gateway_capable = 6;
+  // Fixed relay-only denial codes; these never change pairing or direct trust.
+  string relay_denial_code = 7;
 
   oneof payload {
     SdpOffer offer = 10;
@@ -246,6 +252,7 @@ message PeerMessage {
     TransferHeader header = 4;      // 数据流即将开始
     TransferDone done = 5;
     LinkInfo link = 6;              // 连接建立后互相告知本端是否经中转
+    PeerDisplay display = 7;        // 仅通过加密的设备间通道交换真实名称
   }
 }
 
@@ -254,6 +261,11 @@ message PeerMessage {
 // 单靠自己的视角会把中转误判成直连。两端交换后，任一端经中转即显示为中转。
 message LinkInfo {
   bool relayed = 1;
+}
+
+message PeerDisplay {
+  string name = 1;
+  string platform = 2;
 }
 
 // 复制发生时广播给所有在线对端。

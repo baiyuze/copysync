@@ -1,5 +1,58 @@
 # 更新记录 / Changelog
 
+## 2.2.0 — 2026-10-16
+
+Integration test build; not a published release.
+
+- Add native large file receive notifications and actions on Mac, Windows
+  and Linux, with receive progress, failure reasons and retry actions.
+- Preserve newer clipboard content while receiving and report actual
+  clipboard write results. Keep downloaded files after clipboard errors.
+- Show matching UI/service versions and a source build identifier.
+- **Mac, Windows and Linux apps**: update the receiving device for feedback.
+- **Server**: no upgrade required. The device-to-device protocol is unchanged.
+
+
+## 2.1.0 — 2026-10-16
+
+Optional official public access now tries direct connections before requesting
+relay access. LAN and custom servers continue to work independently.
+
+### Changes
+
+- **Official service**: opt in from Settings, then view daily relay usage,
+  remaining allowance, reset time and the existing device ID in a dedicated page.
+- **Direct-first relay**: compatible online peers try direct ICE for eight
+  seconds before separately authorizing an encrypted WSS tunnel to standard
+  TURN. Idle relayed connections can retry direct access.
+- **Clear controls**: save a custom server with Save and connect or Enter;
+  unsaved input does not change the active connection. Quota notices wait
+  until the app is in the foreground and appear once per quota day.
+- **Privacy**: official handshakes use generic device labels. Real names are
+  exchanged through the encrypted peer channel. Machine quota identification
+  happens only when relay is requested. Protocol, fields and retention are public.
+- **Dependencies**: update the Go toolchain and networking dependencies and fix
+  a dependency initialization race found by concurrency checks.
+
+### Fixes
+
+- Retire closed official relay tunnels immediately so clipboard updates made
+  after a quota interruption enter the retry queue instead of a stale channel.
+- Release authenticated signaling sockets after abrupt or half-closed TCP
+  disconnects so reconnects do not accumulate server connections.
+
+### Upgrade notes
+
+- **Mac, Windows and Linux apps**: both peers need 2.1.0 for official gateway
+  relay. LAN, direct and custom server use remain independent of that gateway.
+- **Server**: no private authorization API or SDK is added; self-hosted servers
+  remain compatible. Updating is recommended for dependency security fixes.
+- The device-to-device protocol adds optional signed negotiation and encrypted
+  display metadata; existing LAN and self-hosted transfers remain compatible.
+- Official TURN isolation must be migrated only when compatible clients are
+  available. Legacy clients retain signaling/direct support after migration,
+  but cannot bypass the official relay gateway.
+
 ## 2.0.0 — 2026-10-14
 
 CopySync is now PasteFerry (隔空贴 in Chinese). Everything carries the new name, and your pairings, history and settings come along.

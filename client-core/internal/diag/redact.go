@@ -60,9 +60,11 @@ func newRedactor(in Input) *redactor {
 	}
 
 	// 服务器：主机名或公网 IP 换掉，协议、端口、路径留着，排查时用得上
-	if u, err := url.Parse(in.Config.SignalingURL); err == nil {
-		if host := u.Hostname(); host != "" && !keepIP(host) {
-			add(host, "<server>")
+	for _, address := range []string{in.Config.EffectiveSignalingURL(), in.Config.SignalingURL, in.Config.CustomSignalingURL} {
+		if u, err := url.Parse(address); err == nil {
+			if host := u.Hostname(); host != "" && !keepIP(host) {
+				add(host, "<server>")
+			}
 		}
 	}
 
