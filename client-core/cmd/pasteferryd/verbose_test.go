@@ -2,6 +2,7 @@ package main
 
 import (
 	"log/slog"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -9,8 +10,8 @@ import (
 func TestVerboseLog(t *testing.T) {
 	logLevel.Set(slog.LevelInfo)
 	t.Cleanup(func() { logLevel.Set(slog.LevelInfo) })
-	changes := 0
-	v := &verboseLog{base: slog.LevelInfo, changed: func() { changes++ }}
+	var changes atomic.Int32
+	v := &verboseLog{base: slog.LevelInfo, changed: func() { changes.Add(1) }}
 
 	until := v.Set(50 * time.Millisecond)
 	if until.IsZero() || logLevel.Level() != slog.LevelDebug || !v.Until().Equal(until) {
@@ -35,8 +36,8 @@ func TestVerboseLog(t *testing.T) {
 		t.Error("过期的计时器把新打开的详细日志关掉了")
 	}
 	v.Set(0)
-	if logLevel.Level() != slog.LevelInfo || changes < 4 {
-		t.Errorf("关闭后：level=%v，通知 %d 次", logLevel.Level(), changes)
+	if logLevel.Level() != slog.LevelInfo || changes.Load() < 4 {
+		t.Errorf("关闭后：level=%v，通知 %d 次", logLevel.Level(), changes.Load())
 	}
 }
 
