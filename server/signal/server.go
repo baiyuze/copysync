@@ -69,6 +69,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.log.Warn("websocket 握手失败", "err", err, "remote", r.RemoteAddr)
 		return
 	}
+	// HTTP hijacking transfers socket ownership to us. Release it even when
+	// the peer disappears without completing a WebSocket close handshake.
+	defer ws.CloseNow()
 	ws.SetReadLimit(maxMessageBytes)
 
 	ctx, cancel := context.WithCancel(r.Context())

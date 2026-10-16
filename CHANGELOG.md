@@ -25,6 +25,8 @@ relay access. LAN and custom servers continue to work independently.
 
 - Retire closed official relay tunnels immediately so clipboard updates made
   after a quota interruption enter the retry queue instead of a stale channel.
+- Release authenticated signaling sockets after abrupt or half-closed TCP
+  disconnects so reconnects do not accumulate server connections.
 
 ### Upgrade notes
 
