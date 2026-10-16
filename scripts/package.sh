@@ -118,7 +118,7 @@ make_dmg() { # <App> <输出文件名>
     hdiutil detach "$mnt" -quiet
     hdiutil convert "$STAGE/rw.dmg" -format UDZO -imagekey zlib-level=9 -o "$OUT/$name" -quiet
     rm -f "$STAGE/rw.dmg"
-    echo "  ✓ $name（${VERSION}）"
+    echo "  ✓ ${name}（${VERSION}）"
 }
 
 echo "▶ 打包 DMG"
