@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"log/slog"
+	"net"
 	"net/http/httptest"
 	"path/filepath"
 	"strconv"
@@ -19,6 +20,7 @@ import (
 	"github.com/baiyuze/pasteferry/client-core/internal/transport/lan"
 	"github.com/baiyuze/pasteferry/client-core/internal/transport/p2p"
 	pb "github.com/baiyuze/pasteferry/proto/gen/pasteferry/v1"
+	turnrelay "github.com/baiyuze/pasteferry/server/relay"
 	"github.com/baiyuze/pasteferry/server/signal"
 )
 
@@ -229,7 +231,23 @@ func TestPairByAddressAcrossSubnets(t *testing.T) {
 
 // 关掉局域网，只用服务器：原来的配对路径不受影响。
 func TestServerOnlyPairingStillWorks(t *testing.T) {
-	srv := httptest.NewServer(signal.NewServer(signal.Options{}))
+	// Hosted Windows runners may block UDP routed through their own NIC.
+	// Supply a local TURN fallback and keep the real P2P/message assertions.
+	socket, err := net.ListenPacket("udp4", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	port := socket.LocalAddr().(*net.UDPAddr).Port
+	_ = socket.Close()
+	turnServer, err := turnrelay.New(turnrelay.Options{PublicIP: "127.0.0.1", ListenIP: "127.0.0.1", Port: port, Secret: "local-pairing-test", CredentialTTL: time.Hour})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = turnServer.Close() })
+	srv := httptest.NewServer(signal.NewServer(signal.Options{ICEServers: func(id string) []*pb.IceServer {
+		credential := turnServer.Issue(id)
+		return []*pb.IceServer{{Urls: credential.URLs, Username: credential.Username, Credential: credential.Password}}
+	}}))
 	t.Cleanup(srv.Close)
 	cfg := config.Default()
 	cfg.SignalingURL = "ws" + strings.TrimPrefix(srv.URL, "http") + "/signal"
