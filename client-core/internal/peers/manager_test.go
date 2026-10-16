@@ -232,14 +232,16 @@ func TestPairByAddressAcrossSubnets(t *testing.T) {
 // 关掉局域网，只用服务器：原来的配对路径不受影响。
 func TestServerOnlyPairingStillWorks(t *testing.T) {
 	// Hosted Windows runners may block UDP routed through their own NIC.
-	// Supply a local TURN fallback and keep the real P2P/message assertions.
+	// Match the transport relay fixtures: listen on the wildcard socket while
+	// advertising loopback, so Windows can route both allocation directions.
+	// Keep the real P2P/message assertions.
 	socket, err := net.ListenPacket("udp4", "127.0.0.1:0")
 	if err != nil {
 		t.Fatal(err)
 	}
 	port := socket.LocalAddr().(*net.UDPAddr).Port
 	_ = socket.Close()
-	turnServer, err := turnrelay.New(turnrelay.Options{PublicIP: "127.0.0.1", ListenIP: "127.0.0.1", Port: port, Secret: "local-pairing-test", CredentialTTL: time.Hour})
+	turnServer, err := turnrelay.New(turnrelay.Options{PublicIP: "127.0.0.1", Port: port, Secret: "local-pairing-test", CredentialTTL: time.Hour})
 	if err != nil {
 		t.Fatal(err)
 	}
