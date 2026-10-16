@@ -269,12 +269,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                 try {
                                   await state.requestNotifications();
                                 } catch (e) {
-                                  if (context.mounted)
+                                  if (context.mounted) {
                                     showToast(
                                       context,
                                       AppState.describeError(e),
                                       error: true,
                                     );
+                                  }
                                 }
                               },
                               child: Text(
