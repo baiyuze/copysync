@@ -2,43 +2,54 @@
 
 ## 2.1.0 — 2026-10-16
 
-Optional official public access now tries direct connections before requesting
-relay access. LAN and custom servers continue to work independently.
+Sync across networks without hosting a server. Enable optional official access,
+try direct connections first and use encrypted relay only when needed.
+The official website is now https://pasteferry.cc/.
 
 ### Changes
 
-- **Official service**: opt in from Settings, then view daily relay usage,
-  remaining allowance, reset time and the existing device ID in a dedicated page.
-- **Direct-first relay**: compatible online peers try direct ICE for eight
-  seconds before separately authorizing an encrypted WSS tunnel to standard
-  TURN. Idle relayed connections can retry direct access.
-- **Clear controls**: save a custom server with Save and connect or Enter;
-  unsaved input does not change the active connection. Quota notices wait
-  until the app is in the foreground and appear once per quota day.
-- **Privacy**: official handshakes use generic device labels. Real names are
-  exchanged through the encrypted peer channel. Machine quota identification
-  happens only when relay is requested. Protocol, fields and retention are public.
-- **Dependencies**: update the Go toolchain and networking dependencies and fix
-  a dependency initialization race found by concurrency checks.
+- **Official service**: enable one switch in Settings on each computer, with no
+  server address to configure. Both peers try direct NAT traversal before
+  separately authorizing an encrypted WSS relay tunnel to standard TURN.
+- **Relay allowance**: view upload, download, remaining allowance and reset time
+  in a dedicated sidebar page, with MB shown to two decimal places. The current
+  default is 100 MB per machine quota group per day, upload plus download,
+  resetting at midnight Beijing time. Direct traffic does not use this allowance.
+- **Clear settings**: save custom servers with Save and connect or Enter;
+  unsaved edits do not change the active connection. Shorter settings copy keeps
+  full privacy and service-disable information in the action confirmations.
+- **Large-file feedback**: receive files explicitly from History, follow their
+  transfer state and receive desktop notifications when supported and enabled.
+- **Privacy**: official access is off on fresh installs. Public handshakes use
+  generic device labels, and real names travel through the encrypted peer
+  channel. Machine quota identification happens only when relay is requested.
+- **Website and guides**: publish official-service onboarding in five languages
+  at pasteferry.cc, with direct-first routing, allowance and privacy information.
+  Existing GitHub Pages addresses redirect to the new official website.
+- **Dependencies**: update the Go toolchain and networking dependencies.
 
 ### Fixes
 
-- Retire closed official relay tunnels immediately so clipboard updates made
-  after a quota interruption enter the retry queue instead of a stale channel.
+- Resume relay automatically after allowance is increased and retire closed
+  tunnels immediately so interrupted clipboard updates enter the retry queue.
 - Release authenticated signaling sockets after abrupt or half-closed TCP
   disconnects so reconnects do not accumulate server connections.
+- Preserve received history when writing the clipboard fails, and report the
+  failure so a completed transfer is not confused with a failed clipboard action.
+- Isolate pairing checks from public STUN and use loopback relay in server tests.
 
 ### Upgrade notes
 
-- **Mac, Windows and Linux apps**: both peers need 2.1.0 for official gateway
-  relay. LAN, direct and custom server use remain independent of that gateway.
-- **Server**: no private authorization API or SDK is added; self-hosted servers
-  remain compatible. Updating is recommended for dependency security fixes.
+- **Mac, Windows and Linux apps**: update both peers to 2.1.0 for official relay.
+  Existing identities, pairings and history are retained. Official access must
+  be enabled on each computer; current limits and availability appear in the app.
+- **Server**: updating is recommended for dependency and signaling fixes.
+  Self-hosted servers remain independent of the private official gateway and
+  require no private authorization API, callback or SDK.
 - The device-to-device protocol adds optional signed negotiation and encrypted
-  display metadata; existing LAN and self-hosted transfers remain compatible.
-- Official TURN isolation must be migrated only when compatible clients are
-  available. Legacy clients retain signaling/direct support after migration,
-  but cannot bypass the official relay gateway.
+  display metadata. Existing LAN and self-hosted transfers remain compatible.
+  Older apps retain official signaling and direct support, but cannot use or
+  bypass the new official relay gateway.
 
 ## 2.0.0 — 2026-10-14
 

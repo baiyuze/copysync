@@ -74,7 +74,7 @@ New here? The **[quick start](https://pasteferry.cc/en/start/)** walks through i
 
 The builds aren't notarized or code-signed yet: on Mac, allow it once under **System Settings → Privacy & Security → Open Anyway**; on Windows, click **More info → Run anyway**. Then click **Turn on background sync**, and allow PasteFerry when Windows Firewall asks, or when macOS asks to find devices on your local network.
 
-**2. Pair.** On one computer, **Devices → Add device → Show a code**; on the other, **Enter a code**. On a different subnet, click **On a different subnet?** and also enter the address shown under the code. Confirm only if both screens show the same two fingerprint lines. From then on, copy on either one and paste on the other.
+**2. Pair.** On one computer, **Devices → Add device → Show a code**; on the other, **Enter a code**. Official access needs no peer IP. For LAN subnets or Tailscale only, expand **On a different subnet?** and enter the address shown under the code. Confirm only if both screens show the same two fingerprint lines. From then on, copy on either one and paste on the other.
 
 **3. Across networks (optional).** Enable **Use official service** on both computers before pairing; existing pairings are kept. New installs keep this off until you choose it. See the [official service guide](https://pasteferry.cc/en/official/). Other connection choices remain available:
 
