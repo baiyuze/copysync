@@ -1,5 +1,38 @@
 # 更新记录 / Changelog
 
+## 2.1.0 — 2026-10-16
+
+Optional official public access now tries direct connections before requesting
+relay access. LAN and custom servers continue to work independently.
+
+### Changes
+
+- **Official service**: opt in from Settings, then view daily relay usage,
+  remaining allowance, reset time and the existing device ID in a dedicated page.
+- **Direct-first relay**: compatible online peers try direct ICE for eight
+  seconds before separately authorizing an encrypted WSS tunnel to standard
+  TURN. Idle relayed connections can retry direct access.
+- **Clear controls**: save a custom server with Save and connect or Enter;
+  unsaved input does not change the active connection. Quota notices wait
+  until the app is in the foreground and appear once per quota day.
+- **Privacy**: official handshakes use generic device labels. Real names are
+  exchanged through the encrypted peer channel. Machine quota identification
+  happens only when relay is requested. Protocol, fields and retention are public.
+- **Dependencies**: update the Go toolchain and networking dependencies and fix
+  a dependency initialization race found by concurrency checks.
+
+### Upgrade notes
+
+- **Mac, Windows and Linux apps**: both peers need 2.1.0 for official gateway
+  relay. LAN, direct and custom server use remain independent of that gateway.
+- **Server**: no private authorization API or SDK is added; self-hosted servers
+  remain compatible. Updating is recommended for dependency security fixes.
+- The device-to-device protocol adds optional signed negotiation and encrypted
+  display metadata; existing LAN and self-hosted transfers remain compatible.
+- Official TURN isolation must be migrated only when compatible clients are
+  available. Legacy clients retain signaling/direct support after migration,
+  but cannot bypass the official relay gateway.
+
 ## 2.0.0 — 2026-10-14
 
 CopySync is now PasteFerry (隔空贴 in Chinese). Everything carries the new name, and your pairings, history and settings come along.

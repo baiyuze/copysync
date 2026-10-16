@@ -25,8 +25,8 @@ REPO = "https://github.com/baiyuze/pasteferry"
 # 网站部署在独立域名的根目录，404 页面用绝对路径引用资源。
 BASE = "/"
 DL = REPO + "/releases/latest/download/"
-VERSION = "2.0.0"
-DATE = "2026-10-14"
+VERSION = "2.1.0"
+DATE = "2026-10-16"
 
 # 语言代码 → (页面目录, html 的 lang, og:locale, 语言名)。顶栏的语言菜单按这个顺序列出。
 # 繁体的两份文案由 zh.py 转换后逐条校订，改了 zh.py 要一起改
