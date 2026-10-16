@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>下载隔空贴：Mac（Apple 芯片、Intel）、Windows、Linux</title>
   <meta name="description" content="隔空贴各系统的安装包：macOS 13 及以上的 Apple 芯片版与 Intel 版，Windows 10、11 的安装程序与便携版，Linux x64 与 ARM64 的 .deb 和 tar.gz。免费开源。">

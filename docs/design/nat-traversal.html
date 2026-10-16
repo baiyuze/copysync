@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>多出口网络的 NAT 打洞：隔空贴技术方案</title>
   <meta name="description" content="状态：已实现。多出口探测随 1.1.0 发布（2026-10-08）；中转后换直连、连接失效检测与补发随 1.1.1 发布（2026-10-09）；谁先发包随 1.1.2 发布（2026-10-09）">

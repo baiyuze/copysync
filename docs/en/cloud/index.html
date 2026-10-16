@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Run the PasteFerry server on a public server: cloud VM guide</title>
   <meta name="description" content="One script installs PasteFerry&#x27;s signaling and TURN server on a Linux VM with a public IP. Every computer connects to it directly, so the clipboard syncs at home, at the office and anywhere else. Covers the security group, checking, app setup and domains in mainland China.">

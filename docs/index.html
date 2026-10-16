@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>隔空贴 PasteFerry：在 Mac、Windows 与 Linux 之间同步剪贴板与文件，跨账号跨网络</title>
   <meta name="description" content="隔空贴让你在一台电脑上复制，另一台上直接粘贴，Mac、Windows、Linux 互通。支持文本、图片、文件和文件夹，不要求同一个账号。同一个网络里装好就能用，不需要服务器；跨网络时用自己部署的服务器或 Tailscale。设备间 P2P 直连、端到端加密。免费开源。">
@@ -34,6 +43,7 @@
   <script>
     // 第一次打开时按浏览器语言跳到对应页面；在页面上选过语言后，以选的为准
     (function () {
+      if (location.hostname === "baiyuze.github.io") return;
       try {
         var paths = {"zh": "", "zh-tw": "zh-tw/", "zh-hk": "zh-hk/", "en": "en/", "ja": "ja/"};
         var pick = localStorage.getItem("pasteferry-lang");
@@ -51,7 +61,7 @@
           }
           pick = pick || "en";
         }
-        if (paths[pick]) location.replace(paths[pick] + location.hash);
+        if (paths[pick]) location.replace(paths[pick] + location.search + location.hash);
       } catch (e) {}
     })();
   </script>

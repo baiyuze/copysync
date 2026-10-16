@@ -2,6 +2,15 @@
 <html lang="zh-HK">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>下載隔空貼：Mac（Apple 晶片、Intel）、Windows、Linux</title>
   <meta name="description" content="隔空貼各系統的安裝檔：macOS 13 或以上的 Apple 晶片版與 Intel 版，Windows 10、11 的安裝程式與免安裝版，Linux x64 與 ARM64 的 .deb 和 tar.gz。免費開源。">

@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Use PasteFerry on one network: no server, just pair</title>
   <meta name="description" content="When your computers share a Wi‑Fi or wired network, PasteFerry needs no server: install the app, enter a 6-character pairing code, and sync the clipboard and files between Mac and Windows. On a different subnet, you enter one address when pairing.">

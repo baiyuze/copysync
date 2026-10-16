@@ -2,6 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LAN に PasteFerry サーバーを置く：Windows・Mac・Linux の手順</title>
   <meta name="description" content="コンピューターが同じネットワークにあれば、クラウドサーバーは要りません。常に電源が入っている Windows・Mac・Linux のコンピューターで、PasteFerry のシグナリング兼 TURN サーバーをスクリプトひとつで動かせます。起動時に自動で立ち上がります。アプリの設定とトラブル対処つき。">

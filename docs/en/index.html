@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PasteFerry: sync the clipboard and files between Mac, Windows and Linux, across accounts and networks</title>
   <meta name="description" content="PasteFerry lets you copy on one computer and paste on another, Mac, Windows or Linux: text, images, files and folders. No shared account required. On the same network it works with no server at all; across networks, use a server you host or Tailscale. Peer-to-peer and end-to-end encrypted. Free and open source.">

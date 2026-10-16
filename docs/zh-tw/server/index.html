@@ -2,6 +2,15 @@
 <html lang="zh-TW">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>在區域網路裡架設隔空貼伺服器：Windows、Mac、Linux 教學</title>
   <meta name="description" content="兩台電腦在同一個網路裡時，不需要雲端伺服器：在一台常開的 Windows、Mac 或 Linux 電腦上執行隔空貼的信令與 TURN 伺服器，下載後執行一個腳本即可，開機自動執行。附用戶端設定與疑難排解。">

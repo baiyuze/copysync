@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>在同一网络里使用隔空贴：不用服务器，配对就能同步</title>
   <meta name="description" content="两台电脑在同一个 Wi‑Fi 或有线网络里时，隔空贴不需要服务器：装好 App，输入 6 位配对码，就能在 Mac 与 Windows 之间同步剪贴板和文件。不在同一网段时，配对时多输入一个地址。">

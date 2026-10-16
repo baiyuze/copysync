@@ -2,6 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      if (location.hostname !== "baiyuze.github.io") return;
+      var prefix = /^\/(?:pasteferry|copysync)(?=\/|$)/.exec(location.pathname);
+      if (!prefix) return;
+      var path = location.pathname.slice(prefix[0].length) || "/";
+      location.replace("https://pasteferry.cc" + path + location.search + location.hash);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PasteFerry のダウンロード：Mac（Apple シリコン、Intel）、Windows、Linux</title>
   <meta name="description" content="PasteFerry の各 OS 向けインストーラー。macOS 13 以降の Apple シリコン版と Intel 版、Windows 10・11 のインストーラーとポータブル版、Linux x64 と ARM64 の .deb と tar.gz。無料・オープンソース。">
