@@ -19,6 +19,14 @@ _ReceiveState _seed(ClipStatus status, {String language = 'en'}) => _ReceiveStat
   ]);
 
 void main() {
+  testWidgets('reopened history retains clipboard failure and apply action', (tester) async {
+    final state = _seed(ClipStatus.CLIP_STATUS_READY);
+    state.records.single.error = 'Clipboard is busy';
+    await tester.pumpWidget(PasteFerryApp(state: state));
+    expect(find.textContaining('Clipboard is busy'), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Copy to clipboard').hitTestable(), findsOneWidget);
+    expect(state.records.single.status, ClipStatus.CLIP_STATUS_READY);
+  });
   testWidgets('pending item explains why paste is unavailable and offers receive', (tester) async {
     final state = _seed(ClipStatus.CLIP_STATUS_REMOTE_ONLY);
     await tester.pumpWidget(PasteFerryApp(state: state));

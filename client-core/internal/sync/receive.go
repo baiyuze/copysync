@@ -188,6 +188,20 @@ func (e *Engine) writeClipboard(ctx context.Context, clip store.Clip, revision *
 }
 
 func (e *Engine) clipboardResult(result *pb.ClipboardWriteResult) {
+	message := ""
+	if result.GetOutcome() == pb.ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_FAILED {
+		message = result.GetError()
+	}
+	if e.store != nil {
+		changed, err := e.store.SetClipboardError(result.GetClipId(), message)
+		if err != nil {
+			e.log.Warn("保存剪贴板写入结果失败", "err", err)
+		} else if changed {
+			if clip, err := e.store.GetClip(result.GetClipId()); err == nil {
+				e.emitRecord(clip)
+			}
+		}
+	}
 	if e.onClipboardResult != nil {
 		e.onClipboardResult(result)
 	}

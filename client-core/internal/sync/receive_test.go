@@ -226,6 +226,19 @@ func TestReceiveCompletionProtectsClipboardAndRetainsDownload(t *testing.T) {
 			}
 			if scenario == "write-error" {
 				want = pb.ClipboardWriteOutcome_CLIPBOARD_WRITE_OUTCOME_FAILED
+				if clip.Error != "locked" {
+					t.Fatalf("clipboard failure was not retained in history: %q", clip.Error)
+				}
+				cb.mu.Lock()
+				cb.failure = nil
+				cb.mu.Unlock()
+				if err := e.ApplyToClipboard(context.Background(), clip.ID); err != nil {
+					t.Fatal(err)
+				}
+				retried, _ := e.store.GetClip(clip.ID)
+				if retried.Error != "" || retried.Status != store.StatusReady || retried.CachePath != clip.CachePath {
+					t.Fatal("clipboard retry did not clear the error and retain the download")
+				}
 			}
 			if event.Clipboard.Outcome != want {
 				t.Fatalf("outcome %v, want %v", event.Clipboard.Outcome, want)
